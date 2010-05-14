@@ -19,7 +19,7 @@ copyright = '2010, Ryan Dale'
 
 # Extension
 extensions = [
-	 # -*-Extensions: -*-
+    'sphinx.ext.autodoc'
 	]
 intersphinx_mapping = {'http://docs.python.org/': None}
 
