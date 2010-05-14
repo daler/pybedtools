@@ -27,5 +27,5 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-
+from pybedtools import bedtool, cleanup, set_tempdir
 __author__ = 'Ryan Dale <dalerr@niddk.nih.gov>'
