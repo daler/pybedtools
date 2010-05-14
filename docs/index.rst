@@ -5,6 +5,9 @@
 
 Welcome to pybedtools's documentation!
 ======================================
+.. note::
+   
+    See http://daler.github.com/pybedtools for the complete documentation
 
 Contents:
 
