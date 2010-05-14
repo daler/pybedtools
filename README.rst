@@ -2,6 +2,9 @@
 pybedtools
 ==========
 
+Documentation
+-------------
+Please see http://daler.github.com/pybedtools for the complete documentation.
 
 Installation
 ------------
