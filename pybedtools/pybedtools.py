@@ -14,8 +14,10 @@ import tempfile
 import subprocess
 import random
 
-# Module-level list of all tempfiles created 
+# Module-level list of all tempfiles created.  These will be deleted when
+# cleanup() is called.
 TEMPFILES = []
+
 
 def set_tempdir(tempdir):
     """
@@ -30,8 +32,6 @@ def cleanup():
     for fn in TEMPFILES:
         if os.path.exists(fn):
             os.remove(fn)
-
-
 
 def help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
@@ -143,13 +143,15 @@ class bedtool(object):
         for easy deletion if you forget to call pybedtools.cleanup().
         '''
 
-        tmpfn = tempfile.mktemp(prefix='pybedtools.',suffix='.tmp')
+        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
+        tmpfn = tmpfn.name
         TEMPFILES.append(tmpfn)
         return tmpfn
 
     def __iterator(self):
         '''Iterator that returns lines from BED file'''
-        for line in open(self.fn):
+        f = open(self.fn)
+        for line in f:
             if line.startswith('browser'):
                 continue
             if line.startswith('track'):
@@ -159,12 +161,16 @@ class bedtool(object):
             if len(line.strip()) == 0:
                 continue
             yield line
+        f.close()
 
     def __repr__(self):
         return '<bedtool (%s)>'%self.fn
 
     def __str__(self):
-        return open(self.fn).read()
+        f = open(self.fn)
+        s = f.read()
+        f.close()
+        return s
 
     def __len__(self):
         return self.count()
@@ -415,12 +421,14 @@ class bedtool(object):
             a.count()
         """
         c = 0
-        for i in open(self.fn):
+        f = open(self.fn)
+        for i in f:
             if i.startswith('browser'):
                 continue
             if i.startswith('track'):
                 continue
             c += 1
+        f.close()
         return c
 
     def print_sequence(self,fn):
@@ -432,7 +440,10 @@ class bedtool(object):
         """
         if not hasattr(self,'seqfn'):
             raise ValueError, 'Use .sequence(fasta_fn) to get the sequence first'
-        return open(self.seqfn).read()
+        f = open(self.seqfn)
+        s = f.read()
+        f.close()
+        return s
 
     def save_seqs(self,fn):
         """
@@ -646,6 +657,8 @@ class bedtool(object):
             counts.append(len(tmp2))
             os.remove(tmp.fn)
             os.remove(tmp2.fn)
+            del(tmp)
+            del(tmp2)
         return counts
 
     def cat(self,other, postmerge=True, **kwargs):
@@ -703,7 +716,10 @@ class bedtool(object):
             # this is one looong string which contains the entire file
             long_string = a.tostring()
         '''
-        return open(self.fn).read()
+        f = open(self.fn)
+        s = f.read()
+        f.close()
+        return s
 
     def saveas(self,fn,trackline=None):
         """
