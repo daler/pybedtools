@@ -175,6 +175,16 @@ class bedtool(object):
     def __len__(self):
         return self.count()
 
+    @property
+    def lines(self):
+        return open(self.fn)
+   
+    def head(self,n=10):
+        for i,line in enumerate(self.lines):
+            if i == (n):
+                break
+            print line,
+
     @help('intersectBed')
     def intersect(self, other, **kwargs):
         """
@@ -369,6 +379,16 @@ class bedtool(object):
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
             kwargs['b'] = other.fn
+        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(['>',tmp])
+        os.system(' '.join(cmds))
+        return bedtool(tmp)
+
+    @help('groupBy')
+    def groupBy(self,**kwargs):
+        tmp = self._tmp()
+        cmds = ['groupBy']
+        kwargs['i'] = self.fn
         cmds.extend(self.parse_kwargs(**kwargs))
         cmds.extend(['>',tmp])
         os.system(' '.join(cmds))
@@ -600,6 +620,8 @@ class bedtool(object):
         'actual': actual,
         self.fn: len(self),
         other.fn: len(other),
+        'self':len(self),
+        'other':len(other),
         'frac randomized above actual': frac_above,
         'frac randomized below actual': frac_below,
         'median randomized': med_count,
@@ -899,6 +921,8 @@ class bedtool(object):
             if value is True:
                 cmds.append('-'+key)
                 continue
+            if (type(value) is tuple) or (type(value) is list):
+                value = ','.join(map(str,value))
             cmds.append('-'+key)
             cmds.append(str(value))
         return cmds
