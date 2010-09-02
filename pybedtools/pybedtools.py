@@ -918,7 +918,10 @@ class bedtool(object):
         will be returned as::
 
             ['-c','-f','0.5']
+
+        If there are symbols (e.g., "|"), then the parameter is quoted."
         """
+        illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
         cmds = []
         for key,value in kwargs.items():
             if value is True:
@@ -926,6 +929,10 @@ class bedtool(object):
                 continue
             if (type(value) is tuple) or (type(value) is list):
                 value = ','.join(map(str,value))
+            for i in illegal_chars:
+                if i in value:
+                    value = '"%s"' % value
+                    break
             cmds.append('-'+key)
             cmds.append(str(value))
         return cmds
