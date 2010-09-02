@@ -207,7 +207,7 @@ class bedtool(object):
             unique_to_other = bedtool('other.bed').intersect(a, v=True)
 
         """
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             kwargs['b'] = other
         else: 
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
@@ -264,7 +264,7 @@ class bedtool(object):
 
         """
         kwargs['a'] = self.fn
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             kwargs['b'] = other
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
@@ -347,7 +347,7 @@ class bedtool(object):
         tmp = self._tmp()
         cmds = ['closestBed',]
         kwargs['a'] = self.fn
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             kwargs['b'] = other
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
@@ -374,7 +374,7 @@ class bedtool(object):
         tmp = self._tmp()
         cmds = ['windowBed',]
         kwargs['a'] = self.fn
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             kwargs['b'] = other
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
@@ -591,7 +591,7 @@ class bedtool(object):
         from scipy import stats
         import numpy as np
         
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             other = bedtool(other)
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
@@ -617,6 +617,7 @@ class bedtool(object):
         
         actual_percentile = stats.percentileofscore(distribution,actual)
         d = {
+        'iterations':iterations,
         'actual': actual,
         'a':self.fn,
         'b':other.fn,
@@ -638,7 +639,7 @@ class bedtool(object):
         """
         Nicely prints the reciprocal randomization of two files.
         """
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             other = bedtool(other)
         d1 = self.randomstats(other, iterations, intersectkwargs)
         d2 = other.randomstats(self, iterations, intersectkwargs)
@@ -707,7 +708,7 @@ class bedtool(object):
             b = a.cat('other.bed', s=True)
         """
         tmp = self._tmp()
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             other = bedtool(other)
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
@@ -779,7 +780,7 @@ class bedtool(object):
         a = bedtool('in.bed')
         a.intersection_report('other.bed')
         """
-        if type(other) is str:
+        if (type(other) is str) or (type(other) is unicode):
             other = bedtool(other)
 
         int1 = self.intersect(other, **kwargs).count()
