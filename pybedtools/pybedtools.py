@@ -618,6 +618,8 @@ class bedtool(object):
         actual_percentile = stats.percentileofscore(distribution,actual)
         d = {
         'actual': actual,
+        'a':self.fn,
+        'b':other.fn,
         self.fn: len(self),
         other.fn: len(other),
         'self':len(self),
