@@ -36,7 +36,7 @@ def cleanup():
 def help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
     docstring of the method that calls the program'''
-    p = subprocess.Popen([command], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    p = subprocess.Popen([command,'-h'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     help = p.communicate()[1]
     help = help.replace('_','**')
     # insert tabs into the help
@@ -619,8 +619,8 @@ class bedtool(object):
         d = {
         'iterations':iterations,
         'actual': actual,
-        'a':self.fn,
-        'b':other.fn,
+        'file_a':self.fn,
+        'file_b':other.fn,
         self.fn: len(self),
         other.fn: len(other),
         'self':len(self),
@@ -929,10 +929,11 @@ class bedtool(object):
                 continue
             if (type(value) is tuple) or (type(value) is list):
                 value = ','.join(map(str,value))
-            for i in illegal_chars:
-                if i in value:
-                    value = '"%s"' % value
-                    break
+            if type(value) is str:
+                for i in illegal_chars:
+                    if i in value:
+                        value = '"%s"' % value
+                        break
             cmds.append('-'+key)
             cmds.append(str(value))
         return cmds
