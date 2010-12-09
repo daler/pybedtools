@@ -13,10 +13,83 @@ import os
 import tempfile
 import subprocess
 import random
+import itertools
+
 
 # Module-level list of all tempfiles created.  These will be deleted when
 # cleanup() is called.
 TEMPFILES = []
+
+
+GENOME_REGISTRY = {
+'dm3' : {
+        'chr2L': (1, 23011544),
+        'chr2LHet': (1, 368872),
+        'chr2R': (1, 21146708),
+        'chr2RHet': (1, 3288761),
+        'chr3L': (1, 24543557),
+        'chr3LHet': (1, 2555491),
+        'chr3R': (1, 27905053),
+        'chr3RHet': (1, 2517507),
+        'chr4': (1, 1351857),
+        'chrM': (1, 19517),
+        'chrU': (1, 10049037),
+        'chrUextra': (1, 29004656),
+        'chrX': (1, 22422827),
+        'chrXHet': (1, 204112),
+        'chrYHet': (1, 347038)
+     },
+
+'hg18': {'chr1': (1, 247249719),
+            'chr10': (1, 135374737),
+            'chr10_random': (1, 113275),
+            'chr11': (1, 134452384),
+            'chr11_random': (1, 215294),
+            'chr12': (1, 132349534),
+            'chr13': (1, 114142980),
+            'chr13_random': (1, 186858),
+            'chr14': (1, 106368585),
+            'chr15': (1, 100338915),
+            'chr15_random': (1, 784346),
+            'chr16': (1, 88827254),
+            'chr16_random': (1, 105485),
+            'chr17': (1, 78774742),
+            'chr17_random': (1, 2617613),
+            'chr18': (1, 76117153),
+            'chr18_random': (1, 4262),
+            'chr19': (1, 63811651),
+            'chr19_random': (1, 301858),
+            'chr1_random': (1, 1663265),
+            'chr2': (1, 242951149),
+            'chr20': (1, 62435964),
+            'chr21': (1, 46944323),
+            'chr21_random': (1, 1679693),
+            'chr22': (1, 49691432),
+            'chr22_h2_hap1': (1, 63661),
+            'chr22_random': (1, 257318),
+            'chr2_random': (1, 185571),
+            'chr3': (1, 199501827),
+            'chr3_random': (1, 749256),
+            'chr4': (1, 191273063),
+            'chr4_random': (1, 842648),
+            'chr5': (1, 180857866),
+            'chr5_h2_hap1': (1, 1794870),
+            'chr5_random': (1, 143687),
+            'chr6': (1, 170899992),
+            'chr6_cox_hap1': (1, 4731698),
+            'chr6_qbl_hap2': (1, 4565931),
+            'chr6_random': (1, 1875562),
+            'chr7': (1, 158821424),
+            'chr7_random': (1, 549659),
+            'chr8': (1, 146274826),
+            'chr8_random': (1, 943810),
+            'chr9': (1, 140273252),
+            'chr9_random': (1, 1146434),
+            'chrM': (1, 16571),
+            'chrX': (1, 154913754),
+            'chrX_random': (1, 1719168),
+            'chrY': (1, 57772954)},
+}
 
 
 def set_tempdir(tempdir):
@@ -66,7 +139,7 @@ class bedfeature(object):
         self.strand=strand
         try:
             self.value=float(value)
-        except TypeError:
+        except (TypeError,ValueError):
             self.value=value
         try:
             self.thickStart=int(thickStart)
@@ -91,7 +164,7 @@ class bedfeature(object):
     def __len__(self):
         return self.stop - self.start
 
-    def tostring(self):
+    def tostring(self,fields=3):
         """Prints the bed record suitable for writing to file, newline included.
         
         In the interest of speed, does not do error-checking.
@@ -109,14 +182,12 @@ class bedfeature(object):
                  self.blockSizes, 
                  self.blockStarts]
         printables = []
-        for item in items:
+        for item in items[0:fields]:
             if item is None:
                 printables.append('')
             else:
                 printables.append(str(item))
-        
         return '\t'.join(printables).rstrip()+'\n'
-
 
 class bedtool(object):
     """
@@ -127,14 +198,31 @@ class bedtool(object):
 
         a = bedtool('in.bed')
     """
-    def __init__(self,fn):
+    def __init__(self,fn,genome=None):
         """
-        *fn* is a BED format file.
+        *fn* is a BED format file, or alternatively another bedtool instance.
+
+        *genome* is a genome assembly ('dm3', 'hg18', etc) or a dictionary of
+        chrom:(start,stop) integers to consider as the genome space for
+        randomizations, coverage, etc.
         """
+        if isinstance(fn, bedtool):
+            fn = fn.fn
         if not os.path.exists(fn):
             raise ValueError, 'File "%s" does not exist' % fn
         self.fn = fn
         self._hascounts = False
+        if genome is None:
+            self.genome = None
+
+        elif isinstance(genome,basestring):
+            try:
+                self.genome = GENOME_REGISTRY[genome]
+            except KeyError:
+                raise ValueError, 'Genome %s not registered' % genome
+        else:
+            self.genome = genome
+            
 
     def _tmp(self):
         '''
@@ -162,6 +250,9 @@ class bedtool(object):
                 continue
             yield line
         f.close()
+    
+    def __iter__(self):
+        return self.__iterator()
 
     def __repr__(self):
         return '<bedtool (%s)>'%self.fn
@@ -175,6 +266,12 @@ class bedtool(object):
     def __len__(self):
         return self.count()
 
+    def __add__(self,other):
+        return self.intersect(other,u=True)
+
+    def __sub__(self,other):
+        return self.intersect(other, v=True)
+        
     @property
     def lines(self):
         return open(self.fn)
@@ -235,7 +332,7 @@ class bedtool(object):
         Example usage::
 
             a = bedtool('in.bed')
-            a.sequence('genome.fa')
+            a.sequence(fi='genome.fa')
             a.print_sequence()
         '''
         tmp = self._tmp()
@@ -451,7 +548,7 @@ class bedtool(object):
         f.close()
         return c
 
-    def print_sequence(self,fn):
+    def print_sequence(self):
         """
         Print the sequence that was retrieved by the :meth:`bedtool.sequence`
         method.
@@ -537,31 +634,7 @@ class bedtool(object):
             shuffleBed -i in.bed -g dm3.genome -chrom -seed $RANDOM > /tmp/tmpfile
 
         """
-        dm3 = """
-        chr2L     23011544
-        chr2LHet  368872
-        chr2R     21146708
-        chr2RHet  3288761
-        chr3L     24543557
-        chr3LHet  2555491
-        chr3R     27905053
-        chr3RHet  2517507
-        chr4      1351857
-        chrU      10049037
-        chrUextra 29004656
-        chrX      22422827
-        chrXHet   204112
-        chrYHet   347038
-        chrM      19517
-        """
         tmp = self._tmp()
-        chromlens = {} 
-        for i in dm3.split('\n'):
-            i = i.strip()
-            if len(i) < 1:
-                continue
-            chrom,length = i.split()
-            chromlens[chrom] = int(length)
 
         TMP = open(tmp,'w')
         for line in self.__iterator():
@@ -569,7 +642,7 @@ class bedtool(object):
             start = int(start)
             stop = int(stop)
             length = stop-start
-            newstart = random.randint(1, chromlens[chrom]-length)
+            newstart = random.randint(self.genome[chrom][0], self.genome[chrom][1]-length)
             newstop = newstart + length
             TMP.write('%s\t%s\t%s\n' % (chrom,newstart,newstop))
         TMP.close()
@@ -685,6 +758,34 @@ class bedtool(object):
             del(tmp)
             del(tmp2)
         return counts
+
+    def deprecated_randomintersection(self,other,iterations,intersectkwargs={}):
+        # list of intersection counts, one for each iteration
+        if isinstance(other, basestring):
+            other = bedtool(other)
+        counts = []
+        count1 = self.count()
+        count2 = other.count()
+        total = float(count1+count2)
+        prob1 = count1/total
+        for iteration in range(iterations):
+            tmp1 = open(self._tmp(),'w') 
+            tmp2 = open(self._tmp(),'w')
+            for i in itertools.chain(self,other):
+                if random.random() <= prob1:
+                    tmp1.write(i)
+                else:
+                    tmp2.write(i)
+            tmp1.close()
+            tmp2.close()
+            tmp_bed1 = bedtool(tmp1.name)
+            tmp_bed2 = bedtool(tmp2.name)
+            counts.append(len(tmp_bed1.intersect(tmp_bed2, **intersectkwargs)))
+            os.remove(tmp1.name)
+            os.remove(tmp2.name)
+
+        return counts
+                 
 
     def cat(self,other, postmerge=True, **kwargs):
         """
@@ -938,10 +1039,14 @@ class bedtool(object):
             cmds.append(str(value))
         return cmds
 
-    def feature_centers(self,n):
+    def feature_centers(self,n,report_smaller=True):
         '''
         Returns a new bedtools object with just the centers of size n extracted from
         this object's features.
+
+
+        If *report_smaller* is True, then report features that are smaller than
+        2*n.  Otherwise, ignore them.
 
         Example usage::
 
@@ -959,7 +1064,12 @@ class bedtool(object):
             stop = int(stop)
             halfwidth = (stop-start)/2
             if halfwidth < 2*n:
-                continue
+                if report_smaller:
+                    tmp.write(line)
+                    continue
+                else:
+                    continue
+
             midpoint = start+halfwidth
             newstart = str(midpoint - n)
             newstop = str(midpoint + n)
@@ -968,6 +1078,29 @@ class bedtool(object):
             tmp.write('\t'.join(L)+'\n')
         tmp.close()
         return bedtool(tmpfn)
+
+    def rename_features(self,new_name):
+        """
+        Forces a rename of all features.  Useful for if you have a BED file of
+        exons and you want all of them to have the name "exon".
+        """
+        tmpfn = self._tmp()
+        tmp = open(tmpfn,'w')
+        for line in self.__iterator():
+            L = line.strip().split('\t')
+            chrom,start,stop = L[:3]
+            if len(L) > 3:
+                L[3] = new_name
+            else:
+                L.append(new_name)
+            tmp.write('\t'.join(L)+'\n')
+        tmp.close()
+        return bedtool(tmpfn)
+    
+    def with_attrs(self, **kwargs):
+        for key,value in kwargs.items():
+            setattr(self,key,value)
+        return self
 
     def counts(self):
         """
@@ -991,10 +1124,43 @@ class bedtool(object):
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
         counts = []
         for line in self.__iterator():
-            chrom,start,stop,count = line.split()
-            count = int(count)
+            L = line.split()
+            chrom,start,stop = L[:3]
+            count = int(L[-1])
             counts.append(count)
         return counts
+
+    def normalized_counts(self):
+        """
+        After running :meth:`bedtool.intersect` with the kwarg *c=True*, use
+        this method to return a list of the density of features in "b" that
+        intersected each feature in "a".
+
+        This takes the counts in each feature and divides by the bp in that
+        feature.
+
+        Example usage::
+
+            a = bedtool('in.bed')
+            b = a.intersect('other.bed', c=True)
+            counts = b.normalized_counts()
+
+            # assuming you have matplotlib installed, plot a histogram
+            
+            import pylab
+            pylab.hist(counts)
+            pylab.show()
+        """
+        if not self._hascounts:
+            raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
+        normalized_counts = []
+        for line in self.__iterator():
+            L = line.split()
+            chrom,start,stop = L[:3]
+            count = float(L[-1])
+            normalized_count = count/(int(stop)-int(start))*1000
+            normalized_counts.append(normalized_count)
+        return normalized_counts
 
     def lengths(self):
         """
@@ -1019,4 +1185,5 @@ class bedtool(object):
             length = stop-start
             feature_lengths.append(length)
         return feature_lengths
+    
 
