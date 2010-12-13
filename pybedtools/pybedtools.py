@@ -14,7 +14,7 @@ import tempfile
 import subprocess
 import random
 import itertools
-
+from math import floor, ceil
 
 # Module-level list of all tempfiles created.  These will be deleted when
 # cleanup() is called.
@@ -1041,18 +1041,17 @@ class bedtool(object):
 
     def feature_centers(self,n,report_smaller=True):
         '''
-        Returns a new bedtools object with just the centers of size n extracted from
-        this object's features.
-
+        Returns a new bedtools object with just the centers of size n extracted
+        from this object's features.
 
         If *report_smaller* is True, then report features that are smaller than
-        2*n.  Otherwise, ignore them.
+        *n*.  Otherwise, ignore them.
 
         Example usage::
 
             a = bedtool('in.bed')
 
-            # 100bp on either side of the center of each feature
+            # 5bp on either side of the center of each feature
             b = a.feature_centers(100)
         '''
         tmpfn = self._tmp()
@@ -1062,17 +1061,20 @@ class bedtool(object):
             chrom,start,stop = L[:3]
             start = int(start)
             stop = int(stop)
-            halfwidth = (stop-start)/2
-            if halfwidth < 2*n:
+            
+            # if smaller than window size, decide whether to report it or not.
+            if (stop-start) < n:
                 if report_smaller:
                     tmp.write(line)
                     continue
                 else:
                     continue
 
-            midpoint = start+halfwidth
-            newstart = str(midpoint - n)
-            newstop = str(midpoint + n)
+            left = floor(n/2.0)
+            right = ceil(n/2.0)
+            midpoint = start + (stop-start)/2
+            newstart = str( int(midpoint - left))
+            newstop = str( int(midpoint + right))
             L[1] = newstart
             L[2] = newstop
             tmp.write('\t'.join(L)+'\n')
