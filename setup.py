@@ -1,7 +1,11 @@
-import os
-if os.path.exists("paver-minilib.zip"):
-    import sys
-    sys.path.insert(0, "paver-minilib.zip")
+from setuptools import setup, find_packages
 
-import paver.tasks
-paver.tasks.main()
+setup( 
+        name="pybedtools",
+        version="0.2",
+        test_suite="test",
+        py_modules=['pybedtools'],
+        author="Ryan Dale",
+        url="none",
+        author_email="dalerr@niddk.nih.gov"
+    )
