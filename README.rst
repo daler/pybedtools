@@ -1,35 +1,77 @@
 ``pybedtools`` overview and examples
 ====================================
 
-:description:
-    Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
+Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
 
 
-The ``bedtool`` object has methods that call the tools in the BEDtools suite.
-Where appropriate, the method returns another ``bedtool`` object, so you can
-chain or pipe things together just like from the command line.  There are also
-other features not [yet] found in BEDtools like random selection of features,
-obtaining the centers of features (e.g., for motif detection), reciprocal
-intersection reports, feature counts, permutation testing, and much more.
+Quick examples for the impatient
+-------------------------------
 
+Get the sequences of the 100 bp on either side of features (with automatic
+download of chromSizes from UCSC for dm3 genome)::
+
+    import pybedtools
+    pybedtools.bedtool('in.bed').slop(genome='dm3',l=100,r=100).subtract('in.bed')
+    flanking_features.sequence(fi='dm3.fa').save_seqs('flanking.fa')
+
+Or, get values for a 3-way Venn diagram of overlaps::
+
+    import pybedtools
+    a = pybedtools.bedtool('a.bed')
+    b = pybedtools.bedtool('b.bed')
+    c = pybedtools.bedtool('c.bed')
+
+    (a-b-c).count()  # unique to a
+    (a+b-c).count()  # in a and b, not c
+    (a+b+c).count()  # common to all 
+    # ... and so on, for all the combinations.
+    
+
+    
+
+Why use ``pybedtools``?
+-----------------------
+Using this module allows you to use BEDtools directly from your Python code
+without awkward system calls.  The provided ``pybedtools.bedtool`` class
+wraps the BEDtools command line programs in an intuitive and easy-to-use
+interface.  As a quick illustration of the streamlining possible, here's
+how to get the number of features shared between a.bed and b.bed, those
+unique to a.bed, and those unique to b.bed::
+
+    from pybedtools import bedtool
+    a = bedtool('a.bed')
+    b = bedtool('b.bed')
+    (a+b).count()    # shared in a and b
+    (a-b).count()    # unique to a
+    (b-a).count()    # unique to b
+
+In contrast, here's how you'd do the same from the command line:: 
+
+    intersectBed -a a.bed -b b.bed -u | wc -l   # shared in a and b
+    intersectBed -a a.bed -b b.bed -u | wc -l   # unique to a
+    intersectBed -a b.bed -b a.bed -u | wc -l   # unique to b
+
+To do the same thing in Python, *each* of these lines would have to be
+wrapped in awkward, piped ``subprocess.Popen`` calls::
+    
+    p1 = subprocess.Popen(['intersectBed','-a','a.bed','-b','b.bed','-u'], stdout=subprocess.PIPE)
+    p2 = subprocess.Popen(['wc','-l'], stdin=subprocess.PIPE)
+    results = p2.communicate()[0]
+    count = results.split()[-1]
+
+See, ``a+b`` is much easier!
 
 General usage
 -------------
-
-Many methods in a ``bedtool`` object make system calls to various
-programs in the ``BEDtools`` suite.  In most cases the return value is a
-new :class:`bedtool` object.  This allows you to chain together analyses
-just like piping commands together at the command line.
-
-The methods in this class mimic the command line usage of ``BEDtools`` as
-closely as possible.  Any flag that can be passed to the ``BEDtools``
-programs can be passed as a keyword argument (see examples below).
-Typically, for convenience ``-i``, ``-a``, and ``-b`` are already passed
-for you although you can override this by passing these keyword arguments
-explicitly. ``BEDtools`` flags that require an argument, for example the
-window size ``-w`` in ``windowBed``, are simply passed as integers.
-Boolean flags (e.g., ``-sw`` in ``windowBed``) are passed as Python
-booleans.
+The methods in the ``bedtool`` class mimic the command line usage of
+``BEDtools`` as closely as possible.  Any flag that can be passed to the
+``BEDtools`` programs can be passed as a keyword argument (see examples
+below).  Typically, for convenience ``-i``, ``-a``, and ``-b`` are already
+passed for you although you can override this by passing these keyword
+arguments explicitly. ``BEDtools`` flags that require an argument, for
+example the window size ``-w`` in ``windowBed``, are simply passed as
+integers.  Boolean flags (e.g., ``-sw`` in ``windowBed``) are passed as
+Python booleans.
 
 Typical workflow is to set up a bedtool object with a bed file you already have::
 
