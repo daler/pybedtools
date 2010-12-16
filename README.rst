@@ -1,11 +1,9 @@
 ``pybedtools`` overview and examples
 ====================================
 
-Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
+:description:
+    Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
 
-.. note::
-   
-    See http://daler.github.com/pybedtools for the complete documentation
 
 The ``bedtool`` object has methods that call the tools in the BEDtools suite.
 Where appropriate, the method returns another ``bedtool`` object, so you can
