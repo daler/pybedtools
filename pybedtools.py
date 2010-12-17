@@ -202,9 +202,9 @@ class bedtool(object):
         """
         *fn* is a BED format file, or alternatively another bedtool instance.
 
-        *genome* is a genome assembly ('dm3', 'hg18', etc) or a dictionary of
-        chrom:(start,stop) integers to consider as the genome space for
-        randomizations, coverage, etc.
+        *genome* is an optional genome assembly ('dm3', 'hg18', etc) or a
+        dictionary of chrom:(start,stop) integers to consider as the genome
+        space.  This is used for randomizations and coverage.
         """
         if isinstance(fn, bedtool):
             fn = fn.fn
@@ -222,7 +222,6 @@ class bedtool(object):
                 raise ValueError, 'Genome %s not registered' % genome
         else:
             self.genome = genome
-            
 
     def _tmp(self):
         '''
@@ -277,6 +276,9 @@ class bedtool(object):
         return open(self.fn)
    
     def head(self,n=10):
+        """
+        Prints the first *n* lines
+        """
         for i,line in enumerate(self.lines):
             if i == (n):
                 break

@@ -3,12 +3,24 @@
 
 Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
 
+Installation
+------------
+
+Use ``pip`` to install the latest from the Github repo::
+
+    pip install 
+
+or easy_install::
+
+    easy_install 
+
 
 Quick examples for the impatient
--------------------------------
+--------------------------------
 
 Get the sequences of the 100 bp on either side of features (with automatic
-download of chromSizes from UCSC for dm3 genome)::
+download of chromSizes from UCSC for dm3 genome).  This assumes you have a
+local copy of the entire dm3 genome as ``dm3.fa``::
 
     import pybedtools
     pybedtools.bedtool('in.bed').slop(genome='dm3',l=100,r=100).subtract('in.bed')
@@ -26,7 +38,11 @@ Or, get values for a 3-way Venn diagram of overlaps::
     (a+b+c).count()  # common to all 
     # ... and so on, for all the combinations.
     
+Intersections, plus adding track names::
 
+    import pybedtools
+    a = pybedtools.bedtool('a.bed')
+    a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b'")
     
 
 Why use ``pybedtools``?
@@ -61,17 +77,68 @@ wrapped in awkward, piped ``subprocess.Popen`` calls::
 
 See, ``a+b`` is much easier!
 
+Translation between BEDTools programs and ``pybedtools.bedtool`` methods
+------------------------------------------------------------------------
+
+================= =============================
+BEDTools program  ``pybedtools.bedtool`` method
+================= =============================
+intersectBed      intersect
+subtractBed       subtract
+fastaFromBed      sequence
+slopBed           slop
+mergeBed          merge
+closestBed        closest
+windowBed         window
+groupBy           groupBy
+shuffleBed        shuffle
+sortBed           sort
+================= =============================
+
+Unique to ``pybedtools``, either by mimicing command line utils (like
+``cat`` or ``wc -l``) or adding additional functionality:
+
+    * size_filter
+    * random_subset
+    * saveas
+    * cat
+    * randomstats
+    * get_genome
+    * save_seqs
+    * count
+    * features
+    * lengths
+
 General usage
 -------------
+
+Arguments are the same as BEDtools command line programs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The methods in the ``bedtool`` class mimic the command line usage of
 ``BEDtools`` as closely as possible.  Any flag that can be passed to the
-``BEDtools`` programs can be passed as a keyword argument (see examples
-below).  Typically, for convenience ``-i``, ``-a``, and ``-b`` are already
+``BEDtools`` programs can be passed as a keyword argument in the
+corresponding ``pybedtools.bedtool`` method.
+
+On/off switches (e.g., ``-c``, ``-u``, or ``-v`` for ``intersectBed``) are
+called with a boolean kwarg; others (like ``-f`` for ``intersectBed``) are
+passed in like a normal kwarg with appropriate values.  For example::
+
+    a = bedtool('in.bed')
+    a.intersect('other.bed', v=True, f=0.5)
+
+Typically, for convenience ``-i``, ``-a``, and ``-b`` are already
 passed for you although you can override this by passing these keyword
-arguments explicitly. ``BEDtools`` flags that require an argument, for
-example the window size ``-w`` in ``windowBed``, are simply passed as
-integers.  Boolean flags (e.g., ``-sw`` in ``windowBed``) are passed as
-Python booleans.
+arguments explicitly.  The second line above could have equivalently been
+called as::
+
+    a.intersect(a='in.bed', b='other.bed', v=True, f=0.5)
+
+Conveniently, the docstring for a method automatically includes the help
+text of the original ``BEDtools`` program, so you can check which kwargs
+you can use directly from the interpreter.
+
+Typical workflow includes temporary files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Typical workflow is to set up a bedtool object with a bed file you already have::
 
@@ -79,9 +146,10 @@ Typical workflow is to set up a bedtool object with a bed file you already have:
     
 `a` now references the file ``in.bed`` on disk.  
 
-Using BEDtools from the command line, in order to get a new bed file of the
-intersection of this file with another bed file, ``other.bed`` only
-returning uniquely intersecting features from ``in.bed``  we might use::
+Using BEDtools from the command line, we might use the following in order
+to get a new bed file of the intersection of this file with another bed
+file, ``other.bed`` but only returning uniquely intersecting features from
+``in.bed``::
 
     intersectBed -a in.bed -b other.bed -u > intersection.bed
 
@@ -89,40 +157,39 @@ Using ``pybedtools``::
 
     b = a.intersect('other.bed', u=True)
 
-This creates a new temp file in ``/tmp`` by default, but you can change where
-temp files are saved using ``pybedtools.set_tempdir()``.  To save a file
-explicitly and add a trackline that will label it in a genome browser, use ``saveas()``::
+This creates a new temp file in ``/tmp`` by default, but you can change
+where temp files are saved using ``pybedtools.set_tempdir()``.  To save a
+file explicitly and optionally add a trackline that will label it in a
+genome browser, use ``saveas()``::
     
     b.saveas('intersection.bed',trackline='track name="intersection"')
 
-
-Most methods return new ``bedtool`` objects, allowing you to chain things together.  To give you 
-a flavor of this, here's how you would get 10 random centers of features that are unique to the file
-``other.bed``::
-
-    b = a.intersect('other.bed',v=True).feature_centers(100).random_subset(10)
- 
+Cleaning up temporary files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When you're done, it's a good idea to clean up temporary files.  Temp files
 are never deleted until you explicitly say so::
 
     pybedtools.cleanup()
 
-If you forget to call ``pybedtools.cleanup()``, you can always manually delete
-the files from your temp dir (typically ``/tmp``).  They are the files that
+If you forget to call ``pybedtools.cleanup()``, you can always manually
+delete the files from your temp dir (typically ``/tmp``), though you can
+specify this with ``pybedtools.set_tempdir()``.  They are the files that
 follow the pattern ``pybedtools.*.tmp``.
 
+Chaining together commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Most methods return new ``bedtool`` objects, allowing you to chain things
+together.  This means that you can chain commands together, just like
+piping things together on the command line.  To give you a flavor of this,
+here's how you would get 10 random centers of features that are unique to
+the file ``other.bed``::
 
-The keyword arguments to methods are passed directly to the BEDtools
-programs.  On/off switches (e.g., ``-c``, ``-u``, or ``-v`` for ``intersectBed``) are
-called with a boolean kwarg; others (like ``-f`` for ``intersectBed``) are
-passed in like a normal kwarg.  For example::
+    b = a.intersect('other.bed',v=True).feature_centers(100).random_subset(10)
+ 
 
-    a = bedtool('in.bed')
-    a.intersect('other.bed', v=True, f=0.5)
 
-Importantly, the docstring for a method automatically includes the help text of
-the original ``BEDtools`` program, so you can check which kwargs you can use
-directly from the interpreter.
+
+
 
 Examples
 ~~~~~~~~
