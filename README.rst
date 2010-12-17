@@ -189,11 +189,6 @@ the file ``other.bed``::
 
 
 
-
-
-Examples
-~~~~~~~~
-
 Example: Flanking seqs
 ----------------------
 The ``slop()`` method (which calls ``slopBed``) needs a chromosome size
@@ -246,3 +241,13 @@ Note that you need matplotlib installed to plot the histogram.
     p.hist(a.lengths(),bins=50)
     p.show()
 
+
+Selected examples from http://code.google.com/p/bedtools/wiki/UsageAdvanced
+----------------------------------------------------------------------------
+Command line::
+
+    intersectBed -a snp.calls.bed -b dbSnp.bed -v | intersectBed -a stdin -b 1KG.bed -v > snp.calls.novel.bed
+
+Same thing, in ``pybedtools``::
+    a = pybedtools.bedtool('snp.calls.bed')
+    a.intersect('dbSnp.bed',v=True).intersect('1KG.bed',v=True).saveas('snp.calls.novel.bed')
