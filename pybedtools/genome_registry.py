@@ -1,7 +1,3 @@
-from bedtool import bedtool, set_tempdir, get_tempdir, cleanup
-from features import bedfeature
-
-GENOME_REGISTRY = {
 'dm3' : {
         'chr2L': (1, 23011544),
         'chr2LHet': (1, 368872),
@@ -70,5 +66,4 @@ GENOME_REGISTRY = {
             'chrX_random': (1, 1719168),
             'chrY': (1, 57772954)},
 }
-
 

@@ -8,7 +8,7 @@ import glob
 from math import floor, ceil
 
 from features import bedfeature
-from pybedtools import GENOME_REGISTRY, TEMPFILES
+import genome_registry as GENOME_REGISTRY
 
 def set_tempdir(tempdir):
     """
@@ -39,7 +39,6 @@ def cleanup(verbose=False,remove_all=False):
             os.unlink(fn)
         
         
-
 
 def _help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
@@ -1063,5 +1062,3 @@ class bedtool(object):
             feature_lengths.append(length)
         return feature_lengths
     
-
-
