@@ -1,6 +1,3 @@
-import distribute_setup
-distribute_setup.use_setuptools()
-
 from setuptools import setup, find_packages
 
 long_description = """
@@ -18,9 +15,9 @@ Development version, as well as documentation, can be found on github:
 
 setup( 
         name="pybedtools",
-        version="0.2",
+        version="0.2.0dev",
         test_suite="test",
-        py_modules=['pybedtools'],
+        py_modules=['pybedtools', 'pybedtools.test'],
         author="Ryan Dale",
         long_description=long_description,
         url="none",
