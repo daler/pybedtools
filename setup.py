@@ -16,7 +16,7 @@ Development version, as well as documentation, can be found on github:
 setup( 
         name="pybedtools",
         version="0.2.0dev",
-        py_modules=['genome_registry','bedtool','features'],
+        packages=['pybedtools'],
         author="Ryan Dale",
         long_description=long_description,
         url="none",
