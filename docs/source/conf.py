@@ -25,7 +25,9 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage','sphinx.ext.viewcode']
+
+doctest_test_doctest_blocks = 'default'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -82,6 +84,8 @@ exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+highlight_language = 'python'
+html_use_smartypants = False
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []

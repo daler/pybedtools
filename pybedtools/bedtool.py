@@ -10,6 +10,9 @@ from math import floor, ceil
 from features import bedfeature
 import genome_registry
 
+TEMPFILES = []
+
+
 def set_tempdir(tempdir):
     """
     Sets the directory for temp files.  Useful for clusters that use a /scratch
@@ -24,7 +27,6 @@ def get_tempdir():
     """
     return tempfile.tempdir
 
-TEMPFILES = []
 
 def cleanup(verbose=False,remove_all=False):
     """Deletes all temporary files in *TEMPFILES*"""
@@ -66,22 +68,62 @@ class bedtool(object):
     Wrapper around ``BEDtools`` suite of programs; also contains many useful
     methods for more detailed work with BED files.
 
-    Example usage::
+    Example usage:
 
-        a = bedtool('in.bed')
+    >>> from pybedtools import bedtool
+    >>> s = '''
+    ... chrX  1  100
+    ... chrX 25  800
+    ... '''
+    >>> a = bedtool(s,from_string=True).saveas('a.bed')
+
+    Or, from an existing bed file:
+
+    >>> a = bedtool('a.bed')
+
+    >>> a = '''
+    ...         chrX 1   100
+    ...         chrX 200 500
+    ... '''
+    >>> b = '''
+    ...         chrX 10  60
+    ...         chrY 200 500
+    ... '''
+    >>> a = bedtool(a, from_string=True).saveas('a.bed')
+    >>> b = bedtool(b, from_string=True).saveas('b.bed')
+
+
+
+
     """
-    def __init__(self,fn,genome=None):
+    def __init__(self,fn,genome=None, from_string=False):
         """
         *fn* is a BED format file, or alternatively another bedtool instance.
 
         *genome* is an optional genome assembly ('dm3', 'hg18', etc) or a
         dictionary of chrom:(start,stop) integers to consider as the genome
         space.  This is used for randomizations and coverage.
+
+        If *from_string* is True, then treat all spaces as TABs and write
+        to tempfile, treating *fn* as the contents of the bed file.  
+        This strips empty lines.
         """
-        if isinstance(fn, bedtool):
-            fn = fn.fn
-        if not os.path.exists(fn):
-            raise ValueError, 'File "%s" does not exist' % fn
+        if not from_string:
+            if isinstance(fn, bedtool):
+                fn = fn.fn
+            if not os.path.exists(fn):
+                raise ValueError, 'File "%s" does not exist' % fn
+        else:
+            bed_contents = fn
+            fn = self._tmp()
+            fout = open(fn,'w')
+            for line in bed_contents.splitlines():
+                if len(line) == 0:
+                    continue
+                line = '\t'.join(line.split())+'\n'
+                fout.write(line)
+            fout.close()
+
         self.fn = fn
         self._hascounts = False
         if genome is None:
@@ -164,17 +206,16 @@ class bedtool(object):
        
         Example usage::
 
-            # create bedtool object
+            # create new bedtool object
             a = bedtool('in.bed')
 
-            # get overlaps with other.bed
+            # get overlaps with "other.bed"
             overlaps = a.intersect('other.bed')
 
             # use v=True to get the inverse, or those unique to in.bed
             unique_to_a = a.intersect('other.bed', v=True)
-
-            # create a new bedtool object and intersect it with a
-            # to get the feature unique to this bed file
+            
+            # features unique to "other.bed"
             unique_to_other = bedtool('other.bed').intersect(a, v=True)
 
         """

@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    README.rst
+   autodoc_source
 
 Indices and tables
 ==================

@@ -3,16 +3,18 @@
 
 Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
 
+:class:`pybedtools.bedtool`
+
 Installation
 ------------
 
 Use ``pip`` to install the latest from the Github repo::
 
-    pip install 
+    pip install pybedtools
 
-or easy_install::
+or ``easy_install``::
 
-    easy_install 
+    easy_install pybedtools
 
 
 Quick examples for the impatient
@@ -40,10 +42,28 @@ Or, get values for a 3-way Venn diagram of overlaps::
     
 Intersections, plus adding track names::
 
+
     import pybedtools
     a = pybedtools.bedtool('a.bed')
     a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b'")
-    
+   
+Creating a :class:`pybedtools.bedtool`:
+
+.. doctest::
+
+    >>> import pybedtools
+    >>> a = pybedtools.bedtool('chrX 1 100', from_string=True).saveas('a.bed')
+
+.. doctest::
+   :options: +NORMALIZE_WHITESPACE
+
+   >>> b = pybedtools.bedtool('a.bed')
+   >>> print b
+   chrX     1       100
+   <BLANKLINE>
+
+
+
 
 Why use ``pybedtools``?
 -----------------------
@@ -80,37 +100,55 @@ See, ``a+b`` is much easier!
 Translation between BEDTools programs and ``pybedtools.bedtool`` methods
 ------------------------------------------------------------------------
 
-================= =============================
+.. currentmodule:: pybedtools
+
+This table summarizes the translation between BEDTools program names
+:class:`bedtool` method names.
+
+================= ====================================
 BEDTools program  ``pybedtools.bedtool`` method
-================= =============================
-intersectBed      intersect
-subtractBed       subtract
-fastaFromBed      sequence
-slopBed           slop
-mergeBed          merge
-closestBed        closest
-windowBed         window
-groupBy           groupBy
-shuffleBed        shuffle
-sortBed           sort
-================= =============================
+================= ====================================
+`intersectBed`    :meth:`bedtool.intersect`
+`subtractBed`     :meth:`bedtool.subtract`
+`fastaFromBed`    :meth:`bedtool.sequence`
+`slopBed`         :meth:`bedtool.slop`
+`mergeBed`        :meth:`bedtool.merge`
+`closestBed`      :meth:`bedtool.closest`
+`windowBed`       :meth:`bedtool.window`
+`groupBy`         :meth:`bedtool.groupBy`
+`shuffleBed`      :meth:`bedtool.shuffle`
+`sortBed`         :meth:`bedtool.sort`
+================= ====================================
 
-Unique to ``pybedtools``, either by mimicing command line utils (like
-``cat`` or ``wc -l``) or adding additional functionality:
+There are also methods unique to ``pybedtools`` that provide additional usefulness:
 
-    * size_filter
-    * random_subset
-    * saveas
-    * cat
-    * randomstats
-    * get_genome
-    * save_seqs
-    * count
-    * features
-    * lengths
+    * :meth:`bedtool.size_filter`
+    * :meth:`bedtool.random_subset`
+    * :meth:`bedtool.saveas`
+    * :meth:`bedtool.cat`
+    * :meth:`bedtool.randomstats`
+    * :meth:`bedtool.get_genome`
+    * :meth:`bedtool.save_seqs`
+    * :meth:`bedtool.count`
+    * :meth:`bedtool.features`
+    * :meth:`bedtool.lengths`
 
 General usage
 -------------
+.. doctest::
+
+    >>> from pybedtools import bedtool
+    >>> a = '''
+    ...         chrX 1   100
+    ...         chrX 200 500
+    ...         chrY 499 600
+    ... '''
+    >>> b = '''
+    ...         chrX 10  60
+    ...         chrY 200 500
+    ... '''
+    >>> a = bedtool(a, from_string=True).saveas('a.bed')
+    >>> b = bedtool(b, from_string=True).saveas('b.bed')
 
 Arguments are the same as BEDtools command line programs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,7 +225,87 @@ the file ``other.bed``::
     b = a.intersect('other.bed',v=True).feature_centers(100).random_subset(10)
  
 
+Individual methods
+------------------
 
+:meth:`bedtool.intersect`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Examples of how to use :meth:`bedtool.intersect`.
+
+
+First, we set up the files to use:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> # Set up the bedtools
+    >>> a = bedtool('a.bed')
+    >>> b = bedtool('b.bed')
+
+Here's what they look like:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> print a
+    chrX	1	100
+    chrX	200	500
+    chrY    499 600
+
+    >>> print b 
+    chrX	10	60
+    chrY	200	500
+
+Default is to only report the part that intersects:
+
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> print a.intersect(b)
+    chrX	10	60
+    chrY    499 500
+
+Use the `-u` flag of ``intersectBed`` to report full features in :file:`a.bed`
+that intersected :file:`b.bed`:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> print a.intersect(b, u=True)
+    chrX   1    100
+    chrY   499  600
+
+Or the opposite -- features in :file:`a.bed` that are not in :file:`b.bed`:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> print a.intersect(b, v=True)
+    chrX	200	500
+
+Report features in :file:`a.bed`, attaching an additional column indicating how many
+features in :file:`b.bed` intersected:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+    
+    >>> print a.intersect(b, c=True)
+    chrX	1	100	1
+    chrX	200	500	0
+    chrY	499	600	1
+
+You can retrieve these counts later using the :meth:`bedtool.counts` method:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> result = a.intersect(b, c=True)
+    >>> print result.counts()
+    [1, 0, 1]
+
+    
 
 Example: Flanking seqs
 ----------------------

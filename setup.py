@@ -1,5 +1,5 @@
 #from distutils.core import setup
-from setuptools import setup
+from setuptools import setup, find_packages
 
 long_description = """
 ``pybedtools`` is a wrapper around Aaron Quinlan's BEDtools suite
@@ -17,8 +17,7 @@ Development version, as well as documentation, can be found on github:
 setup( 
         name="pybedtools",
         version="0.2.0dev",
-        packages=['pybedtools'],
-        py_modules=['features','bedtool'],
+        packages=['pybedtools','pybedtools.test'],
         author="Ryan Dale",
         long_description=long_description,
         url="none",
