@@ -1,4 +1,5 @@
-from distutils.core import setup
+#from distutils.core import setup
+from setuptools import setup
 
 long_description = """
 ``pybedtools`` is a wrapper around Aaron Quinlan's BEDtools suite
@@ -17,6 +18,7 @@ setup(
         name="pybedtools",
         version="0.2.0dev",
         packages=['pybedtools'],
+        py_modules=['features','bedtool'],
         author="Ryan Dale",
         long_description=long_description,
         url="none",

@@ -8,7 +8,7 @@ import glob
 from math import floor, ceil
 
 from features import bedfeature
-import genome_registry as GENOME_REGISTRY
+import genome_registry
 
 def set_tempdir(tempdir):
     """
@@ -89,7 +89,7 @@ class bedtool(object):
 
         elif isinstance(genome,basestring):
             try:
-                self.genome = GENOME_REGISTRY[genome]
+                self.genome = getattr(genome_registry,genome)
             except KeyError:
                 raise ValueError, 'Genome %s not registered' % genome
         else:
