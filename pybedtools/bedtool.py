@@ -10,9 +10,6 @@ from math import floor, ceil
 from features import bedfeature
 import genome_registry
 
-TEMPFILES = []
-
-
 def set_tempdir(tempdir):
     """
     Sets the directory for temp files.  Useful for clusters that use a /scratch
@@ -27,10 +24,17 @@ def get_tempdir():
     """
     return tempfile.tempdir
 
-
 def cleanup(verbose=False,remove_all=False):
-    """Deletes all temporary files in *TEMPFILES*"""
-    for fn in TEMPFILES:
+    """
+    Deletes all temporary files in the *bedtool.TEMPFILES* class
+    variable.
+    
+    If *verbose*, reports what it's doing
+
+    If *remove_all*, then ALL files matching "pybedtools.*.tmp" in the temp dir
+    will be deleted.
+    """
+    for fn in bedtool.TEMPFILES:
         if verbose:
             print 'removing', fn
         if os.path.exists(fn):
@@ -40,19 +44,23 @@ def cleanup(verbose=False,remove_all=False):
         for fn in fns:
             os.unlink(fn)
         
-        
-
 def _help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
     docstring of the method that calls the program'''
+
     p = subprocess.Popen([command,'-h'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     help_str = p.communicate()[1]
     help_str = help_str.replace('_','**')
+    
     # insert tabs into the help
     help_str = help_str.split('\n')
     help_str = ['\t'+i for i in help_str]
     help_str = '\n'.join(help_str)
+    
     def decorator(func):
+        """
+        Adds the help to the function's __doc__
+        """
         if func.__doc__ is None:
             func.__doc__ = ''
         orig = func.__doc__
@@ -61,6 +69,7 @@ def _help(command):
         func.__doc__ += '\n\n*Original BEDtools program help:*\n'
         func.__doc__ += help_str
         return func
+    
     return decorator
 
 class bedtool(object):
@@ -96,6 +105,7 @@ class bedtool(object):
 
 
     """
+    TEMPFILES = []
     def __init__(self,fn,genome=None, from_string=False):
         """
         *fn* is a BED format file, or alternatively another bedtool instance.
@@ -139,14 +149,14 @@ class bedtool(object):
 
     def _tmp(self):
         '''
-        Makes a tempfile and registers it for eventual deletion when the
-        instance is deleted.  Adds a "pybedtools." prefix and ".tmp" extension
-        for easy deletion if you forget to call pybedtools.cleanup().
+        Makes a tempfile and registers it the the bedtool.TEMPFILES class variable.
+        Adds a "pybedtools." prefix and ".tmp" extension for easy deletion if
+        you forget to call pybedtools.cleanup().
         '''
 
         tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
         tmpfn = tmpfn.name
-        TEMPFILES.append(tmpfn)
+        bedtool.TEMPFILES.append(tmpfn)
         return tmpfn
 
     def __iterator(self):
