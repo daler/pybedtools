@@ -1,9 +1,11 @@
 ``pybedtools`` overview and examples
 ====================================
 
-Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
+``pybedtools`` is a Python wrapper for Aaron Quinlan's ``BEDtools`` (http://code.google.com/p/bedtools/).
 
-:class:`pybedtools.bedtool`
+See full online documentation at http://daler.github.com/pybedtools (this
+README contains just installation instructions and a few examples).
+
 
 Installation
 ------------
