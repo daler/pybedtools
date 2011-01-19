@@ -5,13 +5,14 @@ import os
 def data_dir():
     """
     Returns the data directory that contains example files for tests and
-    documentation
+    documentation.
     """
     return os.path.join(os.path.split(pybedtools.__file__)[0], 'test')
 
 def example_bed(bed):
     """
-    Return a bed file from the pybedtools examples directory
+    Return a bed file from the pybedtools examples directory.  Use
+    :func:`list_example_beds` to see a list of files that are included.
     """
     fn = os.path.join(data_dir(), bed)
     if not os.path.exists(fn):
@@ -20,6 +21,15 @@ def example_bed(bed):
 
 def list_example_beds():
     """
-    returns a list of bed files in the examples dir
+    Returns a list of bed files in the examples dir.  Choose one and pass
+    it to :func:`example_bed` to get the full path to an example BED file.
+
+    Example usage::
+
+        >>> choices = list_example_beds()
+        >>> bedfn = example_bed(choices[0])
+        >>> mybedtool = bedtool(bedfn)
+
+
     """
     return [i for i in os.listdir(data_dir()) if os.path.splitext(i)[-1] == '.bed']

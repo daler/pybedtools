@@ -44,6 +44,78 @@ def cleanup(verbose=False,remove_all=False):
         for fn in fns:
             os.unlink(fn)
         
+
+def _file_or_bedtool():
+    '''
+    Decorator that adds a line to the docstring indicating
+    that a bedtool object is returned.
+    '''
+    extra_help = """
+    .. note::
+        
+        This method accepts either a bedtool or a file name as the first
+        unnamed argument
+        
+    """
+
+    def decorator(func):
+        """
+        Adds the help to the function's __doc__
+        """
+        if func.__doc__ is None:
+            func.__doc__ = ''
+        orig = func.__doc__
+        func.__doc__ += extra_help
+        return func
+
+    return decorator
+
+def _returns_bedtool():
+    '''
+    Decorator that adds a line to the docstring indicating
+    that a bedtool object is returned.
+    '''
+    extra_help = """
+    .. note::
+    
+        This method returns a new bedtool instance
+    """
+
+    def decorator(func):
+        """
+        Adds the help to the function's __doc__
+        """
+        if func.__doc__ is None:
+            func.__doc__ = ''
+        orig = func.__doc__
+        func.__doc__ += extra_help
+        return func
+
+    return decorator
+
+def _implicit(option):
+    '''
+    Decorator that adds a line to the docstring indicating
+    that a particular option is implied to be the default
+    '''
+    extra_help = """
+    .. note::
+    
+        For convenience, the file this bedtool object points to is passed as "%s"
+    """ % option
+
+    def decorator(func):
+        """
+        Adds the help to the function's __doc__
+        """
+        if func.__doc__ is None:
+            func.__doc__ = ''
+        orig = func.__doc__
+        func.__doc__ += extra_help
+        return func
+
+    return decorator    
+
 def _help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
     docstring of the method that calls the program'''
@@ -74,34 +146,21 @@ def _help(command):
 
 class bedtool(object):
     """
-    Wrapper around ``BEDtools`` suite of programs; also contains many useful
+    Wrapper around Aaron Quinlans ``BEDtools`` suite of programs
+    (https://github.com/arq5x/bedtools); also contains many useful
     methods for more detailed work with BED files.
 
-    Example usage:
+    Typical usage is to point to an existing file:
 
-    >>> from pybedtools import bedtool
-    >>> s = '''
-    ... chrX  1  100
-    ... chrX 25  800
-    ... '''
-    >>> a = bedtool(s,from_string=True).saveas('a.bed')
+        >>> a = bedtool('a.bed')
 
-    Or, from an existing bed file:
+    But you can also create one from scratch from a string:
 
-    >>> a = bedtool('a.bed')
-
-    >>> a = '''
-    ...         chrX 1   100
-    ...         chrX 200 500
-    ... '''
-    >>> b = '''
-    ...         chrX 10  60
-    ...         chrY 200 500
-    ... '''
-    >>> a = bedtool(a, from_string=True).saveas('a.bed')
-    >>> b = bedtool(b, from_string=True).saveas('b.bed')
-
-
+        >>> s = '''
+        ... chrX  1  100
+        ... chrX 25  800
+        ... '''
+        >>> a = bedtool(s,from_string=True).saveas('a.bed')
 
 
     """
@@ -189,9 +248,11 @@ class bedtool(object):
     def __len__(self):
         return self.count()
 
+    @_file_or_bedtool()
     def __add__(self,other):
         return self.intersect(other,u=True)
 
+    @_file_or_bedtool()
     def __sub__(self,other):
         return self.intersect(other, v=True)
         
@@ -209,6 +270,9 @@ class bedtool(object):
             print line,
 
     @_help('intersectBed')
+    @_file_or_bedtool()
+    @_implicit('-a')
+    @_returns_bedtool()
     def intersect(self, other, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM, specify
@@ -248,6 +312,7 @@ class bedtool(object):
         return other
 
     @_help('fastaFromBed')
+    @_returns_bedtool()
     def sequence(self, **kwargs):
         '''
         Wraps ``fastaFromBed``.  *fi* is passed in by the user; *bed* is
@@ -270,6 +335,8 @@ class bedtool(object):
         return self
 
     @_help('subtractBed')
+    @_file_or_bedtool()
+    @_returns_bedtool()
     def subtract(self, other, **kwargs):
         """
         Subtracts from another BED file and returns a new bedtool object.
@@ -299,6 +366,8 @@ class bedtool(object):
         return bedtool(tmp)
 
     @_help('slopBed')
+    @_implicit('-i')
+    @_returns_bedtool()
     def slop(self, genome=None, **kwargs):
         """
         Wraps slopBed, which adds bp to each feature.  Returns a new bedtool
@@ -331,6 +400,8 @@ class bedtool(object):
         return bedtool(tmp)
 
     @_help('mergeBed')
+    @_implicit('-i')
+    @_returns_bedtool()
     def merge(self, **kwargs):
         """
         Merge overlapping features together. Returns a new bedtool object.
@@ -352,6 +423,9 @@ class bedtool(object):
         return bedtool(tmp)
 
     @_help('closestBed')
+    @_file_or_bedtool()
+    @_implicit('-a')
+    @_returns_bedtool()
     def closest(self, other, **kwargs):
         """
         Return a new bedtool object containing closest features in *other*.  Note
@@ -382,6 +456,8 @@ class bedtool(object):
         return newbedtool
 
     @_help('windowBed')
+    @_file_or_bedtool()
+    @_implicit('-a')
     def window(self,other, **kwargs):
         """
         Intersect with a window.
@@ -407,6 +483,7 @@ class bedtool(object):
         return bedtool(tmp)
 
     @_help('groupBy')
+    @_implicit('-i') 
     def groupBy(self,**kwargs):
         tmp = self._tmp()
         cmds = ['groupBy']
@@ -415,8 +492,9 @@ class bedtool(object):
         cmds.extend(['>',tmp])
         os.system(' '.join(cmds))
         return bedtool(tmp)
-
+    
     @_help('shuffleBed')
+    @_implicit('-i')
     def shuffle(self,genome=None,**kwargs):
         if genome is not None:
             genome_fn = self.get_genome(genome)
@@ -430,6 +508,7 @@ class bedtool(object):
         return bedtool(tmp)
     
     @_help('sortBed')
+    @_implicit('-i')
     def sort(self,**kwargs):
         kwargs['i'] = self.fn
         cmds = ['sortBed']
@@ -712,6 +791,8 @@ class bedtool(object):
         return counts
                  
 
+    @_file_or_bedtool()
+    @_returns_bedtool()
     def cat(self,other, postmerge=True, **kwargs):
         """
         Concatenates two bedtools objects (or an object and a file) and does an
@@ -772,6 +853,7 @@ class bedtool(object):
         f.close()
         return s
 
+    @_returns_bedtool()
     def saveas(self,fn,trackline=None):
         """
         Save BED file as a new file, adding the optional *trackline* to the
@@ -795,6 +877,7 @@ class bedtool(object):
         fout.close()
         return bedtool(fn)
 
+    @_file_or_bedtool()
     def intersection_report(self, other, basename=True, **kwargs):
         """
         Prints a report of the reciprocal intersections with another bed file
@@ -825,6 +908,7 @@ class bedtool(object):
         print '%s\n\t%s total\n\t%s (%.1f%%) of these intersect %s' % (self_fn, count1,  int1,  (float(int1)/count1)*100, other_fn)
         print '%s\n\t%s total\n\t%s (%.1f%%) of these intersect %s' % (other_fn, count2,  int2, (float(int2)/count2)*100, self_fn)
 
+    @_returns_bedtool()
     def random_subset(self,n):
         '''
         Returns a new bedtools object containing a random subset of the
@@ -964,6 +1048,7 @@ class bedtool(object):
             cmds.append(str(value))
         return cmds
 
+    @_returns_bedtool()
     def feature_centers(self,n,report_smaller=True):
         '''
         Returns a new bedtools object with just the centers of size n extracted
@@ -1006,6 +1091,7 @@ class bedtool(object):
         tmp.close()
         return bedtool(tmpfn)
 
+    @_returns_bedtool()
     def rename_features(self,new_name):
         """
         Forces a rename of all features.  Useful for if you have a BED file of
@@ -1024,7 +1110,19 @@ class bedtool(object):
         tmp.close()
         return bedtool(tmpfn)
     
+    @_returns_bedtool()
     def with_attrs(self, **kwargs):
+        """
+        Given arbitrary keyword arguments, turns the keys and values into
+        attributes.
+
+        Example usage:
+
+            >>> a = bedtool('a.bed').with_attrs(label='transcription factor 1')
+            >>> b = bedtool('b.bed').with_attrs(label='transcription factor 2')
+            >>> for i in [a,b]:
+            ...     print i.count(), 'features for', i.label
+        """
         for key,value in kwargs.items():
             setattr(self,key,value)
         return self

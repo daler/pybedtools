@@ -1,19 +1,34 @@
 
 .. currentmodule:: pybedtools
 
-.. |bt| replace:: BEDTools_
+.. _R: http://www.r-project.org/
+
 .. _BEDTools: http://github.com/arq5x/bedtools
+
+.. _Tutorial:
 
 Tutorial
 ========
 
 Why use ``pybedtools``?
 -----------------------
-This module allows you to use |bt| directly from your Python code
-without awkward system calls.  The provided :class:`pybedtools.bedtool` class
-wraps the BEDtools command line programs in an intuitive and easy-to-use
-interface.  As a quick illustration of the streamlining possible, here's
-how to get the number of features shared between a.bed and b.bed, those
+I find the BEDTools_ command line programs indispensable for working with
+genomic data.  Much of my analysis code is written in Python, and I found
+myself calling BEDTools_ from my Python code.  However, this got quite
+awkward, because I would end up doing things like this just to get the
+number of intersecting features between two bed files::: 
+
+    >>> p1 = subprocess.Popen(['intersectBed','-a','a.bed','-b','b.bed','-u'], stdout=subprocess.PIPE)
+    >>> p2 = subprocess.Popen(['wc','-l'], stdin=subprocess.PIPE)
+    >>> results = p2.communicate()[0]
+    >>> count = int(results.split()[-1])
+
+To get the number of features in :file:`a.bed` and not :file:`b.bed` would
+mean another 4 lines of this.  This got old quickly, hence the creation of
+:mod:`pybedtools`.
+
+As a quick illustration of the streamlining possible with :mod:`pybedtools`, here's how to get the
+number of features shared between :file:`a.bed` and :file:`b.bed`, those
 unique to :file:`a.bed`, and those unique to :file:`b.bed`::
 
     from pybedtools import bedtool
@@ -23,32 +38,41 @@ unique to :file:`a.bed`, and those unique to :file:`b.bed`::
     (a-b).count()    # unique to a
     (b-a).count()    # unique to b
 
-In contrast, here's how you'd do the same from the command line:: 
+For comparison, here's how you'd do the same from the command line:: 
 
     intersectBed -a a.bed -b b.bed -u | wc -l   # shared in a and b
     intersectBed -a a.bed -b b.bed -v | wc -l   # unique to a
     intersectBed -a b.bed -b a.bed -v | wc -l   # unique to b
 
-To do the same thing in Python, *each* of these lines would have to be
-wrapped in awkward, piped :func:`subprocess.Popen` calls::
-    
-    p1 = subprocess.Popen(['intersectBed','-a','a.bed','-b','b.bed','-u'], stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(['wc','-l'], stdin=subprocess.PIPE)
-    results = p2.communicate()[0]
-    count = results.split()[-1]
-
 Behind the scenes, the :class:`pybedtools.bedtool` class does something very
 similar to this -- but conveniently makes the functionality available as
-``a+b``.
+``a+b`` or ``a-b``.  The :meth:`bedtool.count` method does the line
+counting (automatically ignoring comment lines or track lines as well).
 
 In addition to wrapping the BEDtools programs, there are many additional
 :class:`bedtool` methods provided in this module that you can use in your
 Python code.
 
-Creating a :class:`pybedtools.bedtool`
---------------------------------------
-First you need to import the :mod:`pybedtools` module.  For the rest of the
-tutorial, I'm assuming you have already done the following:
+Limitations
+-----------
+There are some limitations you need to be aware of.  
+
+* :mod:`pybedtools` makes heavy use of temporary files.  This makes it
+  very convenient to work with, but if you are limited by disk space,
+  you'll have to pay attention (see `principle 1`_ below for more info).
+
+* Second, :class:`bedtool` methods that wrap BEDTools_ programs will work on
+  BAM, GFF, VCF, and everything that BEDTools_ supports.  However, many
+  :mod:`pybedtools`-specific methods (for example :meth:`bedtool.lengths`
+  or :meth:`bedtool.size_filter`) currently only work on BED files.  I hope
+  to add support for all interval files soon.
+
+
+Creating a :class:`bedtool`
+---------------------------
+To create a :class:`bedtool`, first you need to import the
+:mod:`pybedtools` module.  For the rest of the tutorial, I'm assuming you
+have already done the following:
 
 .. doctest::
 
@@ -74,7 +98,8 @@ Once you decide on a file to use, feed the your choice to the
    >>> # get the full path to an example bed file
    >>> bedfn = pybedtools.example_bed('a.bed') 
 
-The full path of *bedfn* will depend on your installation. 
+The full path of *bedfn* will depend on your installation (this is similar
+to the ``data()`` function in R_, if you're familiar with that).
 
 Now that you have a filename -- either one of the example files or your
 own, you create a new :class:`bedtool` simply by pointing it to that
@@ -88,7 +113,8 @@ filename:
 Alternatively, you can construct BED files from scratch by using the
 ``from_string`` keyword argument.  However, all spaces will be converted to
 tabs using this method, so you'll have to be careful if you add "name"
-columns:
+columns.  This can be useful if you want to create *de novo* BED files on
+the fly:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
@@ -116,9 +142,13 @@ columns:
     <BLANKLINE>
 
 Of course, you'll usually be using your own bed files that have some
-biological importance for your work.  But for the purposes of this
-tutorial, we'll be using two bed files that you can get from the examples
-directory:
+biological importance for your work that are saved in places convenient for
+you, for example::
+
+    >>> a = bedtool('/data/sample1/peaks.bed')
+
+But for the purposes of this tutorial, we'll be using two bed files that
+you can get from the examples directory:
 
 .. doctest::
     
@@ -128,23 +158,29 @@ directory:
 
 Design principles: an example
 -----------------------------
-Let's illustrate some of
-the design principles behind :mod:`pybedtools` by merging features in
-:file:`a.bed` that are 100 bp or less apart (*d=100*) in a strand-specific
-way (*s=True*):
+
+.. _`principle 1`:
+
+Principle 1: temporarly files are created automatically
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Let's illustrate some of the design principles behind :mod:`pybedtools` by
+merging features in :file:`a.bed` that are 100 bp or less apart (*d=100*)
+in a strand-specific way (*s=True*):
 
 .. doctest::
     
+    >>> from pybedtools import bedtool
+    >>> import pybedtools
+    >>> a = bedtool(pybedtools.example_bed('a.bed')
     >>> merged_a = a.merge(d=100, s=True)
 
 Now *merged_a* is a :class:`bedtool` instance that contains the results of the
 merge.
 
-Principle 1: temporarly files are created automatically
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-First, just as BEDTools_ is primarily file-based, :class:`bedtools` always
-point to a file on disk.  So what file does *merged_a* point to?  You can
-check the :attr:`bedtool.fn` attribute to find out::
+:class:`bedtool` objects must always point to a file on disk.  So in the
+example above, *merged_a* is a :class:`bedtool`, but what file does it
+point to?  You can always check the :attr:`bedtool.fn` attribute to find
+out::
 
     >>> # what file does *merged_a* point to?
     >>> merged_a.fn
@@ -165,25 +201,51 @@ with::
     >>> # Don't do this yet if you're following the tutorial!
     >>> pybedtools.cleanup()
 
+If you forget to do this, from the command line you can always do a::
+
+    rm /tmp/pybedtools.*.tmp
+
+to clean everything up.
+
 
 Principle 2: Names and arguments are similar to BEDTools_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Second, the :meth:`bedtool.merge` method does the same thing as the
-BEDTools_ program ``mergeBed``.  In general, remove the "Bed" from the end
-of the BEDTools_ program to get the corresponding :class:`bedtool` method.
-So there's a :meth:`bedtool.subtract` method, a :meth:`bedtool.intersect`
-method, and so on.
+Returning again to this example::
+    
+    >>> merged_a = a.merge(d=100, s=True)
 
-Note that we used the *d=100* keyword argument ("kwarg").  Since
-:option:`mergeBed -d` is an option for the BEDTools_ ``mergeBed`` program,
-it can also be used by :meth:`bedtool.merge`.  The same goes for any other
-options.
+The second principle is that the :meth:`bedtool.merge` method does the same
+thing and takes the same arguments as the BEDTools_ program ``mergeBed``.
+In general, remove the "Bed" from the end of the BEDTools_ program to get
+the corresponding :class:`bedtool` method.  So there's a
+:meth:`bedtool.subtract` method, a :meth:`bedtool.intersect` method, and so
+on.
+
+Note that we used the *d=100* keyword argument.  Since :option:`mergeBed
+-d` is an option for the BEDTools_ ``mergeBed`` program, it can also be
+used by :meth:`bedtool.merge`.  The same goes for any other options.
 
 Principle 3: Sensible default args
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When running BEDTools_ ``mergeBed`` program from the command line, you
 would have to specify the input file with the :option:`mergeBed -i` option.
-In fact, the following two methods produce the same output:
+
+:mod:`pybedtools` assumes that if you're calling the :meth:`merge` method
+on *a*, you want to operate on the bed file that *a* points to.   
+
+In general, BEDTools_ programs that accept a single BED file as input
+(typically specified with the :option:`-i` option) the default for
+:mod:`pybedtools` is to use the :class:`bedtool`'s file as input.  
+
+For BEDTools_ programs that accept two BED files as input (like
+``intersectBed``, with the first file as :option:`-a` and the second file
+as :option:`-b`), the default for :mod:`pybedtools` is to consider the
+:mod:`bedtool`'s file as "a" and the first non-keyword argument as "b".
+Furthermore, the first non-keyword argument can either be a filename *or*
+another :class:`bedtool` object.
+
+You can still pass a file in using the *i* keyword argument, if you want.
+In fact, the following two versions produce the same output:
 
 .. doctest::
 
@@ -198,14 +260,7 @@ In fact, the following two methods produce the same output:
     >>> str(result1) == str(result2)
     True
     
-For BEDTools_ programs that accept a single BED file as input (typically
-specified with the :option:`-i` option), the default for :mod:`pybedtools`
-is to use the :class:`bedtool`'s file as input.  
 
-For BEDTools_ programs that accept two BED files as input (like
-``intersectBed``, with the first file as :option:`-a` and the second file
-as :option:`-b`), the default for :mod:`pybedtools` is to consider the
-:mod:`bedtool`'s file as "a" and the first non-keyword argument as "b".
 
 Principal 4: Other arguments have no defaults
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,10 +269,38 @@ Principal 4: Other arguments have no defaults
 boolean values (:keyword:`True` or :keyword:`False`) for the switch-type
 options, and pass a value for the value-type options.
 
-Other than the :option:`-i`, :option:`-a`, and :option:`-b` options
-mentioned above, these other options have no defaults.
+On/off switches (e.g., :option:`-c`, :option:`-u`, or :option:`v` for ``intersectBed``) are
+called with a boolean kwarg; others (like :option:`-f` for ``intersectBed``) are
+passed in like a normal kwarg with appropriate values.  As another
+example::
 
-Principle 5: Check the help
+    >>> a.intersect(b, v=True, f=0.5)
+
+Other than the :option:`-i`, :option:`-a`, and :option:`-b` options for
+input files mentioned above, these other options like :option:`-d` and
+:option:`s` have no defaults.
+
+Again, any option that can be passed to a BEDTools_ program can be passed
+to the corresonding :class:`bedtool` method.
+
+Principle 5: Chaining together commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Most methods return new :class:`bedtool` objects, allowing you to chain
+things together just like piping commands together on the command line.  To
+give you a flavor of this, here is how you would get the merged regions of
+features shared between :file:`a.bed` (as referred to by the
+:class:`bedtool` *a* we made previously) and :file:`b.bed`: (as referred to
+by the :class:`bedtool` *b*):
+
+.. doctest::
+    
+    >>> a.intersect(b).merge().saveas('shared_merged.bed')
+
+This is equivalent to the following BEDTools_ commands::
+
+    intersectBed -a a.bed -b b.bed | merge -i stdin > shared_merged.bed
+
+Principle 6: Check the help
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If you're unsure of whether a method uses a default, or if you want to read
 about what options an underlying BEDTools_ program accepts, check the help.
@@ -271,101 +354,46 @@ a method in the docstring as well:
     <BLANKLINE>
 
 
-REWRITE ENDED HERE
-------------------
 
+Saving, printing, viewing
+-------------------------
 
-General usage
--------------
+Let's make two files from scratch:
+
 .. doctest::
 
     >>> from pybedtools import bedtool
-    >>> a = '''
-    ...         chrX 1   100
-    ...         chrX 200 500
-    ...         chrY 499 600
-    ... '''
-    >>> b = '''
-    ...         chrX 10  60
-    ...         chrY 200 500
-    ... '''
-    >>> a = bedtool(a, from_string=True).saveas('a.bed')
-    >>> b = bedtool(b, from_string=True).saveas('b.bed')
+    >>> string1 = '''
+    ...           chrX 1   100
+    ...           chrX 200 500
+    ...           chrY 499 600
+    ...           '''
+    >>> string2 = '''
+    ...           chrX 10  60
+    ...           chrY 200 500
+    ...           '''
+    >>> x = bedtool(string1, from_string=True)
+    >>> y = bedtool(string2, from_string=True)
 
-Arguments are the same as BEDtools command line programs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The methods in the ``bedtool`` class mimic the command line usage of
-``BEDtools`` as closely as possible.  Any flag that can be passed to the
-``BEDtools`` programs can be passed as a keyword argument in the
-corresponding ``pybedtools.bedtool`` method.
+We can save a new file, adding a track line as well (a newline is added for
+you if you forget):
 
-On/off switches (e.g., ``-c``, ``-u``, or ``-v`` for ``intersectBed``) are
-called with a boolean kwarg; others (like ``-f`` for ``intersectBed``) are
-passed in like a normal kwarg with appropriate values.  For example::
+.. doctest::
 
-    a = bedtool('in.bed')
-    a.intersect('other.bed', v=True, f=0.5)
+    >>> y.saveas('y.bed', trackline="track name='example bed' color=135,0,85")
 
-Typically, for convenience ``-i``, ``-a``, and ``-b`` are already
-passed for you although you can override this by passing these keyword
-arguments explicitly.  The second line above could have equivalently been
-called as::
+View the first 10 lines of the bed file:
 
-    a.intersect(a='in.bed', b='other.bed', v=True, f=0.5)
+.. doctest::
 
-Conveniently, the docstring for a method automatically includes the help
-text of the original ``BEDtools`` program, so you can check which kwargs
-you can use directly from the interpreter.
+    >>> y.head()
 
-Typical workflow includes temporary files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Print the *whole* file:
 
-Typical workflow is to set up a bedtool object with a bed file you already have::
+.. doctest::
 
-    a = bedtool('in.bed')
-    
-`a` now references the file ``in.bed`` on disk.  
+    >>> print y
 
-Using BEDtools from the command line, we might use the following in order
-to get a new bed file of the intersection of this file with another bed
-file, ``other.bed`` but only returning uniquely intersecting features from
-``in.bed``::
-
-    intersectBed -a in.bed -b other.bed -u > intersection.bed
-
-Using ``pybedtools``::
-
-    b = a.intersect('other.bed', u=True)
-
-This creates a new temp file in ``/tmp`` by default, but you can change
-where temp files are saved using ``pybedtools.set_tempdir()``.  To save a
-file explicitly and optionally add a trackline that will label it in a
-genome browser, use ``saveas()``::
-    
-    b.saveas('intersection.bed',trackline='track name="intersection"')
-
-Cleaning up temporary files
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-When you're done, it's a good idea to clean up temporary files.  Temp files
-are never deleted until you explicitly say so::
-
-    pybedtools.cleanup()
-
-If you forget to call ``pybedtools.cleanup()``, you can always manually
-delete the files from your temp dir (typically ``/tmp``), though you can
-specify this with ``pybedtools.set_tempdir()``.  They are the files that
-follow the pattern ``pybedtools.*.tmp``.
-
-Chaining together commands
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-Most methods return new ``bedtool`` objects, allowing you to chain things
-together.  This means that you can chain commands together, just like
-piping things together on the command line.  To give you a flavor of this,
-here's how you would get 10 random centers of features that are unique to
-the file ``other.bed``::
-
-    b = a.intersect('other.bed',v=True).feature_centers(100).random_subset(10)
- 
 
 Individual methods
 ------------------
@@ -500,4 +528,5 @@ Note that you need matplotlib installed to plot the histogram.
     a = pybedtools.bedtool('in.bed')
     p.hist(a.lengths(),bins=50)
     p.show()
+
 
