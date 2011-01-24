@@ -1,5 +1,5 @@
 Overview
-========
+--------
 pybedtools is a Python wrapper for Aaron Quinlan's BEDtools and is
 designed to leverage the "genome algebra" power of BEDtools from within
 Python scripts.

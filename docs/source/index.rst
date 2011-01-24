@@ -6,15 +6,17 @@
 Welcome to pybedtools's documentation!
 ======================================
 
+.. include:: ../../README.rst
+
 Contents:
+---------
 
 .. toctree::
    :maxdepth: 2
 
-   includeme
    main
-   tutorial
    autodoc_source
+
 
 Indices and tables
 ==================

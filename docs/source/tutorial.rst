@@ -7,51 +7,118 @@
 
 .. _Tutorial:
 
+.. _BEDTools documentation: http://code.google.com/p/bedtools/#Documentation
+
+.. _Learn Python the Hard Way: http://learnpythonthehardway.org/static/LearnPythonTheHardWay.pdf
+
+.. _IPython: http://ipython.scipy.org/moin/
+
 Tutorial
 ========
+This tutorial assumes that 
+
+1. You know how to use BEDTools_ and
+2. You know how to use Python
+
+If this isn't the case, then 1) check out the BEDTools `BEDTools
+documentation`_ and 2) a good Python tutorial like `Learn Python the Hard
+Way`_.  The ">>>" means to type the code into an interactive Python interpreter like IPython_ , or optionally, a script.
+
+First, import the :mod:`pybedtools` module:
+
+.. doctest::
+
+    >>> import pybedtools
+
+Then set up a :class:`bedtool` instance.  This can be a file that you
+already have, or one of the example files.  Currently, only BED format
+files are supported -- see :ref:`Limitations`; see :ref:`Creating a
+bedtool` for more information on creating :class:`bedtool` objects in
+general.
+
+.. doctest::
+    
+    >>> # get an example file that ships with pybedtools
+    >>> # (or use your own BED file)
+    >>> filename = pybedtools.example_files('a.bed')
+    
+    >>> a = pybedtools.bedtool(filename)
+
+Set up a second one so we can do intersections and subtractions:
+
+.. doctest::
+
+    >>> b = pybedtools.bedtool(pybedtools.example_files('b.bed')
+
+Intersect *a* with *b*, reporting only unique hits:
+
+.. doctest::
+
+    >>> in_both = a.intersect(b, u=True)
+
+The :meth:`bedtool.intersect` method wraps the BEDTools_ program
+``intersectBed``.  Note that the *u=True* kwarg has the same effect as
+using the ``-u`` switch with ``intersectBed``.  The same idea holds true for
+all programs wrapped by a :class:`bedtool` object -- keyword arguments
+match command line switches.
+
+
+
+
+Topical documentation
+=====================
+
 
 Why use ``pybedtools``?
 -----------------------
-I find the BEDTools_ command line programs indispensable for working with
-genomic data.  Much of my analysis code is written in Python, and I found
-myself calling BEDTools_ from my Python code.  However, this got quite
-awkward, because I would end up doing things like this just to get the
-number of intersecting features between two bed files::: 
+:mod:`pybedtools` makes working with BEDTools_ from Python code easy.
 
+Calling BEDTools_ from Python "by hand" gets awkward for things like geting
+the number of intersecting features between two bed files::
+
+    >>> # The annoying way of calling BEDTools from Python...
     >>> p1 = subprocess.Popen(['intersectBed','-a','a.bed','-b','b.bed','-u'], stdout=subprocess.PIPE)
+
+    >>> # pipe it to wc -l to get a line count
     >>> p2 = subprocess.Popen(['wc','-l'], stdin=subprocess.PIPE)
+
+    >>> # parse the results
     >>> results = p2.communicate()[0]
     >>> count = int(results.split()[-1])
 
-To get the number of features in :file:`a.bed` and not :file:`b.bed` would
-mean another 4 lines of this.  This got old quickly, hence the creation of
-:mod:`pybedtools`.
+If we wanted to get the number of features unique to :file:`a.bed` and not
+:file:`b.bed` , it would mean another 4 lines of this.  For me, this got
+old quickly, hence the creation of :mod:`pybedtools`.
 
-As a quick illustration of the streamlining possible with :mod:`pybedtools`, here's how to get the
-number of features shared between :file:`a.bed` and :file:`b.bed`, those
-unique to :file:`a.bed`, and those unique to :file:`b.bed`::
+Here's how to do the same thing with :mod:`pybedtools`::
+    
+    >>> from pybedtools import bedtool
+    >>> a = bedtool('a.bed')
+    >>> count = a.intersect('b.bed', u=True).count()
 
-    from pybedtools import bedtool
-    a = bedtool('a.bed')
-    b = bedtool('b.bed')
-    (a+b).count()    # shared in a and b
-    (a-b).count()    # unique to a
-    (b-a).count()    # unique to b
+Behind the scenes, the :class:`pybedtools.bedtool` class does something
+very similar to the subprocess example above, but in a more Python-friendly
+way.  
 
-For comparison, here's how you'd do the same from the command line:: 
+Furthermore, for the specific case of intersections, the ``+`` and ``-``
+operators have been overloaded, making many intersections extremely easy::
 
-    intersectBed -a a.bed -b b.bed -u | wc -l   # shared in a and b
-    intersectBed -a a.bed -b b.bed -v | wc -l   # unique to a
-    intersectBed -a b.bed -b a.bed -v | wc -l   # unique to b
+    >>> a = bedtool('a.bed')
+    >>> b = bedtool('b.bed')
+    >>> c = bedtool('c.bed')
+    
+    >>> (a+b).count()   # number of features in a and b
+    >>> (a-b).count()   # number of features in a not b
+    >>> (a+b+c).count() # number of features in a, b and c
 
-Behind the scenes, the :class:`pybedtools.bedtool` class does something very
-similar to this -- but conveniently makes the functionality available as
-``a+b`` or ``a-b``.  The :meth:`bedtool.count` method does the line
-counting (automatically ignoring comment lines or track lines as well).
+The other BEDTools_ programs are wrapped as well, like
+:meth:`bedtool.merge`, :meth:`bedtool.slop`, and others.
 
-In addition to wrapping the BEDtools programs, there are many additional
+In addition to wrapping the BEDtools_ programs, there are many additional
 :class:`bedtool` methods provided in this module that you can use in your
-Python code.
+Python code.  
+
+.. _limitations:
 
 Limitations
 -----------
@@ -59,14 +126,16 @@ There are some limitations you need to be aware of.
 
 * :mod:`pybedtools` makes heavy use of temporary files.  This makes it
   very convenient to work with, but if you are limited by disk space,
-  you'll have to pay attention (see `principle 1`_ below for more info).
+  you'll have to pay attention to this feature (see `principle 1`_ below
+  for more info).
 
 * Second, :class:`bedtool` methods that wrap BEDTools_ programs will work on
   BAM, GFF, VCF, and everything that BEDTools_ supports.  However, many
   :mod:`pybedtools`-specific methods (for example :meth:`bedtool.lengths`
-  or :meth:`bedtool.size_filter`) currently only work on BED files.  I hope
-  to add support for all interval files soon.
+  or :meth:`bedtool.size_filter`) **currently only work on BED files**.  I
+  hope to add support for all interval files soon.
 
+.. _creating a bedtool:
 
 Creating a :class:`bedtool`
 ---------------------------
@@ -79,10 +148,11 @@ have already done the following:
     >>> import pybedtools
     >>> from pybedtools import bedtool
 
-Next, you need a BED file to work with.  Luckily, :mod:`pybedtools` comes
-with some example bed files.  You can take a look at the list of example
-files that ship with :mod:`pybedtools` with the :func:`list_example_beds`
-function:
+Next, you need a BED file to work with. If you already have one, then great
+-- move on to the next section.  If not, :mod:`pybedtools` comes with some
+example bed files used for testing.  You can take a look at the list of
+example files that ship with :mod:`pybedtools` with the
+:func:`list_example_beds` function:
 
 .. doctest::
 
@@ -155,6 +225,8 @@ you can get from the examples directory:
     >>> a = bedtool(pybedtools.example_bed('a.bed'))
     >>> b = bedtool(pybedtools.example_bed('b.bed'))
 
+
+.. _`Design principles`:
 
 Design principles: an example
 -----------------------------

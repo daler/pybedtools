@@ -1,6 +1,3 @@
-Overview
-========
-
 Installation
 ------------
 To use :mod:`pybedtools` you'll need the latest version of the package and
@@ -29,23 +26,32 @@ Three brief examples
 --------------------
 Here are three examples to show typical usage of :mod:`pybedtools`.  More
 info can be found in the docstrings of :mod:`pybedtools` methods and in the
-:ref:`Tutorial`
+:ref:`Tutorial`.  Before running the examples, you need to import
+:mod:`pybedtools`:
 
-Example 1
-~~~~~~~~~
-Save a new BED file of intersections between ``a.bed`` and
+
+::
+
+    >>> from pybedtools import bedtool, cleanup
+
+After running the examples, clean up any intermediate temporary files
+with::
+
+    >>> cleanup()
+
+Example 1: Save a BED file of intersections, with track line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This example saves a new BED file of intersections between ``a.bed`` and
 ``b.bed``, adding a track line to the output::
 
-    >>> from pybedtools import bedtool
     >>> a = bedtool('a.bed')
     >>> a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b' color=128,0,0")
 
-Example 2
-~~~~~~~~~
-Get values for a 3-way Venn diagram of overlaps.  This
+Example 2: Intersections for a 3-way Venn diagram
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This example gets values for a 3-way Venn diagram of overlaps.  This
 demonstrates operator overloading of :class:`bedtool` objects::
 
-    >>> from pybedtools import bedtool
     >>> # set up 3 different bedtools
     >>> a = bedtool('a.bed')
     >>> b = bedtool('b.bed')
@@ -56,9 +62,10 @@ demonstrates operator overloading of :class:`bedtool` objects::
     >>> (a+b+c).count()  # common to all 
     >>> # ... and so on, for all the combinations.
 
-Example 3
-~~~~~~~~~
-Get the sequences of the 100 bp on either side of features.
+Example 3: Flanking sequences
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This example gets the genomic sequences of the 100 bp on either side of
+features.
 
 The :meth:`bedtool.slop()` method automatically downloads the
 ``chromSizes`` table from UCSC for the dm3 genome, but you can pass your
@@ -67,10 +74,26 @@ this example assumes you have a local copy of the entire dm3 genome saved
 as ``dm3.fa``.
 
 ::
+    
+    >>> # set up bedtool
+    >>> mybed = bedtool('in.bed')
 
-    >>> from pybedtools import bedtool
-    >>> bedtool('in.bed').slop(genome='dm3',l=100,r=100).subtract('in.bed')
-    >>> flanking_features.sequence(fi='dm3.fa').save_seqs('flanking.fa')
+    >>> # add 100 bp of "slop" to either side.  genome='dm3' tells
+    >>> # the slop() method to download the dm3 chromSizes table from
+    >>> # UCSC.
+    >>> extended_by_100 = mybed.slop(genome='dm3', l=100, r=100)
+
+    >>> # Delete the middle of the now-200-bp-bigger features so 
+    >>> # all we're left with is the flanking region
+    >>> flanking_features = extended_by_100.subtract('in.bed')
+
+    >>> # Assuming you have the dm3 genome on disk as 'dm3.fa', save the
+    >>> # sequences as a new file 'flanking.fa'
+    >>> seqs = flanking_features.sequence(fi='dm3.fa').save_seqs('flanking.fa')
+
+    >>> # We could have done this all in one line 
+    >>> # (this demonstrates "chaining" of bedtool objects)
+    >>> bedtool('in.bed').slop(genome='dm3',l=100,r=100).subtract('in.bed').flanking_features.sequence(fi='dm3.fa').save_seqs('flanking.fa')
 
     
 
