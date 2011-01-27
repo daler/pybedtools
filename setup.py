@@ -16,7 +16,7 @@ Development version, as well as documentation, can be found on github:
 
 setup( 
         name="pybedtools",
-        version="0.2.0dev",
+        version="0.2.1dev",
         packages=['pybedtools','pybedtools.test'],
         author="Ryan Dale",
         long_description=long_description,
