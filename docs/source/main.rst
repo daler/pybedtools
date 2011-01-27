@@ -1,3 +1,5 @@
+.. _installation:
+
 Installation
 ------------
 To use :mod:`pybedtools` you'll need the latest version of the package and
@@ -26,7 +28,7 @@ Three brief examples
 --------------------
 Here are three examples to show typical usage of :mod:`pybedtools`.  More
 info can be found in the docstrings of :mod:`pybedtools` methods and in the
-:ref:`Tutorial`.  Before running the examples, you need to import
+:ref:`tutorial`.  Before running the examples, you need to import
 :mod:`pybedtools`:
 
 
@@ -97,7 +99,7 @@ as ``dm3.fa``.
 
     
 
-For more, continue on to the :ref:`Tutorial`.
+For more, continue on to the :ref:`tutorial`.
 
 .. _BEDTools: http://github.com/arq5x/bedtools
 .. |dl| image:: images/downloads.png

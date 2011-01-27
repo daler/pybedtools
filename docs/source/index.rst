@@ -15,6 +15,7 @@ Contents:
    :maxdepth: 2
 
    main
+   tutorial
    autodoc_source
 
 

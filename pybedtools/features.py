@@ -35,11 +35,12 @@ class bedfeature(object):
     def __len__(self):
         return self.stop - self.start
 
-    def tostring(self,fields=3):
+    def tostring(self,fields=None):
         """Prints the bed record suitable for writing to file, newline included.
         
         In the interest of speed, does not do error-checking.
         """
+        
         items = [self.chr, 
                  self.start, 
                  self.stop, 
@@ -53,6 +54,8 @@ class bedfeature(object):
                  self.blockSizes, 
                  self.blockStarts]
         printables = []
+        if fields is None:
+            fields = len(items)
         for item in items[0:fields]:
             if item is None:
                 printables.append('')

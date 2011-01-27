@@ -16,6 +16,8 @@ def set_tempdir(tempdir):
     partition rather than a /tmp dir.  Convenience function to simply set
     tempfile.tempdir.
     """
+    if not os.path.exists(tempdir):
+        raise ValueError, 'The tempdir you specified, %s, does not exist' % tempdir
     tempfile.tempdir = tempdir
 
 def get_tempdir():
@@ -152,15 +154,20 @@ class bedtool(object):
 
     Typical usage is to point to an existing file:
 
-        >>> a = bedtool('a.bed')
+        a = bedtool('a.bed')
 
     But you can also create one from scratch from a string:
 
-        >>> s = '''
-        ... chrX  1  100
-        ... chrX 25  800
-        ... '''
-        >>> a = bedtool(s,from_string=True).saveas('a.bed')
+        s = '''
+            chrX  1  100
+            chrX 25  800
+            '''
+        a = bedtool(s,from_string=True).saveas('a.bed')
+
+    Or use examples that come with pybedtools::
+        
+        example_beds = pybedtools.list_example_beds()
+        a = pybedtools.example_bedtool('a.bed')
 
 
     """
@@ -273,7 +280,7 @@ class bedtool(object):
     @_file_or_bedtool()
     @_implicit('-a')
     @_returns_bedtool()
-    def intersect(self, other, **kwargs):
+    def intersect(self, b=None, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM, specify
         *abam='filename.bam'*.  Returns a new bedtool object.
@@ -293,6 +300,7 @@ class bedtool(object):
             unique_to_other = bedtool('other.bed').intersect(a, v=True)
 
         """
+        other = b
         if (type(other) is str) or (type(other) is unicode):
             kwargs['b'] = other
         else: 
@@ -482,17 +490,6 @@ class bedtool(object):
         os.system(' '.join(cmds))
         return bedtool(tmp)
 
-    @_help('groupBy')
-    @_implicit('-i') 
-    def groupBy(self,**kwargs):
-        tmp = self._tmp()
-        cmds = ['groupBy']
-        kwargs['i'] = self.fn
-        cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
-        return bedtool(tmp)
-    
     @_help('shuffleBed')
     @_implicit('-i')
     def shuffle(self,genome=None,**kwargs):
@@ -593,17 +590,21 @@ class bedtool(object):
         fout.close()
         return bedtool(fn)
 
-    def get_genome(self,genome):
+    def get_genome(self,genome, fn=None):
         """
         Download chrom size info for *genome* from UCSC, removes the header
         line, and saves in a temp file.  Could be useful for end users,
         but mostly called internally by :meth:`bedtool.slop` and other methods that need
         the genome file.
 
+        If *fn* is None, then saves as a temp file.
+
+        Returns the filename.
+
         Example usage::
 
             a = bedtool('in.bed')
-            fn = a.get_genome('dm3')
+            fn = a.get_genome('dm3', 'dm3.genome')
 
         """
         tmp = self._tmp() 
@@ -950,7 +951,7 @@ class bedtool(object):
         tmp = open(tmpfn,'w')
         for feature in self.features():
             if min < len(feature) < max:
-                tmp.write(line)
+                tmp.write(feature.tostring())
         tmp.close()
         return bedtool(tmpfn)
 
@@ -1116,12 +1117,13 @@ class bedtool(object):
         Given arbitrary keyword arguments, turns the keys and values into
         attributes.
 
-        Example usage:
+        Example usage::
 
-            >>> a = bedtool('a.bed').with_attrs(label='transcription factor 1')
-            >>> b = bedtool('b.bed').with_attrs(label='transcription factor 2')
-            >>> for i in [a,b]:
-            ...     print i.count(), 'features for', i.label
+            # add a "label" attribute to each bedtool
+            a = bedtool('a.bed').with_attrs(label='transcription factor 1')
+            b = bedtool('b.bed').with_attrs(label='transcription factor 2')
+            for i in [a,b]:
+                print i.count(), 'features for', i.label
         """
         for key,value in kwargs.items():
             setattr(self,key,value)

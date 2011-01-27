@@ -9,7 +9,7 @@ def data_dir():
     """
     return os.path.join(os.path.split(pybedtools.__file__)[0], 'test')
 
-def example_bed(bed):
+def example_bed_fn(bed):
     """
     Return a bed file from the pybedtools examples directory.  Use
     :func:`list_example_beds` to see a list of files that are included.
@@ -18,6 +18,16 @@ def example_bed(bed):
     if not os.path.exists(fn):
         raise ValueError, "%s does not exist" % fn
     return fn
+
+def example_bedtool(fn):
+    """
+    Return a bedtool using a bed file from the pybedtools examples directory.
+    Use :func:`list_example_beds` to see a list of files that are included.
+    """
+    fn = os.path.join(data_dir(), fn)
+    if not os.path.exists(fn):
+        raise ValueError, "%s does not exist" % fn
+    return bedtool(fn)
 
 def list_example_beds():
     """
@@ -32,4 +42,4 @@ def list_example_beds():
 
 
     """
-    return [i for i in os.listdir(data_dir()) if os.path.splitext(i)[-1] == '.bed']
+    return sorted([i for i in os.listdir(data_dir()) if os.path.splitext(i)[-1] == '.bed'])
