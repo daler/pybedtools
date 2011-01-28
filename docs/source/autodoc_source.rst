@@ -40,6 +40,10 @@ development; the goal is to eventually support all BEDTools_ programs.
 ~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: bedtool.sort
 
+:class:`bedtool.slop`
+~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: bedtool.slop
+
 :class:`bedtool.shuffle`
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: bedtool.shuffle
