@@ -152,11 +152,11 @@ class bedtool(object):
     (https://github.com/arq5x/bedtools); also contains many useful
     methods for more detailed work with BED files.
 
-    Typical usage is to point to an existing file:
+    Typical usage is to point to an existing file::
 
         a = bedtool('a.bed')
 
-    But you can also create one from scratch from a string:
+    But you can also create one from scratch from a string::
 
         s = '''
             chrX  1  100
@@ -282,8 +282,8 @@ class bedtool(object):
     @_returns_bedtool()
     def intersect(self, b=None, **kwargs):
         """
-        Intersect with another BED file. If you want to use BAM, specify
-        *abam='filename.bam'*.  Returns a new bedtool object.
+        Intersect with another BED file. If you want to use BAM as input, you
+        need to specify *abam='filename.bam'*.  Returns a new bedtool object.
        
         Example usage::
 
@@ -590,7 +590,7 @@ class bedtool(object):
         fout.close()
         return bedtool(fn)
 
-    def get_genome(self,genome, fn=None):
+    def get_genome(self, genome, fn=None):
         """
         Download chrom size info for *genome* from UCSC, removes the header
         line, and saves in a temp file.  Could be useful for end users,
@@ -666,8 +666,11 @@ class bedtool(object):
             # features in "a" only once for each intersection).
             results = a.randomstats('other.bed', iterations=100, intersectkwargs={'u':True})
         """
-        from scipy import stats
-        import numpy as np
+        try:
+            from scipy import stats
+            import numpy as np
+        except ImportError:
+            raise ImportError, "Need to install NumPy and SciPy for stats..."
         
         if (type(other) is str) or (type(other) is unicode):
             other = bedtool(other)
