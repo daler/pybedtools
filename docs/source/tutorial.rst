@@ -63,7 +63,7 @@ First, import the :mod:`pybedtools` module:
 
 Then set up a :class:`bedtool` instance using a `BED format`_ file. This
 can be a file that you already have, or one of the example files as shown
-below.  Currently, only BED format files are supported -- see
+below.  Some methods currently only work for BED files -- see
 :ref:`Limitations` for more info on this.  
 
 For this tutorial, we'll use some example files that come with
@@ -399,6 +399,8 @@ Future work
 The following is a list of items I plan to work on for future releases of
 :mod:`pybedtools`.  Help and feedback are welcome!:
 
+* Finish wrapping the rest of the BEDTools_ programs
+
 * Better mechanism for handling temp files.  
 
     * :class:`bedtool` objects could keep track of all their 'parent'
@@ -413,8 +415,8 @@ The following is a list of items I plan to work on for future releases of
 
 * Universal "interval" file support
 
-    * parent :class:`UniversalInterval` class, GFF, GTF, VCF, etc. etc. all
-      subclassed from that
+    * Should have a parent :class:`UniversalInterval` class and then have
+      GFF, GTF, VCF, etc. etc. all subclassed from that
 
     * :class:`bedtool` should auto-detect the interval file format
 
@@ -431,8 +433,14 @@ The following is a list of items I plan to work on for future releases of
 
     * it would be nice to have support for filo_ 
 
-* Randomization methods are still under development
+* Randomization methods still under development
 
+* Have wrappers use subprocess.Popen instead of os.system calls for better
+  trapping of errors
+
+* More universal wrapper -- perhaps as decorator?
+
+* Full unit tests to bolster the tutorial doctests
 
 Why use ``pybedtools``?
 -----------------------
@@ -495,11 +503,30 @@ There are some limitations you need to be aware of.
   you'll have to pay attention to this feature (see `temp principle`_ below
   for more info).
 
-* Second, :class:`bedtool` methods that wrap BEDTools_ programs will work on
-  BAM, GFF, VCF, and everything that BEDTools_ supports.  However, many
-  :mod:`pybedtools`-specific methods (for example :meth:`bedtool.lengths`
-  or :meth:`bedtool.size_filter`) **currently only work on BED files**.  I
+* :class:`bedtool` methods that wrap BEDTools_ programs
+  (:meth:`bedtool.intersect`, :meth:`bedtool.merge`,
+  :meth:`bedtool.subtract`, etc) will work on BAM, GFF, VCF, and everything
+  that BEDTools_ supports.  However, many :mod:`pybedtools`-specific
+  methods (for example :meth:`bedtool.lengths` or
+  :meth:`bedtool.size_filter`) **currently only work on BED files**.  I
   hope to add support for all interval files soon.
+
+* **Not all BEDTools programs are wrapped** -- this package is still a work
+  in progress.  I wrapped the ones I use most often and still need to wrap
+  the others. The following table shows what's currently wrapped:
+
+=================   ============================ 
+BEDTools program    :class:`bedtool` method name
+=================   ============================ 
+``intersectBed``    :meth:`bedtool.intersect`
+``subtractBed``     :meth:`bedtool.subtract`
+``fastaFromBed``    :meth:`bedtool.sequence`
+``slopBed``         :meth:`bedtool.slop`
+``windowBed``       :meth:`bedtool.window`
+``closestBed``      :meth:`bedtool.closest`
+``shuffleBed``      :meth:`bedtool.shuffle`
+=================   ============================ 
+
 
 .. _creating a bedtool:
 

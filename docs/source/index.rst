@@ -8,6 +8,12 @@ Welcome to pybedtools's documentation!
 
 .. include:: ../../README.rst
 
+.. note:: 
+
+   :mod:`pybedtools` is still very much in progress.  Please keep that in
+   mind when assesing whether to use this package in production code.
+
+
 Contents:
 ---------
 
@@ -21,7 +27,6 @@ Contents:
 
 Indices and tables
 ==================
-
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
