@@ -7,4 +7,5 @@ Python scripts.
 This documentation is written assuming you know how to use BEDTools and
 Python.
 
-See full online documentation at http://daler.github.com/pybedtools.
+See full online documentation, including installation instructions, at
+http://daler.github.com/pybedtools.

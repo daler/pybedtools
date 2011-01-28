@@ -31,8 +31,6 @@ This tutorial assumes that
 2. You know how to use Python (if not, check out some 
    tutorials like `Learn Python the Hard Way`_)
 
-Follow the :ref:`installation` instructions if you haven't already done so
-to install both BEDTools_ and :mod:`pybedtools`.
 
 A brief note on conventions
 ---------------------------
@@ -54,8 +52,10 @@ Onward!
 
 Create a :class:`bedtool`
 -------------------------
+First, follow the :ref:`installation` instructions if you haven't already
+done so to install both BEDTools_ and :mod:`pybedtools`.
 
-First, import the :mod:`pybedtools` module:
+Then import the :mod:`pybedtools` module:
 
 .. doctest::
 
@@ -587,8 +587,8 @@ you, for example::
 
 .. _`Design principles`:
 
-Design principles: an example
------------------------------
+Design principles
+-----------------
 
 .. _`temp principle`:
 
@@ -654,13 +654,12 @@ Returning again to this example::
     
     >>> merged_a = a.merge(d=100, s=True)
 
-Another :mod:`pybedtools` principle is that the :class:`bedtool` methods
-that wrap BEDTools_ programs do the same thing and take the exact same
-arguments as the BEDTools_ program.  Here we can pass *d=100* and *s=True*
-only because the underlying BEDTools_ program, ``mergeBed``, can accept
-these arguments.  Need to know what arguments ``mergeBed`` can take?  See
-the docs for :meth:`bedtool.merge`; for more on this see `good docs
-principle`_.
+This demonstrates another :mod:`pybedtools` principle: the :class:`bedtool`
+methods that wrap BEDTools_ programs do the same thing and take the exact same
+arguments as the BEDTools_ program.  Here we can pass *d=100* and *s=True* only
+because the underlying BEDTools_ program, ``mergeBed``, can accept these
+arguments.  Need to know what arguments ``mergeBed`` can take?  See the docs
+for :meth:`bedtool.merge`; for more on this see :ref:`good docs principle`.
 
 In general, remove the "Bed" from the end of the BEDTools_ program to get
 the corresponding :class:`bedtool` method.  So there's a
@@ -704,6 +703,11 @@ output:
     >>> str(result1) == str(result2)
     True
 
+Methods that have this type of default behavior are indicated by the following text in their docstring::
+
+    .. note::
+    
+        For convenience, the file this bedtool object points to is passed as "-i"
 
 There are some BEDTools_ programs that accept two BED files as input, like
 ``intersectBed`` where the the first file is specified with :option:`-a`
@@ -724,13 +728,39 @@ This is exactly the same as passing the *a* and *b* arguments explicitly:
     True
 
 Furthermore, the first non-keyword argument used as ``-b`` can either be a
-filename *or* another :class:`bedtool` object.
+filename *or* another :class:`bedtool` object; that is, these commands also do the same thing:
+
+.. doctest::
+
+   >>> result5 = a.intersect(b=b.fn)
+   >>> result6 = a.intersect(b=b)
+   >>> str(result5) == str(result6)
+   True
+
+Methods that accept either a filename or another :class:`bedtool` instance as their first non-keyword argument are indicated by
+the following text in their docstring::
+
+    .. note::
+        
+        This method accepts either a bedtool or a file name as the first
+        unnamed argument
+
+
 
 
 .. _`non defaults principle`:
 
 Principal 4: Other arguments have no defaults
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Only the BEDTools_ arguments that refer to BED (or other interval) files have
+defaults.  In the current version of BEDTools_, this means only the ``-i``,
+``-a``, and ``-b`` arguments have defaults.  All others have no defaults
+specified by :mod:`pybedtools`; they pass the buck to BEDTools programs.  This
+means if you do not specify the *d* kwarg when calling :meth:`bedtool.merge`,
+then it will use whatever the installed version of BEDTools_ uses for ``-d``
+(currently, ``mergeBed``'s default for ``-d`` is 0).
+
+
 ``-d`` is an option to BEDTools_ ``mergeBed`` that accepts a value, while
 ``-s`` is an option that acts as a switch.  In :mod:`pybedtools`, simply
 pass a value (integer, float, whatever) for value-type options like ``-d``,
@@ -739,14 +769,10 @@ and boolean values (*True* or *False*) for the switch-type options like
 
 Here's another example using both types of keyword arguments; the
 :class:`bedtool` object *b* (or it could be a string filename too) is
-implicitly passed to ``intersectBed`` as ``-b`` (see `default args
-principle`_ above)::
+implicitly passed to ``intersectBed`` as ``-b`` (see :ref:`default args
+principle` above)::
 
     >>> a.intersect(b, v=True, f=0.5)
-
-Other than the :option:`-i`, :option:`-a`, and :option:`-b` options for
-input files mentioned above, these other options like :option:`-d` and
-:option:`s` have no defaults.
 
 Again, any option that can be passed to a BEDTools_ program can be passed
 to the corresonding :class:`bedtool` method.
@@ -772,6 +798,12 @@ by the :class:`bedtool` *b*):
 This is equivalent to the following BEDTools_ commands::
 
     intersectBed -a a.bed -b b.bed | merge -i stdin > shared_merged.bed
+
+Methods that return a new :class:`bedtool` instance are indicated with the following text in their docstring::
+
+    .. note::
+    
+        This method returns a new bedtool instance
 
 .. _`good docs principle`:
 

@@ -1,3 +1,8 @@
+
+.. _pip: http://pypi.python.org/pypi/pip
+
+.. _Python Package Index: http://pypi.python.org/pypi
+
 .. _installation:
 
 Installation
@@ -5,7 +10,12 @@ Installation
 To use :mod:`pybedtools` you'll need the latest version of the package and
 the latest version of BEDTools_.
 
-1. To install the latest version of :mod:`pybedtools`:
+Installing :mod:`pybedtools`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To install the latest version of :mod:`pybedtools` you have 2 options:
+
+**Option 1:** install from source
 
     * go to http://github.com/daler/pybedtools 
     * click the Downloads link (|dl|)
@@ -18,10 +28,18 @@ the latest version of BEDTools_.
 
       (you may need admin rights to do this)
 
-2. To install BEDTools_
+**Option 2:** use pip_ to automatically download from the `Python Package Index`_::
+
+        sudo pip install --upgrade pybedtools
+
+
+Installing BEDTools_
+~~~~~~~~~~~~~~~~~~~~
+To install BEDTools_,
 
     * follow the instructions at https://github.com/arq5x/bedtools to install
     * make sure all its programs are on your path
+
 
 
 Three brief examples

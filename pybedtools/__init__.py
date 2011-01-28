@@ -2,6 +2,8 @@ from bedtool import bedtool, get_tempdir, set_tempdir, cleanup
 import pybedtools
 import os
 
+__version__ = '0.2.2dev'
+
 def data_dir():
     """
     Returns the data directory that contains example files for tests and
