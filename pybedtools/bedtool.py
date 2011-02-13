@@ -3,12 +3,84 @@ import os
 import tempfile
 import subprocess
 import random
+import string
 import itertools
 import glob
 from math import floor, ceil
 
 from features import bedfeature
 import genome_registry
+
+
+_tags = {}
+
+def find_tagged(tag):
+    """
+    Returns the bedtool object with tagged with *tag*.  Useful for tracking
+    down bedtools you made previously.
+    """
+    for key,item in _tags.iteritems():
+        try:
+            if item._tag == tag:
+                return item
+        except AttributeError:
+            pass
+    return '%s not found' % tag
+   
+
+class History(list):
+    def __init__(self):
+        """
+        Represents one or many HistorySteps.  Mostly used for nicely formatting
+        a series of HistorySteps.
+        """
+        list.__init__(self)
+    
+
+class HistoryStep(object):
+    def __init__(self, method, args, kwargs, bedtool_instance, parent_tag, result_tag):
+        """
+        Class to represent one step in the history.  
+        
+        Mostly used for its __repr__ method, to try and exactly replicate code
+        that can be pasted to re-do history steps
+        """
+        self.method = method.func_name
+        self.args = args
+        self.kwargs = kwargs
+        self.fn = bedtool_instance.fn
+        tag = ''.join(random.choice(string.lowercase) for _ in xrange(8))
+        self.parent_tag = parent_tag
+        self.result_tag = result_tag
+
+    def _clean_arg(self,arg):
+        """
+        Wrap strings in quotes and convert bedtool instances to filenames.
+        """
+        if isinstance(arg,bedtool):
+            arg = arg.fn
+        if isinstance(arg,basestring):
+            arg = '"%s"' % arg
+        return arg
+
+    def __repr__(self):
+        # Still not sure whether to use pybedtools.bedtool() or bedtool()
+        s = ''
+        s += '<HistoryStep> '
+        s += 'bedtool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
+
+        # Format args and kwargs
+        args_string = ','.join(map(self._clean_arg, self.args))
+        kwargs_string = ','.join(['%s=%s'% (i[0], self._clean_arg(i[1])) for i in self.kwargs.items()])
+
+        # stick a comma on the end if there's something here
+        if len(args_string) > 0:
+            args_string += ', '
+
+        s = s % (args_string, kwargs_string)
+        s += ', parent tag: %s' % self.parent_tag
+        s += ', result tag: %s' % self.result_tag
+        return s
 
 def set_tempdir(tempdir):
     """
@@ -199,7 +271,10 @@ class bedtool(object):
                 line = '\t'.join(line.split())+'\n'
                 fout.write(line)
             fout.close()
-
+        
+        tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
+        self._tag = tag
+        _tags[tag] = self
         self.fn = fn
         self._hascounts = False
         if genome is None:
@@ -213,6 +288,36 @@ class bedtool(object):
         else:
             self.genome = genome
 
+        self.history = History()
+    
+    def _log_to_history(method):
+        """
+        Decorator to add a method and its kwargs to the history.
+        """
+        def decorated(self, *args, **kwargs):
+            # this calls the actual method in the first place
+            result = method(self, *args, **kwargs)
+            
+
+            parent_tag = self._tag
+            result_tag = result._tag
+
+            # log the sucka
+            history_step = HistoryStep(method, args, kwargs, self, parent_tag, result_tag)
+            
+            # only add the current history to the new bedtool if there's
+            # something to add
+            if len(self.history)>0:
+                result.history.append(self.history)
+                
+            # but either way, add this history step to the result.
+            result.history.append(history_step)
+
+            return result
+
+        decorated.__doc__ = method.__doc__
+        return decorated
+    
     def _tmp(self):
         '''
         Makes a tempfile and registers it the the bedtool.TEMPFILES class variable.
@@ -255,6 +360,16 @@ class bedtool(object):
     def __len__(self):
         return self.count()
 
+    def __eq__(self, other):
+        if open(self.fn).read() == open(other.fn).read():
+            return True
+        return False
+
+    def __ne__(self, other):
+        if open(self.fn).read() == open(other.fn).read():
+            return False
+        return True
+
     @_file_or_bedtool()
     def __add__(self,other):
         return self.intersect(other,u=True)
@@ -280,6 +395,7 @@ class bedtool(object):
     @_file_or_bedtool()
     @_implicit('-a')
     @_returns_bedtool()
+    @_log_to_history
     def intersect(self, b=None, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM as input, you
@@ -345,6 +461,7 @@ class bedtool(object):
     @_help('subtractBed')
     @_file_or_bedtool()
     @_returns_bedtool()
+    @_log_to_history
     def subtract(self, other, **kwargs):
         """
         Subtracts from another BED file and returns a new bedtool object.
@@ -376,6 +493,7 @@ class bedtool(object):
     @_help('slopBed')
     @_implicit('-i')
     @_returns_bedtool()
+    @_log_to_history
     def slop(self, genome=None, **kwargs):
         """
         Wraps slopBed, which adds bp to each feature.  Returns a new bedtool
@@ -410,6 +528,7 @@ class bedtool(object):
     @_help('mergeBed')
     @_implicit('-i')
     @_returns_bedtool()
+    @_log_to_history
     def merge(self, **kwargs):
         """
         Merge overlapping features together. Returns a new bedtool object.
@@ -434,6 +553,7 @@ class bedtool(object):
     @_file_or_bedtool()
     @_implicit('-a')
     @_returns_bedtool()
+    @_log_to_history
     def closest(self, other, **kwargs):
         """
         Return a new bedtool object containing closest features in *other*.  Note
@@ -466,6 +586,7 @@ class bedtool(object):
     @_help('windowBed')
     @_file_or_bedtool()
     @_implicit('-a')
+    @_log_to_history
     def window(self,other, **kwargs):
         """
         Intersect with a window.
@@ -492,6 +613,7 @@ class bedtool(object):
 
     @_help('shuffleBed')
     @_implicit('-i')
+    @_log_to_history
     def shuffle(self,genome=None,**kwargs):
         if genome is not None:
             genome_fn = self.get_genome(genome)
@@ -506,6 +628,7 @@ class bedtool(object):
     
     @_help('sortBed')
     @_implicit('-i')
+    @_log_to_history
     def sort(self,**kwargs):
         kwargs['i'] = self.fn
         cmds = ['sortBed']

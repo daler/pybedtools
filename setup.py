@@ -16,7 +16,7 @@ Development version, as well as documentation, can be found on github:
 
 setup( 
         name="pybedtools",
-        version="0.2.2dev",
+        version="0.2.3dev",
         packages=['pybedtools','pybedtools.test'],
         author="Ryan Dale",
         description='Wrapper around BEDTools for bioinformatics work',

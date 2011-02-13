@@ -1,4 +1,4 @@
-from bedtool import bedtool, get_tempdir, set_tempdir, cleanup
+from bedtool import bedtool, get_tempdir, set_tempdir, cleanup, find_tagged
 import pybedtools
 import os
 

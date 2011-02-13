@@ -394,6 +394,15 @@ You can retrieve these counts later using the :meth:`bedtool.counts` method:
 Topical documentation
 =====================
 
+Release notes
+-------------
+
+0.2.3dev
+~~~~~~~~
+* Added history mechanism -- see :ref:`working with history`.
+* Added tagging mechanism
+
+
 Future work
 -----------
 The following is a list of items I plan to work on for future releases of
@@ -405,6 +414,7 @@ The following is a list of items I plan to work on for future releases of
 
     * :class:`bedtool` objects could keep track of all their 'parent'
       tempfiles, and as such would retain the history of their creation.
+      **done**
 
     * indexing into the history of a :class:`bedtool` would give you access
       to these previous files
@@ -843,6 +853,108 @@ the BEDTools_ program help string.  There are often examples of how to use
 a method in the docstring as well.
 
     
+
+.. _`working with history`:
+
+Using the history and tags
+--------------------------
+`BEDTools`_ makes it very easy to do rather complex genomic algebra.
+Sometimes when you're doing some exploratory work, you'd like to rewind
+back to a previous step.
+
+
+To assist this sort of workflow, :class:`bedtool` instances keep track of
+their history, in the :attr:`bedtool.history` attribute.  Let's make an
+example :class:`bedtool`, *c*, that has some history:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+    
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> b = pybedtools.example_bedtool('b.bed')
+    >>> c = a.intersect(b, u=True)
+
+
+*c* now has a history which tells you all sorts of useful things (described
+in more detail below)::
+
+    >>> print c.history
+    [<HistoryStep> bedtool("/home/ryan/pybedtools/pybedtools/test/a.bed").intersect("/home/ryan/pybedtools/pybedtools/test/b.bed", u=True), parent tag: klkreuay, result tag: egzgnrvj]
+
+
+First, the history describes the full commands, including all the names of
+the temp files and all the arguments that you would need to run in order to
+re-create it.  Note that since :class:`bedtool` objects are fundamentally
+file-based, the command refers to the underlying filenames (i.e.,
+:file:`a.bed` and :file:`b.bed`) instead of the :class:`bedtool` instances
+(i.e., *a* and *b*). A simple copy-paste of the command should do the
+trick. Be aware that if you run the command again, you'll get *another*
+temp file that has the same contents as *c*'s temp file.
+
+To avoid such cluttering of your temp dir, the history also reports
+**tags**. :class:`bedtool` objects, when created, get a random tag assigned
+to them.  You can get get the :class:`bedtool` associated with tag with the
+:func:`pybedtools.find_tagged` function. These tags are used to keep track
+of instances during this session.
+
+So in this case, we could get a reference to the *a* instance with::
+
+    >>> should_be_a = pybedtools.find_tagged('klkreuay')
+
+Here's confirmation that the parent of the first step of *c*'s history is
+*a* (note that :class:`HistoryStep` objects have a
+:attr:`HistoryStep.parent_tag` and :attr:`HistoryStep.result_tag`):
+
+.. doctest::
+
+    >>> pybedtools.find_tagged(c.history[0].parent_tag) == a
+    True
+
+Let's make something with a more complicated history:
+
+.. doctest::
+
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> b = pybedtools.example_bedtool('b.bed')
+    >>> c = a.intersect(b)
+    >>> d = c.slop(genome='hg19', b=1)
+    >>> e = d.merge()
+
+    >>> # this step adds complexity!
+    >>> f = e.subtract(b)
+
+Let's see what the history of *f* (the last :class:`bedtool` created) looks
+like . . . note that here I'm formatting the results to make it easier to
+see::
+
+    >>> print f.history
+    [
+     
+     [
+      [
+       [<HistoryStep> bedtool("/home/ryan/pybedtools/pybedtools/test/a.bed").intersect("/home/ryan/pybedtools/pybedtools/test/b.bed", ), parent tag: rzrztxlw, result tag: ifbsanqk
+       ],
+       <HistoryStep> bedtool("/tmp/pybedtools.BgULVj.tmp").slop(b=1,genome="hg19"), parent tag: ifbsanqk, result tag: omfrkwjp
+      ],
+       <HistoryStep> bedtool("/tmp/pybedtools.SFmbYc.tmp").merge(), parent tag: omfrkwjp, result tag: zlwqblvk
+     ], 
+
+     <HistoryStep> bedtool("/tmp/pybedtools.wlBiMo.tmp").subtract("/home/ryan/pybedtools/pybedtools/test/b.bed", ), parent tag: zlwqblvk, result tag: reztxhen
+    ]
+
+Those first three history steps correspond to *c*, *d*, and *e*
+respectively, as we can see by comparing the code snippet above with the
+commands in each history step.  In other words, *e* can be described by the
+sequence of 3 commands in the first three history steps.  In fact, if we
+checked *e.history*, we'd see exactly those same 3 steps.
+
+When *f* was created above, it operated both on *e*, which had its own
+history, as well as *b* -- note the nesting of the list. You can do
+arbitrarily complex "genome algebra" operations, and the history of the
+:class:`bedtools` will keep track of this.  It may not be useful in every
+situtation, but the ability to backtrack and have a record of what you've
+done can sometimes be helpful.
+
 
 Example: Flanking seqs
 ----------------------
