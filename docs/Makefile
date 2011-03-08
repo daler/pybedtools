@@ -5,7 +5,8 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = ../../pybedtools-docs
+#BUILDDIR      = ../../pybedtools-docs
+BUILDDIR      = build
 PDF           = ../manual.pdf
 PDFBUILDDIR   = /tmp/doc-pybedtools
 
@@ -35,10 +36,6 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
-
-buildandcommithtml: html latexpdf
-	
-	cd $(BUILDDIR)/html; git add . ; git commit -m "rebuilt docs"; git push origin gh-pages
 
 clean:
 	-rm -rf $(BUILDDIR)/*
