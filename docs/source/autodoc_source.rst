@@ -105,3 +105,6 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: bedtool.normalized_counts
 
+:class:`bedtool.delete_temporary_history`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: bedtool.delete_temporary_history

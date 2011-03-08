@@ -22,6 +22,7 @@ Contents:
 
    main
    tutorial
+   topical-documentation
    autodoc_source
 
 

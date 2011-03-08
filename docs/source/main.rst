@@ -117,7 +117,7 @@ as ``dm3.fa``.
 
     
 
-For more, continue on to the :ref:`tutorial`.
+For more, continue on to the :ref:`tutorial`, and then check out the :ref:`topical`.
 
 .. _BEDTools: http://github.com/arq5x/bedtools
 .. |dl| image:: images/downloads.png
