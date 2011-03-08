@@ -28,6 +28,22 @@ def find_tagged(tag):
     return '%s not found' % tag
    
 
+def _flatten_list(x):
+    nested = True
+    while nested:
+        check_again = False
+        flattened = []
+
+        for element in x:
+            if isinstance(element, list):
+                flattened.extend(element)
+                check_again = True
+            else:
+                flattened.append(element)
+        nested = check_again
+        x = flattened[:]
+    return x
+
 class History(list):
     def __init__(self):
         """
@@ -35,7 +51,6 @@ class History(list):
         a series of HistorySteps.
         """
         list.__init__(self)
-    
 
 class HistoryStep(object):
     def __init__(self, method, args, kwargs, bedtool_instance, parent_tag, result_tag):
@@ -67,7 +82,10 @@ class HistoryStep(object):
         # Still not sure whether to use pybedtools.bedtool() or bedtool()
         s = ''
         s += '<HistoryStep> '
-        s += 'bedtool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
+        if os.path.exists(self.fn):
+            s += 'bedtool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
+        else:
+            s += 'bedtool("MISSING FILE: %(fn)s").%(method)s(%%s%%s)' % self.__dict__
 
         # Format args and kwargs
         args_string = ','.join(map(self._clean_arg, self.args))
@@ -289,16 +307,58 @@ class bedtool(object):
             self.genome = genome
 
         self.history = History()
-    
+   
+    def delete_temporary_history(self, ask=True):
+        """
+        Use at your own risk!  This method will delete temp files. You will be
+        prompted for deletion of files unless you specify *ask=False*.
+
+        Deletes all temporary files created during the history of this bedtool
+        up to but not including the file this current bedtool points to.
+
+        Any filenames that are in the history and have the following pattern will be
+        deleted::
+        
+            <TEMP_DIR>/pybedtools.*.tmp
+
+        (where <TEMP_DIR> is the result from get_tempdir() and is by default "/tmp")
+
+        Any files that don't have this format will be left alone.
+
+        """
+        flattened_history = _flatten_list(self.history)
+        to_delete = []
+        tempdir = get_tempdir()
+        for i in flattened_history:
+            fn = i.fn
+            if fn.startswith(os.path.join(tempdir, 'pybedtools')):
+                if fn.endswith('.tmp'):
+                    to_delete.append(fn)
+
+        str_fns = '\n\t'.join(to_delete)
+        if ask:            
+            answer = raw_input('Delete these files?\n\t%s\n(y/N) ' % str_fns)
+            if answer != 'y':
+                print 'OK, not deleting.'
+                return
+        for fn in to_delete:
+            os.unlink(fn)
+        return
+
     def _log_to_history(method):
         """
         Decorator to add a method and its kwargs to the history.
+
+        Assumes that you only add this decorator to bedtool instances that
+        return other bedtool instances
         """
         def decorated(self, *args, **kwargs):
-            # this calls the actual method in the first place
+
+            # this calls the actual method in the first place; *result* is
+            # whatever you get back
             result = method(self, *args, **kwargs)
             
-
+            # add appropriate tags
             parent_tag = self._tag
             result_tag = result._tag
 
@@ -349,7 +409,10 @@ class bedtool(object):
         return self.__iterator()
 
     def __repr__(self):
-        return '<bedtool (%s)>'%self.fn
+        if os.path.exists(self.fn):
+            return '<bedtool (%s)>'%self.fn
+        else:
+            return '<bedtools (MISSING FILE: %s)>'%self.fn
 
     def __str__(self):
         f = open(self.fn)
@@ -377,7 +440,7 @@ class bedtool(object):
     @_file_or_bedtool()
     def __sub__(self,other):
         return self.intersect(other, v=True)
-        
+
     @property
     def lines(self):
         return open(self.fn)
