@@ -284,7 +284,7 @@ class bedtool(object):
             fn = self._tmp()
             fout = open(fn,'w')
             for line in bed_contents.splitlines():
-                if len(line) == 0:
+                if len(line.strip()) == 0:
                     continue
                 line = '\t'.join(line.split())+'\n'
                 fout.write(line)
@@ -295,16 +295,6 @@ class bedtool(object):
         _tags[tag] = self
         self.fn = fn
         self._hascounts = False
-        if genome is None:
-            self.genome = None
-
-        elif isinstance(genome,basestring):
-            try:
-                self.genome = getattr(genome_registry,genome)
-            except KeyError:
-                raise ValueError, 'Genome %s not registered' % genome
-        else:
-            self.genome = genome
 
         self.history = History()
    
@@ -316,22 +306,22 @@ class bedtool(object):
         Deletes all temporary files created during the history of this bedtool
         up to but not including the file this current bedtool points to.
 
-        Any filenames that are in the history and have the following pattern will be
-        deleted::
+        Any filenames that are in the history and have the following pattern
+        will be deleted::
         
             <TEMP_DIR>/pybedtools.*.tmp
 
-        (where <TEMP_DIR> is the result from get_tempdir() and is by default "/tmp")
+        (where <TEMP_DIR> is the result from get_tempdir() and is by default
+        "/tmp")
 
         Any files that don't have this format will be left alone.
-
         """
         flattened_history = _flatten_list(self.history)
         to_delete = []
         tempdir = get_tempdir()
         for i in flattened_history:
             fn = i.fn
-            if fn.startswith(os.path.join(tempdir, 'pybedtools')):
+            if fn.startswith(os.path.join(os.path.abspath(tempdir), 'pybedtools')):
                 if fn.endswith('.tmp'):
                     to_delete.append(fn)
 
@@ -505,6 +495,9 @@ class bedtool(object):
         Wraps ``fastaFromBed``.  *fi* is passed in by the user; *bed* is
         automatically passed in as the bedfile of this object; *fo* by default
         is a temp file.  Use save_seqs() to save as a file.
+
+        The end result is that this bedtool will have an attribute, self.seqfn,
+        that points to the new fasta file.
         
         Example usage::
 
@@ -578,7 +571,7 @@ class bedtool(object):
             c = a.slop(g='dm3.genome', l=10, r=500, s=True) 
         """
         if genome is not None:
-            genome_fn = self.get_genome(genome)
+            genome_fn = self.get_chromsizes_from_ucsc(genome)
             kwargs['g'] = genome_fn
         kwargs['i'] = self.fn
         tmp = self._tmp()
@@ -679,7 +672,7 @@ class bedtool(object):
     @_log_to_history
     def shuffle(self,genome=None,**kwargs):
         if genome is not None:
-            genome_fn = self.get_genome(genome)
+            genome_fn = self.get_chromsizes_from_ucsc(genome)
             kwargs['g'] = genome_fn
         kwargs['i'] = self.fn
         tmp = self._tmp()
@@ -776,7 +769,7 @@ class bedtool(object):
         fout.close()
         return bedtool(fn)
 
-    def get_genome(self, genome, fn=None):
+    def get_chromsizes_from_ucsc(self, genome, fn=None):
         """
         Download chrom size info for *genome* from UCSC, removes the header
         line, and saves in a temp file.  Could be useful for end users,
@@ -790,7 +783,7 @@ class bedtool(object):
         Example usage::
 
             a = bedtool('in.bed')
-            fn = a.get_genome('dm3', 'dm3.genome')
+            fn = a.get_chromsizes_from_ucsc('dm3', 'dm3.genome')
 
         """
         tmp = self._tmp() 
@@ -808,38 +801,60 @@ class bedtool(object):
         self.genome_fn = tmp
         return tmp
 
-    def newshuffle(self):
+    def pybedtools_shuffle(self):
         """
-        Quite fast implementation of shuffleBed; assumes 'dm3' as the genome
-        and assumes shuffling within chroms.
+        Quite fast implementation of shuffleBed; assumes shuffling within chroms.
+
+        You need to call self.set_genome() to tell this bedtool object what the
+        chromosome sizes are that you want to shuffle within.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            >>> from pybedtools.genome_registry import dm3
+            >>> a = bedtool('in.bed')
+            >>> a.set_genome(dm3)
 
-            # randomly shuffled version of "a"
-            b = a.newshuffle()
+            >>> # randomly shuffled version of "a"
+            >>> b = a.newshuffle()
         
+        Alternatively, you can use a custom genome to shuffle within -- perhaps
+        the regions probed by a tiling array::
+
+            >>> a = bedtool('in.bed')
+            >>> array_extent = {'chr11': (500000, 1100000),
+            ...                 'chr5': (1, 14000)}
+            >>> a.set_genome(array_extent)
+            >>> b = a.pybedtools_shuffle()
+
         This is equivalent to the following command-line usage of ``shuffleBed``::
 
             shuffleBed -i in.bed -g dm3.genome -chrom -seed $RANDOM > /tmp/tmpfile
 
         """
-        tmp = self._tmp()
+        if not hasattr(self, 'genome'):
+            raise AttributeError, "Please use the set_genome() method of this instance before randomizing"
 
+        tmp = self._tmp()
         TMP = open(tmp,'w')
         for line in self.__iterator():
-            chrom,start,stop = line.split()[:3]
+            L = line.split()
+            chrom,start,stop = L[:3]
             start = int(start)
             stop = int(stop)
             length = stop-start
             newstart = random.randint(self.genome[chrom][0], self.genome[chrom][1]-length)
             newstop = newstart + length
-            TMP.write('%s\t%s\t%s\n' % (chrom,newstart,newstop))
+            
+            # Just overwrite start and stop, leaving the rest of the line in
+            # place
+            L[1] = str(newstart)
+            L[2] = str(newstop)
+
+            TMP.write('\t'.join(L)+'\n')
         TMP.close()
         return bedtool(tmp)
  
-    def randomstats(self, other, iterations, intersectkwargs={}):
+    def randomstats(self, other, iterations, intersectkwargs=None):
         """
         Sends args to :meth:`bedtool.randomintersection` and compiles results
         into a dictionary with useful stats.  Requires scipy and numpy.
@@ -858,18 +873,19 @@ class bedtool(object):
         except ImportError:
             raise ImportError, "Need to install NumPy and SciPy for stats..."
         
-        if (type(other) is str) or (type(other) is unicode):
+        if isinstance(other, basestring):
             other = bedtool(other)
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
 
-        counts = self.randomintersection(other,iterations,intersectkwargs)
-
+        # Actual (unshuffled) counts.
         actual = len(self.intersect(other,**intersectkwargs))
 
+        # List of counts from randomly shuffled versions.  Length of counts == *iterations*.
         distribution = self.randomintersection(other, iterations=iterations, intersectkwargs=intersectkwargs)
         distribution = np.array(distribution)
         
+        # Median of distribution
         med_count = np.median(distribution)
         
         n = float(len(distribution))
@@ -879,8 +895,10 @@ class bedtool(object):
         
         normalized = actual/med_count
         
-        lower_95th = stats.scoreatpercentile(distribution,2.5)
-        upper_95th = stats.scoreatpercentile(distribution,97.5)
+        lower_thresh = 2.5
+        upper_thresh = 97.5
+        lower = stats.scoreatpercentile(distribution, lower_thresh)
+        upper = stats.scoreatpercentile(distribution, upper_thresh)
         
         actual_percentile = stats.percentileofscore(distribution,actual)
         d = {
@@ -896,90 +914,69 @@ class bedtool(object):
         'frac randomized below actual': frac_below,
         'median randomized': med_count,
         'normalized': normalized,
-        'lower_95th': lower_95th,
-        'upper_95th': upper_95th,
+        'lower_%sth'%lower_thresh: lower,
+        'upper_%sth'%upper_thresh: upper,
         'percentile': actual_percentile,
         }
         return d
 
-    def print_randomstats(self,other,iterations,intersectkwargs={}):
+    def print_randomstats(self, other, iterations, intersectkwargs=None):
         """
         Nicely prints the reciprocal randomization of two files.
         """
         if (type(other) is str) or (type(other) is unicode):
             other = bedtool(other)
+
         d1 = self.randomstats(other, iterations, intersectkwargs)
         d2 = other.randomstats(self, iterations, intersectkwargs)
         
-        print
-
-        print 'Randomizing %s:' % self.fn
-        print '\t%s features in %s' % (d1[self.fn],self.fn)
-        print '\t%s features in %s' % (d1[other.fn],other.fn)
-        print '\t%s actual intersections' % d1['actual']
-        print '\t%.2f median randomized' % d1['median randomized']
-        print '\t%.2f enrichment score' % d1['normalized']
-        print '\t%.2f percentile' % d1['percentile']
-
-        print 
+        s = '\n'
+        s += 'Randomizing %s:' % self.fn
+        s += '\t%s features in %s' % (d1[self.fn],self.fn)
+        s += '\t%s features in %s' % (d1[other.fn],other.fn)
+        s += '\t%s actual intersections' % d1['actual']
+        s += '\t%.2f median randomized' % d1['median randomized']
+        s += '\t%.2f enrichment score' % d1['normalized']
+        s += '\t%.2f percentile' % d1['percentile']
+        s += '\n'
+        s += 'Randomizing %s:' % other.fn
+        s += '\t%s features in %s' % (d2[other.fn],other.fn)
+        s += '\t%s features in %s' % (d2[self.fn],self.fn)
+        s += '\t%s actual intersection count' % d2['actual']
+        s += '\t%.2f median randomized' % d2['median randomized']
+        s += '\t%.2f enrichment score' % d2['normalized']
+        s += '\t%.2f percentile' % d2['percentile']
         
-        print 'Randomizing %s:' % other.fn
-        print '\t%s features in %s' % (d2[other.fn],other.fn)
-        print '\t%s features in %s' % (d2[self.fn],self.fn)
-        print '\t%s actual intersection count' % d2['actual']
-        print '\t%.2f median randomized' % d2['median randomized']
-        print '\t%.2f enrichment score' % d2['normalized']
-        print '\t%.2f percentile' % d2['percentile']
+        return s
 
-    def randomintersection(self, other, iterations, intersectkwargs={}):
+    def randomintersection(self, other, iterations, intersectkwargs=None):
         """
         Performs *iterations* shufflings of self, each time intersecting with
-        *other*.  *intersectkwargs* are passed to self.intersect().  Returns a
-        list of integers where each integer is the number of intersections of
-        one shuffled file with *other*.
+        *other*.  
         
+        Returns a list of integers where each integer is the number of
+        intersections of one shuffled file with *other*; this distribution can
+        be used in downstream analysis for things like empirical p-values.
+
+        *intersectkwargs* is a dictionary of kwargs to be passed to
+        self.intersect().  By default, intersectkwargs=dict(u=True).        
         Example usage::
 
-            r = bedtool('in.bed').randomintersection('other.bed', 100, {'u': True})
+            r = bedtool('in.bed').randomintersection('other.bed', 100)
         """
+
+        if intsersectkwargs is None:
+            intersectkwargs = {'u':True}
         counts = []
         for i in range(iterations):
-            tmp = self.newshuffle()
+            tmp = self.pybedtools_shuffle()
             tmp2 = tmp.intersect(other,**intersectkwargs)
             counts.append(len(tmp2))
-            os.remove(tmp.fn)
-            os.remove(tmp2.fn)
+            os.unlink(tmp.fn)
+            os.unlink(tmp2.fn)
             del(tmp)
             del(tmp2)
         return counts
-
-    def deprecated_randomintersection(self,other,iterations,intersectkwargs={}):
-        # list of intersection counts, one for each iteration
-        if isinstance(other, basestring):
-            other = bedtool(other)
-        counts = []
-        count1 = self.count()
-        count2 = other.count()
-        total = float(count1+count2)
-        prob1 = count1/total
-        for iteration in range(iterations):
-            tmp1 = open(self._tmp(),'w') 
-            tmp2 = open(self._tmp(),'w')
-            for i in itertools.chain(self,other):
-                if random.random() <= prob1:
-                    tmp1.write(i)
-                else:
-                    tmp2.write(i)
-            tmp1.close()
-            tmp2.close()
-            tmp_bed1 = bedtool(tmp1.name)
-            tmp_bed2 = bedtool(tmp2.name)
-            counts.append(len(tmp_bed1.intersect(tmp_bed2, **intersectkwargs)))
-            os.remove(tmp1.name)
-            os.remove(tmp2.name)
-
-        return counts
-                 
 
     @_file_or_bedtool()
     @_returns_bedtool()
@@ -1023,8 +1020,6 @@ class bedtool(object):
             return d
         else:
             return c
-
-            
 
     def tostring(self):
         '''
@@ -1193,8 +1188,8 @@ class bedtool(object):
 
     def sequence_coverage(self):
         """
-        Returns the number of bases covered by this BED file.  Does a self.merge() first
-        to remove potentially multiple-counting bases.
+        Returns the total number of bases covered by this BED file.  Does a
+        self.merge() first to remove potentially multiple-counting bases.
 
         Example usage::
 
@@ -1210,8 +1205,9 @@ class bedtool(object):
         return total_bp
 
     def parse_kwargs(self,**kwargs):
-        """Given a set of keyword arguments, turns them into a command
-        line-ready list of strings.  E.g., the kwarg dict::
+        """
+        Given a set of keyword arguments, turns them into a command line-ready
+        list of strings.  E.g., the kwarg dict::
 
             kwargs = dict(c=True,f=0.5)
 
@@ -1358,7 +1354,13 @@ class bedtool(object):
         Example usage::
 
             a = bedtool('in.bed')
+
+            # intersect, with c=True to get counts -- number of features in
+            # 'other.bed' that intersect with features in a
             b = a.intersect('other.bed', c=True)
+
+            # number of features in 'other.bed' found in each feature in "a",
+            # divided by the size of the feature in "a"
             counts = b.normalized_counts()
 
             # assuming you have matplotlib installed, plot a histogram
