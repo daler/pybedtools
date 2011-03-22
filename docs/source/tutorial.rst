@@ -328,7 +328,7 @@ this file for you and return the resulting filename:
     :options: +NORMALIZE_WHITESPACE
     
     >>> # Download Drosophila melanogaster chromSizes table from UCSC
-    >>> chromsizes = a.get_genome('hg19', fn='hg19.genome')
+    >>> chromsizes = a.get_chromsizes_from_ucsc('hg19', fn='hg19.genome')
 
     >>> # print first few lines of that file
     >>> f = open(chromsizes)

@@ -61,9 +61,9 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: bedtool.saveas
 
-:class:`bedtool.get_genome`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.get_genome
+:class:`bedtool.get_chromsizes_from_ucsc`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: bedtool.get_chromsizes_from_ucsc
 
 :class:`bedtool.size_filter`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
