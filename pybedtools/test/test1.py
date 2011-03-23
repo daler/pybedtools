@@ -70,8 +70,24 @@ def decorator_test():
     # "-a" ought to be in the help string for intersectBed somewhere....
     assert '-a' in dummy2.__doc__
 
+def test_subset():
+    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    import random
+    random.seed(1)
+
+    s = list(a.random_subset(1).features())
+    assert len(s) == 1
+
+    assert isinstance(s[0], pybedtools.features.bedfeature)
 
 
+def test_length_bed():
+    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    assert a.lengths() == [99, 100, 350, 50]
+
+def test_count_bed():
+    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    assert a.count() == 4
 
 def test_midpoint():
     a = pybedtools.bedtool("chr1 1 100\nchr5 3000 4000", from_string=True)

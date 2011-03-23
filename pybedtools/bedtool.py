@@ -451,11 +451,7 @@ class bedtool(object):
         '''Iterator that returns lines from BED file'''
         f = open(self.fn)
         for line in f:
-            if line.startswith('browser'):
-                continue
-            if line.startswith('track'):
-                continue
-            if line.startswith('#'):
+            if line.startswith(('browser', 'track', '#')):
                 continue
             if len(line.strip()) == 0:
                 continue
@@ -781,16 +777,7 @@ class bedtool(object):
             a = bedtool('in.bed')
             a.count()
         """
-        c = 0
-        f = open(self.fn)
-        for i in f:
-            if i.startswith('browser'):
-                continue
-            if i.startswith('track'):
-                continue
-            c += 1
-        f.close()
-        return c
+        return sum(1 for _ in self)
 
     def print_sequence(self):
         """
@@ -1161,11 +1148,9 @@ class bedtool(object):
     def random_subset(self,n):
         '''
         Returns a new bedtools object containing a random subset of the
-        features in this subset.  Currently does so by reading in all features;
-        future updates should fix this to something more robust (e.g., newlines
-        in a memory map)
+        features in this subset.
 
-        Example usage:: 
+        Example usage::
 
             a = bedtool('in.bed')
             
@@ -1173,14 +1158,15 @@ class bedtool(object):
             b = a.random_subset(5)
             
         '''
-        features = list(self._iterator())
+        idxs = set(random.sample(range(len(self)), n))
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for i in range(n):
-            tmp.write(random.choice(features))
+        for i, line in enumerate(self):
+            if i in idxs:
+                tmp.write(line)
         tmp.close()
         return bedtool(tmpfn)
-        
+ 
 
     def size_filter(self,min=0,max=1e15):
         """
