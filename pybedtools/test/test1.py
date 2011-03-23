@@ -7,6 +7,23 @@ testdir = os.path.dirname(__file__)
 
 pybedtools.set_tempdir('.')
 
+
+def fix(x):
+    """
+    Replaces spaces with tabs, removes spurious newlines, and lstrip()s each
+    line.
+    """
+    s = ""
+    for i in  x.splitlines():
+        i = i.strip()
+        if len(i) == 0:
+            continue
+        i = i.split()
+        i = '\t'.join(i)+'\n'
+        s += i
+    return s
+        
+
 def test_cleanup():
     """
     make sure the tempdir and cleanup work
@@ -52,6 +69,7 @@ def decorator_test():
     
     # "-a" ought to be in the help string for intersectBed somewhere....
     assert '-a' in dummy2.__doc__
+
 
 
 
@@ -121,7 +139,8 @@ def test_special_methods():
     
     assert from_string == a
     assert from_string != b
-
+    assert not from_string == b
+    assert not from_string != a
 
 def test_add_subtract():
     a = pybedtools.example_bedtool('a.bed')
@@ -176,13 +195,133 @@ def test_sequence():
     AAAAAAAAAAAAAAAAAAAAAAAAAAAATCT
     """
     a = pybedtools.bedtool(s, from_string=True)
+    
+    fout = open(fi,'w')
+    for line in fasta.splitlines(True):
+        fout.write(line.lstrip())
+    fout.close()
+
     b = a.sequence(fi=fi)
-    print open(b.seqfn).read()
-    assert False, 'Left off here . . . .'
+    assert b.fn == a.fn
+    seqs = open(b.seqfn).read()
+    print seqs
+    expected = """>chrX:9-16
+TGCACTG
+>chrX:9-16
+TGCACTG
+>chrY:1-4
+CTA
+>chrZ:28-31
+TCT
+"""
+    print ''.join(difflib.ndiff(seqs,expected))
+    print expected 
+    assert seqs == expected
+    
+    b = a.sequence(fi=fi,s=True)
+    seqs = open(b.seqfn).read()
+    expected = """>chrX:9-16(+)
+TGCACTG
+>chrX:9-16(-)
+CAGTGCA
+>chrY:1-4(+)
+CTA
+>chrZ:28-31(+)
+TCT
+"""
+    print seqs
+    print expected
+    print ''.join(difflib.ndiff(seqs,expected))
+    assert seqs == expected
+       
+    os.unlink(fi)
+
+def test_iterator():
+    # makes sure we're ignoring non-feature lines
+    
+    s = """
+    track name="test"
+
+
+    browser position chrX:1-100
+    # comment line
+    chrX  1 10
+    # more comments
+    track name="another"
+
+
+    """
+    a = pybedtools.bedtool(s, from_string=True)
+    results = list(a)
+    print results 
+    assert results == ['chrX\t1\t10\n']
+
+def test_repr_and_printing():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a+b
+    os.unlink(c.fn)
+    assert 'a.bed' in repr(a)
+    assert 'b.bed' in repr(b)
+    assert 'MISSING FILE' in repr(c)
+
+    print a.head(1)
+
+def test_intersect():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    assert a.intersect(b.fn) == a.intersect(b)
+
+
+    # straight-up
+    expected = fix("""
+    chr1 155 200 feature2 0 +
+    chr1 155 200 feature3 0 -
+    chr1 900 901 feature4 0 +
+    """)
+    assert str(a.intersect(b)) == expected
+    
+    # a that have b
+    expected = fix("""
+    chr1 100 200 feature2 0 +
+    chr1 150 500 feature3 0 -
+    chr1 900 950 feature4 0 +
+    """)
+    assert str(a.intersect(b,u=True)) == expected
+    
+    # stranded straight-up
+    expected = fix("""
+    chr1 155 200 feature3 0 -
+    chr1 900 901 feature4 0 +
+    """)
+    assert str(a.intersect(b,s=True)) == expected
+
+    # stranded a that have b
+    expected = fix("""
+    chr1 150 500 feature3 0 -
+    chr1 900 950 feature4 0 +
+    """)
+    assert str(a.intersect(b, u=True, s=True)) == expected
+
+    # a with no b
+    expected = fix("""
+    chr1 1 100 feature1 0 +
+    """)
+    assert str(a.intersect(b, v=True)) == expected
+
+    # stranded a with no b
+    expected = fix("""
+    chr1 1   100 feature1 0 +
+    chr1 100 200 feature2 0 +
+    """)
+    assert str(a.intersect(b, v=True, s=True)) == expected
+
+
     
     
 
-    
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
+
