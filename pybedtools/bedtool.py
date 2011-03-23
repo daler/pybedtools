@@ -11,8 +11,43 @@ from math import floor, ceil
 from features import bedfeature
 import genome_registry
 
+# Check calls against these names to only allow calls to known BEDTools
+# programs (basic security)
+_prog_names = [
+'annotateBed',
+'bedToBam',
+'complementBed',
+'flankBed',
+'linksBed',
+'overlap',
+'shuffleBed',
+'subtractBed'
+'bamToBed',
+'bedToIgv',
+'coverageBed',
+'genomeCoverageBed',
+'maskFastaFromBed',
+'pairToBed',
+'slopBed',
+'unionBedGraphs',
+'bed12ToBed6',
+'closestBed',
+'fastaFromBed',
+'intersectBed',
+'mergeBed',
+'pairToPair',
+'sortBed',
+'windowBed',
+]
 
 _tags = {}
+
+class Error(Exception):
+    """Base class for this module's exceptions"""
+    pass
+
+class BEDToolsError(Error):
+    pass
 
 def find_tagged(tag):
     """
@@ -235,6 +270,38 @@ def _help(command):
         return func
     
     return decorator
+
+def call_bedtools(cmds, tmpfn):
+    """
+    Use subprocess.Popen to call BEDTools and catch any errors.
+
+    Output always goes to tmpfn.
+
+    Prints some useful help upon getting common errors.
+    """
+    if cmds[0] not in _prog_names:
+        raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
+    try:
+        p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE)
+        stdout,stderr = p.communicate()
+        if stderr:
+            print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
+            print 'Error message was:\n'
+            #print '\n'.join([i for i in stderr.splitlines() if i.startswith('***')])
+            print stderr
+            raise BEDToolsError('See above for commands and error message')
+                 
+    except (OSError, IOError) as err:
+        print '%s: %s' % (type(err), os.strerror(err.errno))
+        print 'The command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
+        
+        problems = {2 :('* Did you spell the command correctly?', '* Do you have BEDTools installed and on the path?'),
+                    13:('* Do you have permission to write to the output file ("%s")?' % tmpfn,),
+                   }
+
+        print 'Things to check:'
+        print '\n\t'+'\n\t'.join(problems[err.errno])
+        raise OSError('See above for commands that gave the error')
 
 class bedtool(object):
     """
@@ -477,8 +544,9 @@ class bedtool(object):
         if 'abam' not in kwargs:
             kwargs['a'] = self.fn
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+
+        call_bedtools(cmds, tmp)
+
         other = bedtool(tmp)
         if 'c' in kwargs:
             other._hascounts = True
@@ -1216,18 +1284,27 @@ class bedtool(object):
         illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
         cmds = []
         for key,value in kwargs.items():
+            # e.g., u=True --> -u
             if value is True:
                 cmds.append('-'+key)
                 continue
+
+            # support for lists of items
             if (type(value) is tuple) or (type(value) is list):
                 value = ','.join(map(str,value))
+
+            # left over from os.system() calls; subprocess.Popen does the nice
+            # parsing for you
             if type(value) is str:
                 for i in illegal_chars:
                     if i in value:
-                        value = '"%s"' % value
+                        value = '%s' % value
                         break
+
+            # e.g., b='f.bed' --> ['-b', 'f.bed']
             cmds.append('-'+key)
             cmds.append(str(value))
+
         return cmds
 
     @_returns_bedtool()
