@@ -79,7 +79,6 @@ def test_bedtools_check():
     assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent',))
 
 def test_call():
-    
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
     from pybedtools.bedtool import call_bedtools, BEDToolsError
     assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
@@ -107,7 +106,7 @@ def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, **dict(genome='hg17', mysql='nonexistent'))
 
 def test_subset():
-    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    a = pybedtools.example_bedtool('a.bed')
     import random
     random.seed(1)
 
@@ -117,11 +116,11 @@ def test_subset():
 
 
 def test_length_bed():
-    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    a = pybedtools.example_bedtool('a.bed')
     assert a.lengths() == [99, 100, 350, 50]
 
 def test_count_bed():
-    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    a = pybedtools.example_bedtool('a.bed')
     assert a.count() == 4
 
 def test_feature_centers():
