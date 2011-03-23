@@ -251,19 +251,32 @@ def _help(command):
     
     return decorator
 
-def call_bedtools(cmds, tmpfn):
+def call_bedtools(cmds, tmpfn, check_stderr=None):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
 
     Output always goes to tmpfn.
 
     Prints some useful help upon getting common errors.
+
+    *check_stderr* is a function that takes the stderr string as input and
+    returns True if it's OK (that is, it's not really an error).  This is
+    needed, e.g., for calling fastaFromBed which will report that it has to
+    make a .fai for a fasta file.
     """
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
     try:
         p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE)
         stdout,stderr = p.communicate()
+        
+        # Check if it's OK; if so dump it to sys.stderr and reset it to None so
+        # we don't raise an exception
+        if check_stderr is not None:
+            if check_stderr(stderr):
+                sys.stderr.write(stderr)
+                stderr = None
+        
         if stderr:
             print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
             print 'Error message was:\n'
@@ -573,9 +586,14 @@ class bedtool(object):
         if 'fo' not in kwargs:
             kwargs['fo'] = tmp
 
+        def check_sequence_stderr(x):
+            if x.startswith('index file'):
+                return True
+            return False
+
         cmds = ['fastaFromBed']
         cmds.extend(self.parse_kwargs(**kwargs))
-        call_bedtools(cmds, tmp)
+        call_bedtools(cmds, tmp, check_stderr=check_sequence_stderr)
         self.seqfn = tmp
         return self
 
