@@ -114,7 +114,6 @@ def test_subset():
     assert len(s) == 1
     assert isinstance(s[0], pybedtools.features.bedfeature)
 
-
 def test_length_bed():
     a = pybedtools.example_bedtool('a.bed')
     assert a.lengths() == [99, 100, 350, 50]
@@ -307,6 +306,7 @@ TCT
     assert seqs == expected
        
     os.unlink(fi)
+    os.unlink(fi+'.fai')
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines
