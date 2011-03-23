@@ -9,6 +9,7 @@ import glob
 from math import floor, ceil
 
 from features import bedfeature
+import pybedtools
 import genome_registry
 
 # Check calls against these names to only allow calls to known BEDTools
@@ -308,17 +309,13 @@ class bedtool(object):
 
     """
     TEMPFILES = []
-    def __init__(self,fn,genome=None, from_string=False):
+    def __init__(self, fn, from_string=False):
         """
         *fn* is a BED format file, or alternatively another bedtool instance.
 
-        *genome* is an optional genome assembly ('dm3', 'hg18', etc) or a
-        dictionary of chrom:(start,stop) integers to consider as the genome
-        space.  This is used for randomizations and coverage.
-
-        If *from_string* is True, then treat all spaces as TABs and write
-        to tempfile, treating *fn* as the contents of the bed file.  
-        This strips empty lines.
+        If *from_string* is True, then treat all spaces as TABs and write to
+        tempfile, treating whatever you pass as *fn* as the contents of the bed
+        file.  This also strips empty lines.
         """
         if not from_string:
             if isinstance(fn, bedtool):
@@ -344,7 +341,7 @@ class bedtool(object):
 
         self.history = History()
    
-    def delete_temporary_history(self, ask=True):
+    def delete_temporary_history(self, ask=True, raw_input_func=None):
         """
         Use at your own risk!  This method will delete temp files. You will be
         prompted for deletion of files unless you specify *ask=False*.
@@ -361,6 +358,8 @@ class bedtool(object):
         "/tmp")
 
         Any files that don't have this format will be left alone.
+
+        (*raw_input_func* is used for testing)
         """
         flattened_history = _flatten_list(self.history)
         to_delete = []
@@ -371,10 +370,13 @@ class bedtool(object):
                 if fn.endswith('.tmp'):
                     to_delete.append(fn)
 
+        if raw_input_func is None:
+            raw_input_func = raw_input
+
         str_fns = '\n\t'.join(to_delete)
         if ask:            
-            answer = raw_input('Delete these files?\n\t%s\n(y/N) ' % str_fns)
-            if answer != 'y':
+            answer = raw_input_func('Delete these files?\n\t%s\n(y/N) ' % str_fns)
+            if answer.lower() not in ['y','yes']:
                 print 'OK, not deleting.'
                 return
         for fn in to_delete:
@@ -416,11 +418,10 @@ class bedtool(object):
     
     def _tmp(self):
         '''
-        Makes a tempfile and registers it the the bedtool.TEMPFILES class variable.
-        Adds a "pybedtools." prefix and ".tmp" extension for easy deletion if
-        you forget to call pybedtools.cleanup().
+        Makes a tempfile and registers it in the bedtool.TEMPFILES class
+        variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
+        deletion if you forget to call pybedtools.cleanup().
         '''
-
         tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
         tmpfn = tmpfn.name
         bedtool.TEMPFILES.append(tmpfn)
@@ -486,12 +487,27 @@ class bedtool(object):
                 break
             print line,
 
+    def set_chromsizes(self, chromsizes):
+        """
+        Set the chromsizes for this genome. 
+
+        Example usage::
+
+            dm3 = pybedtools.chromsizes('dm3')
+            a = bedtool('a.bed')
+            a.set_chromsizes(dm3)
+            
+            # Now you can use things like pybedtools_shuffle
+            b = a.pybedtools_shuffle(iterations=100)
+        """
+        self.chromsizes = chromsizes
+
     @_help('intersectBed')
     @_file_or_bedtool()
     @_implicit('-a')
     @_returns_bedtool()
     @_log_to_history
-    def intersect(self, other, **kwargs):
+    def intersect(self, b=None, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM as input, you
         need to specify *abam='filename.bam'*.  Returns a new bedtool object.
@@ -511,6 +527,8 @@ class bedtool(object):
             unique_to_other = bedtool('other.bed').intersect(a, v=True)
 
         """
+        
+        other = b
         if 'b' not in kwargs:
             if isinstance(other,basestring):
                 kwargs['b'] = other
@@ -604,37 +622,46 @@ class bedtool(object):
     @_implicit('-i')
     @_returns_bedtool()
     @_log_to_history
-    def slop(self, genome=None, **kwargs):
+    def slop(self, **kwargs):
         """
         Wraps slopBed, which adds bp to each feature.  Returns a new bedtool
         object.
         
-        If *genome* is specified with a genome name, the genome file will be
-        automatically retrieved from UCSC Genome Browser.
+        If *g* is a dictionary, it will be converted to a temp file for use
+        with slopBed.  If it is a string, then it is assumed to be a filename.
 
         Example usage::
 
             a = bedtool('in.bed')
 
             # increase the size of features by 100 bp in either direction
-            b = a.slop(genome='dm3', b=100)
+            b = a.slop(g=pybedtools.chromsizes('dm3'), b=100)
 
             # grow features by 10 bp upstream and 500 bp downstream,
             # using a genome file you already have constructed called
             # dm3.genome.
             c = a.slop(g='dm3.genome', l=10, r=500, s=True) 
         """
-        if genome is not None:
-            genome_fn = self.get_chromsizes_from_ucsc(genome)
-            kwargs['g'] = genome_fn
-        
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
+
+        if 'g' not in kwargs:
+            try:
+                kwargs['g'] = self.chromsizes
+
+            except AttributeError:
+                raise ValueError('No genome specified. Either pass a "g" argument or use set_chromsizes()')
+                
+        # If it's a dictionary, then convert to file and overwrite kwargs['g'].
+        if isinstance(kwargs['g'], dict):
+            genome_fn = self._tmp()
+            pybedtools.chromsizes_to_file(kwargs['g'], genome_fn)
+            kwargs['g'] = genome_fn
 
         cmds = ['slopBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
-        call_bedtool(cmds, tmp)
+        call_bedtools(cmds, tmp)
         return bedtool(tmp)
 
     @_help('mergeBed')
@@ -833,53 +860,22 @@ class bedtool(object):
         fout.close()
         return bedtool(fn)
 
-    def get_chromsizes_from_ucsc(self, genome, fn=None):
-        """
-        Download chrom size info for *genome* from UCSC, removes the header
-        line, and saves in a temp file.  Could be useful for end users,
-        but mostly called internally by :meth:`bedtool.slop` and other methods that need
-        the genome file.
-
-        If *fn* is None, then saves as a temp file.
-
-        Returns the filename.
-
-        Example usage::
-
-            a = bedtool('in.bed')
-            fn = a.get_chromsizes_from_ucsc('dm3', 'dm3.genome')
-
-        """
-        tmp = self._tmp() 
-        cmds = ['mysql',
-                '--user=genome',
-                '--host=genome-mysql.cse.ucsc.edu',
-                '-A',
-                '-e',
-                '"select chrom, size from %s.chromInfo"' % genome,
-                '|',
-                'tail -n +2',
-                '>',
-                tmp]
-        os.system(' '.join(cmds))
-        self.genome_fn = tmp
-        return tmp
-
     def pybedtools_shuffle(self):
         """
         Quite fast implementation of shuffleBed; assumes shuffling within chroms.
 
-        You need to call self.set_genome() to tell this bedtool object what the
+        You need to call self.set_chromsizes() to tell this bedtool object what the
         chromosome sizes are that you want to shuffle within.
 
         Example usage::
 
-            >>> from pybedtools.genome_registry import dm3
-            >>> a = bedtool('in.bed')
-            >>> a.set_genome(dm3)
+            from pybedtools.genome_registry import dm3
 
-            >>> # randomly shuffled version of "a"
-            >>> b = a.newshuffle()
+            a = bedtool('in.bed')
+            a.set_chromsizes(pybedtools.chromsizes('dm3'))
+
+            # randomly shuffled version of "a"
+            b = a.newshuffle()
         
         Alternatively, you can use a custom genome to shuffle within -- perhaps
         the regions probed by a tiling array::
@@ -887,7 +883,7 @@ class bedtool(object):
             >>> a = bedtool('in.bed')
             >>> array_extent = {'chr11': (500000, 1100000),
             ...                 'chr5': (1, 14000)}
-            >>> a.set_genome(array_extent)
+            >>> a.set_chromsizes(array_extent)
             >>> b = a.pybedtools_shuffle()
 
         This is equivalent to the following command-line usage of ``shuffleBed``::
@@ -895,8 +891,8 @@ class bedtool(object):
             shuffleBed -i in.bed -g dm3.genome -chrom -seed $RANDOM > /tmp/tmpfile
 
         """
-        if not hasattr(self, 'genome'):
-            raise AttributeError, "Please use the set_genome() method of this instance before randomizing"
+        if not hasattr(self, 'chromsizes'):
+            raise AttributeError, "Please use the set_chromsizes() method of this instance before randomizing"
 
         tmp = self._tmp()
         TMP = open(tmp,'w')
