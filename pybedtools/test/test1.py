@@ -106,6 +106,23 @@ def test_chromsizes():
 
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, **dict(genome='hg17', mysql='nonexistent'))
 
+def test_subset():
+    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    import random
+    random.seed(1)
+
+    s = list(a.random_subset(1).features())
+    assert len(s) == 1
+    assert isinstance(s[0], pybedtools.features.bedfeature)
+
+
+def test_length_bed():
+    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    assert a.lengths() == [99, 100, 350, 50]
+
+def test_count_bed():
+    a = pybedtools.bedtool(pybedtools.example_bed_fn('a.bed'))
+    assert a.count() == 4
 
 def test_feature_centers():
     a = pybedtools.bedtool("""
@@ -501,7 +518,6 @@ def test_merge():
     print results
     assert results == expected
   
-
 
 def teardown():
     # always run this!
