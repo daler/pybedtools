@@ -13,32 +13,11 @@ import genome_registry
 
 # Check calls against these names to only allow calls to known BEDTools
 # programs (basic security)
-_prog_names = [
-'annotateBed',
-'bedToBam',
-'complementBed',
-'flankBed',
-'linksBed',
-'overlap',
-'shuffleBed',
-'subtractBed'
-'bamToBed',
-'bedToIgv',
-'coverageBed',
-'genomeCoverageBed',
-'maskFastaFromBed',
-'pairToBed',
-'slopBed',
-'unionBedGraphs',
-'bed12ToBed6',
-'closestBed',
-'fastaFromBed',
-'intersectBed',
-'mergeBed',
-'pairToPair',
-'sortBed',
-'windowBed',
-]
+_prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
+'linksBed', 'overlap', 'shuffleBed', 'subtractBed', 'bamToBed', 'bedToIgv',
+'coverageBed', 'genomeCoverageBed','maskFastaFromBed', 'pairToBed', 'slopBed',
+'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
+'mergeBed', 'pairToPair', 'sortBed', 'windowBed', ]
 
 _tags = {}
 
@@ -512,7 +491,7 @@ class bedtool(object):
     @_implicit('-a')
     @_returns_bedtool()
     @_log_to_history
-    def intersect(self, b=None, **kwargs):
+    def intersect(self, other, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM as input, you
         need to specify *abam='filename.bam'*.  Returns a new bedtool object.
@@ -532,27 +511,31 @@ class bedtool(object):
             unique_to_other = bedtool('other.bed').intersect(a, v=True)
 
         """
-        other = b
-        if isinstance(other,basestring):
-            kwargs['b'] = other
-        else: 
-            assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
-            kwargs['b'] = other.fn
+        if 'b' not in kwargs:
+            if isinstance(other,basestring):
+                kwargs['b'] = other
+            else: 
+                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                kwargs['b'] = other.fn
             
-        tmp = self._tmp()
-        cmds = ['intersectBed',]
-        if 'abam' not in kwargs:
+        if ('abam' not in kwargs) and ('a' not in kwargs):
             kwargs['a'] = self.fn
-        cmds.extend(self.parse_kwargs(**kwargs))
 
+        cmds = ['intersectBed',]
+        cmds.extend(self.parse_kwargs(**kwargs))
+        tmp = self._tmp()
         call_bedtools(cmds, tmp)
 
         other = bedtool(tmp)
+        
+        # tag the new bedtool as having counts
         if 'c' in kwargs:
             other._hascounts = True
+        
         return other
 
     @_help('fastaFromBed')
+    @_implicit('-bed')
     @_returns_bedtool()
     def sequence(self, **kwargs):
         '''
@@ -569,12 +552,16 @@ class bedtool(object):
             a.sequence(fi='genome.fa')
             a.print_sequence()
         '''
+        if 'bed' not in kwargs:
+            kwargs['bed'] = self.fn
+
         tmp = self._tmp()
-        kwargs['bed'] = self.fn
-        kwargs['fo'] = tmp
+        if 'fo' not in kwargs:
+            kwargs['fo'] = tmp
+
         cmds = ['fastaFromBed']
         cmds.extend(self.parse_kwargs(**kwargs))
-        os.system(' '.join(cmds))
+        call_bedtools(cmds, tmp)
         self.seqfn = tmp
         return self
 
@@ -597,17 +584,20 @@ class bedtool(object):
             c = a.subtract('other.bed', s=0.5)
 
         """
-        kwargs['a'] = self.fn
-        if (type(other) is str) or (type(other) is unicode):
-            kwargs['b'] = other
-        else:
-            assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
-            kwargs['b'] = other.fn
-        tmp = self._tmp()
+        if 'a' not in kwargs:
+            kwargs['a'] = self.fn
+
+        if 'b' not in kwargs:
+            if isinstance(other, basestring):
+                kwargs['b'] = other
+            else:
+                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                kwargs['b'] = other.fn
+
         cmds = ['subtractBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        tmp = self._tmp()
+        call_bedtools(cmds, tmp)
         return bedtool(tmp)
 
     @_help('slopBed')
@@ -637,12 +627,14 @@ class bedtool(object):
         if genome is not None:
             genome_fn = self.get_chromsizes_from_ucsc(genome)
             kwargs['g'] = genome_fn
-        kwargs['i'] = self.fn
-        tmp = self._tmp()
+        
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
         cmds = ['slopBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        tmp = self._tmp()
+        call_bedtool(cmds, tmp)
         return bedtool(tmp)
 
     @_help('mergeBed')
@@ -661,12 +653,13 @@ class bedtool(object):
             b = a.merge(d=100)
 
         """
-        tmp = self._tmp()
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
         cmds = ['mergeBed',]
-        kwargs['i'] = self.fn
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        tmp = self._tmp()
+        call_bedtools(cmds, tmp)
         return bedtool(tmp)
 
     @_help('closestBed')
@@ -688,17 +681,20 @@ class bedtool(object):
             b = a.closest('other.bed', s=True)
 
         """
-        tmp = self._tmp()
+        if 'a' not in kwargs:
+            kwargs['a'] = self.fn
+
+        if 'b' not in kwargs:
+            if isinstance(b, basestring): 
+                kwargs['b'] = other
+            else:
+                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                kwargs['b'] = other.fn
+
         cmds = ['closestBed',]
-        kwargs['a'] = self.fn
-        if (type(other) is str) or (type(other) is unicode):
-            kwargs['b'] = other
-        else:
-            assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
-            kwargs['b'] = other.fn
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        tmp = self._tmp()
+        call_bedtools(cmds, tmp)
         newbedtool = bedtool(tmp)
         newbedtool.closest_output = True
         return newbedtool
@@ -718,17 +714,19 @@ class bedtool(object):
             # Consider features up to 500 bp away as overlaps
             b = a.window(w=500)
         """
-        tmp = self._tmp()
+        if 'a' not in kwargs:
+            kwargs['a'] = self.fn
+        if 'b' not in kwargs:
+            if isinstance(other, basestring):
+                kwargs['b'] = other
+            else:
+                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                kwargs['b'] = other.fn
+
         cmds = ['windowBed',]
-        kwargs['a'] = self.fn
-        if (type(other) is str) or (type(other) is unicode):
-            kwargs['b'] = other
-        else:
-            assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
-            kwargs['b'] = other.fn
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        tmp = self._tmp()
+        call_bedtools(cmds, tmp)
         return bedtool(tmp)
 
     @_help('shuffleBed')
@@ -738,24 +736,26 @@ class bedtool(object):
         if genome is not None:
             genome_fn = self.get_chromsizes_from_ucsc(genome)
             kwargs['g'] = genome_fn
-        kwargs['i'] = self.fn
-        tmp = self._tmp()
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
         cmds = ['shuffleBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        tmp = self._tmp()
+        call_bedtools(cmds, tmp)
         return bedtool(tmp)
     
     @_help('sortBed')
     @_implicit('-i')
     @_log_to_history
     def sort(self,**kwargs):
-        kwargs['i'] = self.fn
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
         cmds = ['sortBed']
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
-        cmds.extend(['>',tmp])
-        os.system(' '.join(cmds))
+        call_bedtools(cmds, tmp)
         return bedtool(tmp)
     
     def features(self):
