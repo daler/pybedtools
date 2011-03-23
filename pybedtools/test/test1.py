@@ -104,6 +104,9 @@ def test_chromsizes():
     assert expected == results
 
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, **dict(genome='hg17', mysql='nonexistent'))
+   
+    os.unlink('hg17.genome')
+
 
 def test_subset():
     a = pybedtools.example_bedtool('a.bed')
