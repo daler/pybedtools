@@ -11,7 +11,8 @@ pybedtools.set_tempdir('.')
 def fix(x):
     """
     Replaces spaces with tabs, removes spurious newlines, and lstrip()s each
-    line.
+    line. Makes it really easy to create BED files on the fly for testing and
+    checking.
     """
     s = ""
     for i in  x.splitlines():
@@ -53,9 +54,9 @@ def test_cleanup():
     # a.fn and b.fn better be there still!
     assert os.path.exists(a.fn)
     assert os.path.exists(b.fn)
-    
+     
 
-def decorator_test():
+def test_decorators():
     from pybedtools.bedtool import _returns_bedtool, _help
 
     @_returns_bedtool()
@@ -70,11 +71,47 @@ def decorator_test():
     # "-a" ought to be in the help string for intersectBed somewhere....
     assert '-a' in dummy2.__doc__
 
+def test_bedtools_check():
+    # this should run fine (especially since we've already imported pybedtools)
+    pybedtools.check_for_bedtools()
+
+    # but this should crap out
+    assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent',))
+
+def test_call():
+    
+    tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
+    from pybedtools.bedtool import call_bedtools, BEDToolsError
+    assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
+
+def test_chromsizes():
+    assert pybedtools.chromsizes('dm3') == pybedtools.get_chromsizes_from_ucsc('dm3')
+    
+    hg17 = pybedtools.chromsizes('hg17')
+
+    assert hg17['chr1'] == (1,245522847)
+   
+    fn = pybedtools.chromsizes_to_file(hg17, fn='hg17.genome')
+    expected = 'chr1\t245522847\n'
+    results = open(fn).readline()
+    print results
+    assert expected == results
+
+    # make sure the tempfile version works, too
+    fn = pybedtools.chromsizes_to_file(hg17, fn=None)
+    expected = 'chr1\t245522847\n'
+    results = open(fn).readline()
+    print results
+    assert expected == results
+
+    assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, **dict(genome='hg17', mysql='nonexistent'))
 
 
-
-def test_midpoint():
-    a = pybedtools.bedtool("chr1 1 100\nchr5 3000 4000", from_string=True)
+def test_feature_centers():
+    a = pybedtools.bedtool("""
+                           chr1 1 100
+                           chr5 3000 4000
+                           """, from_string=True)
     b = a.feature_centers(1)
     results = list(b.features())
 
@@ -124,7 +161,7 @@ def test_bedtool_creation():
     print ''.join(difflib.ndiff(str(from_string), str(a)))
 
     assert str(from_string) == str(a)
-    
+
 def test_special_methods():
     # note that *s* has both tabs and spaces....
     s = """
@@ -161,8 +198,27 @@ def test_history_step():
     d = c.subtract(a)
     
     print d.history
+    d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'n')
+    assert os.path.exists(a.fn)
+    assert os.path.exists(b.fn)
+    assert os.path.exists(c.fn)
+    assert os.path.exists(d.fn)
+
+    d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'Yes')
+    assert os.path.exists(a.fn)
+    assert os.path.exists(b.fn)
+    assert not os.path.exists(c.fn) # this is the only thing that should change
+    assert os.path.exists(d.fn)
+
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.intersect(b)
+    d = c.subtract(a)
     d.delete_temporary_history(ask=False)
-    print d.history
+    assert os.path.exists(a.fn)
+    assert os.path.exists(b.fn)
+    assert not os.path.exists(c.fn) # this is the only thing that should change
+    assert os.path.exists(d.fn)
 
 def test_sequence():
 
@@ -317,8 +373,134 @@ def test_intersect():
     assert str(a.intersect(b, v=True, s=True)) == expected
 
 
+
     
     
+
+def test_subtract():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+
+    # plain 'old subtract
+    results = str(a.subtract(b))
+    print results
+    expected = fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	155	feature2	0	+
+    chr1	150	155	feature3	0	-
+    chr1	200	500	feature3	0	-
+    chr1	901	950	feature4	0	+""")
+    assert results == expected
+
+    # strand-specific
+    results = str(a.subtract(b,s=True))
+    print results
+    expected = fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	200	feature2	0	+
+    chr1	150	155	feature3	0	-
+    chr1	200	500	feature3	0	-
+    chr1	901	950	feature4	0	+""")
+    assert results == expected
+
+    # the difference in f=0.2 and f=0.1 is in feature5 of b.  Since feature2
+    # and feature3 of a overlap, it's seeing the 'a' feature as a 399-bp
+    # feature (chr1:100-500), and feature5 of 'b' overlaps this by 44 bp.
+    #
+    # So the threshold fraction should be
+    #
+    #   44/399 = 0.1103 
+    #
+    # f > 0.1103 should return no subtractions, because nothing in b overlaps by that much.
+    # However, 0.12 doesn't work; need to go to 0.13 . . .
+    results = str(a.subtract(b,s=True,f=0.13))
+    print results
+    expected = fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	200	feature2	0	+
+    chr1	150	500	feature3	0	-
+    chr1	900	950	feature4	0	+""")
+    assert results == expected
+    
+    # f < 0.1103, so should get a subtraction
+    results = str(a.subtract(b,s=True,f=0.1))
+    print results
+    expected = fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	200	feature2	0	+
+    chr1	150	155	feature3	0	-
+    chr1	200	500	feature3	0	-
+    chr1	900	950	feature4	0	+""")
+    assert results == expected
+
+def test_slop():
+    a = pybedtools.example_bedtool('a.bed')
+
+    results = str(a.slop(g=pybedtools.chromsizes('hg19'), b=100))
+    expected = fix("""
+    chr1	0	200	feature1	0	+
+    chr1	0	300	feature2	0	+
+    chr1	50	600	feature3	0	-
+    chr1	800	1050	feature4	0	+
+    """)
+    print results
+    assert results == expected
+
+    results = str(a.slop(g=pybedtools.chromsizes('hg19'), l=100, r=1))
+    expected = fix("""
+    chr1	0	101	feature1	0	+
+    chr1	0	201	feature2	0	+
+    chr1	50	501	feature3	0	-
+    chr1	800	951	feature4	0	+
+    """)
+    print results
+    assert results == expected
+    
+    
+    # Make sure it complains if no genome is set
+    assert_raises(ValueError, a.slop, **dict(l=100, r=1))
+
+    # OK, so set one...
+    a.set_chromsizes(pybedtools.chromsizes('hg19'))
+
+    # Results should be the same as before.
+    results = str(a.slop(l=100, r=1))
+    expected = fix("""
+    chr1	0	101	feature1	0	+
+    chr1	0	201	feature2	0	+
+    chr1	50	501	feature3	0	-
+    chr1	800	951	feature4	0	+
+    """)
+    print results
+    assert results == expected
+
+def test_merge():
+    a = pybedtools.example_bedtool('a.bed')
+    results = str(a.merge())
+    expected = fix("""
+    chr1	1	500
+    chr1	900	950
+    """)
+    print results
+    assert results == expected
+
+    results = str(a.merge(s=True))
+    expected = fix("""
+    chr1	1	200	+
+    chr1	900	950	+
+    chr1	150	500	-
+    """)
+    print results
+    assert results == expected
+
+    b = pybedtools.example_bedtool('b.bed')
+    results = str(b.merge(d=700))
+    expected = fix("""
+    chr1 155 901 
+    """)
+    print results
+    assert results == expected
+  
 
 
 def teardown():

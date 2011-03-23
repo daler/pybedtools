@@ -328,17 +328,17 @@ this file for you and return the resulting filename:
     :options: +NORMALIZE_WHITESPACE
     
     >>> # Download Drosophila melanogaster chromSizes table from UCSC
-    >>> chromsizes = a.get_chromsizes_from_ucsc('hg19', fn='hg19.genome')
+    >>> chromsizes = pybedtools.get_chromsizes_from_ucsc('hg19', saveas='hg19.genome')
 
     >>> # print first few lines of that file
-    >>> f = open(chromsizes)
+    >>> f = open('hg19.genome')
     >>> for i in range(5):
     ...     print f.readline(),
-    chr1    249250621
-    chr2    243199373
-    chr3    198022430
-    chr4    191154276
-    chr5    180915260
+    chr1	249250621
+    chr10	135534747
+    chr11	135006516
+    chr11_gl000202_random	40103
+    chr12	133851895
 
 
 Feature centers
@@ -456,7 +456,7 @@ Let's make something with a more complicated history:
     >>> a = pybedtools.example_bedtool('a.bed')
     >>> b = pybedtools.example_bedtool('b.bed')
     >>> c = a.intersect(b)
-    >>> d = c.slop(genome='hg19', b=1)
+    >>> d = c.slop(g=pybedtools.chromsizes('hg19'), b=1)
     >>> e = d.merge()
 
     >>> # this step adds complexity!
