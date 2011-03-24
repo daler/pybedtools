@@ -8,7 +8,7 @@ import itertools
 import glob
 from math import floor, ceil
 
-from features import bedfeature
+from features import BedFeature as bedfeature
 import pybedtools
 import genome_registry
 
@@ -786,10 +786,7 @@ class bedtool(object):
         Returns an iterator of :class:`bedfeature` objects.
         """
         for line in self._iterator():
-            L = line.rstrip().split('\t')
-            args = [None for i in range(12)]
-            args[:len(L)] = L
-            yield bedfeature(*args)
+            yield bedfeature(line)
 
     def count(self):
         """
