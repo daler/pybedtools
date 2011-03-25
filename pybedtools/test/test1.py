@@ -121,6 +121,7 @@ def test_length_bed():
 def test_count_bed():
     a = pybedtools.example_bedtool('a.bed')
     assert a.count() == 4
+    assert len(a) == 4
 
 def test_feature_centers():
     a = pybedtools.bedtool("""

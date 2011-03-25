@@ -1429,10 +1429,10 @@ class bedtool(object):
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
         normalized_counts = []
         for line in self:
-            L = line.split()
-            chrom,start,stop = L[:3]
+            L = line.split("\t")
+            f = self._feature_classes[0](L)
             count = float(L[-1])
-            normalized_count = count/(int(stop)-int(start))*1000
+            normalized_count = count / (f.stop - f.start) * 1000
             normalized_counts.append(normalized_count)
         return normalized_counts
 
