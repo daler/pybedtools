@@ -1453,10 +1453,6 @@ class bedtool(object):
         """
         feature_lengths = []
         for line in self:
-            chrom,start,stop = line.split()[:3]
-            start = int(start)
-            stop = int(stop)
-            length = stop-start
-            feature_lengths.append(length)
+            f = self._feature_classes[0](line.split("\t"))
+            feature_lengths.append(f.stop - f.start)
         return feature_lengths
-
