@@ -317,6 +317,7 @@ class bedtool(object):
         tempfile, treating whatever you pass as *fn* as the contents of the bed
         file.  This also strips empty lines.
         """
+        self._feature_classes = [bedfeature]
         if not from_string:
             if isinstance(fn, bedtool):
                 fn = fn.fn
@@ -341,6 +342,7 @@ class bedtool(object):
 
         self.history = History()
    
+
     def delete_temporary_history(self, ask=True, raw_input_func=None):
         """
         Use at your own risk!  This method will delete temp files. You will be
@@ -427,7 +429,7 @@ class bedtool(object):
         bedtool.TEMPFILES.append(tmpfn)
         return tmpfn
 
-    def _iterator(self):
+    def __iter__(self):
         '''Iterator that returns lines from BED file'''
         f = open(self.fn)
         for line in f:
@@ -437,9 +439,6 @@ class bedtool(object):
                 continue
             yield line
         f.close()
-    
-    def __iter__(self):
-        return self._iterator()
 
     def __repr__(self):
         if os.path.exists(self.fn):
@@ -783,10 +782,15 @@ class bedtool(object):
     
     def features(self):
         """
-        Returns an iterator of :class:`bedfeature` objects.
+        Returns an iterator of :class:`feature` objects.
         """
-        for line in self._iterator():
-            yield bedfeature(line)
+        for line in self:
+            line_arr = line.split("\t")
+            if len(self._feature_classes) == 1:
+                yield self._feature_classes[0](line_arr)
+            else:
+                # TODO: each fclass must tell how much of line_arr it consumes.
+                yield [fclass(line_arr) for fclass in self._feature_classes]
 
     def count(self):
         """
@@ -880,7 +884,7 @@ class bedtool(object):
 
         tmp = self._tmp()
         TMP = open(tmp,'w')
-        for line in self._iterator():
+        for line in self:
             L = line.split()
             chrom,start,stop = L[:3]
             start = int(start)
@@ -1051,10 +1055,10 @@ class bedtool(object):
         else:
             assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
         TMP = open(tmp,'w')
-        for line in self._iterator():
+        for line in self:
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
-        for line in other._iterator():
+        for line in other:
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
         TMP.close()
@@ -1304,7 +1308,7 @@ class bedtool(object):
         '''
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for line in self._iterator():
+        for line in self:
             L = line.strip().split('\t')
             chrom,start,stop = L[:3]
             start = int(start)
@@ -1337,7 +1341,7 @@ class bedtool(object):
         """
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for line in self._iterator():
+        for line in self:
             L = line.strip().split('\t')
             chrom,start,stop = L[:3]
             if len(L) > 3:
@@ -1387,7 +1391,7 @@ class bedtool(object):
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
         counts = []
-        for line in self._iterator():
+        for line in self:
             L = line.split()
             chrom,start,stop = L[:3]
             count = int(L[-1])
@@ -1424,7 +1428,7 @@ class bedtool(object):
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
         normalized_counts = []
-        for line in self._iterator():
+        for line in self:
             L = line.split()
             chrom,start,stop = L[:3]
             count = float(L[-1])
@@ -1448,7 +1452,7 @@ class bedtool(object):
             pylab.show()
         """
         feature_lengths = []
-        for line in self._iterator():
+        for line in self:
             chrom,start,stop = line.split()[:3]
             start = int(start)
             stop = int(stop)
