@@ -55,9 +55,12 @@ class GFFFeature(Feature):
 
     @property
     def attributes(self):
-        return self._attributes
+        return self._attributes or self._set_attributes() or self._attributes
 
     def _post_initialize(self):
+        self._attributes = None
+
+    def _set_attributes(self):
         # copied from genomicfeatures
         # this could also be done lazily the first time attributes() is called.
         # i think that's a better option in the spirit of keeping it minimal.
@@ -81,6 +84,8 @@ class GTFFeature(GFFFeature):
     'RP11-304M2.1'
     >>> g.strand
     '+'
+    >>> g.attributes['exon_number']
+    '1'
 
     >>> g = GTFFeature('11\tpseudogene\texon\t75780\t76143\t.\t-\t.\t'.split("\t"))
     >>> g.strand, g.score, g.phase
