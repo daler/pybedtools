@@ -1334,21 +1334,19 @@ class bedtool(object):
         return bedtool(tmpfn)
 
     @_returns_bedtool()
-    def rename_features(self,new_name):
+    def rename_features(self, new_name):
         """
         Forces a rename of all features.  Useful for if you have a BED file of
         exons and you want all of them to have the name "exon".
         """
         tmpfn = self._tmp()
-        tmp = open(tmpfn,'w')
+        tmp = open(tmpfn, 'w')
         for line in self:
-            L = line.strip().split('\t')
-            chrom,start,stop = L[:3]
-            if len(L) > 3:
-                L[3] = new_name
-            else:
-                L.append(new_name)
-            tmp.write('\t'.join(L)+'\n')
+            L = line.split('\t')
+            f = self._feature_classes[0](L)
+            # TODO: this wont yet work for GFF/GTF. 
+            f.name = new_name
+            print >>tmp, str(f)
         tmp.close()
         return bedtool(tmpfn)
 
@@ -1390,13 +1388,7 @@ class bedtool(object):
         """
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
-        counts = []
-        for line in self:
-            L = line.split()
-            chrom,start,stop = L[:3]
-            count = int(L[-1])
-            counts.append(count)
-        return counts
+        return [int(l.split("\t")[-1]) for l in self]
 
     def normalized_counts(self):
         """

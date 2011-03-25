@@ -27,7 +27,13 @@ class Feature(object):
         return "%s(%s:%i-%i)" % (self.__class__.__name__, self.chr, self.start, self.stop)
 
     def __str__(self):
-        return self.line_sep.join(self._line_arr)
+        # accounts for cases where they set an attribute.
+        arr = self._line_arr
+        for i, field in enumerate(self.__slots__):
+            if field[0] == "_": continue
+            if i == len(arr): break
+            arr[i] = getattr(self, field, arr[i])
+        return self.line_sep.join(map(str, arr))
 
 class BedFeature(Feature):
     r"""
