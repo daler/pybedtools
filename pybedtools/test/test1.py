@@ -517,6 +517,12 @@ def test_merge():
     print results
     assert results == expected
   
+def test_closest():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    r = a.closest(b)
+    assert len(r) == len(a)
+
 
 def teardown():
     # always run this!

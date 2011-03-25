@@ -707,7 +707,7 @@ class bedtool(object):
             kwargs['a'] = self.fn
 
         if 'b' not in kwargs:
-            if isinstance(b, basestring): 
+            if isinstance(other, basestring): 
                 kwargs['b'] = other
             else:
                 assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
