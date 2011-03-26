@@ -530,6 +530,12 @@ class bedtool(object):
             # get overlaps with "b.bed"
             >>> b_fn = pybedtools.example_bed_fn('b.bed')
             >>> overlaps = a.intersect(b_fn)
+            >>> print overlaps
+            chr1 155 200 feature2 0 +
+            chr1 155 200 feature3 0 -
+            chr1 900 901 feature4 0 +
+            <BLANKLINE>
+
 
 
             >>> # use v=True to get the inverse, or those unique to in.bed
@@ -1467,3 +1473,7 @@ class bedtool(object):
             f = self._feature_classes[0](line.split("\t"))
             feature_lengths.append(f.stop - f.start)
         return feature_lengths
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
