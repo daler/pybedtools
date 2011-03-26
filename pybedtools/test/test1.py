@@ -115,7 +115,7 @@ def test_subset():
 
     s = list(a.random_subset(1).features())
     assert len(s) == 1
-    assert isinstance(s[0], pybedtools.features.bedfeature)
+    assert isinstance(s[0], pybedtools.features.BedFeature)
 
 def test_length_bed():
     a = pybedtools.example_bedtool('a.bed')
@@ -124,6 +124,7 @@ def test_length_bed():
 def test_count_bed():
     a = pybedtools.example_bedtool('a.bed')
     assert a.count() == 4
+    assert len(a) == 4
 
 def test_feature_centers():
     a = pybedtools.bedtool("""
@@ -520,6 +521,12 @@ def test_merge():
     print results
     assert results == expected
   
+def test_closest():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    r = a.closest(b)
+    assert len(r) == len(a)
+
 
 def teardown():
     # always run this!
