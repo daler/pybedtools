@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 
 
-from bedtool_base import bedtool, get_tempdir, set_tempdir, cleanup, find_tagged
+from bedtool import bedtool, get_tempdir, set_tempdir, cleanup, find_tagged
 
 
 __version__ = '0.2.2dev'
