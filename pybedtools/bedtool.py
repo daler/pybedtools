@@ -1207,7 +1207,7 @@ class bedtool(object):
         tmp = open(tmpfn,'w')
         for feature in self.features():
             if min < len(feature) < max:
-                tmp.write(feature.tostring())
+                tmp.write(str(feature))
         tmp.close()
         return bedtool(tmpfn)
 

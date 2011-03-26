@@ -357,11 +357,11 @@ Filtering
 Only get features of a certain size:
 
 .. doctest::
-    :options: +NORMALIZE_WHITESPACE
+    :options: +NORMALIZE_WHITESPACE +REPORT_NDIFF
     
     >>> # only features that are smaller than 60 bp
     >>> a.size_filter(min=0, max=60).head()
-    chr1    900 950 feature4    0.0 +
+    chr1 900 950 feature4 0 +
 
 
 Working with counted intersections
