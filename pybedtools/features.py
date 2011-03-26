@@ -35,6 +35,9 @@ class Feature(object):
             arr[i] = getattr(self, field, arr[i])
         return self.line_sep.join(map(str, arr))
 
+    def __len__(self):
+        return self.stop - self.start
+
 class BedFeature(Feature):
     r"""
     >>> b = BedFeature("chr1\t23\t45\thello".split("\t"))
