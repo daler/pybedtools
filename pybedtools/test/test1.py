@@ -310,7 +310,8 @@ TCT
     assert seqs == expected
        
     os.unlink(fi)
-    os.unlink(fi+'.fai')
+    if os.path.exists(fi+'.fai'):
+        os.unlink(fi+'.fai')
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines

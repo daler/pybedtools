@@ -7,7 +7,6 @@ import string
 import itertools
 import glob
 from math import floor, ceil
-
 from features import BedFeature as bedfeature
 import pybedtools
 import genome_registry
@@ -19,6 +18,7 @@ _prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
 'coverageBed', 'genomeCoverageBed','maskFastaFromBed', 'pairToBed', 'slopBed',
 'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
 'mergeBed', 'pairToPair', 'sortBed', 'windowBed', ]
+
 
 _tags = {}
 
@@ -34,7 +34,7 @@ def find_tagged(tag):
     Returns the bedtool object with tagged with *tag*.  Useful for tracking
     down bedtools you made previously.
     """
-    for key,item in _tags.iteritems():
+    for key, item in _tags.iteritems():
         try:
             if item._tag == tag:
                 return item
@@ -68,7 +68,8 @@ class History(list):
         list.__init__(self)
 
 class HistoryStep(object):
-    def __init__(self, method, args, kwargs, bedtool_instance, parent_tag, result_tag):
+    def __init__(self, method, args, kwargs, bedtool_instance, 
+                 parent_tag, result_tag):
         """
         Class to represent one step in the history.
 
@@ -297,38 +298,37 @@ def call_bedtools(cmds, tmpfn, check_stderr=None):
         raise OSError('See above for commands that gave the error')
 
 class bedtool(object):
-    """
-    Wrapper around Aaron Quinlans ``BEDtools`` suite of programs
-    (https://github.com/arq5x/bedtools); also contains many useful
-    methods for more detailed work with BED files.
-
-    Typical usage is to point to an existing file::
-
-        a = bedtool('a.bed')
-
-    But you can also create one from scratch from a string::
-
-        s = '''
-            chrX  1  100
-            chrX 25  800
-            '''
-        a = bedtool(s,from_string=True).saveas('a.bed')
-
-    Or use examples that come with pybedtools::
-
-        example_beds = pybedtools.list_example_beds()
-        a = pybedtools.example_bedtool('a.bed')
-
-
-    """
     TEMPFILES = []
     def __init__(self, fn, from_string=False):
         """
+        Wrapper around Aaron Quinlan's ``BEDtools`` suite of programs
+        (https://github.com/arq5x/bedtools); also contains many useful
+        methods for more detailed work with BED files.
+
         *fn* is a BED format file, or alternatively another bedtool instance.
 
         If *from_string* is True, then treat all spaces as TABs and write to
         tempfile, treating whatever you pass as *fn* as the contents of the bed
         file.  This also strips empty lines.
+        
+        Typical usage is to point to an existing file::
+
+           
+            a = bedtool('a.bed')
+
+        But you can also create one from scratch from a string::
+
+            >>> s = '''
+            ... chrX  1  100
+            ... chrX 25  800
+            ... '''
+            >>> a = bedtool(s,from_string=True).saveas('a.bed')
+
+        Or use examples that come with pybedtools::
+
+             >>> example_beds = pybedtools.list_example_beds()
+             >>> a = pybedtools.example_bedtool('a.bed')
+
         """
         self._feature_classes = [bedfeature]
         if not from_string:
@@ -501,12 +501,14 @@ class bedtool(object):
 
         Example usage::
 
-            dm3 = pybedtools.chromsizes('dm3')
-            a = bedtool('a.bed')
-            a.set_chromsizes(dm3)
+            >>> hg19 = pybedtools.chromsizes('hg19')
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> a.set_chromsizes(hg19)
+            >>> print a.chromsizes['chr1']
+            (1, 249250621)
 
-            # Now you can use things like pybedtools_shuffle
-            b = a.pybedtools_shuffle(iterations=100)
+            >>> # Now you can use things like pybedtools_shuffle
+            >>> b = a.pybedtools_shuffle()
         """
         self.chromsizes = chromsizes
 
@@ -522,17 +524,16 @@ class bedtool(object):
 
         Example usage::
 
-            # create new bedtool object
-            a = bedtool('in.bed')
+            >>> # create new bedtool object
+            >>> a = pybedtools.example_bedtool('a.bed')
 
-            # get overlaps with "other.bed"
-            overlaps = a.intersect('other.bed')
+            # get overlaps with "b.bed"
+            >>> b_fn = pybedtools.example_bed_fn('b.bed')
+            >>> overlaps = a.intersect(b_fn)
 
-            # use v=True to get the inverse, or those unique to in.bed
-            unique_to_a = a.intersect('other.bed', v=True)
 
-            # features unique to "other.bed"
-            unique_to_other = bedtool('other.bed').intersect(a, v=True)
+            >>> # use v=True to get the inverse, or those unique to in.bed
+            >>> unique_to_a = a.intersect(b_fn, v=True)
 
         """
 
@@ -875,7 +876,7 @@ class bedtool(object):
 
         Example usage::
 
-            from pybedtools.genome_registry import dm3
+            from pybedtools.genome_registry import hg19
 
             a = bedtool('in.bed')
             a.set_chromsizes(pybedtools.chromsizes('dm3'))
@@ -886,11 +887,11 @@ class bedtool(object):
         Alternatively, you can use a custom genome to shuffle within -- perhaps
         the regions probed by a tiling array::
 
-            >>> a = bedtool('in.bed')
-            >>> array_extent = {'chr11': (500000, 1100000),
-            ...                 'chr5': (1, 14000)}
-            >>> a.set_chromsizes(array_extent)
-            >>> b = a.pybedtools_shuffle()
+            a = bedtool('in.bed')
+            array_extent = {'chr11': (500000, 1100000),
+                            'chr5': (1, 14000)}
+            a.set_chromsizes(array_extent)
+            b = a.pybedtools_shuffle()
 
         This is equivalent to the following command-line usage of ``shuffleBed``::
 
@@ -908,7 +909,7 @@ class bedtool(object):
             start = int(start)
             stop = int(stop)
             length = stop-start
-            newstart = random.randint(self.genome[chrom][0], self.genome[chrom][1]-length)
+            newstart = random.randint(self.chromsizes[chrom][0], self.chromsizes[chrom][1]-length)
             newstop = newstart + length
 
             # Just overwrite start and stop, leaving the rest of the line in

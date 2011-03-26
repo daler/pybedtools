@@ -53,7 +53,7 @@ def list_example_beds():
     Example usage::
 
         >>> choices = list_example_beds()
-        >>> bedfn = example_bed(choices[0])
+        >>> bedfn = example_bed_fn(choices[0])
         >>> mybedtool = bedtool(bedfn)
 
 
