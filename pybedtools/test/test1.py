@@ -57,7 +57,7 @@ def test_cleanup():
      
 
 def test_decorators():
-    from pybedtools.bedtool import _returns_bedtool, _help
+    from pybedtools.bedtool_base import _returns_bedtool, _help
 
     @_returns_bedtool()
     def dummy():
@@ -80,7 +80,7 @@ def test_bedtools_check():
 
 def test_call():
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
-    from pybedtools.bedtool import call_bedtools, BEDToolsError
+    from pybedtools.bedtool_base import call_bedtools, BEDToolsError
     assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
 
 def test_chromsizes():
@@ -205,7 +205,7 @@ def test_add_subtract():
     assert a.intersect(b,v=True) == (a-b)
 
 def test_flatten():
-    from pybedtools.bedtool import _flatten_list 
+    from pybedtools.bedtool_base import _flatten_list 
     result = _flatten_list([[1,2,3,0,[0,5],9],[100]])
     print result
     assert result == [1, 2, 3, 0, 0, 5, 9, 100]
