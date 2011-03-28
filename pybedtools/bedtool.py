@@ -270,20 +270,20 @@ def call_bedtools(cmds, tmpfn, check_stderr=None):
     try:
         p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE)
         stdout,stderr = p.communicate()
-        
+
         # Check if it's OK; if so dump it to sys.stderr and reset it to None so
         # we don't raise an exception
         if check_stderr is not None:
             if check_stderr(stderr):
                 sys.stderr.write(stderr)
                 stderr = None
-        
+
         if stderr:
             print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
             print 'Error message was:\n'
             #print '\n'.join([i for i in stderr.splitlines() if i.startswith('***')])
             print stderr
-            raise BEDToolsError('See above for commands and error message')
+            raise BEDToolsError('See above for commands and error message', stderr)
 
     except (OSError, IOError) as err:
         print '%s: %s' % (type(err), os.strerror(err.errno))
@@ -310,10 +310,10 @@ class bedtool(object):
         If *from_string* is True, then treat all spaces as TABs and write to
         tempfile, treating whatever you pass as *fn* as the contents of the bed
         file.  This also strips empty lines.
-        
+
         Typical usage is to point to an existing file::
 
-           
+
             a = bedtool('a.bed')
 
         But you can also create one from scratch from a string::
@@ -326,7 +326,8 @@ class bedtool(object):
 
         Or use examples that come with pybedtools::
 
-             >>> example_beds = pybedtools.list_example_beds()
+             >>> example_files = pybedtools.list_example_files()
+             >>> assert example_files[0] == 'a.bed'
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """
@@ -524,12 +525,14 @@ class bedtool(object):
 
         Example usage::
 
-            >>> # create new bedtool object
+            Create new bedtool object
+
             >>> a = pybedtools.example_bedtool('a.bed')
 
-            # get overlaps with "b.bed"
-            >>> b_fn = pybedtools.example_bed_fn('b.bed')
-            >>> overlaps = a.intersect(b_fn)
+            Get overlaps with "b.bed":
+
+            >>> b = pybedtools.example_bedtool('b.bed')
+            >>> overlaps = a.intersect(b)
             >>> print overlaps
             chr1 155 200 feature2 0 +
             chr1 155 200 feature3 0 -
@@ -537,9 +540,12 @@ class bedtool(object):
             <BLANKLINE>
 
 
+        Use v=True to get the inverse, or those unique to in.bed:
 
-            >>> # use v=True to get the inverse, or those unique to in.bed
-            >>> unique_to_a = a.intersect(b_fn, v=True)
+            >>> unique_to_a = a.intersect(b, v=True)
+            >>> print unique_to_a
+            chr1 1 100 feature1 0 +
+            <BLANKLINE>
 
         """
 
@@ -581,7 +587,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = pybedtools.example_bedtool('a.bed')
             a.sequence(fi='genome.fa')
             a.print_sequence()
         '''

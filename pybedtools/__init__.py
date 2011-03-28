@@ -9,6 +9,13 @@ from bedtool import bedtool, get_tempdir, set_tempdir, cleanup, find_tagged
 
 __version__ = '0.2.2dev'
 
+# Registry of files in the test dir that should be accessible to users via example_bedtool
+example_files = ['a.bed.','b.bed','test.fa', 'a.bam']
+
+"""
+>>> assert example_files == 0
+"""
+
 def check_for_bedtools(program_to_check='intersectBed'):
     try:
         p = subprocess.Popen([program_to_check], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -25,12 +32,13 @@ def data_dir():
     """
     return os.path.join(os.path.dirname(__file__), 'test')
 
-def example_bed_fn(bed):
+
+def example_filename(fn):
     """
     Return a bed file from the pybedtools examples directory.  Use
     :func:`list_example_beds` to see a list of files that are included.
     """
-    fn = os.path.join(data_dir(), bed)
+    fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
         raise ValueError, "%s does not exist" % fn
     return fn
@@ -45,14 +53,14 @@ def example_bedtool(fn):
         raise ValueError, "%s does not exist" % fn
     return bedtool(fn)
 
-def list_example_beds():
+def list_example_files():
     """
-    Returns a list of bed files in the examples dir.  Choose one and pass
-    it to :func:`example_bed` to get the full path to an example BED file.
+    Returns a list of files in the examples dir.  Choose one and pass it to
+    :func:`example_file_fnl` to get the full path to an examplefile.
 
     Example usage::
 
-        >>> choices = list_example_beds()
+        >>> choices = list_example_files()
         >>> bedfn = example_bed_fn(choices[0])
         >>> mybedtool = bedtool(bedfn)
 
