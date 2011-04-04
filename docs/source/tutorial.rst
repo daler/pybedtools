@@ -529,9 +529,15 @@ the pattern ``<TEMP_DIR>/pybedtools.*.tmp`` from the history of *f*, up to but
 not including the file for *f* itself.  Any :class:`BedTool` instances that do
 not match the pattern are left alone.
 
-
-
 More documentation
 ------------------
 For more info, see the :ref:`topical`.
 
+.. doctest::
+    :hide:
+
+    Gotta clean up all the files created over the course of the tutorial...
+
+    >>> fns_to_remove = ['a-with-b.bed', 'a-with-b-merged.bed', 'hg19.genome', 'intersection-of-a-and-b.bed','middle-100-bp.bed','shared_merged.bed']
+    >>> for fn in fns_to_remove:
+    ...     os.unlink(fn)
