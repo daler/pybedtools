@@ -4,7 +4,8 @@ import subprocess
 import tempfile
 
 
-from bedtool import bedtool, get_tempdir, set_tempdir, cleanup, find_tagged
+from helpers import get_tempdir, set_tempdir, cleanup, find_tagged
+from bedtool import BedTool
 import genome_registry
 
 
@@ -47,7 +48,7 @@ def example_bedtool(fn):
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
         raise ValueError, "%s does not exist" % fn
-    return bedtool(fn)
+    return BedTool(fn)
 
 def list_example_files():
     """
@@ -59,7 +60,7 @@ def list_example_files():
         >>> choices = list_example_files()
         >>> assert 'a.bed' in choices
         >>> bedfn = example_filename('a.bed')
-        >>> mybedtool = bedtool(bedfn)
+        >>> mybedtool = BedTool(bedfn)
         >>> print mybedtool
         chr1 1   100 feature1 0 +
         chr1 100 200 feature2 0 +
@@ -118,7 +119,7 @@ def chromsizes_to_file(chromsizes, fn=None):
     if fn is None:
         tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
         tmpfn = tmpfn.name
-        bedtool.TEMPFILES.append(tmpfn)
+        BedTool.TEMPFILES.append(tmpfn)
         fn = tmpfn
     fout = open(fn,'w')
     for chrom, bounds in sorted(chromsizes.items()):

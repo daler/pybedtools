@@ -1,303 +1,18 @@
-import sys
-import os
 import tempfile
-import subprocess
+from math import floor, ceil
+import os
 import random
 import string
-import itertools
-import glob
-from math import floor, ceil
-from features import BedFeature as bedfeature
+
+from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
+    _returns_bedtool, get_tempdir, set_tempdir, cleanup, find_tagged, _tags,\
+    History, HistoryStep, call_bedtools, _flatten_list
+
+from pybedtools.features import BedFeature as bedfeature, GFFFeature, GTFFeature
 import pybedtools
-import genome_registry
-
-# Check calls against these names to only allow calls to known BEDTools
-# programs (basic security)
-_prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
-'linksBed', 'overlap', 'shuffleBed', 'subtractBed', 'bamToBed', 'bedToIgv',
-'coverageBed', 'genomeCoverageBed','maskFastaFromBed', 'pairToBed', 'slopBed',
-'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
-'mergeBed', 'pairToPair', 'sortBed', 'windowBed', ]
 
 
-_tags = {}
-
-class Error(Exception):
-    """Base class for this module's exceptions"""
-    pass
-
-class BEDToolsError(Error):
-    pass
-
-def find_tagged(tag):
-    """
-    Returns the bedtool object with tagged with *tag*.  Useful for tracking
-    down bedtools you made previously.
-    """
-    for key, item in _tags.iteritems():
-        try:
-            if item._tag == tag:
-                return item
-        except AttributeError:
-            pass
-    return '%s not found' % tag
-
-
-def _flatten_list(x):
-    nested = True
-    while nested:
-        check_again = False
-        flattened = []
-
-        for element in x:
-            if isinstance(element, list):
-                flattened.extend(element)
-                check_again = True
-            else:
-                flattened.append(element)
-        nested = check_again
-        x = flattened[:]
-    return x
-
-class History(list):
-    def __init__(self):
-        """
-        Represents one or many HistorySteps.  Mostly used for nicely formatting
-        a series of HistorySteps.
-        """
-        list.__init__(self)
-
-class HistoryStep(object):
-    def __init__(self, method, args, kwargs, bedtool_instance, 
-                 parent_tag, result_tag):
-        """
-        Class to represent one step in the history.
-
-        Mostly used for its __repr__ method, to try and exactly replicate code
-        that can be pasted to re-do history steps
-        """
-        self.method = method.func_name
-        self.args = args
-        self.kwargs = kwargs
-        self.fn = bedtool_instance.fn
-        tag = ''.join(random.choice(string.lowercase) for _ in xrange(8))
-        self.parent_tag = parent_tag
-        self.result_tag = result_tag
-
-    def _clean_arg(self,arg):
-        """
-        Wrap strings in quotes and convert bedtool instances to filenames.
-        """
-        if isinstance(arg,bedtool):
-            arg = arg.fn
-        if isinstance(arg,basestring):
-            arg = '"%s"' % arg
-        return arg
-
-    def __repr__(self):
-        # Still not sure whether to use pybedtools.bedtool() or bedtool()
-        s = ''
-        s += '<HistoryStep> '
-        if os.path.exists(self.fn):
-            s += 'bedtool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
-        else:
-            s += 'bedtool("MISSING FILE: %(fn)s").%(method)s(%%s%%s)' % self.__dict__
-
-        # Format args and kwargs
-        args_string = ','.join(map(self._clean_arg, self.args))
-        kwargs_string = ','.join(['%s=%s'% (i[0], self._clean_arg(i[1])) for i in self.kwargs.items()])
-
-        # stick a comma on the end if there's something here
-        if len(args_string) > 0:
-            args_string += ', '
-
-        s = s % (args_string, kwargs_string)
-        s += ', parent tag: %s' % self.parent_tag
-        s += ', result tag: %s' % self.result_tag
-        return s
-
-def set_tempdir(tempdir):
-    """
-    Sets the directory for temp files.  Useful for clusters that use a /scratch
-    partition rather than a /tmp dir.  Convenience function to simply set
-    tempfile.tempdir.
-    """
-    if not os.path.exists(tempdir):
-        raise ValueError, 'The tempdir you specified, %s, does not exist' % tempdir
-    tempfile.tempdir = tempdir
-
-def get_tempdir():
-    """
-    Gets the current tempdir for the module.
-    """
-    return tempfile.tempdir
-
-def cleanup(verbose=False,remove_all=False):
-    """
-    Deletes all temporary files in the *bedtool.TEMPFILES* class
-    variable.
-
-    If *verbose*, reports what it's doing
-
-    If *remove_all*, then ALL files matching "pybedtools.*.tmp" in the temp dir
-    will be deleted.
-    """
-    for fn in bedtool.TEMPFILES:
-        if verbose:
-            print 'removing', fn
-        if os.path.exists(fn):
-            os.unlink(fn)
-    if remove_all:
-        fns = glob.glob(os.path.join(get_tempdir(), 'pybedtools.*.tmp'))
-        for fn in fns:
-            os.unlink(fn)
-
-
-def _file_or_bedtool():
-    '''
-    Decorator that adds a line to the docstring indicating
-    that a bedtool object is returned.
-    '''
-    extra_help = """
-    .. note::
-
-        This method accepts either a bedtool or a file name as the first
-        unnamed argument
-
-    """
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ += extra_help
-        return func
-
-    return decorator
-
-def _returns_bedtool():
-    '''
-    Decorator that adds a line to the docstring indicating
-    that a bedtool object is returned.
-    '''
-    extra_help = """
-    .. note::
-
-        This method returns a new bedtool instance
-    """
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ += extra_help
-        return func
-
-    return decorator
-
-def _implicit(option):
-    '''
-    Decorator that adds a line to the docstring indicating
-    that a particular option is implied to be the default
-    '''
-    extra_help = """
-    .. note::
-
-        For convenience, the file this bedtool object points to is passed as "%s"
-    """ % option
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ += extra_help
-        return func
-
-    return decorator
-
-def _help(command):
-    '''Decorator that adds help from each of the BEDtools programs to the
-    docstring of the method that calls the program'''
-
-    p = subprocess.Popen([command,'-h'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    help_str = p.communicate()[1]
-    help_str = help_str.replace('_','**')
-
-    # insert tabs into the help
-    help_str = help_str.split('\n')
-    help_str = ['\t'+i for i in help_str]
-    help_str = '\n'.join(help_str)
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ = '*pybedtools help:*\n'
-        func.__doc__ += orig
-        func.__doc__ += '\n\n*Original BEDtools program help:*\n'
-        func.__doc__ += help_str
-        return func
-
-    return decorator
-
-def call_bedtools(cmds, tmpfn, check_stderr=None):
-    """
-    Use subprocess.Popen to call BEDTools and catch any errors.
-
-    Output always goes to tmpfn.
-
-    Prints some useful help upon getting common errors.
-
-    *check_stderr* is a function that takes the stderr string as input and
-    returns True if it's OK (that is, it's not really an error).  This is
-    needed, e.g., for calling fastaFromBed which will report that it has to
-    make a .fai for a fasta file.
-    """
-    if cmds[0] not in _prog_names:
-        raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
-    try:
-        p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE)
-        stdout,stderr = p.communicate()
-
-        # Check if it's OK; if so dump it to sys.stderr and reset it to None so
-        # we don't raise an exception
-        if check_stderr is not None:
-            if check_stderr(stderr):
-                sys.stderr.write(stderr)
-                stderr = None
-
-        if stderr:
-            print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
-            print 'Error message was:\n'
-            #print '\n'.join([i for i in stderr.splitlines() if i.startswith('***')])
-            print stderr
-            raise BEDToolsError('See above for commands and error message', stderr)
-
-    except (OSError, IOError) as err:
-        print '%s: %s' % (type(err), os.strerror(err.errno))
-        print 'The command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
-
-        problems = {2 :('* Did you spell the command correctly?', '* Do you have BEDTools installed and on the path?'),
-                    13:('* Do you have permission to write to the output file ("%s")?' % tmpfn,),
-                   }
-
-        print 'Things to check:'
-        print '\n\t'+'\n\t'.join(problems[err.errno])
-        raise OSError('See above for commands that gave the error')
-
-class bedtool(object):
+class BedTool(object):
     TEMPFILES = []
     def __init__(self, fn, from_string=False):
         """
@@ -305,7 +20,7 @@ class bedtool(object):
         (https://github.com/arq5x/bedtools); also contains many useful
         methods for more detailed work with BED files.
 
-        *fn* is a BED format file, or alternatively another bedtool instance.
+        *fn* is a BED format file, or alternatively another BedTool instance.
 
         If *from_string* is True, then treat all spaces as TABs and write to
         tempfile, treating whatever you pass as *fn* as the contents of the bed
@@ -314,7 +29,7 @@ class bedtool(object):
         Typical usage is to point to an existing file::
 
 
-            a = bedtool('a.bed')
+            a = BedTool('a.bed')
 
         But you can also create one from scratch from a string::
 
@@ -322,7 +37,7 @@ class bedtool(object):
             ... chrX  1  100
             ... chrX 25  800
             ... '''
-            >>> a = bedtool(s,from_string=True).saveas('a.bed')
+            >>> a = BedTool(s,from_string=True).saveas('a.bed')
 
         Or use examples that come with pybedtools::
 
@@ -333,7 +48,7 @@ class bedtool(object):
         """
         self._feature_classes = [bedfeature]
         if not from_string:
-            if isinstance(fn, bedtool):
+            if isinstance(fn, BedTool):
                 fn = fn.fn
             if not os.path.exists(fn):
                 raise ValueError, 'File "%s" does not exist' % fn
@@ -361,8 +76,8 @@ class bedtool(object):
         Use at your own risk!  This method will delete temp files. You will be
         prompted for deletion of files unless you specify *ask=False*.
 
-        Deletes all temporary files created during the history of this bedtool
-        up to but not including the file this current bedtool points to.
+        Deletes all temporary files created during the history of this BedTool
+        up to but not including the file this current BedTool points to.
 
         Any filenames that are in the history and have the following pattern
         will be deleted::
@@ -433,13 +148,13 @@ class bedtool(object):
 
     def _tmp(self):
         '''
-        Makes a tempfile and registers it in the bedtool.TEMPFILES class
+        Makes a tempfile and registers it in the BedTool.TEMPFILES class
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
         '''
         tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
         tmpfn = tmpfn.name
-        bedtool.TEMPFILES.append(tmpfn)
+        BedTool.TEMPFILES.append(tmpfn)
         return tmpfn
 
     def __iter__(self):
@@ -455,9 +170,9 @@ class bedtool(object):
 
     def __repr__(self):
         if os.path.exists(self.fn):
-            return '<bedtool (%s)>'%self.fn
+            return '<BedTool(%s)>'%self.fn
         else:
-            return '<bedtools (MISSING FILE: %s)>'%self.fn
+            return '<BedTool(MISSING FILE: %s)>'%self.fn
 
     def __str__(self):
         f = open(self.fn)
@@ -520,11 +235,11 @@ class bedtool(object):
     def intersect(self, b=None, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM as input, you
-        need to specify *abam='filename.bam'*.  Returns a new bedtool object.
+        need to specify *abam='filename.bam'*.  Returns a new BedTool object.
 
         Example usage:
 
-            Create new bedtool object
+            Create new BedTool object
 
             >>> a = pybedtools.example_bedtool('a.bed')
 
@@ -548,10 +263,10 @@ class bedtool(object):
 
         other = b
         if 'b' not in kwargs:
-            if isinstance(other,basestring):
+            if isinstance(other, basestring):
                 kwargs['b'] = other
             else:
-                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
                 kwargs['b'] = other.fn
 
         if ('abam' not in kwargs) and ('a' not in kwargs):
@@ -562,9 +277,9 @@ class bedtool(object):
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
 
-        other = bedtool(tmp)
+        other = BedTool(tmp)
 
-        # tag the new bedtool as having counts
+        # tag the new BedTool as having counts
         if 'c' in kwargs:
             other._hascounts = True
 
@@ -579,7 +294,7 @@ class bedtool(object):
         automatically passed in as the bedfile of this object; *fo* by default
         is a temp file.  Use save_seqs() to save as a file.
 
-        The end result is that this bedtool will have an attribute, self.seqfn,
+        The end result is that this BedTool will have an attribute, self.seqfn,
         that points to the new fasta file.
 
         Example usage::
@@ -612,7 +327,7 @@ class bedtool(object):
     @_log_to_history
     def subtract(self, other, **kwargs):
         """
-        Subtracts from another BED file and returns a new bedtool object.
+        Subtracts from another BED file and returns a new BedTool object.
 
         Example usage:
 
@@ -660,14 +375,14 @@ class bedtool(object):
             if isinstance(other, basestring):
                 kwargs['b'] = other
             else:
-                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
                 kwargs['b'] = other.fn
 
         cmds = ['subtractBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     @_help('slopBed')
     @_implicit('-i')
@@ -675,7 +390,7 @@ class bedtool(object):
     @_log_to_history
     def slop(self, **kwargs):
         """
-        Wraps `slopBed`, which adds bp to each feature.  Returns a new bedtool
+        Wraps slopBed, which adds bp to each feature.  Returns a new BedTool
         object.
 
         If *g* is a dictionary (for example, return values from
@@ -751,7 +466,7 @@ class bedtool(object):
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     @_help('mergeBed')
     @_implicit('-i')
@@ -759,7 +474,7 @@ class bedtool(object):
     @_log_to_history
     def merge(self, **kwargs):
         """
-        Merge overlapping features together. Returns a new bedtool object.
+        Merge overlapping features together. Returns a new BedTool object.
 
         Example usage:
 
@@ -802,7 +517,6 @@ class bedtool(object):
             chr1 900 950 feature4
             <BLANKLINE>
 
-
         """
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
@@ -811,7 +525,7 @@ class bedtool(object):
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     @_help('closestBed')
     @_file_or_bedtool()
@@ -820,13 +534,13 @@ class bedtool(object):
     @_log_to_history
     def closest(self, other, **kwargs):
         """
-        Return a new bedtool object containing closest features in *other*.  Note
+        Return a new BedTool object containing closest features in *other*.  Note
         that the resulting file is no longer a valid BED format; use the
         special "_closest" methods to work with the resulting file.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # get the closest feature in 'other.bed' on the same strand
             b = a.closest('other.bed', s=True)
@@ -839,14 +553,14 @@ class bedtool(object):
             if isinstance(other, basestring):
                 kwargs['b'] = other
             else:
-                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
                 kwargs['b'] = other.fn
 
         cmds = ['closestBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        newbedtool = bedtool(tmp)
+        newbedtool = BedTool(tmp)
         newbedtool.closest_output = True
         return newbedtool
 
@@ -860,7 +574,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # Consider features up to 500 bp away as overlaps
             b = a.window(w=500)
@@ -871,14 +585,14 @@ class bedtool(object):
             if isinstance(other, basestring):
                 kwargs['b'] = other
             else:
-                assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
                 kwargs['b'] = other.fn
 
         cmds = ['windowBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     @_help('shuffleBed')
     @_implicit('-i')
@@ -894,7 +608,7 @@ class bedtool(object):
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     @_help('sortBed')
     @_implicit('-i')
@@ -907,7 +621,7 @@ class bedtool(object):
         cmds.extend(self.parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     def features(self):
         """
@@ -931,17 +645,17 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
             a.count()
         """
         return sum(1 for _ in self)
 
     def print_sequence(self):
         """
-        Print the sequence that was retrieved by the :meth:`bedtool.sequence`
+        Print the sequence that was retrieved by the :meth:`BedTool.sequence`
         method.
 
-        See usage example in :meth:`bedtool.sequence`.
+        See usage example in :meth:`BedTool.sequence`.
         """
         if not hasattr(self,'seqfn'):
             raise ValueError, 'Use .sequence(fasta_fn) to get the sequence first'
@@ -952,16 +666,16 @@ class bedtool(object):
 
     def save_seqs(self,fn):
         """
-        Save sequences of features in this bedtool object as a fasta file *fn*.
+        Save sequences of features in this BedTool object as a fasta file *fn*.
 
         In order to use this function, you need to have called
-        the :meth:`bedtool.sequence()` method.
+        the :meth:`BedTool.sequence()` method.
 
-        A new bedtool object is returned which references the newly saved file.
+        A new BedTool object is returned which references the newly saved file.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # specify the filename of the genome in fasta format
             a.sequence('data/genomes/genome.fa')
@@ -975,20 +689,20 @@ class bedtool(object):
         fout = open(fn,'w')
         fout.write(open(self.seqfn).read())
         fout.close()
-        return bedtool(fn)
+        return BedTool(fn)
 
     def pybedtools_shuffle(self):
         """
         Quite fast implementation of shuffleBed; assumes shuffling within chroms.
 
-        You need to call self.set_chromsizes() to tell this bedtool object what the
+        You need to call self.set_chromsizes() to tell this BedTool object what the
         chromosome sizes are that you want to shuffle within.
 
         Example usage::
 
             from pybedtools.genome_registry import hg19
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
             a.set_chromsizes(pybedtools.chromsizes('dm3'))
 
             # randomly shuffled version of "a"
@@ -997,7 +711,7 @@ class bedtool(object):
         Alternatively, you can use a custom genome to shuffle within -- perhaps
         the regions probed by a tiling array::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
             array_extent = {'chr11': (500000, 1100000),
                             'chr5': (1, 14000)}
             a.set_chromsizes(array_extent)
@@ -1029,16 +743,16 @@ class bedtool(object):
 
             TMP.write('\t'.join(L)+'\n')
         TMP.close()
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     def randomstats(self, other, iterations, intersectkwargs=None):
         """
-        Sends args to :meth:`bedtool.randomintersection` and compiles results
+        Sends args to :meth:`BedTool.randomintersection` and compiles results
         into a dictionary with useful stats.  Requires scipy and numpy.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # Randomization results from 100 iterations, using the u=True kwarg (report
             # features in "a" only once for each intersection).
@@ -1051,9 +765,9 @@ class bedtool(object):
             raise ImportError, "Need to install NumPy and SciPy for stats..."
 
         if isinstance(other, basestring):
-            other = bedtool(other)
+            other = BedTool(other)
         else:
-            assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+            assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
 
         # Actual (unshuffled) counts.
         actual = len(self.intersect(other,**intersectkwargs))
@@ -1102,7 +816,7 @@ class bedtool(object):
         Nicely prints the reciprocal randomization of two files.
         """
         if (type(other) is str) or (type(other) is unicode):
-            other = bedtool(other)
+            other = BedTool(other)
 
         d1 = self.randomstats(other, iterations, intersectkwargs)
         d2 = other.randomstats(self, iterations, intersectkwargs)
@@ -1139,7 +853,7 @@ class bedtool(object):
         self.intersect().  By default, intersectkwargs=dict(u=True).
         Example usage::
 
-            r = bedtool('in.bed').randomintersection('other.bed', 100)
+            r = BedTool('in.bed').randomintersection('other.bed', 100)
         """
 
         if intsersectkwargs is None:
@@ -1159,7 +873,7 @@ class bedtool(object):
     @_returns_bedtool()
     def cat(self,other, postmerge=True, **kwargs):
         """
-        Concatenates two bedtools objects (or an object and a file) and does an
+        Concatenates two BedTool objects (or an object and a file) and does an
         optional post-merge of the features.
 
         Use *postmerge=False* if you want to keep features separate.
@@ -1168,11 +882,11 @@ class bedtool(object):
 
             currently truncates at BED3 format!
 
-        kwargs are sent to :meth:`bedtool.merge`.
+        kwargs are sent to :meth:`BedTool.merge`.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # concatenate and merge features together if they overlap and are
             # on the same strand
@@ -1180,9 +894,9 @@ class bedtool(object):
         """
         tmp = self._tmp()
         if (type(other) is str) or (type(other) is unicode):
-            other = bedtool(other)
+            other = BedTool(other)
         else:
-            assert isinstance(other,bedtool), 'Either filename or another bedtool instance required'
+            assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
         TMP = open(tmp,'w')
         for line in self:
             newline = '\t'.join(line.split()[:3])+'\n'
@@ -1191,7 +905,7 @@ class bedtool(object):
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
         TMP.close()
-        c = bedtool(tmp)
+        c = BedTool(tmp)
         if postmerge:
             d = c.merge(**kwargs)
             return d
@@ -1200,12 +914,12 @@ class bedtool(object):
 
     def tostring(self):
         '''
-        Returns the BED file as a string.  You can also ``print`` the bedtool object
+        Returns the BED file as a string.  You can also ``print`` the BedTool object
         to view its contents.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # this is one looong string which contains the entire file
             long_string = a.tostring()
@@ -1221,14 +935,14 @@ class bedtool(object):
         Save BED file as a new file, adding the optional *trackline* to the
         beginning.
 
-        Returns a new bedtool for the newly saved file.
+        Returns a new BedTool for the newly saved file.
 
         A newline is automatically added to the trackline if it does not
         already have one.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
             b = a.random_subset(5)
             b.saveas('random-5.bed',trackline='track name="random subset" color=128,128,255')
         """
@@ -1237,22 +951,22 @@ class bedtool(object):
             fout.write(trackline.strip()+'\n')
         fout.write(self.tostring())
         fout.close()
-        return bedtool(fn)
+        return BedTool(fn)
 
     @_file_or_bedtool()
     def intersection_report(self, other, basename=True, **kwargs):
         """
         Prints a report of the reciprocal intersections with another bed file
-        or :class:`bedtool` object.
+        or :class:`BedTool` object.
 
         If *basename* is True (default), only prints the basename of the file
         and not the whole path.
 
-        a = bedtool('in.bed')
+        a = BedTool('in.bed')
         a.intersection_report('other.bed')
         """
         if (type(other) is str) or (type(other) is unicode):
-            other = bedtool(other)
+            other = BedTool(other)
 
         int1 = self.intersect(other, **kwargs).count()
         int2 = other.intersect(self.fn, **kwargs).count()
@@ -1278,7 +992,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # Choose 5 random features from 'in.bed'
             b = a.random_subset(5)
@@ -1291,17 +1005,17 @@ class bedtool(object):
             if i in idxs:
                 tmp.write(line)
         tmp.close()
-        return bedtool(tmpfn)
+        return BedTool(tmpfn)
 
 
     def size_filter(self,min=0,max=1e15):
         """
-        Returns a new bedtool object containing only those features that are
+        Returns a new BedTool object containing only those features that are
         > *min* and < *max*.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # Only return features that are over 10 bp.
             b = a.size_filter(min=10)
@@ -1313,10 +1027,10 @@ class bedtool(object):
             if min < len(feature) < max:
                 tmp.write(str(feature))
         tmp.close()
-        return bedtool(tmpfn)
+        return BedTool(tmpfn)
 
     def sorted(self,col, reverse=None):
-        '''Returns a new bedtool object, sorted by the column specified. col
+        '''Returns a new BedTool object, sorted by the column specified. col
         can be a list of columns.  BED columns that are ints (start, stop and
         value) will be sorted numerically; other columns will be
         alphabetical.
@@ -1326,7 +1040,7 @@ class bedtool(object):
 
         TODO: currently multiple columns aren't working!
 
-        a = bedtool('in.fn')
+        a = BedTool('in.fn')
         b = a.sorted(col=2) # sort by start position
         c = a.sorted(col=5,reverse=True) # reverse sort on the values
         '''
@@ -1360,7 +1074,7 @@ class bedtool(object):
         cmds.append(self.fn)
         cmds.extend( ['>',tmp] )
         os.system(' '.join(cmds))
-        return bedtool(tmp)
+        return BedTool(tmp)
 
     def sequence_coverage(self):
         """
@@ -1369,7 +1083,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # total bp in genome covered by 'in.bed'
             total_bp = a.sequence_coverage()
@@ -1422,7 +1136,7 @@ class bedtool(object):
     @_returns_bedtool()
     def feature_centers(self,n,report_smaller=True):
         '''
-        Returns a new bedtools object with just the centers of size n extracted
+        Returns a new BedTool object with just the centers of size n extracted
         from this object's features.
 
         If *report_smaller* is True, then report features that are smaller than
@@ -1430,7 +1144,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # 5bp on either side of the center of each feature
             b = a.feature_centers(100)
@@ -1460,7 +1174,7 @@ class bedtool(object):
             L[2] = newstop
             tmp.write('\t'.join(L)+'\n')
         tmp.close()
-        return bedtool(tmpfn)
+        return BedTool(tmpfn)
 
     @_returns_bedtool()
     def rename_features(self, new_name):
@@ -1477,7 +1191,7 @@ class bedtool(object):
             f.name = new_name
             print >>tmp, str(f)
         tmp.close()
-        return bedtool(tmpfn)
+        return BedTool(tmpfn)
 
     @_returns_bedtool()
     def with_attrs(self, **kwargs):
@@ -1487,9 +1201,9 @@ class bedtool(object):
 
         Example usage::
 
-            # add a "label" attribute to each bedtool
-            a = bedtool('a.bed').with_attrs(label='transcription factor 1')
-            b = bedtool('b.bed').with_attrs(label='transcription factor 2')
+            # add a "label" attribute to each BedTool
+            a = BedTool('a.bed').with_attrs(label='transcription factor 1')
+            b = BedTool('b.bed').with_attrs(label='transcription factor 2')
             for i in [a,b]:
                 print i.count(), 'features for', i.label
         """
@@ -1499,13 +1213,13 @@ class bedtool(object):
 
     def counts(self):
         """
-        After running :meth:`bedtool.intersect` with the kwarg *c=True*, use
+        After running :meth:`BedTool.intersect` with the kwarg *c=True*, use
         this method to return a list of the count of features in "b" that
         intersected each feature in "a".
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
             b = a.intersect('other.bed', c=True)
             counts = b.counts()
 
@@ -1521,7 +1235,7 @@ class bedtool(object):
 
     def normalized_counts(self):
         """
-        After running :meth:`bedtool.intersect` with the kwarg *c=True*, use
+        After running :meth:`BedTool.intersect` with the kwarg *c=True*, use
         this method to return a list of the density of features in "b" that
         intersected each feature in "a".
 
@@ -1530,7 +1244,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             # intersect, with c=True to get counts -- number of features in
             # 'other.bed' that intersect with features in a
@@ -1563,7 +1277,7 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            a = BedTool('in.bed')
 
             lengths = a.lengths()
 
