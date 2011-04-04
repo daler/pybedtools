@@ -247,18 +247,10 @@ class BedTool(object):
 
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> overlaps = a.intersect(b)
-            >>> print overlaps
-            chr1 155 200 feature2 0 +
-            chr1 155 200 feature3 0 -
-            chr1 900 901 feature4 0 +
-            <BLANKLINE>
 
-            Use v=True to get the inverse -- that is, those unique to "a.bed":
+            Use `v=True` to get the inverse -- that is, those unique to "a.bed":
 
             >>> unique_to_a = a.intersect(b, v=True)
-            >>> print unique_to_a
-            chr1 1 100 feature1 0 +
-            <BLANKLINE>
         """
 
         other = b
@@ -332,41 +324,15 @@ class BedTool(object):
         Example usage:
 
             >>> a = pybedtools.example_bedtool('a.bed')
-            >>> print a
-            chr1 1   100 feature1 0 +
-            chr1 100 200 feature2 0 +
-            chr1 150 500 feature3 0 -
-            chr1 900 950 feature4 0 +
-            <BLANKLINE>
-
             >>> b = pybedtools.example_bedtool('b.bed')
-            >>> print b
-            chr1 155 200 feature5 0 -
-            chr1 800 901 feature6 0 +
-            <BLANKLINE>
 
             Do a "stranded" subtraction:
 
             >>> c = a.subtract(b, s=True)
-            >>> print c
-            chr1 1   100 feature1 0 +
-            chr1 100 200 feature2 0 +
-            chr1 150 155 feature3 0 -
-            chr1 200 500 feature3 0 -
-            chr1 901 950 feature4 0 +
-            <BLANKLINE>
-
 
             Require 50% of features in `a` to overlap:
 
             >>> c = a.subtract(b, f=0.5)
-            >>> print c
-            chr1 1   100 feature1 0 +
-            chr1 100 200 feature2 0 +
-            chr1 150 500 feature3 0 -
-            chr1 900 950 feature4 0 +
-            <BLANKLINE>
-
         """
         if 'a' not in kwargs:
             kwargs['a'] = self.fn
@@ -400,12 +366,6 @@ class BedTool(object):
         Example usage:
 
             >>> a = pybedtools.example_bedtool('a.bed')
-            >>> print a
-            chr1 1   100 feature1 0 +
-            chr1 100 200 feature2 0 +
-            chr1 150 500 feature3 0 -
-            chr1 900 950 feature4 0 +
-            <BLANKLINE>
 
             Increase the size of features by 100 bp in either direction.  Note
             that you need to specify either a dictionary of chromsizes or a
@@ -413,12 +373,6 @@ class BedTool(object):
             corresponds to:
 
             >>> c = a.slop(g=pybedtools.chromsizes('hg19'), b=100)
-            >>> print c
-            chr1 0   200 feature1 0 +
-            chr1 0   300 feature2 0 +
-            chr1 50  600 feature3 0 -
-            chr1 800 1050 feature4 0 +
-            <BLANKLINE>
 
             Grow features by 10 bp upstream and 500 bp downstream, using a
             genome file you already have constructed called 'hg19.genome'
@@ -434,12 +388,6 @@ class BedTool(object):
             Then use it:
 
             >>> c = a.slop(g='hg19.genome', l=10, r=500, s=True)
-            >>> print c
-            chr1 0   600  feature1 0 +
-            chr1 90  700  feature2 0 +
-            chr1 0   510  feature3 0 -
-            chr1 890 1450 feature4 0 +
-            <BLANKLINE>
 
             Clean up afterwards:
 
@@ -479,43 +427,22 @@ class BedTool(object):
         Example usage:
 
             >>> a = pybedtools.example_bedtool('a.bed')
-            >>> print a
-            chr1 1   100 feature1 0 +
-            chr1 100 200 feature2 0 +
-            chr1 150 500 feature3 0 -
-            chr1 900 950 feature4 0 +
-            <BLANKLINE>
 
             Merge:
 
             >>> c = a.merge()
-            >>> print c
-            chr1 1   500
-            chr1 900 950
-            <BLANKLINE>
 
             Allow merging of features 500 bp apart:
 
             >>> c = a.merge(d=500)
-            >>> print c
-            chr1 1 950
-            <BLANKLINE>
 
             Report number of merged features:
 
             >>> c = a.merge(n=True)
-            >>> print c
-            chr1 1   500 3
-            chr1 900 950 1
-            <BLANKLINE>
 
             Report names of merged features:
 
             >>> c = a.merge(nms=True)
-            >>> print c
-            chr1 1   500 feature1;feature2;feature3
-            chr1 900 950 feature4
-            <BLANKLINE>
 
         """
         if 'i' not in kwargs:

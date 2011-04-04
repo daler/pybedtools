@@ -61,12 +61,6 @@ def list_example_files():
         >>> assert 'a.bed' in choices
         >>> bedfn = example_filename('a.bed')
         >>> mybedtool = BedTool(bedfn)
-        >>> print mybedtool
-        chr1 1   100 feature1 0 +
-        chr1 100 200 feature2 0 +
-        chr1 150 500 feature3 0 -
-        chr1 900 950 feature4 0 +
-        <BLANKLINE>
 
     """
     return sorted([i for i in os.listdir(data_dir()) if os.path.splitext(i)[-1] == '.bed'])

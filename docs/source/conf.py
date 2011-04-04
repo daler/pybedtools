@@ -29,6 +29,12 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sp
 
 doctest_test_doctest_blocks = 'default'
 
+# this is needed to get the autodoc_source.rst doctests to run
+doctest_global_setup = """
+from pybedtools import *
+import pybedtools
+"""
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

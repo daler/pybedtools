@@ -1,3 +1,10 @@
+.. testsetup:: *
+    :options: +NORMALIZE_WHITESPACE
+
+    import pybedtools
+    from pybedtools import chromsizes
+
+
 Module documentation
 ====================
 
