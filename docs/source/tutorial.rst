@@ -73,7 +73,7 @@ For this tutorial, we'll use some example files that come with
 .. doctest::
     
     >>> # get an example filename to use
-    >>> bed_filename_a = pybedtools.example_bed_fn('a.bed')
+    >>> bed_filename_a = pybedtools.example_filename('a.bed')
 
 The filename will depend on where you have installed :mod:`pybedtools`.
 Once you have a filename, creating a :class:`bedtool` object is easy:
@@ -89,7 +89,7 @@ time, let's make a new :class:`bedtool` all in one line:
 .. doctest::
 
     >>> # create another bedtool to play around with
-    >>> b = pybedtools.bedtool(pybedtools.example_bed_fn('b.bed'))
+    >>> b = pybedtools.bedtool(pybedtools.example_filename('b.bed'))
 
 See :ref:`Creating a bedtool` for more information, including convenience
 functions for working with example bed files and making :class:`bedtool`

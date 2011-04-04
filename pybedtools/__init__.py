@@ -13,10 +13,6 @@ __version__ = '0.2.2dev'
 # Registry of files in the test dir that should be accessible to users via example_bedtool
 example_files = ['a.bed.','b.bed','test.fa', 'a.bam']
 
-"""
->>> assert example_files == 0
-"""
-
 def check_for_bedtools(program_to_check='intersectBed'):
     try:
         p = subprocess.Popen([program_to_check], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -58,7 +54,7 @@ def list_example_files():
     Returns a list of files in the examples dir.  Choose one and pass it to
     :func:`example_file_fnl` to get the full path to an examplefile.
 
-    Example usage::
+    Example usage:
 
         >>> choices = list_example_files()
         >>> assert 'a.bed' in choices
@@ -76,10 +72,15 @@ def list_example_files():
 
 def chromsizes(genome):
     """
-    Looks for a *genome* already included in the genome_registry; if not found
-    then it looks it up on UCSC.  Returns the dictionary of chromsizes.
+    Looks for a *genome* already included in the genome registry; if not found
+    then it looks it up on UCSC.  Returns the dictionary of chromsize tuples
+    where each tuple has (start,stop).
 
-    Example usage::
+    Chromsizes are described as (start, stop) tuples to allow randomization
+    within specified regions; e. g., you can make a chromsizes dictionary that
+    represents the extent of a tiling array.
+
+    Example usage:
 
         >>> dm3_chromsizes = chromsizes('dm3')
         >>> for i in sorted(dm3_chromsizes.items()):
@@ -133,7 +134,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
     If you need the file, then specify a filename with *saveas* (the dictionary
     will still be returned as well).
 
-    Example usage::
+    Example usage:
 
         >>> dm3_chromsizes = get_chromsizes_from_ucsc('dm3')
         >>> for i in sorted(dm3_chromsizes.items()):

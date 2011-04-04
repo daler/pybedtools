@@ -171,21 +171,21 @@ Next, you need a BED file to work with. If you already have one, then great
 -- move on to the next section.  If not, :mod:`pybedtools` comes with some
 example bed files used for testing.  You can take a look at the list of
 example files that ship with :mod:`pybedtools` with the
-:func:`list_example_beds` function:
+:func:`list_example_files` function:
 
 .. doctest::
 
    >>> # list the example bed files
-   >>> pybedtools.list_example_beds()
+   >>> pybedtools.list_example_files()
    ['a.bed', 'b.bed']
 
 Once you decide on a file to use, feed the your choice to the
-:func:`example_bed_fn` function to get the full path:
+:func:`example_filename` function to get the full path:
 
 .. doctest::
 
    >>> # get the full path to an example bed file
-   >>> bedfn = pybedtools.example_bed_fn('a.bed') 
+   >>> bedfn = pybedtools.example_filename('a.bed') 
 
 The full path of *bedfn* will depend on your installation (this is similar
 to the ``data()`` function in R_, if you're familiar with that).
@@ -255,7 +255,7 @@ in a strand-specific way (*s=True*):
     
     >>> from pybedtools import bedtool
     >>> import pybedtools
-    >>> a = bedtool(pybedtools.example_bed_fn('a.bed'))
+    >>> a = bedtool(pybedtools.example_filename('a.bed'))
     >>> merged_a = a.merge(d=100, s=True)
 
 Now *merged_a* is a :class:`bedtool` instance that contains the results of the
@@ -370,7 +370,7 @@ the first non-keyword argument to the method as ``-b``, like this:
 
 .. doctest::
     
-    >>> b = pybedtools.bedtool(pybedtools.example_bed_fn('b.bed'))    
+    >>> b = pybedtools.bedtool(pybedtools.example_filename('b.bed'))    
     >>> result3 = a.intersect(b)
     
 This is exactly the same as passing the *a* and *b* arguments explicitly:

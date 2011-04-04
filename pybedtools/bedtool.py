@@ -522,13 +522,13 @@ class bedtool(object):
         Intersect with another BED file. If you want to use BAM as input, you
         need to specify *abam='filename.bam'*.  Returns a new bedtool object.
 
-        Example usage::
+        Example usage:
 
             Create new bedtool object
 
             >>> a = pybedtools.example_bedtool('a.bed')
 
-            Get overlaps with "b.bed":
+            Get overlaps with `b.bed`:
 
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> overlaps = a.intersect(b)
@@ -538,14 +538,12 @@ class bedtool(object):
             chr1 900 901 feature4 0 +
             <BLANKLINE>
 
-
-        Use v=True to get the inverse, or those unique to in.bed:
+            Use v=True to get the inverse -- that is, those unique to "a.bed":
 
             >>> unique_to_a = a.intersect(b, v=True)
             >>> print unique_to_a
             chr1 1 100 feature1 0 +
             <BLANKLINE>
-
         """
 
         other = b
@@ -616,7 +614,7 @@ class bedtool(object):
         """
         Subtracts from another BED file and returns a new bedtool object.
 
-        Example usage::
+        Example usage:
 
             >>> a = pybedtools.example_bedtool('a.bed')
             >>> print a
@@ -632,7 +630,7 @@ class bedtool(object):
             chr1 800 901 feature6 0 +
             <BLANKLINE>
 
-            Do a "stranded" subtraction
+            Do a "stranded" subtraction:
 
             >>> c = a.subtract(b, s=True)
             >>> print c
@@ -644,7 +642,7 @@ class bedtool(object):
             <BLANKLINE>
 
 
-            Require 50% of features in a to overlap
+            Require 50% of features in `a` to overlap:
 
             >>> c = a.subtract(b, f=0.5)
             >>> print c
@@ -677,14 +675,14 @@ class bedtool(object):
     @_log_to_history
     def slop(self, **kwargs):
         """
-        Wraps slopBed, which adds bp to each feature.  Returns a new bedtool
+        Wraps `slopBed`, which adds bp to each feature.  Returns a new bedtool
         object.
 
         If *g* is a dictionary (for example, return values from
         pybedtools.chromsizes() ) it will be converted to a temp file for use
         with slopBed.  If it is a string, then it is assumed to be a filename.
 
-        Example usage::
+        Example usage:
 
             >>> a = pybedtools.example_bedtool('a.bed')
             >>> print a
@@ -710,8 +708,28 @@ class bedtool(object):
             Grow features by 10 bp upstream and 500 bp downstream, using a
             genome file you already have constructed called 'hg19.genome'
 
-            First, create the file
-            c = a.slop(g='dm3.genome', l=10, r=500, s=True)
+            First, create the file:
+
+            >>> fout = open('hg19.genome','w')
+            >>> chromdict = pybedtools.get_chromsizes_from_ucsc('hg19')
+            >>> for chrom, size in chromdict.items():
+            ...     fout.write("%s\\t%s\\n" % (chrom, size[1]))
+            >>> fout.close()
+
+            Then use it:
+
+            >>> c = a.slop(g='hg19.genome', l=10, r=500, s=True)
+            >>> print c
+            chr1 0   600  feature1 0 +
+            chr1 90  700  feature2 0 +
+            chr1 0   510  feature3 0 -
+            chr1 890 1450 feature4 0 +
+            <BLANKLINE>
+
+            Clean up afterwards:
+
+            >>> os.unlink('hg19.genome')
+
         """
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
@@ -743,12 +761,47 @@ class bedtool(object):
         """
         Merge overlapping features together. Returns a new bedtool object.
 
-        Example usage::
+        Example usage:
 
-            a = bedtool('in.bed')
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> print a
+            chr1 1   100 feature1 0 +
+            chr1 100 200 feature2 0 +
+            chr1 150 500 feature3 0 -
+            chr1 900 950 feature4 0 +
+            <BLANKLINE>
 
-            # allow merging of features 100 bp apart
-            b = a.merge(d=100)
+            Merge:
+
+            >>> c = a.merge()
+            >>> print c
+            chr1 1   500
+            chr1 900 950
+            <BLANKLINE>
+
+            Allow merging of features 500 bp apart:
+
+            >>> c = a.merge(d=500)
+            >>> print c
+            chr1 1 950
+            <BLANKLINE>
+
+            Report number of merged features:
+
+            >>> c = a.merge(n=True)
+            >>> print c
+            chr1 1   500 3
+            chr1 900 950 1
+            <BLANKLINE>
+
+            Report names of merged features:
+
+            >>> c = a.merge(nms=True)
+            >>> print c
+            chr1 1   500 feature1;feature2;feature3
+            chr1 900 950 feature4
+            <BLANKLINE>
+
 
         """
         if 'i' not in kwargs:
