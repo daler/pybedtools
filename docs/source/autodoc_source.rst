@@ -7,100 +7,100 @@ Module documentation
 .. automodule:: pybedtools
     :members:
 
-:class:`bedtool` methods that wrap BEDTools programs
+:class:`BedTool` methods that wrap BEDTools programs
 ----------------------------------------------------
 The following methods wrap BEDTools_ programs.  This package is still in
 development; the goal is to eventually support all BEDTools_ programs.
 
-:class:`bedtool.intersect`
+:class:`BedTool.intersect`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.intersect
+.. automethod:: BedTool.intersect
 
-:class:`bedtool.merge`
+:class:`BedTool.merge`
 ~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.merge
+.. automethod:: BedTool.merge
 
-:class:`bedtool.subtract`
+:class:`BedTool.subtract`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.subtract
+.. automethod:: BedTool.subtract
 
-:class:`bedtool.sequence`
+:class:`BedTool.sequence`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.sequence
+.. automethod:: BedTool.sequence
 
-:class:`bedtool.closest`
+:class:`BedTool.closest`
 ~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.closest
+.. automethod:: BedTool.closest
 
-:class:`bedtool.window`
+:class:`BedTool.window`
 ~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.window
+.. automethod:: BedTool.window
 
-:class:`bedtool.sort`
+:class:`BedTool.sort`
 ~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.sort
+.. automethod:: BedTool.sort
 
-:class:`bedtool.slop`
+:class:`BedTool.slop`
 ~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.slop
+.. automethod:: BedTool.slop
 
-:class:`bedtool.shuffle`
+:class:`BedTool.shuffle`
 ~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.shuffle
+.. automethod:: BedTool.shuffle
 
-:class:`bedtool` methods unique to :mod:`pybedtools`
+:class:`BedTool` methods unique to :mod:`pybedtools`
 ----------------------------------------------------
 The following methods are currently only supported for use with BED format
 files; support for other file types is under development.
 
-:class:`bedtool.count`
+:class:`BedTool.count`
 ~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.count
+.. automethod:: BedTool.count
 
-:class:`bedtool.saveas`
+:class:`BedTool.saveas`
 ~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.saveas
+.. automethod:: BedTool.saveas
 
-:class:`bedtool.size_filter`
+:class:`BedTool.size_filter`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.size_filter
+.. automethod:: BedTool.size_filter
 
-:class:`bedtool.lengths`
+:class:`BedTool.lengths`
 ~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.lengths
+.. automethod:: BedTool.lengths
 
-:class:`bedtool.features`
+:class:`BedTool.features`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.features
+.. automethod:: BedTool.features
 
-:class:`bedtool.print_sequence`
+:class:`BedTool.print_sequence`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.print_sequence
+.. automethod:: BedTool.print_sequence
 
-:class:`bedtool.save_seqs`
+:class:`BedTool.save_seqs`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.save_seqs
+.. automethod:: BedTool.save_seqs
 
-:class:`bedtool.cat`
+:class:`BedTool.cat`
 ~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.cat
+.. automethod:: BedTool.cat
 
-:class:`bedtool.tostring`
+:class:`BedTool.tostring`
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.tostring
+.. automethod:: BedTool.tostring
 
-:class:`bedtool.sequence_coverage`
+:class:`BedTool.sequence_coverage`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.sequence_coverage
+.. automethod:: BedTool.sequence_coverage
 
-:class:`bedtool.counts`
+:class:`BedTool.counts`
 ~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.counts
+.. automethod:: BedTool.counts
 
-:class:`bedtool.normalized_counts`
+:class:`BedTool.normalized_counts`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.normalized_counts
+.. automethod:: BedTool.normalized_counts
 
-:class:`bedtool.delete_temporary_history`
+:class:`BedTool.delete_temporary_history`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: bedtool.delete_temporary_history
+.. automethod:: BedTool.delete_temporary_history
