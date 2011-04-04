@@ -5,6 +5,7 @@ import tempfile
 
 
 from bedtool import bedtool, get_tempdir, set_tempdir, cleanup, find_tagged
+import genome_registry
 
 
 __version__ = '0.2.2dev'
@@ -32,11 +33,10 @@ def data_dir():
     """
     return os.path.join(os.path.dirname(__file__), 'test')
 
-
 def example_filename(fn):
     """
     Return a bed file from the pybedtools examples directory.  Use
-    :func:`list_example_beds` to see a list of files that are included.
+    :func:`list_example_files` to see a list of files that are included.
     """
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
@@ -46,7 +46,7 @@ def example_filename(fn):
 def example_bedtool(fn):
     """
     Return a bedtool using a bed file from the pybedtools examples directory.
-    Use :func:`list_example_beds` to see a list of files that are included.
+    Use :func:`list_example_files` to see a list of files that are included.
     """
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
@@ -61,13 +61,18 @@ def list_example_files():
     Example usage::
 
         >>> choices = list_example_files()
-        >>> bedfn = example_bed_fn(choices[0])
+        >>> assert 'a.bed' in choices
+        >>> bedfn = example_filename('a.bed')
         >>> mybedtool = bedtool(bedfn)
-
+        >>> print mybedtool
+        chr1 1   100 feature1 0 +
+        chr1 100 200 feature2 0 +
+        chr1 150 500 feature3 0 -
+        chr1 900 950 feature4 0 +
+        <BLANKLINE>
 
     """
     return sorted([i for i in os.listdir(data_dir()) if os.path.splitext(i)[-1] == '.bed'])
-
 
 def chromsizes(genome):
     """
@@ -75,8 +80,26 @@ def chromsizes(genome):
     then it looks it up on UCSC.  Returns the dictionary of chromsizes.
 
     Example usage::
-        
-        dm3_chromsizes = chromsizes('dm3')
+
+        >>> dm3_chromsizes = chromsizes('dm3')
+        >>> for i in sorted(dm3_chromsizes.items()):
+        ...     print i
+        ('chr2L', (1, 23011544))
+        ('chr2LHet', (1, 368872))
+        ('chr2R', (1, 21146708))
+        ('chr2RHet', (1, 3288761))
+        ('chr3L', (1, 24543557))
+        ('chr3LHet', (1, 2555491))
+        ('chr3R', (1, 27905053))
+        ('chr3RHet', (1, 2517507))
+        ('chr4', (1, 1351857))
+        ('chrM', (1, 19517))
+        ('chrU', (1, 10049037))
+        ('chrUextra', (1, 29004656))
+        ('chrX', (1, 22422827))
+        ('chrXHet', (1, 204112))
+        ('chrYHet', (1, 347038))
+
 
     """
     try:
@@ -105,16 +128,31 @@ def chromsizes_to_file(chromsizes, fn=None):
 
 def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
     """
-    Download chrom size info for *genome* from UCSC and returns the dictionary. 
-
+    Download chrom size info for *genome* from UCSC and returns the dictionary.
 
     If you need the file, then specify a filename with *saveas* (the dictionary
     will still be returned as well).
-    
+
     Example usage::
 
-        a = bedtool('in.bed')
-        dm3_chromsizes = a.get_chromsizes_from_ucsc('dm3')
+        >>> dm3_chromsizes = get_chromsizes_from_ucsc('dm3')
+        >>> for i in sorted(dm3_chromsizes.items()):
+        ...     print i
+        ('chr2L', (1, 23011544))
+        ('chr2LHet', (1, 368872))
+        ('chr2R', (1, 21146708))
+        ('chr2RHet', (1, 3288761))
+        ('chr3L', (1, 24543557))
+        ('chr3LHet', (1, 2555491))
+        ('chr3R', (1, 27905053))
+        ('chr3RHet', (1, 2517507))
+        ('chr4', (1, 1351857))
+        ('chrM', (1, 19517))
+        ('chrU', (1, 10049037))
+        ('chrUextra', (1, 29004656))
+        ('chrX', (1, 22422827))
+        ('chrXHet', (1, 204112))
+        ('chrYHet', (1, 347038))
 
     """
     cmds = [mysql,
@@ -152,3 +190,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
                           "specify the path with the 'mysql' kwarg.")
         else:
             raise
+
+if __name__ == "__main__":
+    print 'Running tests...'
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

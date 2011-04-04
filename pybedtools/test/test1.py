@@ -145,16 +145,16 @@ def test_feature_centers():
     assert results[1].chr == 'chr5'
 
 def test_getting_example_beds():
-    assert 'a.bed' in pybedtools.list_example_beds()
+    assert 'a.bed' in pybedtools.list_example_files()
 
-    a = pybedtools.example_bed_fn('a.bed')
+    a = pybedtools.example_filename('a.bed')
     assert a == os.path.join(testdir, 'a.bed')
     
     a = pybedtools.example_bedtool('a.bed')
     assert a.fn == os.path.join(testdir, 'a.bed')
 
     # complain appropriately if nonexistent paths are asked for
-    assert_raises(ValueError, pybedtools.example_bed_fn, 'nonexistent')
+    assert_raises(ValueError, pybedtools.example_filename, 'nonexistent')
     assert_raises(ValueError, pybedtools.example_bedtool, 'nonexistent')
     assert_raises(ValueError, pybedtools.set_tempdir, 'nonexistent')
 

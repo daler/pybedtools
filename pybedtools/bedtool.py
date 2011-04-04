@@ -356,7 +356,6 @@ class bedtool(object):
 
         self.history = History()
 
-
     def delete_temporary_history(self, ask=True, raw_input_func=None):
         """
         Use at your own risk!  This method will delete temp files. You will be
@@ -619,13 +618,41 @@ class bedtool(object):
 
         Example usage::
 
-            a = bedtool('in.bed')
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> print a
+            chr1 1   100 feature1 0 +
+            chr1 100 200 feature2 0 +
+            chr1 150 500 feature3 0 -
+            chr1 900 950 feature4 0 +
+            <BLANKLINE>
 
-            # do a "stranded" subtraction
-            b = a.subtract('other.bed',s=True)
+            >>> b = pybedtools.example_bedtool('b.bed')
+            >>> print b
+            chr1 155 200 feature5 0 -
+            chr1 800 901 feature6 0 +
+            <BLANKLINE>
 
-            # Require 50% of features in a to overlap
-            c = a.subtract('other.bed', s=0.5)
+            Do a "stranded" subtraction
+
+            >>> c = a.subtract(b, s=True)
+            >>> print c
+            chr1 1   100 feature1 0 +
+            chr1 100 200 feature2 0 +
+            chr1 150 155 feature3 0 -
+            chr1 200 500 feature3 0 -
+            chr1 901 950 feature4 0 +
+            <BLANKLINE>
+
+
+            Require 50% of features in a to overlap
+
+            >>> c = a.subtract(b, f=0.5)
+            >>> print c
+            chr1 1   100 feature1 0 +
+            chr1 100 200 feature2 0 +
+            chr1 150 500 feature3 0 -
+            chr1 900 950 feature4 0 +
+            <BLANKLINE>
 
         """
         if 'a' not in kwargs:
@@ -653,19 +680,37 @@ class bedtool(object):
         Wraps slopBed, which adds bp to each feature.  Returns a new bedtool
         object.
 
-        If *g* is a dictionary, it will be converted to a temp file for use
+        If *g* is a dictionary (for example, return values from
+        pybedtools.chromsizes() ) it will be converted to a temp file for use
         with slopBed.  If it is a string, then it is assumed to be a filename.
 
         Example usage::
 
-            a = bedtool('in.bed')
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> print a
+            chr1 1   100 feature1 0 +
+            chr1 100 200 feature2 0 +
+            chr1 150 500 feature3 0 -
+            chr1 900 950 feature4 0 +
+            <BLANKLINE>
 
-            # increase the size of features by 100 bp in either direction
-            b = a.slop(g=pybedtools.chromsizes('dm3'), b=100)
+            Increase the size of features by 100 bp in either direction.  Note
+            that you need to specify either a dictionary of chromsizes or a
+            filename containing chromsizes for the genome that your bed file
+            corresponds to:
 
-            # grow features by 10 bp upstream and 500 bp downstream,
-            # using a genome file you already have constructed called
-            # dm3.genome.
+            >>> c = a.slop(g=pybedtools.chromsizes('hg19'), b=100)
+            >>> print c
+            chr1 0   200 feature1 0 +
+            chr1 0   300 feature2 0 +
+            chr1 50  600 feature3 0 -
+            chr1 800 1050 feature4 0 +
+            <BLANKLINE>
+
+            Grow features by 10 bp upstream and 500 bp downstream, using a
+            genome file you already have constructed called 'hg19.genome'
+
+            First, create the file
             c = a.slop(g='dm3.genome', l=10, r=500, s=True)
         """
         if 'i' not in kwargs:
@@ -1481,5 +1526,6 @@ class bedtool(object):
         return feature_lengths
 
 if __name__ == "__main__":
+    print 'Running tests...'
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
