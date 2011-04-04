@@ -1,7 +1,7 @@
 import pybedtools
 import os, difflib
 from nose.tools import *
-from pybedtools import bedtool
+from pybedtools import BedTool
 
 testdir = os.path.dirname(__file__)
 
@@ -37,8 +37,8 @@ def test_cleanup():
     assert os.path.exists(testfn)
 
     # make some temp files
-    a = pybedtools.bedtool(os.path.join(testdir, 'a.bed'))
-    b = pybedtools.bedtool(os.path.join(testdir, 'b.bed'))
+    a = pybedtools.BedTool(os.path.join(testdir, 'a.bed'))
+    b = pybedtools.BedTool(os.path.join(testdir, 'b.bed'))
     c = a.intersect(b)
     
     # after standard cleanup, c's fn should be gone but the fake one still
@@ -57,7 +57,7 @@ def test_cleanup():
      
 
 def test_decorators():
-    from pybedtools.bedtool import _returns_bedtool, _help
+    from pybedtools.helpers import _returns_bedtool, _help
 
     @_returns_bedtool()
     def dummy():
@@ -80,7 +80,7 @@ def test_bedtools_check():
 
 def test_call():
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
-    from pybedtools.bedtool import call_bedtools, BEDToolsError
+    from pybedtools.helpers import call_bedtools, BEDToolsError
     assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
 
 def test_chromsizes():
@@ -127,7 +127,7 @@ def test_count_bed():
     assert len(a) == 4
 
 def test_feature_centers():
-    a = pybedtools.bedtool("""
+    a = pybedtools.BedTool("""
                            chr1 1 100
                            chr5 3000 4000
                            """, from_string=True)
@@ -162,9 +162,9 @@ def test_bedtool_creation():
     # make sure we can make a bedtool from a bedtool and that it points to the
     # same file
     a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.bedtool(a)
+    b = pybedtools.BedTool(a)
     assert b.fn == a.fn
-    assert_raises(ValueError, pybedtools.bedtool,'nonexistent.bed')
+    assert_raises(ValueError, pybedtools.BedTool,'nonexistent.bed')
 
     # note that *s* has both tabs and spaces....
     s = """
@@ -173,7 +173,7 @@ def test_bedtool_creation():
     chr1	150	500	feature3  0	-
     chr1	900	950	feature4  0	+
     """
-    from_string = pybedtools.bedtool(s, from_string=True)
+    from_string = pybedtools.BedTool(s, from_string=True)
 
     # difflib used here to show a bug where a newline was included when using
     # from_string
@@ -189,7 +189,7 @@ def test_special_methods():
     chr1	150	500	feature3  0	-
     chr1	900	950	feature4  0	+
     """
-    from_string = pybedtools.bedtool(s, from_string=True)
+    from_string = pybedtools.BedTool(s, from_string=True)
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
     
@@ -205,7 +205,7 @@ def test_add_subtract():
     assert a.intersect(b,v=True) == (a-b)
 
 def test_flatten():
-    from pybedtools.bedtool import _flatten_list 
+    from pybedtools.helpers import _flatten_list 
     result = _flatten_list([[1,2,3,0,[0,5],9],[100]])
     print result
     assert result == [1, 2, 3, 0, 0, 5, 9, 100]
@@ -269,7 +269,7 @@ def test_sequence():
     >chrZ
     AAAAAAAAAAAAAAAAAAAAAAAAAAAATCT
     """
-    a = pybedtools.bedtool(s, from_string=True)
+    a = pybedtools.BedTool(s, from_string=True)
     
     fout = open(fi,'w')
     for line in fasta.splitlines(True):
@@ -328,7 +328,7 @@ def test_iterator():
 
 
     """
-    a = pybedtools.bedtool(s, from_string=True)
+    a = pybedtools.BedTool(s, from_string=True)
     results = list(a)
     print results 
     assert results == ['chrX\t1\t10\n']
