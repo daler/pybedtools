@@ -60,7 +60,7 @@ cdef class Interval:
 
     @property
     def length(self):
-        return self._bed.end - self.bed.start
+        return self._bed.end - self._bed.start
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property

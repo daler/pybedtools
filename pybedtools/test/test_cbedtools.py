@@ -29,6 +29,25 @@ class IntervalFileTest(unittest.TestCase):
         for hit in hits:
             self.assert_(hit.strand == '-')
 
+class IntervalTest(unittest.TestCase):
+
+    def setUp(self):
+        start, end, strand = 9719768, 9739768, "-"
+        self.i = Interval("chr21", start, end, strand)
+        self.start, self.end, self.strand = start, end, strand
+
+    def testLengths(self):
+        self.assertEqual(self.end - self.start, self.i.length)
+
+    def testEnds(self):
+        self.assertEqual(self.end, self.i.end)
+        self.assertEqual(self.start, self.i.start)
+
+    def testStrand(self):
+        self.assertEqual(self.strand, self.i.strand)
+
+
+
 class IntervalFileGzTest(IntervalFileTest):
       file = "data/rmsk.hg18.chr21.small.bed.gz"
 
