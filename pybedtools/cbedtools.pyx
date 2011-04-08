@@ -62,6 +62,7 @@ cdef class Interval:
     def length(self):
         return self._bed.end - self.bed.start
 
+    # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
     def o_start(self):
         return self._bed.o_start
@@ -74,10 +75,11 @@ cdef class Interval:
     def o_amt(self):
         return self._bed.o_end - self._bed.o_start
 
-    def __repr__(self):
+    def __str__(self):
         return self._bed.reportBed().c_str()
 
-    __str__ = __repr__
+    def __repr__(self):
+        return "Interval(%s:%i-%i)" % (self.chrom, self.start, self.end)
 
     def __dealloc__(self):
         del self._bed
@@ -146,7 +148,7 @@ cdef class IntervalFile:
         self.intervalFile_ptr.loadBedFileIntoMap()
         self._loaded = 1
 
-    def all_hits(self, Interval interval, bool same_strand = False, float overlap = 0.0):
+    def all_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
         Search for the "bed" feature in this file and ***return all overlaps***
         """
@@ -169,7 +171,7 @@ cdef class IntervalFile:
     # search() is an alias for all_hits
     search = all_hits
 
-    def any_hits(self, Interval interval, bool same_strand = False, float overlap = 0.0):
+    def any_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
         Search for the "bed" feature in this file and return
         whether (True/False) >= 1 overlaps are found.
@@ -184,7 +186,7 @@ cdef class IntervalFile:
 
         return found
 
-    def count_hits(self, Interval interval, bool same_strand = False, float overlap = 0.0):
+    def count_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
         Search for the "bed" feature in this file and return the *** count of hits found ***
         """
