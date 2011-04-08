@@ -1,9 +1,40 @@
 
 class Feature(object):
+    """
+    Feature objects and their subclasses have the following class attributes
+    that specify the details of their respective formats.
+
+    :position_locs:
+        3-tuple of integers indicating the columns that correspond to
+        chromosome, start, stop.  These also index into *__slots__*.
+
+    :__slots__:
+        Feature class-dependent tuple mapping columns to attributes.  Must
+        contain at least ('chr', 'start', 'stop').  For example, GFF features
+        have 'featuretype' in their __slots__
+
+    :line_sep:
+        The line separator to use in order to reconstruct a line.
+
+    """
     line_sep = "\t"
     position_locs = (0, 1, 2)
     __slots__ = ('chr', 'start', 'stop', '_line_arr')
     def __init__(self, line_arr):
+        r"""
+        *line_arr* is a list of items, like what you'd get from:
+
+            >>> line_arr = "chrX\t1\t100".split('\t')
+            >>> feature = Feature(line_arr)
+
+            >>> #feature.x = 0
+            >>> #print feature.x
+
+        Generally, you'll want to use one of the iterator classes (BedFile,
+        GFFFile, etc) to do more robust parsing parsing that handles comments,
+        track lines, blank lines, etc instead of handling lines of a file
+        yourself.
+        """
         line_arr[-1] = line_arr[-1].rstrip("\r\n")
         locs = self.__class__.position_locs
         self.chr = line_arr[locs[0]]
@@ -11,6 +42,7 @@ class Feature(object):
         self.stop = int(line_arr[locs[2]])
         self._line_arr = line_arr
 
+        # Needs to be defined for each subclass
         self._post_initialize()
 
     def __getattr__(self, field):
@@ -50,6 +82,7 @@ class BedFeature(Feature):
     # get back the original string with __str__
     >>> print b #doctest: +NORMALIZE_WHITESPACE
     chr10	99	122	goodbye
+
     """
     __slots__ = ('chr', 'start', 'stop', 'name', 'value', 'strand',
                  'thickStart', 'thickStop', 'itemRGB',
@@ -82,7 +115,6 @@ class GFFFeature(Feature):
     @property
     def name(self):
         return self.attributes.get("ID", self.attributes.get("gene_name"))
-
 
 class GTFFeature(GFFFeature):
     r"""
