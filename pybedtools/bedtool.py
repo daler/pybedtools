@@ -1006,7 +1006,7 @@ class BedTool(object):
         """
         b = self.merge()
         total_bp = 0
-        for line in b.features():
+        for feature in b.features():
             total_bp += len(feature)
         return total_bp
 
