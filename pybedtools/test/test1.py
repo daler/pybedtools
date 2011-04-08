@@ -548,6 +548,15 @@ def test_cat():
     assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
 
 
+def test_random_intersection():
+    # TODO:
+    return
+    N = 4
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    li = list(a.randomintersection(b, N))
+    assert len(li) == N, li
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

@@ -756,7 +756,7 @@ class BedTool(object):
 
         return s
 
-    def randomintersection(self, other, iterations, intersectkwargs=None):
+    def randomintersection(self, other, iterations, **kwargs):
         """
         Performs *iterations* shufflings of self, each time intersecting with
         *other*.
@@ -771,19 +771,16 @@ class BedTool(object):
 
             r = BedTool('in.bed').randomintersection('other.bed', 100)
         """
-
-        if intsersectkwargs is None:
-            intersectkwargs = {'u':True}
-        counts = []
+        # TODO: do we need this function?
+        if kwargs == {}: kwargs['u'] = True
         for i in range(iterations):
             tmp = self.pybedtools_shuffle()
-            tmp2 = tmp.intersect(other,**intersectkwargs)
-            counts.append(len(tmp2))
+            tmp2 = tmp.intersect(other, **kwargs)
+            yield len(tmp2)
             os.unlink(tmp.fn)
             os.unlink(tmp2.fn)
             del(tmp)
             del(tmp2)
-        return counts
 
     # TODO: is this function really needed?
     @_file_or_bedtool()
