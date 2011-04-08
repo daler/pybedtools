@@ -785,9 +785,10 @@ class BedTool(object):
             del(tmp2)
         return counts
 
+    # TODO: is this function really needed?
     @_file_or_bedtool()
     @_returns_bedtool()
-    def cat(self,other, postmerge=True, **kwargs):
+    def cat(self, other, postmerge=True, **kwargs):
         """
         Concatenates two BedTool objects (or an object and a file) and does an
         optional post-merge of the features.
@@ -814,10 +815,12 @@ class BedTool(object):
         else:
             assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
         TMP = open(tmp,'w')
-        for line in self:
+        for f in self:
+            line = str(f)
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
-        for line in other:
+        for f in other:
+            line = str(f)
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
         TMP.close()

@@ -541,6 +541,12 @@ def test_normalized_counts():
     assert len(normalized) == 4
     # TODO: more tests.
 
+def test_cat():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.cat(b, postmerge=False)
+    assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
+
 
 def teardown():
     # always run this!
