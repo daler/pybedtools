@@ -4,11 +4,8 @@ import tempfile
 import subprocess
 import random
 import string
-import itertools
 import glob
-from features import BedFeature as bedfeature
 import pybedtools
-import genome_registry
 
 # Check calls against these names to only allow calls to known BEDTools
 # programs (basic security)
@@ -130,7 +127,7 @@ def get_tempdir():
     """
     return tempfile.tempdir
 
-def cleanup(verbose=False,remove_all=False):
+def cleanup(verbose=True, remove_all=False):
     """
     Deletes all temporary files in the *BedTool.TEMPFILES* class
     variable.

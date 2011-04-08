@@ -5,10 +5,10 @@ import random
 import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
-    _returns_bedtool, get_tempdir, set_tempdir, cleanup, find_tagged, _tags,\
+    _returns_bedtool, get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list
 
-from pybedtools.features import BedFeature as bedfeature, GFFFeature, GTFFeature
+from cbedtools import IntervalFile
 import pybedtools
 
 
@@ -46,7 +46,6 @@ class BedTool(object):
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """
-        self._feature_classes = [bedfeature]
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
@@ -159,14 +158,7 @@ class BedTool(object):
 
     def __iter__(self):
         '''Iterator that returns lines from BED file'''
-        f = open(self.fn)
-        for line in f:
-            if line.startswith(('browser', 'track', '#')):
-                continue
-            if len(line.strip()) == 0:
-                continue
-            yield line
-        f.close()
+        return IntervalFile(self.fn)
 
     def __repr__(self):
         if os.path.exists(self.fn):
@@ -554,6 +546,8 @@ class BedTool(object):
         """
         Returns an iterator of :class:`feature` objects.
         """
+        return iter(self)
+        """
         for line in self:
             line_arr = line.split("\t")
             if len(self._feature_classes) == 1:
@@ -561,6 +555,7 @@ class BedTool(object):
             else:
                 # TODO: each fclass must tell how much of line_arr it consumes.
                 yield [fclass(line_arr) for fclass in self._feature_classes]
+                """
 
     def count(self):
         """
@@ -654,21 +649,15 @@ class BedTool(object):
 
         tmp = self._tmp()
         TMP = open(tmp,'w')
-        for line in self:
-            L = line.split()
-            chrom,start,stop = L[:3]
-            start = int(start)
-            stop = int(stop)
-            length = stop-start
-            newstart = random.randint(self.chromsizes[chrom][0], self.chromsizes[chrom][1]-length)
-            newstop = newstart + length
+        for f in self:
+            length = f.stop-f.start
+            newstart = random.randint(self.chromsizes[f.chrom][0], self.chromsizes[f.chrom][1]-length)
+            f.stop = newstart + length
 
             # Just overwrite start and stop, leaving the rest of the line in
             # place
-            L[1] = str(newstart)
-            L[2] = str(newstop)
-
-            TMP.write('\t'.join(L)+'\n')
+            f.start = newstart
+            TMP.write(str(f))
         TMP.close()
         return BedTool(tmp)
 
@@ -928,9 +917,9 @@ class BedTool(object):
         idxs = set(random.sample(range(len(self)), n))
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for i, line in enumerate(self):
+        for i, f in enumerate(self):
             if i in idxs:
-                tmp.write(line)
+                tmp.write(str(f))
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1078,28 +1067,22 @@ class BedTool(object):
         '''
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for line in self:
-            L = line.strip().split('\t')
-            chrom,start,stop = L[:3]
-            start = int(start)
-            stop = int(stop)
+        for f in self:
 
             # if smaller than window size, decide whether to report it or not.
-            if (stop-start) < n:
+            if (f.stop - f.start) < n:
                 if report_smaller:
-                    tmp.write(line)
+                    tmp.write(str(f))
                     continue
                 else:
                     continue
 
             left = floor(n/2.0)
             right = ceil(n/2.0)
-            midpoint = start + (stop-start)/2
-            newstart = str( int(midpoint - left))
-            newstop = str( int(midpoint + right))
-            L[1] = newstart
-            L[2] = newstop
-            tmp.write('\t'.join(L)+'\n')
+            midpoint = f.start + (f.stop - f.start)/2
+            f.start = int(midpoint - left)
+            f.end = int(midpoint + right)
+            tmp.write(str(f))
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1111,10 +1094,7 @@ class BedTool(object):
         """
         tmpfn = self._tmp()
         tmp = open(tmpfn, 'w')
-        for line in self:
-            L = line.split('\t')
-            f = self._feature_classes[0](L)
-            # TODO: this wont yet work for GFF/GTF. 
+        for f in self:
             f.name = new_name
             print >>tmp, str(f)
         tmp.close()
@@ -1158,7 +1138,8 @@ class BedTool(object):
         """
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
-        return [int(l.split("\t")[-1]) for l in self]
+        for f in self:
+            yield f.count
 
     def normalized_counts(self):
         """
@@ -1189,14 +1170,8 @@ class BedTool(object):
         """
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
-        normalized_counts = []
-        for line in self:
-            L = line.split("\t")
-            f = self._feature_classes[0](L)
-            count = float(L[-1])
-            normalized_count = count / (f.stop - f.start) * 1000
-            normalized_counts.append(normalized_count)
-        return normalized_counts
+        for f in self:
+            yield f.count / float(f.stop - f.start)
 
     def lengths(self):
         """
@@ -1213,11 +1188,8 @@ class BedTool(object):
             pylab.hist(lengths)
             pylab.show()
         """
-        feature_lengths = []
-        for line in self:
-            f = self._feature_classes[0](line.split("\t"))
-            feature_lengths.append(f.stop - f.start)
-        return feature_lengths
+        for f in self:
+            yield f.stop - f.start
 
 if __name__ == "__main__":
     print 'Running tests...'
