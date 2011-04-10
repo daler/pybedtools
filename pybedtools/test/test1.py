@@ -1,7 +1,6 @@
 import pybedtools
 import os, difflib
 from nose.tools import assert_raises
-from pybedtools import BedTool
 
 testdir = os.path.dirname(__file__)
 
@@ -546,6 +545,15 @@ def test_cat():
     b = pybedtools.example_bedtool('b.bed')
     c = a.cat(b, postmerge=False)
     assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
+
+#def test_field_count():
+    #    a = pybedtools.example_bedtool('a.bed')
+    #assert a.field_count() == 6
+
+def test_cut():
+    a = pybedtools.example_bedtool('a.bed')
+    c = a.cut([0, 1, 2, 4])
+    assert c.field_count() == 4, c
 
 
 def test_random_intersection():

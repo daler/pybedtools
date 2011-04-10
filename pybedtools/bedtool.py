@@ -12,6 +12,19 @@ from cbedtools import IntervalFile
 import pybedtools
 
 
+def parse_attributes(attr_str):
+    # copied from genomicfeatures
+    # this could also be done lazily the first time attributes() is called.
+    # i think that's a better option in the spirit of keeping it minimal.
+    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
+    _attributes = {}
+    kvs = map(str.strip, attr_str.strip().split(sep))
+    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
+        _attributes[field] = value.replace('"', '')
+    return _attributes
+
+
+
 class BedTool(object):
     TEMPFILES = []
     def __init__(self, fn, from_string=False):
@@ -144,6 +157,44 @@ class BedTool(object):
 
         decorated.__doc__ = method.__doc__
         return decorated
+
+    def field_count(self, n=10):
+        """
+        return the number of fields in the file
+        """
+        i = 0
+        fields = set([])
+        for feat in self:
+            if i > n: break
+            i += 1
+            # TODO: make this more efficient.
+            fields.update([len(str(feat).split("\t"))])
+        assert len(fields) == 1, fields
+        return list(fields)[0]
+
+    def cut(self, indexes):
+        """just like unix cut except indexes are 0-based, must be a list
+        and the columns are return in the order requested.
+        in addition, indexes can contain keys of the GFF/GTF attributes,
+        in which case the values are returned. e.g. 'gene_name' will return the
+        corresponding name from a GTF."""
+        #TODO implement method in c++ that just yields the lines in the file??
+        fh = open(self._tmp(), "w")
+        sattrs = any(isinstance(i, basestring) for i in indexes)
+
+        for f in self:
+            if sattrs:
+                # TODO: need to know if the final field is the attrs or a distance.
+                attrs = parse_attributes(f.other[-2])
+            toks = str(f).split("\t")
+            print >>fh, "\t".join([(toks[i] if isinstance(i, int) \
+                                            else attrs[i]) for i in indexes])
+
+        fh.close()
+        return BedTool(fh.name)
+
+
+
 
     def _tmp(self):
         '''
@@ -846,7 +897,7 @@ class BedTool(object):
         return s
 
     @_returns_bedtool()
-    def saveas(self,fn,trackline=None):
+    def saveas(self, fn, trackline=None):
         """
         Save BED file as a new file, adding the optional *trackline* to the
         beginning.

@@ -11,7 +11,7 @@ from cython.operator cimport dereference as deref
 
 cdef class Interval:
     cdef BED *_bed
-    
+
     def __init__(self, chrom, start, end, strand = None):
         if strand is None:
             self._bed = new BED(string(chrom), start, end)
@@ -91,6 +91,20 @@ cdef Interval create_interval(BED b):
                        b.score, b.strand, b.otherFields,
                        b.o_start, b.o_end, b.bedType, b.isGff, b.isVcf, b.status)
     return pyb
+
+cdef Interval create_interval_from_list(list fields):
+    cdef Interval pyb = Interval.__new__(Interval)
+    pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
+                       string(fields[4]), string(fields[5]), list_to_vector(fields[6]))
+    return pyb
+
+cdef vector[string] list_to_vector(list li):
+    cdef vector[string] s
+    cdef int i
+    for i in range(len(li)):
+        s.push_back(string(li[i]))
+    return s
+
 
 
 cdef list string_vec2list(vector[string] sv):

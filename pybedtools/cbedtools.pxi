@@ -20,7 +20,7 @@ cdef extern from "bedFile.h":
 
     ctypedef unsigned int   CHRPOS
     ctypedef bint BOOL
-    
+
     cdef cppclass BED:
         string chrom
         CHRPOS start
@@ -35,21 +35,23 @@ cdef extern from "bedFile.h":
         BOOL isGff
         BOOL isVcf
         BedLineStatus status
-        
+
         # constructors
         BED()
         BED(string chrom, CHRPOS start, CHRPOS end, string name,
              string score, string strand, vector[string] otherFields,
-             CHRPOS o_start, CHRPOS o_end, 
+             CHRPOS o_start, CHRPOS o_end,
              unsigned short bedType, BOOL isGff, BOOL isVcf, BedLineStatus status)
 
         BED(string chrom, CHRPOS start, CHRPOS end)
         BED(string chrom, CHRPOS start, CHRPOS end, string strand)
-        
+        BED(string chrom, CHRPOS start, CHRPOS end, string name,
+             string score, string strand, vector[string] otherFields)
+
         # methods
         string reportBed()
-        
-    
+
+
     cdef cppclass BedFile:
         BedFile(string)
         void Open()
