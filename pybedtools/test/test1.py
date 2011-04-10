@@ -556,6 +556,31 @@ def test_cut():
     assert c.field_count() == 4, c
 
 
+def test_with_column():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.closest(b, d=True)
+
+    # if there is overlap, re-phrase it as
+    # proportion of feature b that is covered.
+    def overlap(a0, a1, b0, b1, dist):
+        if int(dist) > 0:
+            return a0, a1, b0, b1, dist
+        else:
+            e1 = min(int(a1), int(b1))
+            e2 = max(int(a0), int(b0))
+            ovl = e1 - e2
+            d = float(ovl) / (int(b1) - int(b0))
+            return a0, a1, b0, b1, str(d)
+
+    d = c.with_column([1, 2, 7, 8, -1], overlap)
+
+    for cf, df in zip(c, d):
+        if cf.other[-1] == 0:
+            assert 0 <= df.other[-1] <= 1
+
+
+
 def test_random_intersection():
     # TODO:
     return

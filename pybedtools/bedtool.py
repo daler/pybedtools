@@ -172,6 +172,29 @@ class BedTool(object):
         assert len(fields) == 1, fields
         return list(fields)[0]
 
+
+    def with_column(self, cols, fn):
+        """
+        fn(*[self[col] for col in cols) for each row in self
+        fn must accept strings and do its own conversion and
+        return strings. can only return a number of columns 
+        >= to the # of columns sent in.
+            def fn(cola, colb):
+                return cola, colb, int(cola) / float(colb)
+        """
+
+        fh = open(self._tmp(), "w")
+        for f in self:
+            toks = str(f).split("\t")
+            rtoks = fn(*[toks[col] for col in cols])
+            for i, col in enumerate(cols):
+                toks[col] = rtoks[i] if col < len(toks) else toks.append(rtoks[i])
+            print >>fh, "\t".join(toks)
+        fh.close()
+        return BedTool(fh.name)
+
+
+
     def cut(self, indexes):
         """just like unix cut except indexes are 0-based, must be a list
         and the columns are return in the order requested.
