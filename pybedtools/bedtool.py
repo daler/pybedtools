@@ -5,11 +5,24 @@ import random
 import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
-    _returns_bedtool, get_tempdir, set_tempdir, cleanup, find_tagged, _tags,\
+    _returns_bedtool, get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list
 
-from pybedtools.features import BedFeature as bedfeature, GFFFeature, GTFFeature
+from cbedtools import IntervalFile
 import pybedtools
+
+
+def parse_attributes(attr_str):
+    # copied from genomicfeatures
+    # this could also be done lazily the first time attributes() is called.
+    # i think that's a better option in the spirit of keeping it minimal.
+    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
+    _attributes = {}
+    kvs = map(str.strip, attr_str.strip().split(sep))
+    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
+        _attributes[field] = value.replace('"', '')
+    return _attributes
+
 
 
 class BedTool(object):
@@ -46,7 +59,6 @@ class BedTool(object):
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """
-        self._feature_classes = [bedfeature]
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
@@ -146,6 +158,67 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
+    def field_count(self, n=10):
+        """
+        return the number of fields in the file
+        """
+        i = 0
+        fields = set([])
+        for feat in self:
+            if i > n: break
+            i += 1
+            # TODO: make this more efficient.
+            fields.update([len(str(feat).split("\t"))])
+        assert len(fields) == 1, fields
+        return list(fields)[0]
+
+
+    def with_column(self, cols, fn):
+        """
+        fn(*[self[col] for col in cols) for each row in self
+        fn must accept strings and do its own conversion and
+        return strings. can only return a number of columns 
+        >= to the # of columns sent in.
+            def fn(cola, colb):
+                return cola, colb, int(cola) / float(colb)
+        """
+
+        fh = open(self._tmp(), "w")
+        for f in self:
+            toks = str(f).split("\t")
+            rtoks = fn(*[toks[col] for col in cols])
+            for i, col in enumerate(cols):
+                toks[col] = rtoks[i] if col < len(toks) else toks.append(rtoks[i])
+            print >>fh, "\t".join(toks)
+        fh.close()
+        return BedTool(fh.name)
+
+
+
+    def cut(self, indexes):
+        """just like unix cut except indexes are 0-based, must be a list
+        and the columns are return in the order requested.
+        in addition, indexes can contain keys of the GFF/GTF attributes,
+        in which case the values are returned. e.g. 'gene_name' will return the
+        corresponding name from a GTF."""
+        #TODO implement method in c++ that just yields the lines in the file??
+        fh = open(self._tmp(), "w")
+        sattrs = any(isinstance(i, basestring) for i in indexes)
+
+        for f in self:
+            if sattrs:
+                # TODO: need to know if the final field is the attrs or a distance.
+                attrs = parse_attributes(f.other[-2])
+            toks = str(f).split("\t")
+            print >>fh, "\t".join([(toks[i] if isinstance(i, int) \
+                                            else attrs[i]) for i in indexes])
+
+        fh.close()
+        return BedTool(fh.name)
+
+
+
+
     def _tmp(self):
         '''
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
@@ -159,14 +232,7 @@ class BedTool(object):
 
     def __iter__(self):
         '''Iterator that returns lines from BED file'''
-        f = open(self.fn)
-        for line in f:
-            if line.startswith(('browser', 'track', '#')):
-                continue
-            if len(line.strip()) == 0:
-                continue
-            yield line
-        f.close()
+        return IntervalFile(self.fn)
 
     def __repr__(self):
         if os.path.exists(self.fn):
@@ -554,6 +620,8 @@ class BedTool(object):
         """
         Returns an iterator of :class:`feature` objects.
         """
+        return iter(self)
+        """
         for line in self:
             line_arr = line.split("\t")
             if len(self._feature_classes) == 1:
@@ -561,6 +629,7 @@ class BedTool(object):
             else:
                 # TODO: each fclass must tell how much of line_arr it consumes.
                 yield [fclass(line_arr) for fclass in self._feature_classes]
+                """
 
     def count(self):
         """
@@ -654,21 +723,15 @@ class BedTool(object):
 
         tmp = self._tmp()
         TMP = open(tmp,'w')
-        for line in self:
-            L = line.split()
-            chrom,start,stop = L[:3]
-            start = int(start)
-            stop = int(stop)
-            length = stop-start
-            newstart = random.randint(self.chromsizes[chrom][0], self.chromsizes[chrom][1]-length)
-            newstop = newstart + length
+        for f in self:
+            length = f.stop-f.start
+            newstart = random.randint(self.chromsizes[f.chrom][0], self.chromsizes[f.chrom][1]-length)
+            f.stop = newstart + length
 
             # Just overwrite start and stop, leaving the rest of the line in
             # place
-            L[1] = str(newstart)
-            L[2] = str(newstop)
-
-            TMP.write('\t'.join(L)+'\n')
+            f.start = newstart
+            TMP.write(str(f))
         TMP.close()
         return BedTool(tmp)
 
@@ -767,7 +830,7 @@ class BedTool(object):
 
         return s
 
-    def randomintersection(self, other, iterations, intersectkwargs=None):
+    def randomintersection(self, other, iterations, **kwargs):
         """
         Performs *iterations* shufflings of self, each time intersecting with
         *other*.
@@ -782,23 +845,21 @@ class BedTool(object):
 
             r = BedTool('in.bed').randomintersection('other.bed', 100)
         """
-
-        if intsersectkwargs is None:
-            intersectkwargs = {'u':True}
-        counts = []
+        # TODO: do we need this function?
+        if kwargs == {}: kwargs['u'] = True
         for i in range(iterations):
             tmp = self.pybedtools_shuffle()
-            tmp2 = tmp.intersect(other,**intersectkwargs)
-            counts.append(len(tmp2))
+            tmp2 = tmp.intersect(other, **kwargs)
+            yield len(tmp2)
             os.unlink(tmp.fn)
             os.unlink(tmp2.fn)
             del(tmp)
             del(tmp2)
-        return counts
 
+    # TODO: is this function really needed?
     @_file_or_bedtool()
     @_returns_bedtool()
-    def cat(self,other, postmerge=True, **kwargs):
+    def cat(self, other, postmerge=True, **kwargs):
         """
         Concatenates two BedTool objects (or an object and a file) and does an
         optional post-merge of the features.
@@ -825,10 +886,12 @@ class BedTool(object):
         else:
             assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
         TMP = open(tmp,'w')
-        for line in self:
+        for f in self:
+            line = str(f)
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
-        for line in other:
+        for f in other:
+            line = str(f)
             newline = '\t'.join(line.split()[:3])+'\n'
             TMP.write(newline)
         TMP.close()
@@ -857,7 +920,7 @@ class BedTool(object):
         return s
 
     @_returns_bedtool()
-    def saveas(self,fn,trackline=None):
+    def saveas(self, fn, trackline=None):
         """
         Save BED file as a new file, adding the optional *trackline* to the
         beginning.
@@ -928,9 +991,9 @@ class BedTool(object):
         idxs = set(random.sample(range(len(self)), n))
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for i, line in enumerate(self):
+        for i, f in enumerate(self):
             if i in idxs:
-                tmp.write(line)
+                tmp.write(str(f))
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1017,7 +1080,7 @@ class BedTool(object):
         """
         b = self.merge()
         total_bp = 0
-        for line in b.features():
+        for feature in b.features():
             total_bp += len(feature)
         return total_bp
 
@@ -1078,28 +1141,22 @@ class BedTool(object):
         '''
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
-        for line in self:
-            L = line.strip().split('\t')
-            chrom,start,stop = L[:3]
-            start = int(start)
-            stop = int(stop)
+        for f in self:
 
             # if smaller than window size, decide whether to report it or not.
-            if (stop-start) < n:
+            if (f.stop - f.start) < n:
                 if report_smaller:
-                    tmp.write(line)
+                    tmp.write(str(f))
                     continue
                 else:
                     continue
 
             left = floor(n/2.0)
             right = ceil(n/2.0)
-            midpoint = start + (stop-start)/2
-            newstart = str( int(midpoint - left))
-            newstop = str( int(midpoint + right))
-            L[1] = newstart
-            L[2] = newstop
-            tmp.write('\t'.join(L)+'\n')
+            midpoint = f.start + (f.stop - f.start)/2
+            f.start = int(midpoint - left)
+            f.end = int(midpoint + right)
+            tmp.write(str(f))
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1111,10 +1168,7 @@ class BedTool(object):
         """
         tmpfn = self._tmp()
         tmp = open(tmpfn, 'w')
-        for line in self:
-            L = line.split('\t')
-            f = self._feature_classes[0](L)
-            # TODO: this wont yet work for GFF/GTF. 
+        for f in self:
             f.name = new_name
             print >>tmp, str(f)
         tmp.close()
@@ -1158,7 +1212,8 @@ class BedTool(object):
         """
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
-        return [int(l.split("\t")[-1]) for l in self]
+        for f in self:
+            yield f.count
 
     def normalized_counts(self):
         """
@@ -1189,14 +1244,8 @@ class BedTool(object):
         """
         if not self._hascounts:
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
-        normalized_counts = []
-        for line in self:
-            L = line.split("\t")
-            f = self._feature_classes[0](L)
-            count = float(L[-1])
-            normalized_count = count / (f.stop - f.start) * 1000
-            normalized_counts.append(normalized_count)
-        return normalized_counts
+        for f in self:
+            yield f.count / float(f.stop - f.start)
 
     def lengths(self):
         """
@@ -1213,11 +1262,8 @@ class BedTool(object):
             pylab.hist(lengths)
             pylab.show()
         """
-        feature_lengths = []
-        for line in self:
-            f = self._feature_classes[0](line.split("\t"))
-            feature_lengths.append(f.stop - f.start)
-        return feature_lengths
+        for f in self:
+            yield f.stop - f.start
 
 if __name__ == "__main__":
     print 'Running tests...'
