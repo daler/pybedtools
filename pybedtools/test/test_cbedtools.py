@@ -79,6 +79,8 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(len(iv[:3]), 3)
         self.assertEqual(len(iv[3:3]), 0)
         self.assertEqual(len(iv[2:]), 4, iv[2:])
+        
+        self.assertRaises(IndexError, lambda x: iv[x], 6)
 
 
 class IntervalFileGzTest(IntervalFileTest):

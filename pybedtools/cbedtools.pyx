@@ -84,14 +84,14 @@ cdef class Interval:
     def __dealloc__(self):
         del self._bed
 
-    @property
-    def bf(self):
-        return self._bed.fields
-
+    def __len__(self):
+        return self._bed.end - self._bed.start
 
     def __getitem__(self, object key):
         cdef int i
         if isinstance(key, (int, long)):
+            if key >= self._bed.fields.size():
+                raise IndexError('field index out of range')
             return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
             #sys.stderr.write(key)
