@@ -40,6 +40,7 @@ class IntervalTest(unittest.TestCase):
 
     def testLengths(self):
         self.assertEqual(self.end - self.start, self.i.length)
+        self.assertEqual(len(self.i), self.i.length)
 
     def testEnds(self):
         self.assertEqual(self.end, self.i.end)
