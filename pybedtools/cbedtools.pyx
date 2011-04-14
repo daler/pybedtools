@@ -84,6 +84,11 @@ cdef class Interval:
     def __dealloc__(self):
         del self._bed
 
+    @property
+    def bf(self):
+        return self._bed.fields
+
+
     def __getitem__(self, object key):
         cdef int i
         if isinstance(key, (int, long)):
