@@ -94,6 +94,7 @@ BED BedFile::GetNextBed() {
 
         // load the BED struct as long as it's a valid BED entry.
         bed.status = parseLine(bed, bedFields);
+        bed.fields = bedFields;
         return bed;
     }
     else {

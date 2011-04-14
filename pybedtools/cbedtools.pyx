@@ -84,12 +84,27 @@ cdef class Interval:
     def __dealloc__(self):
         del self._bed
 
+    def __getitem__(self, object key):
+        cdef int i
+        if isinstance(key, (int, long)):
+            return self._bed.fields.at(key).c_str()
+        elif isinstance(key, slice):
+            #sys.stderr.write(key)
+            return [self._bed.fields.at(i).c_str() for i in \
+                    range(key.start or 0,
+                          key.stop or self._bed.fields.size(),
+                          key.step or 1)]
+
+        elif isinstance(key, basestring):
+            raise Exception("unimplemented")
+
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
     pyb._bed = new BED(b.chrom, b.start, b.end, b.name,
                        b.score, b.strand, b.otherFields,
                        b.o_start, b.o_end, b.bedType, b.isGff, b.isVcf, b.status)
+    pyb._bed.fields = b.fields
     return pyb
 
 cdef Interval create_interval_from_list(list fields):

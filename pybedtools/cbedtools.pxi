@@ -35,6 +35,7 @@ cdef extern from "bedFile.h":
         BOOL isGff
         BOOL isVcf
         BedLineStatus status
+        vector[string] fields
 
         # constructors
         BED()

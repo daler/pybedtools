@@ -141,6 +141,9 @@ struct BED {
     bool isVcf;
     // valid, header, blank line, or EOF
     BedLineStatus   status;
+    
+    // the original line string
+    vector<string> fields;
 
 
 public:
@@ -160,7 +163,8 @@ public:
       bedType(0),
       isGff(false),
       isVcf(false),
-      status()
+      status(),
+      fields()
     {}
         
     // BED3
@@ -177,7 +181,8 @@ public:
       bedType(3),
       isGff(false),
       isVcf(false),
-      status()
+      status(),
+      fields()
     {}
 
     // BED4
@@ -194,7 +199,8 @@ public:
       bedType(3),
       isGff(false),
       isVcf(false),
-      status()
+      status(),
+      fields()
     {}
 
     // BED6
@@ -212,7 +218,8 @@ public:
       bedType(6),
       isGff(false),
       isVcf(false),
-      status()
+      status(),
+      fields()
     {}
     
     // BEDALL
@@ -230,7 +237,8 @@ public:
       bedType(0),
       isGff(false),
       isVcf(false),
-      status()
+      status(),
+      fields()
     {}
     
     // BEDALL + overlap
@@ -250,7 +258,8 @@ public:
       bedType(bedType),
       isGff(isGff),
       isVcf(isVcf),
-      status(status)
+      status(status),
+      fields()
     {}
     
 
