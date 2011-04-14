@@ -36,8 +36,8 @@ def test_cleanup():
     assert os.path.exists(testfn)
 
     # make some temp files
-    a = pybedtools.BedTool(os.path.join(testdir, 'a.bed'))
-    b = pybedtools.BedTool(os.path.join(testdir, 'b.bed'))
+    a = pybedtools.BedTool(os.path.join(testdir, 'data', 'a.bed'))
+    b = pybedtools.BedTool(os.path.join(testdir, 'data', 'b.bed'))
     c = a.intersect(b)
 
     # after standard cleanup, c's fn should be gone but the fake one still
@@ -150,11 +150,11 @@ def test_feature_centers():
 def test_getting_example_beds():
     assert 'a.bed' in pybedtools.list_example_files()
 
-    a = pybedtools.example_filename('a.bed')
-    assert a == os.path.join(testdir, 'a.bed')
+    a_fn = pybedtools.example_filename('a.bed')
+    assert a_fn == os.path.join(testdir, 'data', 'a.bed')
     
     a = pybedtools.example_bedtool('a.bed')
-    assert a.fn == os.path.join(testdir, 'a.bed')
+    assert a.fn == os.path.join(testdir, 'data', 'a.bed')
 
     # complain appropriately if nonexistent paths are asked for
     assert_raises(ValueError, pybedtools.example_filename, 'nonexistent')

@@ -31,7 +31,7 @@ def data_dir():
     Returns the data directory that contains example files for tests and
     documentation.
     """
-    return os.path.join(os.path.dirname(__file__), 'test')
+    return os.path.join(os.path.dirname(__file__), 'test', 'data')
 
 def example_filename(fn):
     """
@@ -66,7 +66,16 @@ def list_example_files():
         >>> mybedtool = BedTool(bedfn)
 
     """
-    return sorted([i for i in os.listdir(data_dir()) if os.path.splitext(i)[-1] == '.bed'])
+    candidate_fns = os.listdir(data_dir())
+    valid_fns = []
+    valid_exts = ['.bed','.gff','.gtf','.bed.gz','.bam']
+    for fn in candidate_fns:
+        for v_ext in valid_exts:
+            if fn.endswith(v_ext):
+                valid_fns.append(fn)
+                continue
+
+    return sorted(valid_fns)
 
 def chromsizes(genome):
     """
