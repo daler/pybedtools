@@ -247,11 +247,12 @@ def _help(command):
 
     return decorator
 
-def call_bedtools(cmds, tmpfn, check_stderr=None):
+def call_bedtools(cmds, tmpfn=None, check_stderr=None):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
 
-    Output always goes to tmpfn.
+    Output goes to *tmpfn*, or, if None, output stays in subprocess.PIPE and
+    can be iterated over.
 
     Prints some useful help upon getting common errors.
 
@@ -263,7 +264,11 @@ def call_bedtools(cmds, tmpfn, check_stderr=None):
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
     try:
-        p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE)
+        if tmpfn is None:
+            output = subprocess.PIPE
+        else:
+            output = open(tmpfn, 'w')
+        p = subprocess.Popen(cmds, stdout=output, stderr=subprocess.PIPE)
         stdout,stderr = p.communicate()
 
         # Check if it's OK; if so dump it to sys.stderr and reset it to None so
@@ -291,3 +296,8 @@ def call_bedtools(cmds, tmpfn, check_stderr=None):
         print 'Things to check:'
         print '\n\t'+'\n\t'.join(problems[err.errno])
         raise OSError('See above for commands that gave the error')
+
+    if tmpfn is None:
+        return output
+    else:
+        return tmpfn
