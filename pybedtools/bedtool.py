@@ -154,7 +154,7 @@ class BedTool(object):
             if i > n: break
             i += 1
             # TODO: make this more efficient.
-            fields.update([len(str(feat).split("\t"))])
+            fields.update([len(feat.fields)])
         assert len(fields) == 1, fields
         return list(fields)[0]
 
@@ -171,7 +171,7 @@ class BedTool(object):
 
         fh = open(self._tmp(), "w")
         for f in self:
-            toks = str(f).split("\t")
+            toks = f.fields
             rtoks = fn(*[toks[col] for col in cols])
             for i, col in enumerate(cols):
                 toks[col] = rtoks[i] if col < len(toks) else toks.append(rtoks[i])
@@ -189,17 +189,9 @@ class BedTool(object):
         corresponding name from a GTF."""
         #TODO implement method in c++ that just yields the lines in the file??
         fh = open(self._tmp(), "w")
-        sattrs = any(isinstance(i, basestring) for i in indexes)
 
         for f in self:
-            if sattrs:
-                # TODO: need to know if the final field is the attrs or a distance.
-                # TODO: use the stuff from the Interval object.
-                attrs = parse_attributes(f.other[-2])
-            toks = str(f).split("\t")
-            print >>fh, "\t".join([(toks[i] if isinstance(i, int) \
-                                            else attrs[i]) for i in indexes])
-
+            print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
         fh.close()
         return BedTool(fh.name)
 
@@ -874,13 +866,9 @@ class BedTool(object):
             assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
         TMP = open(tmp,'w')
         for f in self:
-            line = str(f)
-            newline = '\t'.join(line.split()[:3])+'\n'
-            TMP.write(newline)
+            TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
         for f in other:
-            line = str(f)
-            newline = '\t'.join(line.split()[:3])+'\n'
-            TMP.write(newline)
+            TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
         TMP.close()
         c = BedTool(tmp)
         if postmerge:
@@ -1157,6 +1145,7 @@ class BedTool(object):
         tmp = open(tmpfn, 'w')
         for f in self:
             f.name = new_name
+            # TODO: check for gff
             print >>tmp, str(f)
         tmp.close()
         return BedTool(tmpfn)
