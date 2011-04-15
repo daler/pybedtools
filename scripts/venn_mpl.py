@@ -12,7 +12,7 @@ except ImportError:
     sys.exit(1)
 
 
-def venn(a, b, c, colors=None, outfn=None):
+def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
     a = pybedtools.BedTool(a)
     b = pybedtools.BedTool(b)
     c = pybedtools.BedTool(c)
@@ -23,10 +23,13 @@ def venn(a, b, c, colors=None, outfn=None):
     radius = 6.0
     center = 0.0
     offset = radius / 2
+    
+    if labels is None:
+        labels = ['a','b','c']
 
-    circle_a = Circle(xy = (center-offset, center+offset), radius=radius, edgecolor=colors[0])
-    circle_b = Circle(xy = (center+offset, center+offset), radius=radius, edgecolor=colors[1])
-    circle_c = Circle(xy = (center,        center-offset), radius=radius, edgecolor=colors[2])
+    circle_a = Circle(xy = (center-offset, center+offset), radius=radius, edgecolor=colors[0], label=labels[0])
+    circle_b = Circle(xy = (center+offset, center+offset), radius=radius, edgecolor=colors[1], label=labels[1])
+    circle_c = Circle(xy = (center,        center-offset), radius=radius, edgecolor=colors[2], label=labels[2])
 
 
     fig = plt.figure(facecolor='w')
@@ -65,6 +68,8 @@ def venn(a, b, c, colors=None, outfn=None):
     # all
     ax.text( center, center, str((a + b + c).count()), **kwargs)
 
+    ax.legend(loc='best')
+
     fig.savefig(outfn)
 
     plt.close(fig)
@@ -72,7 +77,10 @@ def venn(a, b, c, colors=None, outfn=None):
 if __name__ == "__main__":
 
     usage = """
-    Given 3 files, creates a 3-way Venn diagram of intersections.
+    Given 3 files, creates a 3-way Venn diagram of intersections using matplotlib.  
+    
+    Numbers are placed on the diagram.  If you don't have matplotlib installed.
+    try venn_gchart.py to use the Google Chart API instead.
 
     The values in the diagram assume:
 
@@ -83,6 +91,9 @@ if __name__ == "__main__":
     op.add_option('-a', help='File to use for the left-most circle')
     op.add_option('-b', help='File to use for the right-most circle')
     op.add_option('-c', help='File to use for the bottom circle')
+    op.add_option('--labels',
+                  help='Optional comma-separated list of '
+                       'labels for a, b, and c')
     op.add_option('--colors', default='r,b,g',
                   help='Comma-separated list of matplotlib-valid colors '
                        'for circles a, b, and c.  E.g., --colors=r,b,k')
@@ -105,11 +116,16 @@ if __name__ == "__main__":
         b = a.random_subset(100).shuffle(genome='hg19')
         b = b.cat(a.random_subset(100))
         c = a.random_subset(200).shuffle(genome='hg19')
+        c = c.cat(b.random_subset(100))
         options.a = a.fn
         options.b = b.fn
         options.c = c.fn
         options.colors='r,b,g'
         options.o = 'out.png'
+        options.labels = 'a,b,c'
 
-    venn(a=options.a, b=options.b, c=options.c, colors=options.colors.split(','), outfn=options.o)
+    venn_mpl(a=options.a, b=options.b, c=options.c, 
+             colors=options.colors.split(','),
+             labels=options.labels.split(','), 
+             outfn=options.o)
 
