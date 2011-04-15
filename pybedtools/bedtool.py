@@ -144,6 +144,26 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
+    def filter(self, fn):
+        """
+        takes a function that is call for each feature
+        in the `BedTool` object and returns only those
+        for which the function returns True
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> subset = a.filter(lambda b: b.chrom == 'chr1' and b.start < 150)
+        >>> len(a), len(subset)
+        (4, 2)
+
+        so it has extracted 2 records from the original 4.
+
+        """
+        fh = open(self._tmp(), "w")
+        for feat in self:
+            if fn(feat): print >>fh, str(feat)
+        fh.close()
+        return BedTool(fh.name)
+
     def field_count(self, n=10):
         """
         return the number of fields in the file
