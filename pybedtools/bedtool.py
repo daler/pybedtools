@@ -747,7 +747,7 @@ class BedTool(object):
             # Just overwrite start and stop, leaving the rest of the line in
             # place
             f.start = newstart
-            TMP.write(str(f))
+            TMP.write(str(f)+'\n')
         TMP.close()
         return BedTool(tmp)
 
@@ -1009,7 +1009,7 @@ class BedTool(object):
         tmp = open(tmpfn,'w')
         for i, f in enumerate(self):
             if i in idxs:
-                tmp.write(str(f))
+                tmp.write(str(f)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1031,7 +1031,7 @@ class BedTool(object):
         tmp = open(tmpfn,'w')
         for feature in self.features():
             if min < len(feature) < max:
-                tmp.write(str(feature))
+                tmp.write(str(feature)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1170,7 +1170,7 @@ class BedTool(object):
             # if smaller than window size, decide whether to report it or not.
             if (f.stop - f.start) < n:
                 if report_smaller:
-                    tmp.write(str(f))
+                    tmp.write(str(f)+'\n')
                     continue
                 else:
                     continue
@@ -1180,7 +1180,7 @@ class BedTool(object):
             midpoint = f.start + (f.stop - f.start)/2
             f.start = int(midpoint - left)
             f.end = int(midpoint + right)
-            tmp.write(str(f))
+            tmp.write(str(f)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 

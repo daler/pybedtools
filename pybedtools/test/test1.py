@@ -135,6 +135,11 @@ def test_subset():
     assert len(s) == 1
     assert isinstance(s[0], pybedtools.Interval)
 
+
+    s2 = list(a.random_subset(len(a)).features())
+    print len(s2)
+    assert len(s2) == len(a)
+
 def test_length_bed():
     a = pybedtools.example_bedtool('a.bed')
     assert list(a.lengths()) == [99, 100, 350, 50]
