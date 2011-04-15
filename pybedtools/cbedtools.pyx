@@ -71,9 +71,17 @@ cdef class Interval:
     @property
     def name(self):
         if self._bed.isGff:
-            return parse_attributes(self._bed.fields[8].c_str())["ID"]
+            attrs = parse_attributes(self._bed.fields[8].c_str())
+            """
+            # TODO. allow setting a name_key in the BedTool constructor?
+            if self.name_key and self.name_key in attrs:
+                return attrs[self.name_key]
+            """
+            for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+                if key in attrs: return attrs[key]
+
         elif self._bed.isVcf:
-            raise Exception("not implemented")
+            return "%s:%i" % (self.chrom, self.start)
         else:
             return self._bed.name.c_str()
 
