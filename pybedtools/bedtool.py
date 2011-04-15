@@ -187,9 +187,7 @@ class BedTool(object):
         in addition, indexes can contain keys of the GFF/GTF attributes,
         in which case the values are returned. e.g. 'gene_name' will return the
         corresponding name from a GTF."""
-        #TODO implement method in c++ that just yields the lines in the file??
         fh = open(self._tmp(), "w")
-
         for f in self:
             print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
         fh.close()
@@ -600,15 +598,6 @@ class BedTool(object):
         Returns an iterator of :class:`feature` objects.
         """
         return iter(self)
-        """
-        for line in self:
-            line_arr = line.split("\t")
-            if len(self._feature_classes) == 1:
-                yield self._feature_classes[0](line_arr)
-            else:
-                # TODO: each fclass must tell how much of line_arr it consumes.
-                yield [fclass(line_arr) for fclass in self._feature_classes]
-                """
 
     def count(self):
         """
@@ -835,7 +824,6 @@ class BedTool(object):
             del(tmp)
             del(tmp2)
 
-    # TODO: is this function really needed?
     @_file_or_bedtool()
     @_returns_bedtool()
     def cat(self, other, postmerge=True, **kwargs):
@@ -1145,7 +1133,6 @@ class BedTool(object):
         tmp = open(tmpfn, 'w')
         for f in self:
             f.name = new_name
-            # TODO: check for gff
             print >>tmp, str(f)
         tmp.close()
         return BedTool(tmpfn)
