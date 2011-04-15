@@ -100,10 +100,6 @@ cdef class Interval:
         return self._bed.o_start
 
     @property
-    def fields(self):
-        return string_vec2list(self._bed.fields)
-
-    @property
     def o_end(self):
         return self._bed.o_end
 
