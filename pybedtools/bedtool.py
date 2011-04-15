@@ -6,7 +6,7 @@ import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list
+    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
 
 from cbedtools import IntervalFile
 import pybedtools
@@ -62,8 +62,11 @@ class BedTool(object):
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
-            if not os.path.exists(fn):
-                raise ValueError, 'File "%s" does not exist' % fn
+            if isinstance(fn, basestring):
+                if not os.path.exists(fn):
+                    raise ValueError, 'File "%s" does not exist' % fn
+            if isinstance(fn, file):
+                fn = fn
         else:
             bed_contents = fn
             fn = self._tmp()
@@ -193,8 +196,6 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
-
-
     def cut(self, indexes):
         """just like unix cut except indexes are 0-based, must be a list
         and the columns are return in the order requested.
@@ -216,9 +217,6 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
-
-
-
     def _tmp(self):
         '''
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
@@ -232,7 +230,12 @@ class BedTool(object):
 
     def __iter__(self):
         '''Iterator that returns lines from BED file'''
-        return IntervalFile(self.fn)
+        if isinstance(self.fn, basestring):
+            return IntervalFile(self.fn)
+
+        # TODO: IntervalIterator needs to be able to yield Intervals
+        #if isinstance(self.fn, file):
+        #    return IntervalIterator(self.fn)
 
     def __repr__(self):
         if os.path.exists(self.fn):
@@ -250,6 +253,8 @@ class BedTool(object):
         return self.count()
 
     def __eq__(self, other):
+        if isinstance(self.fn, file) or isinstance(other.fn, file):
+            raise NotImplementedError('Testing equality not supported for streams')
         if open(self.fn).read() == open(other.fn).read():
             return True
         return False
@@ -328,14 +333,23 @@ class BedTool(object):
                 kwargs['b'] = other.fn
 
         if ('abam' not in kwargs) and ('a' not in kwargs):
-            kwargs['a'] = self.fn
-
+            if isinstance(self.fn, basestring):
+                kwargs['a'] = self.fn
+            if isinstance(self.fn, file):
+                kwargs['-'] = self.fn
+        try:
+            if kwargs.pop('stream'):
+                tmp = None
+        except KeyError:
+            tmp = self._tmp()
+        
         cmds = ['intersectBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
 
-        other = BedTool(tmp)
+
+        stream = call_bedtools(cmds, tmp, stdin=self.fn)
+
+        other = BedTool(stream)
 
         # tag the new BedTool as having counts
         if 'c' in kwargs:
@@ -1099,6 +1113,14 @@ class BedTool(object):
         """
         illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
         cmds = []
+
+        # If we're aiming to use stdin, then the '-' needs to be first.
+        try:
+            kwargs.pop('-')
+            cmds.append('-')
+        except KeyError:
+            pass
+
         for key,value in kwargs.items():
             # e.g., u=True --> -u
             if value is True:

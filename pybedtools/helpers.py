@@ -37,7 +37,6 @@ def find_tagged(tag):
             pass
     return '%s not found' % tag
 
-
 def _flatten_list(x):
     nested = True
     while nested:
@@ -147,7 +146,6 @@ def cleanup(verbose=True, remove_all=False):
         for fn in fns:
             os.unlink(fn)
 
-
 def _file_or_bedtool():
     '''
     Decorator that adds a line to the docstring indicating
@@ -247,7 +245,7 @@ def _help(command):
 
     return decorator
 
-def call_bedtools(cmds, tmpfn=None, check_stderr=None):
+def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
 
@@ -266,10 +264,15 @@ def call_bedtools(cmds, tmpfn=None, check_stderr=None):
     try:
         if tmpfn is None:
             output = subprocess.PIPE
+            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # TODO: Still need a good way of capturing stderr but not consuming
+            # all of stdout, which is to be iterated over.  
+            stderr = None
         else:
             output = open(tmpfn, 'w')
-        p = subprocess.Popen(cmds, stdout=output, stderr=subprocess.PIPE)
-        stdout,stderr = p.communicate()
+            p = subprocess.Popen(cmds, stdout=output, stderr=subprocess.PIPE)
+            stdout,stderr = p.communicate()
 
         # Check if it's OK; if so dump it to sys.stderr and reset it to None so
         # we don't raise an exception
@@ -298,6 +301,14 @@ def call_bedtools(cmds, tmpfn=None, check_stderr=None):
         raise OSError('See above for commands that gave the error')
 
     if tmpfn is None:
-        return output
+        return p.stdout
     else:
         return tmpfn
+
+# TODO: not sure how to yield intervals
+def IntervalIterator(stream):
+    """
+    Given an open file handle, yield the Intervals.
+    """
+    for line in stream:
+        yield pybedtools.Interval(line)
