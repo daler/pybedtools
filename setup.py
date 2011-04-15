@@ -44,7 +44,7 @@ setup(
         package_data = {'src': ['*.pyx', "*.c", "*.cpp", "*.h", "README.rst"]},
         data_files = [('pybedtools/pybedtools/test/data', data_files)],
         package_dir = {"pybedtools": "pybedtools"},
-        scripts = ['scripts/venn.py'],
+        scripts = ['scripts/venn_gchart.py', 'scripts/venn_mpl.py'],
         cmdclass = {'build_ext': build_ext},
         author_email="dalerr@niddk.nih.gov",
         test_suite='nose.collector',
