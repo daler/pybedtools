@@ -19,23 +19,49 @@ cdef class Interval:
         else:
             self._bed = new BED(string(chrom), start, end, string(strand))
 
-    def get_chrom(self):
-        return self._bed.chrom.c_str()
-    def set_chrom(self, chrom):
-        self._bed.chrom = string(chrom)
-    chrom = property(get_chrom, set_chrom)
+    property chrom:
+        """ the chromosome of the feature"""
+        def __get__(self):
+            return self._bed.chrom.c_str()
+        def __set__(self, chrom):
+            self._bed.chrom = string(chrom)
 
-    def get_start(self):
-        return self._bed.start
-    def set_start(self, int start):
-        self._bed.start = start
-    start = property(get_start, set_start)
+    property start:
+        """ the start of the feature"""
+        def __get__(self):
+            return self._bed.start
+        def __set__(self, int start):
+            self._bed.start = start
 
-    def get_end(self):
-        return self._bed.end
-    def set_end(self, int end):
-        self._bed.end = end
-    stop = end = property(get_end, set_end)
+    property end:
+        """ the end of the feature"""
+        def __get__(self):
+            return self._bed.end
+        def __set__(self, int end):
+            self._bed.end = end
+    property stop:
+        """ the end of the feature"""
+        def __get__(self):
+            return self._bed.end
+        def __set__(self, int end):
+            self._bed.end = end
+
+
+    property strand:
+        """ the strand of the feature"""
+        def __get__(self):
+            return self._bed.strand.c_str()
+        def __set__(self, strand):
+            self._bed.strand = string(strand)
+
+    property length:
+        """ the length of the feature"""
+        def __get__(self):
+            return self._bed.end - self._bed.start
+
+    property fields:
+        def __get__(self):
+            return string_vec2list(self._bed.fields)
 
     # TODO: make this more robust.
     @property
@@ -51,31 +77,19 @@ cdef class Interval:
         else:
             return self._bed.name.c_str()
 
-
     @property
     def score(self):
         return self._bed.score.c_str()
 
     @property
-    def strand(self):
-        return self._bed.strand.c_str()
-
-    @property
     def other(self):
         return string_vec2list(self._bed.otherFields)
 
-    @property
-    def length(self):
-        return self._bed.end - self._bed.start
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
     def o_start(self):
         return self._bed.o_start
-
-    @property
-    def fields(self):
-        return string_vec2list(self._bed.fields)
 
     @property
     def o_end(self):
