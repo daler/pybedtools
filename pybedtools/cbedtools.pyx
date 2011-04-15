@@ -122,8 +122,10 @@ cdef class Interval:
     def __getitem__(self, object key):
         cdef int i
         if isinstance(key, (int, long)):
-            if key >= self._bed.fields.size():
+            nfields = self._bed.fields.size()
+            if key >= nfields:
                 raise IndexError('field index out of range')
+            elif key < 0: key = nfields + key
             return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
             return [self._bed.fields.at(i).c_str() for i in \

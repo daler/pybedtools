@@ -59,6 +59,16 @@ class IntervalTest(unittest.TestCase):
         self.assert_(iv[1].isdigit())
         self.assert_(iv[2].isdigit())
 
+    def testGetItemNegative(self):
+        """
+        test negative indexes to feature.
+        """
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        self.assert_(iv[-6].startswith("chr"), iv[-6])
+        self.assert_(iv[-5].isdigit(), iv[-5])
+        self.assert_(iv[-4].isdigit())
+
     def testGetItemSlice(self):
         """
         getitem now supports direct access to the line.
