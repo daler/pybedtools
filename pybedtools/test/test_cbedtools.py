@@ -83,6 +83,13 @@ class IntervalTest(unittest.TestCase):
         
         self.assertRaises(IndexError, lambda x: iv[x], 6)
 
+    def testGetItemString(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        self.assertEqual(iv['chrom'], iv.chrom)
+        self.assertEqual(iv['start'], iv.start)
+        self.assertEqual(iv['end'], iv.end)
+
 
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"

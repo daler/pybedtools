@@ -94,14 +94,13 @@ cdef class Interval:
                 raise IndexError('field index out of range')
             return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
-            #sys.stderr.write(key)
             return [self._bed.fields.at(i).c_str() for i in \
                     range(key.start or 0,
                           key.stop or self._bed.fields.size(),
                           key.step or 1)]
 
         elif isinstance(key, basestring):
-            raise Exception("unimplemented")
+            return getattr(self, key)
 
 
 cdef Interval create_interval(BED b):
@@ -129,10 +128,7 @@ cdef vector[string] list_to_vector(list li):
 
 cdef list string_vec2list(vector[string] sv):
     cdef size_t size = sv.size(), i
-    cdef list l = []
-    for i in range(size):
-        l.append(sv.at(i).c_str())
-    return l
+    return [sv.at(i).c_str() for i in range(size)]
 
 cdef list bed_vec2list(vector[BED] bv):
     cdef size_t size = bv.size(), i
