@@ -7,6 +7,7 @@ import string
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
+    
 
 from cbedtools import IntervalFile
 import pybedtools
@@ -289,7 +290,7 @@ class BedTool(object):
 
             >>> hg19 = pybedtools.chromsizes('hg19')
             >>> a = pybedtools.example_bedtool('a.bed')
-            >>> a.set_chromsizes(hg19)
+            >>> a = a.set_chromsizes(hg19)
             >>> print a.chromsizes['chr1']
             (1, 249250621)
 
@@ -297,6 +298,7 @@ class BedTool(object):
             >>> b = a.pybedtools_shuffle()
         """
         self.chromsizes = chromsizes
+        return self
 
     @_help('intersectBed')
     @_file_or_bedtool()
@@ -606,7 +608,7 @@ class BedTool(object):
     @_log_to_history
     def shuffle(self,genome=None,**kwargs):
         if genome is not None:
-            genome_fn = self.get_chromsizes_from_ucsc(genome)
+            genome_fn = pybedtools.chromsizes_to_file(pybedtools.get_chromsizes_from_ucsc(genome))
             kwargs['g'] = genome_fn
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
