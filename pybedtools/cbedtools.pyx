@@ -8,16 +8,16 @@
 """
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
+from pybedtools.helpers import parse_attributes
 
 cdef class Interval:
     cdef BED *_bed
 
-    def __init__(self, chrom, start, end, strand = None):
+    def __init__(self, chrom, start, end, strand=None):
         if strand is None:
             self._bed = new BED(string(chrom), start, end)
         else:
             self._bed = new BED(string(chrom), start, end, string(strand))
-
 
     def get_chrom(self):
         return self._bed.chrom.c_str()
@@ -44,7 +44,13 @@ cdef class Interval:
 
     @property
     def name(self):
-        return self._bed.name.c_str()
+        if self._bed.isGff:
+            return parse_attributes(self._bed.fields[8].c_str())["ID"]
+        elif self._bed.isVcf:
+            raise Exception("not implemented")
+        else:
+            return self._bed.name.c_str()
+
 
     @property
     def score(self):

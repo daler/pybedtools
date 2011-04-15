@@ -24,6 +24,24 @@ class Error(Exception):
 class BEDToolsError(Error):
     pass
 
+def parse_attributes(attr_str):
+    """
+    parse the attribute string from gff or gtf into a dictionary
+    # copied from genomicfeatures
+    >>> parse_attributes('ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805') == {'rname': 'thaliana_1_465_805', 'ID': 'thaliana_1_465_805', 'match': 'scaffold_801404.1'}
+    True
+    """
+
+    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
+    _attributes = {}
+    kvs = map(str.strip, attr_str.strip().split(sep))
+    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
+        _attributes[field] = value.replace('"', '')
+    return _attributes
+
+
+
+
 def find_tagged(tag):
     """
     Returns the bedtool object with tagged with *tag*.  Useful for tracking
@@ -312,3 +330,6 @@ def IntervalIterator(stream):
     """
     for line in stream:
         yield pybedtools.Interval(line)
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
