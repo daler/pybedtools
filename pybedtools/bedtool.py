@@ -216,7 +216,6 @@ class BedTool(object):
         in which case the values are returned. e.g. 'gene_name' will return the
         corresponding name from a GTF."""
         fh = open(self._tmp(), "w")
-
         for f in self:
             print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
         fh.close()
@@ -1167,7 +1166,6 @@ class BedTool(object):
         tmp = open(tmpfn, 'w')
         for f in self:
             f.name = new_name
-            # TODO: check for gff
             print >>tmp, str(f)
         tmp.close()
         return BedTool(tmpfn)
