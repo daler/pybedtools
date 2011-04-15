@@ -109,6 +109,22 @@ def test_chromsizes():
     os.unlink('hg17.genome')
     """
 
+def test_stream():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.intersect(b)
+    d = a.intersect(b, stream=True)
+    assert_raises(NotImplementedError, c.__eq__,d)
+    d_contents = d.fn.read()
+    c_contents = open(c.fn).read()
+    assert d_contents == c_contents
+
+    c = a.intersect(b)
+    d = a.intersect(b, stream=True)
+
+    # TODO: once IntervalIterator yields intervals, this should run
+    #for i,j in zip(c,d):
+    #    assert i == j
 
 def test_subset():
     a = pybedtools.example_bedtool('a.bed')
@@ -118,6 +134,11 @@ def test_subset():
     s = list(a.random_subset(1).features())
     assert len(s) == 1
     assert isinstance(s[0], pybedtools.Interval)
+
+
+    s2 = list(a.random_subset(len(a)).features())
+    print len(s2)
+    assert len(s2) == len(a)
 
 def test_length_bed():
     a = pybedtools.example_bedtool('a.bed')

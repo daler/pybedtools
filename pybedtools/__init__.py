@@ -67,14 +67,8 @@ def list_example_files():
 
     """
     candidate_fns = os.listdir(data_dir())
-    valid_fns = []
-    valid_exts = ['.bed','.gff','.gtf','.bed.gz','.bam']
-    for fn in candidate_fns:
-        for v_ext in valid_exts:
-            if fn.endswith(v_ext):
-                valid_fns.append(fn)
-                continue
-
+    exts = ('.bed','.gff','.gtf','.bed.gz','.bam')
+    valid_fns = [f for f in candidate_fns if f.endswith(exts)]
     return sorted(valid_fns)
 
 def chromsizes(genome):

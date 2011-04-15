@@ -6,7 +6,7 @@ import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list, parse_attributes
+    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
 
 from cbedtools import IntervalFile
 import pybedtools
@@ -48,8 +48,11 @@ class BedTool(object):
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
-            if not os.path.exists(fn):
-                raise ValueError, 'File "%s" does not exist' % fn
+            if isinstance(fn, basestring):
+                if not os.path.exists(fn):
+                    raise ValueError, 'File "%s" does not exist' % fn
+            if isinstance(fn, file):
+                fn = fn
         else:
             bed_contents = fn
             fn = self._tmp()
@@ -199,8 +202,6 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
-
-
     def cut(self, indexes):
         """just like unix cut except indexes are 0-based, must be a list
         and the columns are return in the order requested.
@@ -212,9 +213,6 @@ class BedTool(object):
             print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
         fh.close()
         return BedTool(fh.name)
-
-
-
 
     def _tmp(self):
         '''
@@ -229,7 +227,12 @@ class BedTool(object):
 
     def __iter__(self):
         '''Iterator that returns lines from BED file'''
-        return IntervalFile(self.fn)
+        if isinstance(self.fn, basestring):
+            return IntervalFile(self.fn)
+
+        # TODO: IntervalIterator needs to be able to yield Intervals
+        #if isinstance(self.fn, file):
+        #    return IntervalIterator(self.fn)
 
     def __repr__(self):
         if os.path.exists(self.fn):
@@ -247,6 +250,8 @@ class BedTool(object):
         return self.count()
 
     def __eq__(self, other):
+        if isinstance(self.fn, file) or isinstance(other.fn, file):
+            raise NotImplementedError('Testing equality not supported for streams')
         if open(self.fn).read() == open(other.fn).read():
             return True
         return False
@@ -281,7 +286,7 @@ class BedTool(object):
 
             >>> hg19 = pybedtools.chromsizes('hg19')
             >>> a = pybedtools.example_bedtool('a.bed')
-            >>> a.set_chromsizes(hg19)
+            >>> a = a.set_chromsizes(hg19)
             >>> print a.chromsizes['chr1']
             (1, 249250621)
 
@@ -289,6 +294,7 @@ class BedTool(object):
             >>> b = a.pybedtools_shuffle()
         """
         self.chromsizes = chromsizes
+        return self
 
     @_help('intersectBed')
     @_file_or_bedtool()
@@ -325,14 +331,23 @@ class BedTool(object):
                 kwargs['b'] = other.fn
 
         if ('abam' not in kwargs) and ('a' not in kwargs):
-            kwargs['a'] = self.fn
-
+            if isinstance(self.fn, basestring):
+                kwargs['a'] = self.fn
+            if isinstance(self.fn, file):
+                kwargs['-'] = self.fn
+        try:
+            if kwargs.pop('stream'):
+                tmp = None
+        except KeyError:
+            tmp = self._tmp()
+        
         cmds = ['intersectBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
 
-        other = BedTool(tmp)
+
+        stream = call_bedtools(cmds, tmp, stdin=self.fn)
+
+        other = BedTool(stream)
 
         # tag the new BedTool as having counts
         if 'c' in kwargs:
@@ -589,7 +604,7 @@ class BedTool(object):
     @_log_to_history
     def shuffle(self,genome=None,**kwargs):
         if genome is not None:
-            genome_fn = self.get_chromsizes_from_ucsc(genome)
+            genome_fn = pybedtools.chromsizes_to_file(pybedtools.get_chromsizes_from_ucsc(genome))
             kwargs['g'] = genome_fn
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
@@ -719,7 +734,7 @@ class BedTool(object):
             # Just overwrite start and stop, leaving the rest of the line in
             # place
             f.start = newstart
-            TMP.write(str(f))
+            TMP.write(str(f)+'\n')
         TMP.close()
         return BedTool(tmp)
 
@@ -976,29 +991,7 @@ class BedTool(object):
         tmp = open(tmpfn,'w')
         for i, f in enumerate(self):
             if i in idxs:
-                tmp.write(str(f))
-        tmp.close()
-        return BedTool(tmpfn)
-
-
-    def size_filter(self,min=0,max=1e15):
-        """
-        Returns a new BedTool object containing only those features that are
-        > *min* and < *max*.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            # Only return features that are over 10 bp.
-            b = a.size_filter(min=10)
-
-        """
-        tmpfn = self._tmp()
-        tmp = open(tmpfn,'w')
-        for feature in self.features():
-            if min < len(feature) < max:
-                tmp.write(str(feature))
+                tmp.write(str(f)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1082,6 +1075,14 @@ class BedTool(object):
         """
         illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
         cmds = []
+
+        # If we're aiming to use stdin, then the '-' needs to be first.
+        try:
+            kwargs.pop('-')
+            cmds.append('-')
+        except KeyError:
+            pass
+
         for key,value in kwargs.items():
             # e.g., u=True --> -u
             if value is True:
@@ -1129,7 +1130,7 @@ class BedTool(object):
             # if smaller than window size, decide whether to report it or not.
             if (f.stop - f.start) < n:
                 if report_smaller:
-                    tmp.write(str(f))
+                    tmp.write(str(f)+'\n')
                     continue
                 else:
                     continue
@@ -1139,7 +1140,7 @@ class BedTool(object):
             midpoint = f.start + (f.stop - f.start)/2
             f.start = int(midpoint - left)
             f.end = int(midpoint + right)
-            tmp.write(str(f))
+            tmp.write(str(f)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 
