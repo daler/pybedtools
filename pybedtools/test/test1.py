@@ -555,6 +555,10 @@ def test_cut():
     c = a.cut([0, 1, 2, 4])
     assert c.field_count() == 4, c
 
+def test_name():
+    c = iter(pybedtools.example_bedtool('c.gff')).next()
+    assert c.name == "thaliana_1_465_805" , c.name
+
 
 def test_with_column():
     a = pybedtools.example_bedtool('a.bed')

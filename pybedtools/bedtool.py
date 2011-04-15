@@ -6,24 +6,10 @@ import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list
+    History, HistoryStep, call_bedtools, _flatten_list, parse_attributes
 
 from cbedtools import IntervalFile
 import pybedtools
-
-
-def parse_attributes(attr_str):
-    # copied from genomicfeatures
-    # this could also be done lazily the first time attributes() is called.
-    # i think that's a better option in the spirit of keeping it minimal.
-    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
-    _attributes = {}
-    kvs = map(str.strip, attr_str.strip().split(sep))
-    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
-        _attributes[field] = value.replace('"', '')
-    return _attributes
-
-
 
 class BedTool(object):
     TEMPFILES = []
@@ -208,6 +194,7 @@ class BedTool(object):
         for f in self:
             if sattrs:
                 # TODO: need to know if the final field is the attrs or a distance.
+                # TODO: use the stuff from the Interval object.
                 attrs = parse_attributes(f.other[-2])
             toks = str(f).split("\t")
             print >>fh, "\t".join([(toks[i] if isinstance(i, int) \
