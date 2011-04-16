@@ -147,6 +147,26 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
+    def filter(self, fn):
+        """
+        takes a function that is call for each feature
+        in the `BedTool` object and returns only those
+        for which the function returns True
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> subset = a.filter(lambda b: b.chrom == 'chr1' and b.start < 150)
+        >>> len(a), len(subset)
+        (4, 2)
+
+        so it has extracted 2 records from the original 4.
+
+        """
+        fh = open(self._tmp(), "w")
+        for feat in self:
+            if fn(feat): print >>fh, str(feat)
+        fh.close()
+        return BedTool(fh.name)
+
     def field_count(self, n=10):
         """
         return the number of fields in the file
@@ -910,13 +930,14 @@ class BedTool(object):
 
         Example usage::
 
-            a = BedTool('in.bed')
-            b = a.random_subset(5)
-            b.saveas('random-5.bed',trackline='track name="random subset" color=128,128,255')
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = a.random_subset(2)
+        >>> len(b)
+        2
         """
-        fout = open(fn,'w')
+        fout = open(fn, 'w')
         if trackline is not None:
-            fout.write(trackline.strip()+'\n')
+            fout.write(trackline.strip() + '\n')
         fout.write(self.tostring())
         fout.close()
         return BedTool(fn)
@@ -966,34 +987,15 @@ class BedTool(object):
             b = a.random_subset(5)
 
         '''
-        idxs = set(random.sample(range(len(self)), n))
+        idxs = range(len(self))
+        random.shuffle(idxs)
+        idxs = idxs[:n]
+
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
         for i, f in enumerate(self):
             if i in idxs:
                 tmp.write(str(f)+'\n')
-        tmp.close()
-        return BedTool(tmpfn)
-
-
-    def size_filter(self,min=0,max=1e15):
-        """
-        Returns a new BedTool object containing only those features that are
-        > *min* and < *max*.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            # Only return features that are over 10 bp.
-            b = a.size_filter(min=10)
-
-        """
-        tmpfn = self._tmp()
-        tmp = open(tmpfn,'w')
-        for feature in self.features():
-            if min < len(feature) < max:
-                tmp.write(str(feature)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 

@@ -604,6 +604,11 @@ def test_with_column():
         if cf.other[-1] == 0:
             assert 0 <= df.other[-1] <= 1
 
+def test_filter():
+    a = pybedtools.example_bedtool('a.bed')
+
+    b = a.filter(lambda f: f.length < 100 and f.length > 0)
+    assert len(b) == 2
 
 
 def test_random_intersection():
