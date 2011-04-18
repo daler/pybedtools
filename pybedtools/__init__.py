@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 
 from cbedtools import Interval, IntervalFile, overlap
-
+from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, find_tagged
 from bedtool import BedTool
 import genome_registry
