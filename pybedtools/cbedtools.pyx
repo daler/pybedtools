@@ -8,34 +8,60 @@
 """
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
+from pybedtools.helpers import parse_attributes
 
 cdef class Interval:
     cdef BED *_bed
 
-    def __init__(self, chrom, start, end, strand = None):
+    def __init__(self, chrom, start, end, strand=None):
         if strand is None:
             self._bed = new BED(string(chrom), start, end)
         else:
             self._bed = new BED(string(chrom), start, end, string(strand))
 
+    property chrom:
+        """ the chromosome of the feature"""
+        def __get__(self):
+            return self._bed.chrom.c_str()
+        def __set__(self, chrom):
+            self._bed.chrom = string(chrom)
 
-    def get_chrom(self):
-        return self._bed.chrom.c_str()
-    def set_chrom(self, chrom):
-        self._bed.chrom = string(chrom)
-    chrom = property(get_chrom, set_chrom)
+    property start:
+        """ the start of the feature"""
+        def __get__(self):
+            return self._bed.start
+        def __set__(self, int start):
+            self._bed.start = start
 
-    def get_start(self):
-        return self._bed.start
-    def set_start(self, int start):
-        self._bed.start = start
-    start = property(get_start, set_start)
+    property end:
+        """ the end of the feature"""
+        def __get__(self):
+            return self._bed.end
+        def __set__(self, int end):
+            self._bed.end = end
+    property stop:
+        """ the end of the feature"""
+        def __get__(self):
+            return self._bed.end
+        def __set__(self, int end):
+            self._bed.end = end
 
-    def get_end(self):
-        return self._bed.end
-    def set_end(self, int end):
-        self._bed.end = end
-    stop = end = property(get_end, set_end)
+
+    property strand:
+        """ the strand of the feature"""
+        def __get__(self):
+            return self._bed.strand.c_str()
+        def __set__(self, strand):
+            self._bed.strand = string(strand)
+
+    property length:
+        """ the length of the feature"""
+        def __get__(self):
+            return self._bed.end - self._bed.start
+
+    property fields:
+        def __get__(self):
+            return string_vec2list(self._bed.fields)
 
     # TODO: make this more robust.
     @property
@@ -44,23 +70,29 @@ cdef class Interval:
 
     @property
     def name(self):
-        return self._bed.name.c_str()
+        if self._bed.isGff:
+            """
+            # TODO. allow setting a name_key in the BedTool constructor?
+            if self.name_key and self.name_key in attrs:
+                return attrs[self.name_key]
+            """
+            attrs = parse_attributes(self._bed.fields[8].c_str())
+            for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+                if key in attrs: return attrs[key]
+
+        elif self._bed.isVcf:
+            return "%s:%i" % (self.chrom, self.start)
+        else:
+            return self._bed.name.c_str()
 
     @property
     def score(self):
         return self._bed.score.c_str()
 
     @property
-    def strand(self):
-        return self._bed.strand.c_str()
-
-    @property
     def other(self):
         return string_vec2list(self._bed.otherFields)
 
-    @property
-    def length(self):
-        return self._bed.end - self._bed.start
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
@@ -90,18 +122,19 @@ cdef class Interval:
     def __getitem__(self, object key):
         cdef int i
         if isinstance(key, (int, long)):
-            if key >= self._bed.fields.size():
+            nfields = self._bed.fields.size()
+            if key >= nfields:
                 raise IndexError('field index out of range')
+            elif key < 0: key = nfields + key
             return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
-            #sys.stderr.write(key)
             return [self._bed.fields.at(i).c_str() for i in \
                     range(key.start or 0,
                           key.stop or self._bed.fields.size(),
                           key.step or 1)]
 
         elif isinstance(key, basestring):
-            raise Exception("unimplemented")
+            return getattr(self, key)
 
 
 cdef Interval create_interval(BED b):
@@ -129,10 +162,7 @@ cdef vector[string] list_to_vector(list li):
 
 cdef list string_vec2list(vector[string] sv):
     cdef size_t size = sv.size(), i
-    cdef list l = []
-    for i in range(size):
-        l.append(sv.at(i).c_str())
-    return l
+    return [sv.at(i).c_str() for i in range(size)]
 
 cdef list bed_vec2list(vector[BED] bv):
     cdef size_t size = bv.size(), i

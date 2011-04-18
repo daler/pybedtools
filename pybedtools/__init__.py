@@ -5,26 +5,28 @@ import tempfile
 
 from cbedtools import Interval, IntervalFile, overlap
 
-from _Window import Window
-
 from helpers import get_tempdir, set_tempdir, cleanup, find_tagged
 from bedtool import BedTool
 import genome_registry
 
-
 __version__ = '0.2.2dev'
 
-# Registry of files in the test dir that should be accessible to users via example_bedtool
-example_files = ['a.bed.','b.bed','test.fa', 'a.bam']
+
+example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
+
 
 def check_for_bedtools(program_to_check='intersectBed'):
     try:
-        p = subprocess.Popen([program_to_check], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([program_to_check],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except OSError as err:
         if err.errno == 2:
-            raise OSError("Please make sure you have installed BEDTools (https://github.com/arq5x/bedtools) and that it's on the path.")
+            raise OSError("Please make sure you have installed BEDTools"\
+                          "(https://github.com/arq5x/bedtools) and that "\
+                          "it's on the path.")
 
 check_for_bedtools()
+
 
 def data_dir():
     """
@@ -33,6 +35,7 @@ def data_dir():
     """
     return os.path.join(os.path.dirname(__file__), 'test', 'data')
 
+
 def example_filename(fn):
     """
     Return a bed file from the pybedtools examples directory.  Use
@@ -40,8 +43,9 @@ def example_filename(fn):
     """
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
-        raise ValueError, "%s does not exist" % fn
+        raise ValueError("%s does not exist" % fn)
     return fn
+
 
 def example_bedtool(fn):
     """
@@ -50,8 +54,9 @@ def example_bedtool(fn):
     """
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
-        raise ValueError, "%s does not exist" % fn
+        raise ValueError("%s does not exist" % fn)
     return BedTool(fn)
+
 
 def list_example_files():
     """
@@ -67,9 +72,10 @@ def list_example_files():
 
     """
     candidate_fns = os.listdir(data_dir())
-    exts = ('.bed','.gff','.gtf','.bed.gz','.bam')
+    exts = ('.bed', '.gff', '.gtf', '.bed.gz', '.bam')
     valid_fns = [f for f in candidate_fns if f.endswith(exts)]
     return sorted(valid_fns)
+
 
 def chromsizes(genome):
     """
@@ -109,24 +115,27 @@ def chromsizes(genome):
     except AttributeError:
         return get_chromsizes_from_ucsc(genome)
 
+
 def chromsizes_to_file(chromsizes, fn=None):
     """
     Converts a *chromsizes* dictionary to a file.  If *fn* is None, then a
-    tempfile is created (which can be deleted with pybedtools.cleanup()).  
+    tempfile is created (which can be deleted with pybedtools.cleanup()).
 
     Returns the filename.
     """
     if fn is None:
-        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
+        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',
+                                            suffix='.tmp', delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         fn = tmpfn
-    fout = open(fn,'w')
+    fout = open(fn, 'w')
     for chrom, bounds in sorted(chromsizes.items()):
         line = chrom + '\t' + str(bounds[1]) + '\n'
         fout.write(line)
     fout.close()
     return fn
+
 
 def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
     """
@@ -168,7 +177,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
                              bufsize=1)
-        stdout,stderr = p.communicate()
+        stdout, stderr = p.communicate()
         if stderr:
             print stderr
             print 'Commands were:\n'
@@ -177,8 +186,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
         lines = stdout.splitlines()[1:]
         d = {}
         for line in lines:
-            chrom,size = line.split()
-            d[chrom] = (1,int(size))
+            chrom, size = line.split()
+            d[chrom] = (1, int(size))
 
         if saveas is not None:
             chromsizes_to_file(d, saveas)
@@ -188,7 +197,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
     except OSError as err:
         if err.errno == 2:
             raise OSError("Can't find mysql -- if you don't have it "
-                          "installed, you'll have to get chromsizes manually, or " 
+                          "installed, you'll have to get chromsizes "
+                          " manually, or "
                           "specify the path with the 'mysql' kwarg.")
         else:
             raise

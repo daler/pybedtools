@@ -7,27 +7,14 @@ import string
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
-    
 
 from cbedtools import IntervalFile
 import pybedtools
 
 
-def parse_attributes(attr_str):
-    # copied from genomicfeatures
-    # this could also be done lazily the first time attributes() is called.
-    # i think that's a better option in the spirit of keeping it minimal.
-    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
-    _attributes = {}
-    kvs = map(str.strip, attr_str.strip().split(sep))
-    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
-        _attributes[field] = value.replace('"', '')
-    return _attributes
-
-
-
 class BedTool(object):
     TEMPFILES = []
+
     def __init__(self, fn, from_string=False):
         """
         Wrapper around Aaron Quinlan's ``BEDtools`` suite of programs
@@ -65,17 +52,17 @@ class BedTool(object):
                 fn = fn.fn
             if isinstance(fn, basestring):
                 if not os.path.exists(fn):
-                    raise ValueError, 'File "%s" does not exist' % fn
+                    raise ValueError('File "%s" does not exist' % fn)
             if isinstance(fn, file):
                 fn = fn
         else:
             bed_contents = fn
             fn = self._tmp()
-            fout = open(fn,'w')
+            fout = open(fn, 'w')
             for line in bed_contents.splitlines():
                 if len(line.strip()) == 0:
                     continue
-                line = '\t'.join(line.split())+'\n'
+                line = '\t'.join(line.split()) + '\n'
                 fout.write(line)
             fout.close()
 
@@ -112,7 +99,8 @@ class BedTool(object):
         tempdir = get_tempdir()
         for i in flattened_history:
             fn = i.fn
-            if fn.startswith(os.path.join(os.path.abspath(tempdir), 'pybedtools')):
+            if fn.startswith(os.path.join(os.path.abspath(tempdir),
+                                          'pybedtools')):
                 if fn.endswith('.tmp'):
                     to_delete.append(fn)
 
@@ -121,8 +109,10 @@ class BedTool(object):
 
         str_fns = '\n\t'.join(to_delete)
         if ask:
-            answer = raw_input_func('Delete these files?\n\t%s\n(y/N) ' % str_fns)
-            if answer.lower() not in ['y','yes']:
+            answer = raw_input_func('Delete these files?\n\t%s\n(y/N) ' \
+                                    % str_fns)
+
+            if not answer.lower()[0] == 'y':
                 print 'OK, not deleting.'
                 return
         for fn in to_delete:
@@ -147,11 +137,12 @@ class BedTool(object):
             result_tag = result._tag
 
             # log the sucka
-            history_step = HistoryStep(method, args, kwargs, self, parent_tag, result_tag)
+            history_step = HistoryStep(method, args, kwargs, self, parent_tag,
+                                       result_tag)
 
             # only add the current history to the new bedtool if there's
             # something to add
-            if len(self.history)>0:
+            if len(self.history) > 0:
                 result.history.append(self.history)
 
             # but either way, add this history step to the result.
@@ -162,6 +153,26 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
+    def filter(self, fn):
+        """
+        takes a function that is call for each feature
+        in the `BedTool` object and returns only those
+        for which the function returns True
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> subset = a.filter(lambda b: b.chrom == 'chr1' and b.start < 150)
+        >>> len(a), len(subset)
+        (4, 2)
+
+        so it has extracted 2 records from the original 4.
+
+        """
+        fh = open(self._tmp(), "w")
+        for feat in (f for f in self if fn(f)):
+            print >> fh, str(feat)
+        fh.close()
+        return BedTool(fh.name)
+
     def field_count(self, n=10):
         """
         return the number of fields in the file
@@ -169,19 +180,19 @@ class BedTool(object):
         i = 0
         fields = set([])
         for feat in self:
-            if i > n: break
+            if i > n:
+                break
             i += 1
             # TODO: make this more efficient.
-            fields.update([len(str(feat).split("\t"))])
+            fields.update([len(feat.fields)])
         assert len(fields) == 1, fields
         return list(fields)[0]
-
 
     def with_column(self, cols, fn):
         """
         fn(*[self[col] for col in cols) for each row in self
         fn must accept strings and do its own conversion and
-        return strings. can only return a number of columns 
+        return strings. can only return a number of columns
         >= to the # of columns sent in.
             def fn(cola, colb):
                 return cola, colb, int(cola) / float(colb)
@@ -189,10 +200,11 @@ class BedTool(object):
 
         fh = open(self._tmp(), "w")
         for f in self:
-            toks = str(f).split("\t")
+            toks = f.fields
             rtoks = fn(*[toks[col] for col in cols])
             for i, col in enumerate(cols):
-                toks[col] = rtoks[i] if col < len(toks) else toks.append(rtoks[i])
+                toks[col] = rtoks[i] if col < len(toks) \
+                                     else toks.append(rtoks[i])
             print >>fh, "\t".join(toks)
         fh.close()
         return BedTool(fh.name)
@@ -203,18 +215,9 @@ class BedTool(object):
         in addition, indexes can contain keys of the GFF/GTF attributes,
         in which case the values are returned. e.g. 'gene_name' will return the
         corresponding name from a GTF."""
-        #TODO implement method in c++ that just yields the lines in the file??
         fh = open(self._tmp(), "w")
-        sattrs = any(isinstance(i, basestring) for i in indexes)
-
         for f in self:
-            if sattrs:
-                # TODO: need to know if the final field is the attrs or a distance.
-                attrs = parse_attributes(f.other[-2])
-            toks = str(f).split("\t")
-            print >>fh, "\t".join([(toks[i] if isinstance(i, int) \
-                                            else attrs[i]) for i in indexes])
-
+            print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
         fh.close()
         return BedTool(fh.name)
 
@@ -224,7 +227,8 @@ class BedTool(object):
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
         '''
-        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',suffix='.tmp',delete=False)
+        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',
+                                            suffix='.tmp', delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         return tmpfn
@@ -240,7 +244,7 @@ class BedTool(object):
 
     def __repr__(self):
         if os.path.exists(self.fn):
-            return '<BedTool(%s)>'%self.fn
+            return '<BedTool(%s)>' % self.fn
         else:
             return '<BedTool(MISSING FILE: %s)>'%self.fn
 
@@ -267,13 +271,13 @@ class BedTool(object):
 
     @_file_or_bedtool()
     def __add__(self,other):
-        return self.intersect(other,u=True)
+        return self.intersect(other, u=True)
 
     @_file_or_bedtool()
-    def __sub__(self,other):
+    def __sub__(self, other):
         return self.intersect(other, v=True)
 
-    def head(self,n=10):
+    def head(self, n=10):
         """
         Prints the first *n* lines
         """
@@ -637,15 +641,6 @@ class BedTool(object):
         Returns an iterator of :class:`feature` objects.
         """
         return iter(self)
-        """
-        for line in self:
-            line_arr = line.split("\t")
-            if len(self._feature_classes) == 1:
-                yield self._feature_classes[0](line_arr)
-            else:
-                # TODO: each fclass must tell how much of line_arr it consumes.
-                yield [fclass(line_arr) for fclass in self._feature_classes]
-                """
 
     def count(self):
         """
@@ -872,7 +867,6 @@ class BedTool(object):
             del(tmp)
             del(tmp2)
 
-    # TODO: is this function really needed?
     @_file_or_bedtool()
     @_returns_bedtool()
     def cat(self, other, postmerge=True, **kwargs):
@@ -903,13 +897,9 @@ class BedTool(object):
             assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
         TMP = open(tmp,'w')
         for f in self:
-            line = str(f)
-            newline = '\t'.join(line.split()[:3])+'\n'
-            TMP.write(newline)
+            TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
         for f in other:
-            line = str(f)
-            newline = '\t'.join(line.split()[:3])+'\n'
-            TMP.write(newline)
+            TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
         TMP.close()
         c = BedTool(tmp)
         if postmerge:
@@ -948,13 +938,14 @@ class BedTool(object):
 
         Example usage::
 
-            a = BedTool('in.bed')
-            b = a.random_subset(5)
-            b.saveas('random-5.bed',trackline='track name="random subset" color=128,128,255')
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = a.random_subset(2)
+        >>> len(b)
+        2
         """
-        fout = open(fn,'w')
+        fout = open(fn, 'w')
         if trackline is not None:
-            fout.write(trackline.strip()+'\n')
+            fout.write(trackline.strip() + '\n')
         fout.write(self.tostring())
         fout.close()
         return BedTool(fn)
@@ -1004,34 +995,15 @@ class BedTool(object):
             b = a.random_subset(5)
 
         '''
-        idxs = set(random.sample(range(len(self)), n))
+        idxs = range(len(self))
+        random.shuffle(idxs)
+        idxs = idxs[:n]
+
         tmpfn = self._tmp()
         tmp = open(tmpfn,'w')
         for i, f in enumerate(self):
             if i in idxs:
                 tmp.write(str(f)+'\n')
-        tmp.close()
-        return BedTool(tmpfn)
-
-
-    def size_filter(self,min=0,max=1e15):
-        """
-        Returns a new BedTool object containing only those features that are
-        > *min* and < *max*.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            # Only return features that are over 10 bp.
-            b = a.size_filter(min=10)
-
-        """
-        tmpfn = self._tmp()
-        tmp = open(tmpfn,'w')
-        for feature in self.features():
-            if min < len(feature) < max:
-                tmp.write(str(feature)+'\n')
         tmp.close()
         return BedTool(tmpfn)
 
