@@ -10,7 +10,11 @@ exts = [ Extension("pybedtools.cbedtools",
               libraries=["stdc++", 'z'],
               include_dirs=["src/"],
               depends = glob.glob("src/*.h"),
-              language="c++"), ]
+              language="c++"), 
+
+         Extension('pybedtools._Window', 
+                    sources=['pybedtools/_Window.pyx'],),
+        ]
 
 long_description = """
 ``pybedtools`` is a wrapper around Aaron Quinlan's BEDtools suite
