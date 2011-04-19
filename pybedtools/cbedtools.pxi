@@ -76,3 +76,6 @@ cdef extern from "bedFile.h":
         int CountOverlapsPerBin(BED bed, float overlapFraction)
         # if forceStrand is true, require that the strands match,
         int CountOverlapsPerBin(BED bed, bool forceStrand, float overlapFraction)
+        bint _isVcf
+        bint _isGff
+        bint _typeIsKnown

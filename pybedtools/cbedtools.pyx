@@ -206,6 +206,15 @@ cdef class IntervalFile:
         else:
             return self.next()
 
+    @property
+    def file_type(self):
+        if not self.intervalFile_ptr._typeIsKnown:
+            a = iter(self).next()
+
+        if self.intervalFile_ptr._isGff: return "gff"
+        elif self.intervalFile_ptr._isVcf: return "vcf"
+        else: return "bed"
+
 
     def loadIntoMap(self):
         if self._loaded: return
