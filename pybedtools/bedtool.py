@@ -153,9 +153,9 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
-    def filter(self, fn):
+    def filter(self, func):
         """
-        takes a function that is call for each feature
+        Takes a function *func* that is called for each feature
         in the `BedTool` object and returns only those
         for which the function returns True
 
@@ -168,14 +168,15 @@ class BedTool(object):
 
         """
         fh = open(self._tmp(), "w")
-        for feat in (f for f in self if fn(f)):
+        for feat in (f for f in self if func(f)):
             print >> fh, str(feat)
         fh.close()
         return BedTool(fh.name)
 
     def field_count(self, n=10):
         """
-        return the number of fields in the file
+        Return the number of fields in the features this file contains.  Checks
+        the first *n* features.
         """
         i = 0
         fields = set([])
@@ -188,21 +189,40 @@ class BedTool(object):
         assert len(fields) == 1, fields
         return list(fields)[0]
 
-    def with_column(self, cols, fn):
+    def with_column(self, incols, func, outcols=None):
         """
-        fn(*[self[col] for col in cols) for each row in self
-        fn must accept strings and do its own conversion and
-        return strings. can only return a number of columns
-        >= to the # of columns sent in.
-            def fn(cola, colb):
-                return cola, colb, int(cola) / float(colb)
+        This method allows you to operate on all features in a BedTool in a
+        flexible way.
+
+        *func* is a user-defined function that accepts strings and returns
+        strings.
+
+        *cols* is a list of integers that specify which items of the split
+        feature line will be sent to *func*.
+
+        For example, you could calculate the length of BED features and store
+        the length in the score column:
+
+        >>> def feature_len(start, stop):
+        ...     return str(int(stop)-int(start))
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = a.with_column(incols=[1,2], func=feature_len, outcols=[4])
+        >>> print b
+        chr1	1	100	feature1	99	+
+        chr1	100	200	feature2	100	+
+        chr1	150	500	feature3	350	-
+        chr1	900	950	feature4	50	+
+        <BLANKLINE>
+
         """
+        if outcols is None:
+            outcols = incols
 
         fh = open(self._tmp(), "w")
         for f in self:
             toks = f.fields
-            rtoks = fn(*[toks[col] for col in cols])
-            for i, col in enumerate(cols):
+            rtoks = func(*[toks[col] for col in incols])
+            for i, col in enumerate(outcols):
                 toks[col] = rtoks[i] if col < len(toks) \
                                      else toks.append(rtoks[i])
             print >>fh, "\t".join(toks)
