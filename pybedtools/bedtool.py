@@ -209,6 +209,20 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
+    @property
+    def file_type(self):
+        """
+        return the type of the current file. one of bed/vcf/gff
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> a.file_type
+        'bed'
+        """
+
+        v = IntervalFile(self.fn)
+        return v.file_type
+
+
     def cut(self, indexes):
         """just like unix cut except indexes are 0-based, must be a list
         and the columns are return in the order requested.
@@ -581,7 +595,7 @@ class BedTool(object):
     @_file_or_bedtool()
     @_implicit('-a')
     @_log_to_history
-    def window(self,other, **kwargs):
+    def window(self, other, **kwargs):
         """
         Intersect with a window.
 
@@ -610,7 +624,7 @@ class BedTool(object):
     @_help('shuffleBed')
     @_implicit('-i')
     @_log_to_history
-    def shuffle(self,genome=None,**kwargs):
+    def shuffle(self, genome=None, **kwargs):
         if genome is not None:
             genome_fn = pybedtools.chromsizes_to_file(pybedtools.get_chromsizes_from_ucsc(genome))
             kwargs['g'] = genome_fn

@@ -28,14 +28,16 @@ Development version, as well as documentation, can be found on github:
     http://github.com/daler/pybedtools
 
 """
-here = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(here, 'pybedtools', 'test','data')
-data_files = []
-for df in os.listdir(data_dir):
-    df = os.path.join(data_dir, df)
-    df = os.path.relpath(df, start=here)
-    data_files.append(df)
-print data_files
+def get_data_files():
+    here = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(here, 'pybedtools', 'test','data')
+    data_files = []
+    for df in os.listdir(data_dir):
+        df = os.path.join(data_dir, df)
+        df = os.path.relpath(df, start=here)
+        data_files.append(df)
+    return data_files
+
 setup( 
         name="pybedtools",
         version="0.2.3dev",
@@ -46,7 +48,7 @@ setup(
         long_description=long_description,
         url="none",
         package_data = {'src': ['*.pyx', "*.c", "*.cpp", "*.h", "README.rst"]},
-        data_files = [('pybedtools/pybedtools/test/data', data_files)],
+        data_files = [('pybedtools/pybedtools/test/data', get_data_files())],
         package_dir = {"pybedtools": "pybedtools"},
         scripts = ['scripts/venn_gchart.py', 'scripts/venn_mpl.py'],
         cmdclass = {'build_ext': build_ext},

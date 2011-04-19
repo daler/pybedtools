@@ -11,6 +11,13 @@ class IntervalFileTest(unittest.TestCase):
         self.file = os.path.join(PATH, self.file)
         self.bed = IntervalFile(self.file)
 
+    def testFileType(self):
+        self.assert_(self.bed.file_type == "bed", (self.bed.file_type, self.file))
+
+        gff = os.path.join(PATH, "data/c.gff")
+        i = IntervalFile(gff)
+        self.assert_(i.file_type == "gff", (i.file_type, gff))
+
     def testOverlaps(self):
         i    = Interval("chr21", 9719768, 9739768)
         hits = self.bed.all_hits(i)

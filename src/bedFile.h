@@ -370,13 +370,13 @@ public:
     
     // Main data structires used by BEDTools
     masterBedMap         bedMap;
+    bool _isGff;
+    bool _isVcf;
+    bool _typeIsKnown;        // do we know the type?   (i.e., BED, GFF, VCF)
                         
 private:
     
     // data
-    bool _isGff;
-    bool _isVcf;
-    bool _typeIsKnown;        // do we know the type?   (i.e., BED, GFF, VCF)
     FileType   _fileType;     // what is the file type? (BED? GFF? VCF?)    
     istream   *_bedStream;
     unsigned int _lineNum;
