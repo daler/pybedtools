@@ -192,22 +192,37 @@ class BedTool(object):
     def with_column(self, incols, func, outcols=None):
         """
         This method allows you to operate on all features in a BedTool in a
-        flexible way.
+        flexible way by sending fields to a user-defined function, *func*.
 
-        *func* is a user-defined function that accepts strings and returns
-        strings.
+        *incols* is a list of integers that specify which items of the split
+        feature line will be sent to *func*.  They can also be string attribute
+        names like 'chrom', 'start', 'stop', 'score', 'strand', 'name'.
 
-        *cols* is a list of integers that specify which items of the split
-        feature line will be sent to *func*.
+        *func* is a user-defined function that accepts strings and returns a
+        list of strings.  The length of *incols* should be equal to the number
+        of input args to *func*.  If *outcols* is not None, the length of
+        *outcols* should be equal to the number of return values of *func*.
+
+        *outcols* is a list of integers that specify where the results of
+        *func* should be placed in the output features.  For example, if
+        outcols=[4], then the score field will be replaced with the return
+        value of *func*.
+
+        If *outcols* is None, then the return values of *func* will be appended
+        to the end of the line.  If any of the items in *outcols* is None, then
+        the corresponding value from *func* will be appended.
 
         For example, you could calculate the length of BED features and store
-        the length in the score column:
+        the length in the score column.  First, write a function to get the length:
 
         >>> def feature_len(start, stop):
-        ...     return str(int(stop)-int(start))
+        ...     return [str(int(stop)-int(start))]
+
+        Then apply the function:
+
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> b = a.with_column(incols=[1,2], func=feature_len, outcols=[4])
-        >>> print b
+        >>> b = a.with_column(incols=['start','stop'], func=feature_len, outcols=[4])
+        >>> print b #doctest: +NORMALIZE_WHITESPACE
         chr1	1	100	feature1	99	+
         chr1	100	200	feature2	100	+
         chr1	150	500	feature3	350	-
@@ -215,16 +230,19 @@ class BedTool(object):
         <BLANKLINE>
 
         """
-        if outcols is None:
-            outcols = incols
-
         fh = open(self._tmp(), "w")
         for f in self:
             toks = f.fields
-            rtoks = func(*[toks[col] for col in incols])
-            for i, col in enumerate(outcols):
-                toks[col] = rtoks[i] if col < len(toks) \
-                                     else toks.append(rtoks[i])
+            rtoks = func(*[f[col] for col in incols])
+            if outcols is None:
+                toks.extend(rtoks)
+            else:
+                for i, col in enumerate(outcols):
+                    if col is None:
+                        toks.append(rtoks[i])
+                    else:
+                        toks[col] = rtoks[i] if col < len(toks) \
+                                             else toks.append(rtoks[i])
             print >>fh, "\t".join(toks)
         fh.close()
         return BedTool(fh.name)
@@ -232,7 +250,7 @@ class BedTool(object):
     @property
     def file_type(self):
         """
-        return the type of the current file. one of bed/vcf/gff
+        Return the type of the current file.  One of ('bed','vcf','gff').
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> a.file_type
@@ -242,13 +260,18 @@ class BedTool(object):
         v = IntervalFile(self.fn)
         return v.file_type
 
-
     def cut(self, indexes):
-        """just like unix cut except indexes are 0-based, must be a list
-        and the columns are return in the order requested.
-        in addition, indexes can contain keys of the GFF/GTF attributes,
+        """
+        Similar to unix `cut` except indexes are 0-based, must be a list
+        and the columns are returned in the order requested.
+
+        In addition, indexes can contain keys of the GFF/GTF attributes,
         in which case the values are returned. e.g. 'gene_name' will return the
-        corresponding name from a GTF."""
+        corresponding name from a GTF, or 'start' will return the start
+        attribute of a BED Interval.
+
+        See .with_column() if you need to do more complex operations.
+        """
         fh = open(self._tmp(), "w")
         for f in self:
             print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
@@ -382,7 +405,7 @@ class BedTool(object):
                 tmp = None
         except KeyError:
             tmp = self._tmp()
-        
+
         cmds = ['intersectBed',]
         cmds.extend(self.parse_kwargs(**kwargs))
 
