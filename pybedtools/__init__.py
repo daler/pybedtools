@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import tempfile
+import scripts
 
 from cbedtools import Interval, IntervalFile, overlap
 
