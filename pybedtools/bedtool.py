@@ -209,6 +209,20 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
+    @property
+    def file_type(self):
+        """
+        return the type of the current file. one of bed/vcf/gff
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> a.file_type
+        'bed'
+        """
+
+        v = IntervalFile(self.fn)
+        return v.file_type
+
+
     def cut(self, indexes):
         """just like unix cut except indexes are 0-based, must be a list
         and the columns are return in the order requested.
