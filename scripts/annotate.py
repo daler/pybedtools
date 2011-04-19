@@ -15,6 +15,9 @@ import argparse
 import sys
 from pybedtools import BedTool
 from pybedtools.helpers import parse_attributes
+import collections
+
+# PYTHONPATH=$PYTHONPATH:. python scripts/annotate.py -a data/new.regions.bed -b data/Homo_sapiens.hg18.gtf --upstream 5000
 
 # $ pybedtools annotate -a regions.bed -b knownGene.bed --upstream 10000
 #                  --downstream 5000 --report-distance
@@ -24,22 +27,29 @@ from pybedtools.helpers import parse_attributes
 # where the up/downstream features are determined by a distance
 # parameter, e.g. like --upstream 10000 --downstream 5000
 
+def get_gff_name(field):
+    attrs = parse_attributes(field)
+    for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+        if key in attrs: return attrs[key]
+
+def gen_get_name(b, afields):
+    btype = b.file_type
+    if btype == "bed":
+        get_name = lambda fields: fields[afields + 4]
+    elif btype == "gff":
+        def get_name(fields):
+            return get_gff_name(fields[afields + 8])
+    else:
+        raise Exception("not implemented")
+    return get_name 
+
 def add_closest(aname, bname):
     a, b = BedTool(aname), BedTool(bname)
 
     afields = a.field_count()
     c = a.closest(b, d=True)
     btype = b.file_type
-    if btype == "bed":
-        get_name = lambda fields: fields[afields + 4]
-    elif btype == "gff":
-        def get_name(fields):
-            attrs = parse_attributes(fields[afields + 8])
-            for key in ("ID", "gene_name", "transcript_id", "gene_id",
-                                                            "Parent"):
-                if key in attrs: return attrs[key]
-    else:
-        raise Exception("not implemented")
+    get_name = gen_get_name(b, afields)
 
     d = open(c._tmp(), "w")
     # keep the name and distance
@@ -52,6 +62,29 @@ def add_closest(aname, bname):
     d.close()
     return BedTool(d.name)
 
+def add_xstream(a, b, dist, updown, report_distance=False):
+    # run a window up or downstream.
+    dir = dict(up="l", down="r")[updown]
+    kwargs = {'sw':True, dir: dist}
+
+    # have to set the other to 0
+    if "l" in kwargs: kwargs["r"] = 0
+    else: kwargs["l"] = 0
+
+    c = a.window(b, **kwargs)
+    afields = a.field_count()
+    get_name = gen_get_name(b, afields)
+
+    seen = collections.defaultdict(set)
+    # condense to unique names.
+    for row in c:
+        key = "\t".join(row[:afields])
+        seen[key].update([get_name(row)])
+    d = open(c._tmp(), "w")
+    for row in seen:
+        print row + "\t" + ",".join(sorted(seen[row]))
+    d.close()
+    return BedTool(d.name)
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
@@ -69,7 +102,16 @@ def main():
         sys.exit(not p.print_help())
 
     c = add_closest(args.a, args.b)
-    c.saveas('g.bed')
+    b = BedTool(args.b)
+    # TODO: support --report-distance for up/downstream.
+    if args.upstream:
+        c = add_xstream(c, b, args.upstream, "up", args.report_distance)
+    if args.downstream:
+        c = add_xstream(c, b, args.downstream, "down",
+                        args.report_distance)
+
+    for row in c.sort():
+        print row
 
 if __name__ == "__main__":
     import doctest
