@@ -148,6 +148,15 @@ cdef class Interval:
         elif isinstance(key, basestring):
             return getattr(self, key)
 
+    def __setitem__(self, object key, object value):
+        if isinstance(key, (int,long)):
+            nfields = self._bed.fields.size()
+            if key >= nfields:
+                raise IndexError('field index out of range')
+            elif key < 0: key = nfields + key
+            self._bed.fields[key] = string(value)
+        elif isinstance(key, (basestring)):
+            setattr(self, key, value)
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
