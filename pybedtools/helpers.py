@@ -329,7 +329,12 @@ def IntervalIterator(stream):
     Given an open file handle, yield the Intervals.
     """
     for line in stream:
-        yield pybedtools.Interval(line)
+        line = line.rstrip().split('\t')
+        base = line[:6]
+        other = line[6:]
+        base.append(other)
+        yield pybedtools.create_interval_from_list(base)
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()

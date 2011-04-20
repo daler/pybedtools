@@ -170,7 +170,7 @@ cdef Interval create_interval(BED b):
     pyb._bed.fields = b.fields
     return pyb
 
-cdef Interval create_interval_from_list(list fields):
+cpdef Interval create_interval_from_list(list fields):
     cdef Interval pyb = Interval.__new__(Interval)
     pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
                        string(fields[4]), string(fields[5]), list_to_vector(fields[6]))

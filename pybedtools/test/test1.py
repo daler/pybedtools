@@ -122,9 +122,8 @@ def test_stream():
     c = a.intersect(b)
     d = a.intersect(b, stream=True)
 
-    # TODO: once IntervalIterator yields intervals, this should run
-    #for i,j in zip(c,d):
-    #    assert i == j
+    for i,j in zip(c, d):
+        assert str(i) == str(j)
 
 def test_subset():
     a = pybedtools.example_bedtool('a.bed')
@@ -567,9 +566,9 @@ def test_cat():
     c = a.cat(b, postmerge=False)
     assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
 
-#def test_field_count():
-    #    a = pybedtools.example_bedtool('a.bed')
-    #assert a.field_count() == 6
+def test_field_count():
+    a = pybedtools.example_bedtool('a.bed')
+    assert a.field_count() == 6
 
 def test_cut():
     a = pybedtools.example_bedtool('a.bed')
@@ -580,66 +579,11 @@ def test_name():
     c = iter(pybedtools.example_bedtool('c.gff')).next()
     assert c.name == "thaliana_1_465_805" , c.name
 
-
-def test_with_column():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.closest(b, d=True)
-
-    # if there is overlap, re-phrase it as
-    # proportion of feature b that is covered.
-    def overlap(a0, a1, b0, b1, dist):
-        if int(dist) > 0:
-            return a0, a1, b0, b1, dist
-        else:
-            e1 = min(int(a1), int(b1))
-            e2 = max(int(a0), int(b0))
-            ovl = e1 - e2
-            d = float(ovl) / (int(b1) - int(b0))
-            return a0, a1, b0, b1, str(d)
-
-    d = c.with_column([1, 2, 7, 8, -1], overlap)
-
-    for cf, df in zip(c, d):
-        if cf.other[-1] == 0:
-            assert 0 <= df.other[-1] <= 1
-
-
-    # Testing column specification
-    def len_x(start, stop):
-        return (str(int(stop) - int(start)), 'x')
-
-    e = a.with_column(incols=['start','stop'], func=len_x, outcols=[4, None])
-
-    expected = fix("""
-    chr1	1	100	feature1	99	+	x
-    chr1	100	200	feature2	100	+	x
-    chr1	150	500	feature3	350	-	x
-    chr1	900	950	feature4	50	+	x
-    """)
-
-    f = a.with_column(incols=[1,2], func=len_x, outcols=[4, None])
-
-    assert str(e) == str(f) == expected
-
-    # Make sure plain ol' None for outcols appends func's values
-    g = a.with_column(incols=[1,2], func=len_x, outcols=None)
-    expected = fix("""
-    chr1	1	100	feature1	0	+	99	x
-    chr1	100	200	feature2	0	+	100	x
-    chr1	150	500	feature3	0	-	350	x
-    chr1	900	950	feature4	0	+	50	x
-    """)
-
-    print g
-    assert str(g) == expected
-
 def test_filter():
     a = pybedtools.example_bedtool('a.bed')
 
     b = a.filter(lambda f: f.length < 100 and f.length > 0)
     assert len(b) == 2
-
 
 def test_random_intersection():
     # TODO:

@@ -270,10 +270,12 @@ class BedTool(object):
             return IntervalFile(self.fn)
 
         # TODO: IntervalIterator needs to be able to yield Intervals
-        #if isinstance(self.fn, file):
-        #    return IntervalIterator(self.fn)
+        if isinstance(self.fn, file):
+            return IntervalIterator(self.fn)
 
     def __repr__(self):
+        if isinstance(self.fn, file):
+            return '<BedTool(stream)>'
         if os.path.exists(self.fn):
             return '<BedTool(%s)>' % self.fn
         else:
