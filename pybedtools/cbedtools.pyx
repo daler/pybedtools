@@ -77,7 +77,7 @@ cdef class Interval:
                     return attrs[self.name_key]
                 """
                 attrs = parse_attributes(self._bed.fields[8].c_str())
-                for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+                for key in ("ID", "Name", "gene_name", "transcript_id", "gene_id", "Parent"):
                     if key in attrs: return attrs[key]
 
             elif self._bed.isVcf:
@@ -87,7 +87,7 @@ cdef class Interval:
         def __set__(self, value):
             if self._bed.isGff:
                 attrs = parse_attributes(self._bed.fields[8].c_str())
-                for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+                for key in ("ID", "Name", "gene_name", "transcript_id", "gene_id", "Parent"):
                     if key in attrs: attrs[key] = value
 
             elif self._bed.isVcf:
