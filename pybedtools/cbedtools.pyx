@@ -68,26 +68,38 @@ cdef class Interval:
     def count(self):
         return int(self.other[-1])
 
-    @property
-    def name(self):
-        if self._bed.isGff:
-            """
-            # TODO. allow setting a name_key in the BedTool constructor?
-            if self.name_key and self.name_key in attrs:
-                return attrs[self.name_key]
-            """
-            attrs = parse_attributes(self._bed.fields[8].c_str())
-            for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
-                if key in attrs: return attrs[key]
+    property name:
+        def __get__(self):
+            if self._bed.isGff:
+                """
+                # TODO. allow setting a name_key in the BedTool constructor?
+                if self.name_key and self.name_key in attrs:
+                    return attrs[self.name_key]
+                """
+                attrs = parse_attributes(self._bed.fields[8].c_str())
+                for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+                    if key in attrs: return attrs[key]
 
-        elif self._bed.isVcf:
-            return "%s:%i" % (self.chrom, self.start)
-        else:
-            return self._bed.name.c_str()
+            elif self._bed.isVcf:
+                return "%s:%i" % (self.chrom, self.start)
+            else:
+                return self._bed.name.c_str()
+        def __set__(self, value):
+            if self._bed.isGff:
+                attrs = parse_attributes(self._bed.fields[8].c_str())
+                for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
+                    if key in attrs: attrs[key] = value
 
-    @property
-    def score(self):
-        return self._bed.score.c_str()
+            elif self._bed.isVcf:
+                raise NotImplementedError, "setting .name not implemented for VCF features"
+            else:
+                self._bed.name = string(value)
+
+    property score:
+        def __get__(self):
+            return self._bed.score.c_str()
+        def __set__(self, value):
+            self._bed.score = string(value)
 
     @property
     def other(self):
