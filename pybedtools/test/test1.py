@@ -125,6 +125,16 @@ def test_stream():
     for i,j in zip(c, d):
         assert str(i) == str(j)
 
+    # make sure it works for GFF too.
+
+    # TODO: once you get IntervalIterators properly yielding GFF intervals,
+    # these should run
+    #f = pybedtools.example_bedtool('d.gff')
+    #g1 = f.intersect(a)
+    #g2 = f.intersect(a, stream=True)
+    #for i,j in zip(g1,g2):
+    #    assert str(i) == str(j)
+
 def test_subset():
     a = pybedtools.example_bedtool('a.bed')
     import random

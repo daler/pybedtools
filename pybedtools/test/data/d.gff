@@ -1,0 +1,5 @@
+chr1	fake	gene	50	300	.	+	.	ID=gene1
+chr1	fake	mRNA	50	300	.	+	.	ID=mRNA1;Parent=gene1;
+chr1	fake	CDS	75	150	.	+	.	ID=CDS1;Parent=mRNA1;
+chr1	fake	CDS	200	275	.	+	.	ID=CDS2;Parent=mRNA1;
+chr1	fake	rRNA	1200	1275	.	+	.	ID=rRNA1;
