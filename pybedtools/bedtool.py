@@ -189,6 +189,40 @@ class BedTool(object):
         assert len(fields) == 1, fields
         return list(fields)[0]
 
+    def each(self, func, *args, **kwargs):
+        """
+        Applies user-defined function *func* to each feature.  *func* must
+        accept an Interval as its first argument; *args and **kwargs will be
+        passed to *func*.
+
+        *func* must return an Interval object.
+
+        >>> def truncate_feature(feature, limit=0):
+        ...     feature.score = str(len(feature))
+        ...     if len(feature) > limit:
+        ...         feature.stop = feature.start + limit
+        ...         feature.name = feature.name + '.short'
+        ...     return feature
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = a.each(truncate_feature, limit=100)
+        >>> print b #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	100	feature1	99	+
+        chr1	100	200	feature2	100	+
+        chr1	150	250	feature3.short	350	-
+        chr1	900	950	feature4	50	+
+        <BLANKLINE>
+
+        """
+        fh = open(self._tmp(), "w")
+        for f in self:
+            new_feature = func(f, *args, **kwargs)
+            print >>fh, new_feature
+        fh.close()
+        return BedTool(fh.name)
+
+
+
     def with_column(self, incols, func, outcols=None):
         """
         This method allows you to operate on all features in a BedTool in a
