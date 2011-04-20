@@ -107,6 +107,32 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(iv['start'], iv.start)
         self.assertEqual(iv['end'], iv.end)
 
+    def testSetItemString(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        iv['chrom'] = 'fake'
+        self.assertEqual(iv['chrom'], 'fake')
+        self.assertEqual(iv.chrom, 'fake')
+
+    def testSetItem(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        iv[0] = 'fake'
+        #TODO: fails!
+        print iv.fields
+        self.assertEqual(iv['chrom'], 'fake')
+        self.assertEqual(iv.chrom, 'fake')
+
+    def testAppend(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        print iv.other
+        iv.append('asdf')
+        print iv
+        print iv.other
+        self.assertEqual(iv[-1], 'asdf')
+
+
 
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
