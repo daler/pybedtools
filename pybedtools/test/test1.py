@@ -595,6 +595,18 @@ def test_filter():
     b = a.filter(lambda f: f.length < 100 and f.length > 0)
     assert len(b) == 2
 
+def test_gff_stuff():
+    s = """
+    chr1  fake  gene 1 100 . + . ID=gene1
+    chr1  fake  mRNA 1 100 . + . Name=mRNA1
+    chr1  fake  CDS 50 90 . + . other=nothing
+    """
+    d = pybedtools.BedTool(s, from_string=True)
+    f1, f2, f3 = d.features()
+    assert f1.name == 'gene1', f1.name
+    assert f2.name == 'mRNA1', f2.name
+    assert f3.name is None, f3.name
+
 def test_random_intersection():
     # TODO:
     return
