@@ -38,6 +38,10 @@ class IntervalFileTest(unittest.TestCase):
 
 class IntervalTest(unittest.TestCase):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
+    chrpos = 0
+    startpos = 1
+    stoppos = 2
+    fieldcount = 6
 
     def setUp(self):
         self.file = os.path.join(PATH, self.file)
@@ -62,9 +66,9 @@ class IntervalTest(unittest.TestCase):
         """
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        self.assert_(iv[0].startswith("chr"))
-        self.assert_(iv[1].isdigit())
-        self.assert_(iv[2].isdigit())
+        self.assert_(iv[self.chrpos].startswith("chr"))
+        self.assert_(iv[self.startpos].isdigit())
+        self.assert_(iv[self.startpos].isdigit())
 
     def testGetItemNegative(self):
         """
@@ -72,9 +76,9 @@ class IntervalTest(unittest.TestCase):
         """
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        self.assert_(iv[-6].startswith("chr"), iv[-6])
-        self.assert_(iv[-5].isdigit(), iv[-5])
-        self.assert_(iv[-4].isdigit())
+        self.assert_(iv[-self.fieldcount+self.chrpos].startswith("chr"), iv[-self.fieldcount+self.chrpos])
+        self.assert_(iv[-self.fieldcount+self.startpos].isdigit(), iv[-self.fieldcount+self.startpos])
+        self.assert_(iv[-self.fieldcount+self.stoppos].isdigit())
 
     def testGetItemSlice(self):
         """
@@ -82,9 +86,10 @@ class IntervalTest(unittest.TestCase):
         """
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        seqid, start, end = iv[0:3]
+        seqid, = iv[self.chrpos:self.chrpos+1]
+        start, end = iv[self.startpos:self.stoppos+1]
         self.assert_(start.isdigit())
-        
+
         self.assertEqual(int(end), iv.end)
         self.assertEqual(seqid, iv.chrom)
 
@@ -96,9 +101,9 @@ class IntervalTest(unittest.TestCase):
         iv = ivf.next()
         self.assertEqual(len(iv[:3]), 3)
         self.assertEqual(len(iv[3:3]), 0)
-        self.assertEqual(len(iv[2:]), 4, iv[2:])
+        self.assertEqual(len(iv[2:]), self.fieldcount-2, iv[2:])
         
-        self.assertRaises(IndexError, lambda x: iv[x], 6)
+        self.assertRaises(IndexError, lambda x: iv[x], self.fieldcount+1)
 
     def testGetItemString(self):
         ivf = IntervalFile(self.file)
@@ -137,6 +142,19 @@ class IntervalTest(unittest.TestCase):
 
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
+
+class IntervalFileGFFTest(IntervalTest):
+    file = 'data/d.gff'
+    chrpos = 0
+    startpos = 3
+    stoppos = 4
+    fieldcount = 9
+
+    def setUp(self):
+        self.file = os.path.join(PATH, self.file)
+        start, end, strand = 1, 100, "+"
+        self.i = Interval("chr1", start, end, strand)
+        self.start, self.end, self.strand = start, end, strand
 
 
 if __name__ == "__main__":
