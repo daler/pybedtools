@@ -158,6 +158,10 @@ cdef class Interval:
         elif isinstance(key, (basestring)):
             setattr(self, key, value)
 
+    cpdef append(self, object value):
+        self._bed.otherFields.push_back(string(value))
+
+
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
     pyb._bed = new BED(b.chrom, b.start, b.end, b.name,
