@@ -386,9 +386,7 @@ private:
                         exit(1);
                     }
                 }
-                for (unsigned int i = 0; i < lineVector.size(); ++i) {
-                    bed.fields.push_back(lineVector[i]);
-                }
+                bed.fields = lineVector;
             }
             else {
                 cerr << "It looks as though you have less than 3 columns at line: " << _lineNum << ".  Are you sure your files are tab-delimited?" << endl;
