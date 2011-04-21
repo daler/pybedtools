@@ -9,6 +9,7 @@
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
 from pybedtools.helpers import parse_attributes
+import sys
 
 cdef class Interval:
     cdef BED *_bed
@@ -23,8 +24,10 @@ cdef class Interval:
         """ the chromosome of the feature"""
         def __get__(self):
             return self._bed.chrom.c_str()
-        def __set__(self, chrom):
+        def __set__(self, char* chrom):
             self._bed.chrom = string(chrom)
+            idx = LOOKUPS[self.file_type]["chrom"]
+            self._bed.fields[idx] = string(chrom)
 
     property start:
         """ the start of the feature"""
@@ -32,6 +35,9 @@ cdef class Interval:
             return self._bed.start
         def __set__(self, int start):
             self._bed.start = start
+            idx = LOOKUPS[self.file_type]["start"]
+            s = str(start)
+            self._bed.fields[idx] = string(s)
 
     property end:
         """ the end of the feature"""
@@ -39,19 +45,28 @@ cdef class Interval:
             return self._bed.end
         def __set__(self, int end):
             self._bed.end = end
+            e = str(end)
+            idx = LOOKUPS[self.file_type]["stop"]
+            self._bed.fields[idx] = string(e)
 
     property stop:
         """ the end of the feature"""
         def __get__(self):
             return self._bed.end
         def __set__(self, int end):
+            idx = LOOKUPS[self.file_type]["stop"]
+            e = str(end)
+            self._bed.fields[idx] = string(e)
             self._bed.end = end
+
 
     property strand:
         """ the strand of the feature"""
         def __get__(self):
             return self._bed.strand.c_str()
         def __set__(self, strand):
+            idx = LOOKUPS[self.file_type]["strand"]
+            self._bed.fields[idx] = string(strand)
             self._bed.strand = string(strand)
 
     property length:
@@ -61,18 +76,17 @@ cdef class Interval:
 
     property fields:
         def __get__(self):
-            if self._bed.isGff:
-                return string_vec2list(self._bed.fields) + string_vec2list(self._bed.otherFields)[3:]
-            return string_vec2list(self._bed.fields) + string_vec2list(self._bed.otherFields)
+            return string_vec2list(self._bed.fields)
 
     # TODO: make this more robust.
     @property
     def count(self):
-        return int(self.other[-1])
+        return int(self.fields[-1])
 
     property name:
         def __get__(self):
-            if self._bed.isGff:
+            cdef string ftype = self._bed.file_type
+            if ftype == <char *>"gff":
                 """
                 # TODO. allow setting a name_key in the BedTool constructor?
                 if self.name_key and self.name_key in attrs:
@@ -82,31 +96,36 @@ cdef class Interval:
                 for key in ("ID", "Name", "gene_name", "transcript_id", "gene_id", "Parent"):
                     if key in attrs: return attrs[key]
 
-            elif self._bed.isVcf:
+            elif ftype == <char *>"vcf":
                 return "%s:%i" % (self.chrom, self.start)
-            else:
+            elif ftype == <char *>"bed":
                 return self._bed.name.c_str()
+
         def __set__(self, value):
-            if self._bed.isGff:
+            cdef string ftype = self._bed.file_type
+            if ftype == <char *>"gff":
                 attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "Name", "gene_name", "transcript_id", "gene_id", "Parent"):
                     if key in attrs: attrs[key] = value
 
-            elif self._bed.isVcf:
-                raise NotImplementedError, "setting .name not implemented for VCF features"
+            elif ftype == <char *>"vcf":
+                self._bed.fields[2] = string(value)
             else:
                 self._bed.name = string(value)
+                self._bed.fields[3] = string(value)
 
     property score:
         def __get__(self):
             return self._bed.score.c_str()
         def __set__(self, value):
             self._bed.score = string(value)
-
-    @property
-    def other(self):
-        return string_vec2list(self._bed.otherFields)
-
+            idx = LOOKUPS[self.file_type]["score"]
+            self._bed.fields[idx] = string(value)
+    
+    property file_type:
+        "bed/vcf/gff"
+        def __get__(self):
+            return self._bed.file_type.c_str()
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
@@ -121,8 +140,12 @@ cdef class Interval:
     def o_amt(self):
         return self._bed.o_end - self._bed.o_start
 
+    @property
+    def fields(self):
+        return string_vec2list(self._bed.fields)
+
     def __str__(self):
-        return self._bed.reportBed().c_str()
+        return "\t".join(self.fields)
 
     def __repr__(self):
         return "Interval(%s:%i-%i)" % (self.chrom, self.start, self.end)
@@ -137,42 +160,10 @@ cdef class Interval:
         cdef int i
         if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
-            nothers = self._bed.otherFields.size()
-
-            # TODO: GFF features initially have 3 otherFields included with
-            # fields.  This seems to work OK until you use the .append method
-            # on a GFF Interval
-            if self._bed.isGff:
-                nothers -= 3
-
             if key >= nfields:
-
-                # overshot them both
-                if key >= nfields + nothers:
-                    raise IndexError('field index out of range')
-
-                # index into fields
-                else:
-                    return self._bed.otherFields.at(key - nfields).c_str()
-
-            # nicely in range of fields
-            elif 0 <= key < nfields:
-                return self._bed.fields.at(key).c_str()
-
-            # negative inds
-            elif key < 0:
-
-                # negative ind reaches back past otherFields and into fields
-                if key < -nothers:
-                    key = key + nfields + nothers
-                    return self._bed.fields.at(key).c_str()
-
-                # negative ind fits within otherFields
-                else:
-                    key = nothers + key
-                    return self._bed.otherFields.at(key).c_str()
-
-        # TODO: not fully implemented for fields/otherFields
+                raise IndexError('field index out of range')
+            elif key < 0: key = nfields + key
+            return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
             return [self._bed.fields.at(i).c_str() for i in \
                     range(key.start or 0,
@@ -183,25 +174,34 @@ cdef class Interval:
             return getattr(self, key)
 
     def __setitem__(self, object key, object value):
+        cdef string ft_string
+        cdef char* ft_char
         if isinstance(key, (int,long)):
             nfields = self._bed.fields.size()
             if key >= nfields:
                 raise IndexError('field index out of range')
             elif key < 0: key = nfields + key
             self._bed.fields[key] = string(value)
+
+            ft_string = self._bed.file_type
+            ft = <char *>ft_string.c_str()
+
+
+            if key in LOOKUPS[ft]:
+                setattr(self, LOOKUPS[ft][key], value)
+
         elif isinstance(key, (basestring)):
             setattr(self, key, value)
 
     cpdef append(self, object value):
-        self._bed.otherFields.push_back(string(value))
-        #self._bed.bedType += 1
+        self._bed.fields.push_back(string(value))
 
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
     pyb._bed = new BED(b.chrom, b.start, b.end, b.name,
-                       b.score, b.strand, b.otherFields,
-                       b.o_start, b.o_end, b.bedType, b.isGff, b.isVcf, b.status)
+                       b.score, b.strand, b.fields,
+                       b.o_start, b.o_end, b.bedType, b.file_type, b.status)
     pyb._bed.fields = b.fields
     return pyb
 
@@ -270,11 +270,7 @@ cdef class IntervalFile:
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             a = iter(self).next()
-
-        if self.intervalFile_ptr._isGff: return "gff"
-        elif self.intervalFile_ptr._isVcf: return "vcf"
-        else: return "bed"
-
+        return self.intervalFile_ptr.file_type.c_str()
 
     def loadIntoMap(self):
         if self._loaded: return

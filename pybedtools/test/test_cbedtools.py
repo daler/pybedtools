@@ -61,9 +61,7 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(self.strand, self.i.strand)
 
     def testGetItem(self):
-        """
-        getitem now supports direct access to the line.
-        """
+        "getitem now supports direct access to the line."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         self.assert_(iv[self.chrpos].startswith("chr"))
@@ -71,9 +69,7 @@ class IntervalTest(unittest.TestCase):
         self.assert_(iv[self.startpos].isdigit())
 
     def testGetItemNegative(self):
-        """
-        test negative indexes to feature.
-        """
+        "test negative indexes to feature."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         self.assert_(iv[-self.fieldcount+self.chrpos].startswith("chr"), iv[-self.fieldcount+self.chrpos])
@@ -81,10 +77,7 @@ class IntervalTest(unittest.TestCase):
         self.assert_(iv[-self.fieldcount+self.stoppos].isdigit())
 
     def testGetItemSlice(self):
-        """
-        getitem now supports direct access to the line.
-        """
-        #TODO: need tests for GFF otherFields 
+        "getitem now supports direct access to the line."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         seqid, = iv[self.chrpos:self.chrpos+1]
@@ -95,9 +88,7 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(seqid, iv.chrom)
 
     def testGetItemSliceNone(self):
-        """
-        test support for funky slices.
-        """
+        " test support for funky slices."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         self.assertEqual(len(iv[:3]), 3)
@@ -128,22 +119,16 @@ class IntervalTest(unittest.TestCase):
         iv.chrom = 'chrfake'
         #TODO: fails!
         print iv.fields
-        self.assertEqual(iv['chrom'], 'chrfake')
-        self.assertEqual(iv.chrom, 'chrfake')
-
-    # TODO: append isn't working 
-    """
+        self.assertEqual(iv['chrom'], 'fake')
+        #self.assertEqual(iv.chrom, 'fake')
     def testAppend(self):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        print '   full, pre-append:', iv
-        print '  other, pre-append:', iv.other
+        print iv.fields
         iv.append('asdf')
-        print '  full, post-append:', iv
-        print ' other, post-append:', iv.other
-        print 'fields, post-append:', iv.fields
+        print iv
         self.assertEqual(iv[-1], 'asdf')
-    """
+
 
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
