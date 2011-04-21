@@ -117,10 +117,10 @@ class IntervalTest(unittest.TestCase):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         iv.chrom = 'chrfake'
-        #TODO: fails!
         print iv.fields
-        self.assertEqual(iv['chrom'], 'fake')
-        #self.assertEqual(iv.chrom, 'fake')
+        self.assertEqual(iv['chrom'], 'chrfake')
+        self.assertEqual(iv.chrom, 'chrfake')
+
     def testAppend(self):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
