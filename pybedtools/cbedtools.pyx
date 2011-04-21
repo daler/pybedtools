@@ -9,6 +9,7 @@
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
 from pybedtools.helpers import parse_attributes
+import sys
 
 cdef class Interval:
     cdef BED *_bed
@@ -23,7 +24,8 @@ cdef class Interval:
         """ the chromosome of the feature"""
         def __get__(self):
             return self._bed.chrom.c_str()
-        def __set__(self, chrom):
+        def __set__(self, char* chrom):
+            self._bed.fields[0] = string(chrom)
             self._bed.chrom = string(chrom)
 
     property start:
@@ -70,7 +72,8 @@ cdef class Interval:
 
     property name:
         def __get__(self):
-            if self._bed.isGff:
+            cdef string ftype = self._bed.file_type
+            if ftype == <char *>"gff":
                 """
                 # TODO. allow setting a name_key in the BedTool constructor?
                 if self.name_key and self.name_key in attrs:
@@ -80,18 +83,20 @@ cdef class Interval:
                 for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
                     if key in attrs: return attrs[key]
 
-            elif self._bed.isVcf:
+            elif ftype == <char *>"vcf":
                 return "%s:%i" % (self.chrom, self.start)
-            else:
+            elif ftype == <char *>"bed":
                 return self._bed.name.c_str()
+
         def __set__(self, value):
-            if self._bed.isGff:
+            cdef string ftype = self._bed.file_type
+            if ftype == <char *>"gff":
                 attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
                     if key in attrs: attrs[key] = value
 
-            elif self._bed.isVcf:
-                raise NotImplementedError, "setting .name not implemented for VCF features"
+            elif ftype == <char *>"vcf":
+                self._bed.fields[2] = string(value)
             else:
                 self._bed.name = string(value)
 
@@ -104,7 +109,6 @@ cdef class Interval:
     @property
     def other(self):
         return string_vec2list(self._bed.otherFields)
-
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
@@ -149,12 +153,25 @@ cdef class Interval:
             return getattr(self, key)
 
     def __setitem__(self, object key, object value):
+        sys.stderr.write("\nsetitem\n")
+        cdef string ft_string
+        cdef char* ft_char
         if isinstance(key, (int,long)):
+            sys.stderr.write("\nsetitem int: %i\n" % key)
             nfields = self._bed.fields.size()
             if key >= nfields:
                 raise IndexError('field index out of range')
             elif key < 0: key = nfields + key
             self._bed.fields[key] = string(value)
+
+            ft_string = self._bed.file_type
+            ft = <char *>ft_string.c_str()
+
+
+            if key in LOOKUPS[ft]:
+                sys.stderr.write("\nsetattr int: %i\n" % key)
+                setattr(self, LOOKUPS[ft][key], value)
+
         elif isinstance(key, (basestring)):
             setattr(self, key, value)
 
@@ -166,7 +183,7 @@ cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
     pyb._bed = new BED(b.chrom, b.start, b.end, b.name,
                        b.score, b.strand, b.otherFields,
-                       b.o_start, b.o_end, b.bedType, b.isGff, b.isVcf, b.status)
+                       b.o_start, b.o_end, b.bedType, b.file_type, b.status)
     pyb._bed.fields = b.fields
     return pyb
 
@@ -235,11 +252,7 @@ cdef class IntervalFile:
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             a = iter(self).next()
-
-        if self.intervalFile_ptr._isGff: return "gff"
-        elif self.intervalFile_ptr._isVcf: return "vcf"
-        else: return "bed"
-
+        return self.intervalFile_ptr.file_type.c_str()
 
     def loadIntoMap(self):
         if self._loaded: return

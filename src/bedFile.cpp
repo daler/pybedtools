@@ -333,18 +333,6 @@ int BedFile::CountOverlapsPerBin(const BED &bed, bool forceStrand, float overlap
 }
 
 
-void BedFile::setGff (bool gff) {
-    if (gff == true) this->_isGff = true;
-    else this->_isGff = false;
-}
-
-
-void BedFile::setVcf (bool vcf) {
-    if (vcf == true) this->_isVcf = true;
-    else this->_isVcf = false;
-}
-
-
 void BedFile::setFileType (FileType type) {
     _fileType    = type;
     _typeIsKnown = true;

@@ -136,9 +136,8 @@ struct BED {
     CHRPOS o_end;
     // how many columns
     unsigned short bedType;
+    string file_type;
     // is it a GFF or VCF interval?
-    bool isGff;
-    bool isVcf;
     // valid, header, blank line, or EOF
     BedLineStatus   status;
     
@@ -161,8 +160,7 @@ public:
       o_start(0),
       o_end(0),
       bedType(0),
-      isGff(false),
-      isVcf(false),
+      file_type(""),
       status(),
       fields()
     {}
@@ -179,8 +177,7 @@ public:
       o_start(0),
       o_end(0),
       bedType(3),
-      isGff(false),
-      isVcf(false),
+      file_type("bed"),
       status(),
       fields()
     {}
@@ -197,8 +194,7 @@ public:
       o_start(0),
       o_end(0),
       bedType(3),
-      isGff(false),
-      isVcf(false),
+      file_type("bed"),
       status(),
       fields()
     {}
@@ -216,8 +212,7 @@ public:
       o_start(0),
       o_end(0),
       bedType(6),
-      isGff(false),
-      isVcf(false),
+      file_type("bed"),
       status(),
       fields()
     {}
@@ -235,8 +230,7 @@ public:
       o_start(0),
       o_end(0),
       bedType(0),
-      isGff(false),
-      isVcf(false),
+      file_type("bed"),
       status(),
       fields()
     {}
@@ -245,7 +239,7 @@ public:
     BED(string chrom, CHRPOS start, CHRPOS end, string name, 
         string score, string strand, vector<string> otherFields,
         CHRPOS o_start, CHRPOS o_end,
-        unsigned short bedType, bool isGff, bool isVcf, BedLineStatus status)
+        unsigned short bedType, string file_type, BedLineStatus status)
     : chrom(chrom), 
       start(start),
       end(end),
@@ -256,8 +250,7 @@ public:
       o_start(o_start),
       o_end(o_end),
       bedType(bedType),
-      isGff(isGff),
-      isVcf(isVcf),
+      file_type(file_type),
       status(status),
       fields()
     {}
@@ -268,7 +261,7 @@ public:
         
         ostringstream out;
         // BED
-        if (isGff == false && isVcf == false) {
+        if (file_type == "bed") {
             if (bedType == 3) {
                 out << chrom << "\t" << start << "\t" << end;
             }
@@ -296,7 +289,7 @@ public:
             }
         }
         // VCF
-        else if (isGff == false && isVcf == true) {
+        else if (file_type == "vcf") {
             out << chrom << "\t" << start+1;
             vector<string>::const_iterator othIt = otherFields.begin(); 
             vector<string>::const_iterator othEnd = otherFields.end(); 
@@ -305,7 +298,7 @@ public:
             }
         }   
         // GFF
-        else if (bedType == 9) {
+        else if (bedType == 9 && file_type == "gff") {
             out << chrom << "\t" << otherFields[0] << "\t" << name << "\t" << start+1 << "\t" 
                 << end   << "\t" << score << "\t" << strand << "\t" << otherFields[1] << "\t" <<  otherFields[2];
         }
@@ -367,11 +360,10 @@ public:
     string bedFile;
     unsigned short bedType;  // 3-6, 12 for BED
                              // 9 for GFF
+    string file_type; 
     
     // Main data structires used by BEDTools
     masterBedMap         bedMap;
-    bool _isGff;
-    bool _isVcf;
     bool _typeIsKnown;        // do we know the type?   (i.e., BED, GFF, VCF)
                         
 private:
@@ -381,8 +373,6 @@ private:
     istream   *_bedStream;
     unsigned int _lineNum;
 
-    void setGff (bool isGff);
-    void setVcf (bool isVcf);
     void setFileType (FileType type);
     void setBedType (int colNums);
     
@@ -427,24 +417,21 @@ private:
                 else {
                     // it's BED format if columns 2 and 3 are integers
                     if (isInteger(lineVector[1]) && isInteger(lineVector[2])) {
-                        setGff(false);
-                        setVcf(false);
+                        file_type = "bed";
                         setFileType(BED_FILETYPE);
                         setBedType(numFields);       // we now expect numFields columns in each line
                         if (parseBedLine(bed, lineVector, numFields) == true) return BED_VALID;
                     }
                     // it's VCF, assuming the second column is numeric and there are at least 8 fields.
                     else if (isInteger(lineVector[1]) && numFields >= 8) {    
-                        setGff(false);
-                        setVcf(true);
+                        file_type = "vcf";
                         setFileType(VCF_FILETYPE);
                         setBedType(numFields);       // we now expect numFields columns in each line
                         if (parseVcfLine(bed, lineVector, numFields) == true) return BED_VALID;
                     }
                     // it's GFF, assuming columns columns 4 and 5 are numeric and we have 9 fields total.
                     else if ((numFields == 9) && isInteger(lineVector[3]) && isInteger(lineVector[4])) {
-                        setGff(true);
-                        setVcf(false);
+                        file_type = "gff";
                         setFileType(GFF_FILETYPE);
                         setBedType(numFields);       // we now expect numFields columns in each line
                         if (parseGffLine(bed, lineVector, numFields) == true) return BED_VALID;
@@ -483,8 +470,7 @@ private:
             bed.start   = atoi(lineVector[1].c_str());
             bed.end     = atoi(lineVector[2].c_str());
             bed.bedType = this->bedType;
-            bed.isGff   = this->_isGff;
-            bed.isVcf   = this->_isVcf;
+            bed.file_type = this->file_type;
             
             if (this->bedType == 4) {
                 bed.name = lineVector[3];
@@ -552,8 +538,7 @@ private:
             bed.end     = bed.start + lineVector[3].size(); // VCF 4.0 stores the size of the affected REF allele.
             bed.strand  = "+";
             bed.bedType = this->bedType;
-            bed.isGff   = this->_isGff;
-            bed.isVcf   = this->_isVcf;
+            bed.file_type = this->file_type;
             // construct the name from the ref and alt alleles.  
             // if it's an annotated variant, add the rsId as well.
             bed.name   = lineVector[3] + "/" + lineVector[4];
@@ -601,7 +586,7 @@ private:
     template <typename T>
     inline bool parseGffLine (T &bed, const vector<string> &lineVector, unsigned int numFields) {
         if (numFields == this->bedType) { 
-            if (this->bedType == 9 && _isGff) {
+            if (this->bedType == 9 && this->file_type == "gff") {
                 bed.chrom = lineVector[0];
                 // substract 1 to force the start to be BED-style
                 bed.start   = atoi(lineVector[3].c_str()) - 1;
@@ -610,8 +595,7 @@ private:
                 bed.score   = lineVector[5];
                 bed.strand  = lineVector[6].c_str();
                 bed.bedType = this->bedType;
-                bed.isGff   = this->_isGff;
-                bed.isVcf   = this->_isVcf;
+                bed.file_type = this->file_type;
                 bed.otherFields.push_back(lineVector[1]);  // add GFF "source". unused in BED
                 bed.otherFields.push_back(lineVector[7]);  // add GFF "fname". unused in BED
                 bed.otherFields.push_back(lineVector[8]);  // add GFF "group". unused in BED
