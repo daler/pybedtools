@@ -137,10 +137,42 @@ cdef class Interval:
         cdef int i
         if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
+            nothers = self._bed.otherFields.size()
+
+            # TODO: GFF features initially have 3 otherFields included with
+            # fields.  This seems to work OK until you use the .append method
+            # on a GFF Interval
+            if self._bed.isGff:
+                nothers -= 3
+
             if key >= nfields:
-                raise IndexError('field index out of range')
-            elif key < 0: key = nfields + key
-            return self._bed.fields.at(key).c_str()
+
+                # overshot them both
+                if key >= nfields + nothers:
+                    raise IndexError('field index out of range')
+
+                # index into fields
+                else:
+                    return self._bed.otherFields.at(key - nfields).c_str()
+
+            # nicely in range of fields
+            elif 0 <= key < nfields:
+                return self._bed.fields.at(key).c_str()
+
+            # negative inds
+            elif key < 0:
+
+                # negative ind reaches back past otherFields and into fields
+                if key < -nothers:
+                    key = key + nfields + nothers
+                    return self._bed.fields.at(key).c_str()
+
+                # negative ind fits within otherFields
+                else:
+                    key = nothers + key
+                    return self._bed.otherFields.at(key).c_str()
+
+        # TODO: not fully implemented for fields/otherFields
         elif isinstance(key, slice):
             return [self._bed.fields.at(i).c_str() for i in \
                     range(key.start or 0,
@@ -162,6 +194,7 @@ cdef class Interval:
 
     cpdef append(self, object value):
         self._bed.otherFields.push_back(string(value))
+        #self._bed.bedType += 1
 
 
 cdef Interval create_interval(BED b):

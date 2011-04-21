@@ -103,6 +103,7 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(len(iv[3:3]), 0)
         self.assertEqual(len(iv[2:]), self.fieldcount-2, iv[2:])
         
+        print len(iv.fields), iv.fields
         self.assertRaises(IndexError, lambda x: iv[x], self.fieldcount+1)
 
     def testGetItemString(self):
@@ -118,26 +119,27 @@ class IntervalTest(unittest.TestCase):
         iv['chrom'] = 'fake'
         self.assertEqual(iv['chrom'], 'fake')
         self.assertEqual(iv.chrom, 'fake')
-"""
-#TODO: need some work on getting and setting before running these
+
+    #TODO: need some work on getting and setting before running these
     def testSetItem(self):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        iv[0] = 'fake'
+        iv.chrom = 'chrfake'
         #TODO: fails!
         print iv.fields
-        self.assertEqual(iv['chrom'], 'fake')
-        self.assertEqual(iv.chrom, 'fake')
+        self.assertEqual(iv['chrom'], 'chrfake')
+        self.assertEqual(iv.chrom, 'chrfake')
 
     def testAppend(self):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        print iv.other
+        print '   full, pre-append:', iv
+        print '  other, pre-append:', iv.other
         iv.append('asdf')
-        print iv
-        print iv.other
+        print '  full, post-append:', iv
+        print ' other, post-append:', iv.other
+        print 'fields, post-append:', iv.fields
         self.assertEqual(iv[-1], 'asdf')
-"""
 
 
 class IntervalFileGzTest(IntervalFileTest):
