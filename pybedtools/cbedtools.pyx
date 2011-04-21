@@ -39,13 +39,13 @@ cdef class Interval:
             return self._bed.end
         def __set__(self, int end):
             self._bed.end = end
+
     property stop:
         """ the end of the feature"""
         def __get__(self):
             return self._bed.end
         def __set__(self, int end):
             self._bed.end = end
-
 
     property strand:
         """ the strand of the feature"""
@@ -61,7 +61,9 @@ cdef class Interval:
 
     property fields:
         def __get__(self):
-            return string_vec2list(self._bed.fields)
+            if self._bed.isGff:
+                return string_vec2list(self._bed.fields) + string_vec2list(self._bed.otherFields)[3:]
+            return string_vec2list(self._bed.fields) + string_vec2list(self._bed.otherFields)
 
     # TODO: make this more robust.
     @property
