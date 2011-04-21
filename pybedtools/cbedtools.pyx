@@ -25,8 +25,9 @@ cdef class Interval:
         def __get__(self):
             return self._bed.chrom.c_str()
         def __set__(self, char* chrom):
-            self._bed.fields[0] = string(chrom)
             self._bed.chrom = string(chrom)
+            idx = LOOKUPS[self.file_type]["chrom"]
+            self._bed.fields[idx] = string(chrom)
 
     property start:
         """ the start of the feature"""
@@ -34,6 +35,9 @@ cdef class Interval:
             return self._bed.start
         def __set__(self, int start):
             self._bed.start = start
+            idx = LOOKUPS[self.file_type]["start"]
+            s = str(start)
+            self._bed.fields[idx] = string(s)
 
     property end:
         """ the end of the feature"""
@@ -41,11 +45,18 @@ cdef class Interval:
             return self._bed.end
         def __set__(self, int end):
             self._bed.end = end
+            e = str(end)
+            idx = LOOKUPS[self.file_type]["stop"]
+            self._bed.fields[idx] = string(e)
+
     property stop:
         """ the end of the feature"""
         def __get__(self):
             return self._bed.end
         def __set__(self, int end):
+            idx = LOOKUPS[self.file_type]["stop"]
+            e = str(end)
+            self._bed.fields[idx] = string(e)
             self._bed.end = end
 
 
@@ -54,6 +65,8 @@ cdef class Interval:
         def __get__(self):
             return self._bed.strand.c_str()
         def __set__(self, strand):
+            idx = LOOKUPS[self.file_type]["strand"]
+            self._bed.fields[idx] = string(strand)
             self._bed.strand = string(strand)
 
     property length:
@@ -68,7 +81,7 @@ cdef class Interval:
     # TODO: make this more robust.
     @property
     def count(self):
-        return int(self.other[-1])
+        return int(self.fields[-1])
 
     property name:
         def __get__(self):
@@ -99,16 +112,20 @@ cdef class Interval:
                 self._bed.fields[2] = string(value)
             else:
                 self._bed.name = string(value)
+                self._bed.fields[3] = string(value)
 
     property score:
         def __get__(self):
             return self._bed.score.c_str()
         def __set__(self, value):
             self._bed.score = string(value)
-
-    @property
-    def other(self):
-        return string_vec2list(self._bed.otherFields)
+            idx = LOOKUPS[self.file_type]["score"]
+            self._bed.fields[idx] = string(value)
+    
+    property file_type:
+        "bed/vcf/gff"
+        def __get__(self):
+            return self._bed.file_type.c_str()
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
@@ -123,8 +140,12 @@ cdef class Interval:
     def o_amt(self):
         return self._bed.o_end - self._bed.o_start
 
+    @property
+    def fields(self):
+        return string_vec2list(self._bed.fields)
+
     def __str__(self):
-        return self._bed.reportBed().c_str()
+        return "\t".join(self.fields)
 
     def __repr__(self):
         return "Interval(%s:%i-%i)" % (self.chrom, self.start, self.end)
@@ -153,11 +174,9 @@ cdef class Interval:
             return getattr(self, key)
 
     def __setitem__(self, object key, object value):
-        sys.stderr.write("\nsetitem\n")
         cdef string ft_string
         cdef char* ft_char
         if isinstance(key, (int,long)):
-            sys.stderr.write("\nsetitem int: %i\n" % key)
             nfields = self._bed.fields.size()
             if key >= nfields:
                 raise IndexError('field index out of range')
@@ -169,20 +188,19 @@ cdef class Interval:
 
 
             if key in LOOKUPS[ft]:
-                sys.stderr.write("\nsetattr int: %i\n" % key)
                 setattr(self, LOOKUPS[ft][key], value)
 
         elif isinstance(key, (basestring)):
             setattr(self, key, value)
 
     cpdef append(self, object value):
-        self._bed.otherFields.push_back(string(value))
+        self._bed.fields.push_back(string(value))
 
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
     pyb._bed = new BED(b.chrom, b.start, b.end, b.name,
-                       b.score, b.strand, b.otherFields,
+                       b.score, b.strand, b.fields,
                        b.o_start, b.o_end, b.bedType, b.file_type, b.status)
     pyb._bed.fields = b.fields
     return pyb

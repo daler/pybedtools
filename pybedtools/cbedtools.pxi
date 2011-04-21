@@ -18,9 +18,9 @@ cdef extern from "<string>" namespace "std":
 
 
 cdef dict LOOKUPS = {
-    "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4},
+    "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4, "strand": 6},
     "vcf":  {"chrom": 0, "start": 1},
-    "bed":  {"chrom": 0, "start": 1, "end": 2, "stop": 2}
+    "bed":  {"chrom": 0, "start": 1, "end": 2, "stop": 2, "score": 4, "strand": 5}
 }
 for ktype, kdict in LOOKUPS.items():
     for k, v in kdict.items():
@@ -47,7 +47,6 @@ cdef extern from "bedFile.h":
         string name
         string score
         string strand
-        vector[string] otherFields
         CHRPOS o_start  # the start of an overlap with another interval
         CHRPOS o_end    # the end of an overlap with another interval
         unsigned short bedType
@@ -58,14 +57,14 @@ cdef extern from "bedFile.h":
         # constructors
         BED()
         BED(string chrom, CHRPOS start, CHRPOS end, string name,
-             string score, string strand, vector[string] otherFields,
+             string score, string strand, vector[string] fields,
              CHRPOS o_start, CHRPOS o_end,
              unsigned short bedType, string file_type, BedLineStatus status)
 
         BED(string chrom, CHRPOS start, CHRPOS end)
         BED(string chrom, CHRPOS start, CHRPOS end, string strand)
         BED(string chrom, CHRPOS start, CHRPOS end, string name,
-             string score, string strand, vector[string] otherFields)
+             string score, string strand, vector[string] fields)
 
         # methods
         string reportBed()

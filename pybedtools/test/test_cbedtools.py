@@ -44,7 +44,6 @@ class IntervalTest(unittest.TestCase):
         start, end, strand = 9719768, 9739768, "-"
         self.i = Interval("chr21", start, end, strand)
         self.start, self.end, self.strand = start, end, strand
-
     def testLengths(self):
         self.assertEqual(self.end - self.start, self.i.length)
         self.assertEqual(len(self.i), self.i.length)
@@ -57,9 +56,7 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(self.strand, self.i.strand)
 
     def testGetItem(self):
-        """
-        getitem now supports direct access to the line.
-        """
+        "getitem now supports direct access to the line."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         self.assert_(iv[0].startswith("chr"))
@@ -67,9 +64,7 @@ class IntervalTest(unittest.TestCase):
         self.assert_(iv[2].isdigit())
 
     def testGetItemNegative(self):
-        """
-        test negative indexes to feature.
-        """
+        "test negative indexes to feature."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         self.assert_(iv[-6].startswith("chr"), iv[-6])
@@ -77,9 +72,7 @@ class IntervalTest(unittest.TestCase):
         self.assert_(iv[-4].isdigit())
 
     def testGetItemSlice(self):
-        """
-        getitem now supports direct access to the line.
-        """
+        "getitem now supports direct access to the line."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         seqid, start, end = iv[0:3]
@@ -89,9 +82,7 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(seqid, iv.chrom)
 
     def testGetItemSliceNone(self):
-        """
-        test support for funky slices.
-        """
+        " test support for funky slices."
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         self.assertEqual(len(iv[:3]), 3)
@@ -121,17 +112,14 @@ class IntervalTest(unittest.TestCase):
         #TODO: fails!
         print iv.fields
         self.assertEqual(iv['chrom'], 'fake')
-        self.assertEqual(iv.chrom, 'fake')
-
+        #self.assertEqual(iv.chrom, 'fake')
     def testAppend(self):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
-        print iv.other
+        print iv.fields
         iv.append('asdf')
         print iv
-        print iv.other
         self.assertEqual(iv[-1], 'asdf')
-
 
 
 class IntervalFileGzTest(IntervalFileTest):

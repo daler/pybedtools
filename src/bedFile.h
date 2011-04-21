@@ -129,8 +129,6 @@ struct BED {
     string name;
     string score;
     string strand;
-    // Add'l fields for BED12 and/or custom BED annotations
-    vector<string> otherFields;
     // Coordinates of an overlao
     CHRPOS o_start;
     CHRPOS o_end;
@@ -156,7 +154,6 @@ public:
       name(""),
       score(""),
       strand(""),
-      otherFields(),
       o_start(0),
       o_end(0),
       bedType(0),
@@ -173,7 +170,6 @@ public:
       name(""),
       score(""),
       strand(""),
-      otherFields(),
       o_start(0),
       o_end(0),
       bedType(3),
@@ -190,7 +186,6 @@ public:
       name(""),
       score(""),
       strand(strand),
-      otherFields(),
       o_start(0),
       o_end(0),
       bedType(3),
@@ -208,7 +203,6 @@ public:
       name(name),
       score(score),
       strand(strand),
-      otherFields(),
       o_start(0),
       o_end(0),
       bedType(6),
@@ -219,25 +213,24 @@ public:
     
     // BEDALL
     BED(string chrom, CHRPOS start, CHRPOS end, string name, 
-        string score, string strand, vector<string> otherFields) 
+        string score, string strand, vector<string> fields) 
     : chrom(chrom), 
       start(start),
       end(end),
       name(name),
       score(score),
       strand(strand),
-      otherFields(otherFields),
       o_start(0),
       o_end(0),
       bedType(0),
       file_type("bed"),
       status(),
-      fields()
+      fields(fields)
     {}
     
     // BEDALL + overlap
     BED(string chrom, CHRPOS start, CHRPOS end, string name, 
-        string score, string strand, vector<string> otherFields,
+        string score, string strand, vector<string> fields,
         CHRPOS o_start, CHRPOS o_end,
         unsigned short bedType, string file_type, BedLineStatus status)
     : chrom(chrom), 
@@ -246,64 +239,15 @@ public:
       name(name),
       score(score),
       strand(strand),
-      otherFields(otherFields),
       o_start(o_start),
       o_end(o_end),
       bedType(bedType),
       file_type(file_type),
       status(status),
-      fields()
+      fields(fields)
     {}
     
 
-    //Writes the entire, _original_ BED/GFF/VCF entry.
-    inline string reportBed() {
-        
-        ostringstream out;
-        // BED
-        if (file_type == "bed") {
-            if (bedType == 3) {
-                out << chrom << "\t" << start << "\t" << end;
-            }
-            else if (bedType == 4) {
-                out << chrom << "\t" << start << "\t" << end << "\t" << name;
-            }
-            else if (bedType == 5) {
-                out << chrom << "\t" << start << "\t" << end << "\t" << name << "\t" 
-                    << score;
-            
-            }
-            else if (bedType == 6) {
-                out << chrom << "\t" << start << "\t" << end << "\t" << name << "\t" 
-                    << score << "\t" << strand;
-            }
-            else if (bedType > 6) {
-                out << chrom << "\t" << start << "\t" << end << "\t" << name << "\t" 
-                    << score << "\t" << strand;
-                    
-                vector<string>::const_iterator othIt = otherFields.begin(); 
-                vector<string>::const_iterator othEnd = otherFields.end(); 
-                for ( ; othIt != othEnd; ++othIt) {
-                    out << "\t" << *othIt;
-                }
-            }
-        }
-        // VCF
-        else if (file_type == "vcf") {
-            out << chrom << "\t" << start+1;
-            vector<string>::const_iterator othIt = otherFields.begin(); 
-            vector<string>::const_iterator othEnd = otherFields.end(); 
-            for ( ; othIt != othEnd; ++othIt) {
-                out << "\t" << *othIt;
-            }
-        }   
-        // GFF
-        else if (bedType == 9 && file_type == "gff") {
-            out << chrom << "\t" << otherFields[0] << "\t" << name << "\t" << start+1 << "\t" 
-                << end   << "\t" << score << "\t" << strand << "\t" << otherFields[1] << "\t" <<  otherFields[2];
-        }
-        return out.str();
-    }
 }; // BED
 
 
@@ -442,6 +386,9 @@ private:
                         exit(1);
                     }
                 }
+                for (unsigned int i = 0; i < lineVector.size(); ++i) {
+                    bed.fields.push_back(lineVector[i]);
+                }
             }
             else {
                 cerr << "It looks as though you have less than 3 columns at line: " << _lineNum << ".  Are you sure your files are tab-delimited?" << endl;
@@ -488,9 +435,6 @@ private:
                 bed.name = lineVector[3];
                 bed.score = lineVector[4];
                 bed.strand = lineVector[5];         
-                for (unsigned int i = 6; i < lineVector.size(); ++i) {
-                    bed.otherFields.push_back(lineVector[i]); 
-                }
             }
             else if (this->bedType != 3) {
                 cerr << "Error: unexpected number of fields at line: " << _lineNum 
@@ -546,11 +490,6 @@ private:
                 bed.name += "_" + lineVector[2];
             }
 
-            if (this->bedType > 2) {        
-                for (unsigned int i = 2; i < numFields; ++i)
-                    bed.otherFields.push_back(lineVector[i]); 
-            }
-
             if ((bed.start <= bed.end) && (bed.start > 0) && (bed.end > 0)) {
                 return true;
             }
@@ -596,9 +535,6 @@ private:
                 bed.strand  = lineVector[6].c_str();
                 bed.bedType = this->bedType;
                 bed.file_type = this->file_type;
-                bed.otherFields.push_back(lineVector[1]);  // add GFF "source". unused in BED
-                bed.otherFields.push_back(lineVector[7]);  // add GFF "fname". unused in BED
-                bed.otherFields.push_back(lineVector[8]);  // add GFF "group". unused in BED
             }
             else {
                 cerr << "Error: unexpected number of fields at line: " << _lineNum << 

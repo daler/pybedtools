@@ -601,8 +601,8 @@ def test_with_column():
     d = c.with_column([1, 2, 7, 8, -1], overlap)
 
     for cf, df in zip(c, d):
-        if cf.other[-1] == 0:
-            assert 0 <= df.other[-1] <= 1
+        if float(cf.fields[-1]) == 0:
+            assert 0 <= float(df.fields[-1]) <= 1
 
 
     # Testing column specification
