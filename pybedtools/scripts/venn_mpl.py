@@ -8,7 +8,18 @@ import pybedtools
 
 
 def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
+    """
+    *a*, *b*, and *c* are filenames to BED-like files.
 
+    *colors* is a list of matplotlib colors for the Venn diagram circles.
+
+    *outfn* is the resulting output file.  This is passed directly to
+    fig.savefig(), so you can supply extensions of .png, .pdf, or whatever your
+    matplotlib installation supports.
+
+    *labels* is a list of labels to use for each of the files; by default the
+    labels are ['a','b','c']
+    """
     try:
         import matplotlib.pyplot as plt
         from matplotlib.patches import Circle
