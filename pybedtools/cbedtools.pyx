@@ -84,6 +84,13 @@ cdef class Interval:
         return int(self.fields[-1])
 
     property name:
+        """
+        >>> import pybedtools
+        >>> vcf = pybedtools.example_bedtool('v.vcf')
+        >>> [v.name for v in vcf]
+        ['rs6054257', 'chr1:16', 'rs6040355', 'chr1:222', 'microsat1']
+
+        """
         def __get__(self):
             cdef string ftype = self._bed.file_type
             if ftype == <char *>"gff":
@@ -97,7 +104,10 @@ cdef class Interval:
                     if key in attrs: return attrs[key]
 
             elif ftype == <char *>"vcf":
-                return "%s:%i" % (self.chrom, self.start)
+                s = self.fields[2]
+                if s in ("", "."):
+                    return "%s:%i" % (self.chrom, self.start)
+                return s
             elif ftype == <char *>"bed":
                 return self._bed.name.c_str()
 
