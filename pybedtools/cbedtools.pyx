@@ -12,6 +12,16 @@ from pybedtools.helpers import parse_attributes
 import sys
 
 cdef class Interval:
+    """
+    >>> from pybedtools import Interval
+    >>> i = Interval("chr1", 22, 44, '-')
+    >>> i
+    Interval(chr1:22-44)
+
+    >>> i.start, i.end, i.strand, i.length
+    (22L, 44L, '-', 22L)
+
+    """
     cdef BED *_bed
 
     def __init__(self, chrom, start, end, strand=None):
@@ -59,7 +69,6 @@ cdef class Interval:
             self._bed.fields[idx] = string(e)
             self._bed.end = end
 
-
     property strand:
         """ the strand of the feature"""
         def __get__(self):
@@ -100,7 +109,8 @@ cdef class Interval:
                     return attrs[self.name_key]
                 """
                 attrs = parse_attributes(self._bed.fields[8].c_str())
-                for key in ("ID", "Name", "gene_name", "transcript_id", "gene_id", "Parent"):
+                for key in ("ID", "Name", "gene_name", "transcript_id", \
+                            "gene_id", "Parent"):
                     if key in attrs: return attrs[key]
 
             elif ftype == <char *>"vcf":
@@ -115,7 +125,8 @@ cdef class Interval:
             cdef string ftype = self._bed.file_type
             if ftype == <char *>"gff":
                 attrs = parse_attributes(self._bed.fields[8].c_str())
-                for key in ("ID", "Name", "gene_name", "transcript_id", "gene_id", "Parent"):
+                for key in ("ID", "Name", "gene_name", "transcript_id", \
+                            "gene_id", "Parent"):
                     if key in attrs: attrs[key] = value
 
             elif ftype == <char *>"vcf":
@@ -131,7 +142,7 @@ cdef class Interval:
             self._bed.score = string(value)
             idx = LOOKUPS[self.file_type]["score"]
             self._bed.fields[idx] = string(value)
-    
+
     property file_type:
         "bed/vcf/gff"
         def __get__(self):
