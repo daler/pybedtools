@@ -42,7 +42,7 @@ setup(
         name="pybedtools",
         version="0.2.3dev",
         ext_modules=exts,
-        packages=['pybedtools','pybedtools.test'],
+        packages=['pybedtools','pybedtools.test', 'pybedtools.scripts'],
         author="Ryan Dale",
         description='Wrapper around BEDTools for bioinformatics work',
         long_description=long_description,

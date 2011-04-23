@@ -129,6 +129,13 @@ class IntervalTest(unittest.TestCase):
         print iv
         self.assertEqual(iv[-1], 'asdf')
 
+    def testName(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        iv.name = "bart simpson"
+        self.assertEqual(iv.name, "bart simpson")
+        if iv.file_type == "gff":
+            self.assert_("bart" in iv.fields[8])
 
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
