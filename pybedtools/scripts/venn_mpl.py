@@ -2,11 +2,20 @@
 
 import optparse
 import sys
+import os
 import pybedtools
 
 
 
 def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
+
+    try:
+        import matplotlib.pyplot as plt
+        from matplotlib.patches import Circle
+    except ImportError:
+        sys.stderr.write('matplotlib is required to make a Venn diagram with %s\n' % os.path.basename(sys.argv[0]))
+        sys.exit(1)
+
     a = pybedtools.BedTool(a)
     b = pybedtools.BedTool(b)
     c = pybedtools.BedTool(c)
@@ -17,7 +26,7 @@ def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
     radius = 6.0
     center = 0.0
     offset = radius / 2
-    
+
     if labels is None:
         labels = ['a','b','c']
 
@@ -127,10 +136,4 @@ def main():
     """
     plot a venn chart of 3 bed files with matplotlib
     """
-    try:
-        import matplotlib.pyplot as plt
-        from matplotlib.patches import Circle
-    except ImportError:
-        sys.stderr.write('matplotlib is required to make a Venn diagram\n')
-        sys.exit(1)
     venn_mpl()
