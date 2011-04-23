@@ -127,7 +127,17 @@ cdef class Interval:
                 attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
-                    if key in attrs: attrs[key] = value
+                    if not key in attrs: continue
+                    attrs[key] = value
+                    attr_str = self._bed.fields[8].c_str()
+                    field_sep, quote = ("=", "") if "=" in attr_str \
+                                                 else (" ", '"')
+                    attr_str = ";".join(["%s%s%s%s%s" % \
+                         (k, field_sep, quote, v, quote) \
+                             for k,v in attrs.iteritems()])
+
+                    self._bed.fields[8] = string(attr_str)
+                    break
 
             elif ftype == <char *>"vcf":
                 self._bed.fields[2] = string(value)
