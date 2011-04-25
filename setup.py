@@ -7,7 +7,6 @@ from Cython.Distutils import build_ext
 exts = [ Extension("pybedtools.cbedtools",
               sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi"] \
                    + glob.glob("src/*.cpp"),
-               includes=glob.glob("src/*.h"),
               libraries=["stdc++", 'z'],
               include_dirs=["src/"],
               depends = glob.glob("src/*.h"),
