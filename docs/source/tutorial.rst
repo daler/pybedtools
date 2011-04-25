@@ -313,8 +313,8 @@ ChIP-seq data:
     chr1    150 500 feature3    0   -
     chr1    900 950 feature4    0   +
     
-    >>> list(a.lengths())
-    [99L, 100L, 350L, 50L]
+    >>> [len(i) for i in a]
+    [99, 100, 350, 50]
 
 
 Creating genome files ('chromSizes')

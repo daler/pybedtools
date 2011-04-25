@@ -1285,24 +1285,6 @@ class BedTool(object):
         for f in self:
             yield f.count / float(f.stop - f.start)
 
-    def lengths(self):
-        """
-        Returns a list of feature lengths.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            lengths = a.lengths()
-
-            # if you have pylab installed, plot a histogram
-            import pylab
-            pylab.hist(lengths)
-            pylab.show()
-        """
-        for f in self:
-            yield f.stop - f.start
-
 if __name__ == "__main__":
     print 'Running tests...'
     import doctest
