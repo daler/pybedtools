@@ -1162,43 +1162,6 @@ class BedTool(object):
         return cmds
 
     @_returns_bedtool()
-    def feature_centers(self,n,report_smaller=True):
-        '''
-        Returns a new BedTool object with just the centers of size n extracted
-        from this object's features.
-
-        If *report_smaller* is True, then report features that are smaller than
-        *n*.  Otherwise, ignore them.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            # 5bp on either side of the center of each feature
-            b = a.feature_centers(100)
-        '''
-        tmpfn = self._tmp()
-        tmp = open(tmpfn,'w')
-        for f in self:
-
-            # if smaller than window size, decide whether to report it or not.
-            if (f.stop - f.start) < n:
-                if report_smaller:
-                    tmp.write(str(f)+'\n')
-                    continue
-                else:
-                    continue
-
-            left = floor(n/2.0)
-            right = ceil(n/2.0)
-            midpoint = f.start + (f.stop - f.start)/2
-            f.start = int(midpoint - left)
-            f.end = int(midpoint + right)
-            tmp.write(str(f)+'\n')
-        tmp.close()
-        return BedTool(tmpfn)
-
-    @_returns_bedtool()
     def rename_features(self, new_name):
         """
         Forces a rename of all features.  Useful for if you have a BED file of

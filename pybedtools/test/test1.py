@@ -108,6 +108,19 @@ def test_chromsizes():
     os.unlink('hg17.genome')
 """
 
+def test_ff_center():
+    from pybedtools.featurefuncs import center
+    a = pybedtools.example_bedtool('a.bed')
+    b = a.each(center, width=10)
+    expected = fix("""
+    chr1	45	55	feature1	0	+
+    chr1	145	155	feature2	0	+
+    chr1	320	330	feature3	0	-
+    chr1	920	930	feature4	0	+""")
+    assert str(b) == expected
+
+
+
 def test_stream():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')

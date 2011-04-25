@@ -348,9 +348,16 @@ which is useful for things like extracting out the center N bp of features
 for de novo motif detection.
 
 .. doctest::
+    :options: +NORMALIZE_WHITESPACE
 
-    >>> a.feature_centers(n=50).saveas('middle-100-bp.bed')
-    <BedTool(middle-100-bp.bed)>
+    >>> from pybedtools.featurefuncs import center
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> b = a.each(center, width=10)
+    >>> print b
+    chr1	45	55	feature1	0	+
+    chr1	145	155	feature2	0	+
+    chr1	320	330	feature3	0	-
+    chr1	920	930	feature4	0	+
 
 Filtering
 ~~~~~~~~~
@@ -372,6 +379,8 @@ the files that are returned when you use the *c=True* kwarg with
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
     
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> b = pybedtools.example_bedtool('b.bed')
     >>> print a.intersect(b, c=True)
     chr1    1   100 feature1    0   +   0
     chr1    100 200 feature2    0   +   1
@@ -538,4 +547,5 @@ For more info, see the :ref:`topical`.
 
     >>> fns_to_remove = ['a-with-b.bed', 'a-with-b-merged.bed', 'hg19.genome', 'intersection-of-a-and-b.bed','middle-100-bp.bed','shared_merged.bed']
     >>> for fn in fns_to_remove:
-    ...     os.unlink(fn)
+    ...     if os.path.exists(fn):
+    ...         os.unlink(fn)

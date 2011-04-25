@@ -11,7 +11,7 @@ exts = [ Extension("pybedtools.cbedtools",
               include_dirs=["src/"],
               depends = glob.glob("src/*.h"),
               language="c++"), 
-
+         Extension('pybedtools.featurefuncs', sources=['pybedtools/featurefuncs.pyx']),
          Extension('pybedtools._Window', 
                     sources=['pybedtools/_Window.pyx'],),
         ]
