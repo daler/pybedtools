@@ -153,11 +153,16 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
-    def filter(self, func):
+    def filter(self, func, *args, **kwargs):
         """
         Takes a function *func* that is called for each feature
         in the `BedTool` object and returns only those
-        for which the function returns True
+        for which the function returns True.
+
+        *args and **kwargs are passed directly to *func*.
+
+        Returns a streaming BedTool; if you want the filename then use the
+        .saveas() method.
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> subset = a.filter(lambda b: b.chrom == 'chr1' and b.start < 150)
@@ -167,11 +172,7 @@ class BedTool(object):
         so it has extracted 2 records from the original 4.
 
         """
-        fh = open(self._tmp(), "w")
-        for feat in (f for f in self if func(f)):
-            print >> fh, str(feat)
-        fh.close()
-        return BedTool(fh.name)
+        return BedTool((f for f in self if func(f, *args, **kwargs)))
 
     def field_count(self, n=10):
         """
