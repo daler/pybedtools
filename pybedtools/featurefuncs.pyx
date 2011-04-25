@@ -2,7 +2,8 @@ from cbedtools import Interval
 
 cpdef center(object feature, int width=100):
     """
-    Return the *width* bp from the center of a feature
+    Return the *width* bp from the center of a feature.  If a feature is
+    smaller than *width*, then return the entire feature.
     """
     if len(feature) < width:
         return feature
@@ -15,4 +16,8 @@ cpdef center(object feature, int width=100):
     return feature
 
 
-
+cpdef greater_than(object feature, int size=100):
+    """
+    Only return features with length > *size*
+    """
+    return len(feature) > size
