@@ -288,10 +288,14 @@ class BedTool(object):
             return repr(self.fn)
 
     def __str__(self):
-        f = open(self.fn)
-        s = f.read()
-        f.close()
-        return s
+        if isinstance(self.fn, basestring):
+            f = open(self.fn)
+            s = f.read()
+            f.close()
+            return s
+        else:
+            for i in self:
+                print str(i)
 
     def __len__(self):
         return self.count()
