@@ -10,7 +10,7 @@ exts = [ Extension("pybedtools.cbedtools",
               libraries=["stdc++", 'z'],
               include_dirs=["src/"],
               depends = glob.glob("src/*.h"),
-              language="c++"), 
+              language="c++"),
 
          Extension('pybedtools.featurefuncs', sources=['pybedtools/featurefuncs.pyx']),
 
