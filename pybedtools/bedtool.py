@@ -988,7 +988,7 @@ class BedTool(object):
         fout = open(fn, 'w')
         if trackline is not None:
             fout.write(trackline.strip() + '\n')
-        fout.write(self.tostring())
+        fout.write(str(self))
         fout.close()
         return BedTool(fn)
 
