@@ -50,10 +50,10 @@ class BedTool(object):
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
-            if isinstance(fn, basestring):
+            elif isinstance(fn, basestring):
                 if not os.path.exists(fn):
                     raise ValueError('File "%s" does not exist' % fn)
-            if isinstance(fn, file):
+            else:
                 fn = fn
         else:
             bed_contents = fn
@@ -153,11 +153,16 @@ class BedTool(object):
         decorated.__doc__ = method.__doc__
         return decorated
 
-    def filter(self, func):
+    def filter(self, func, *args, **kwargs):
         """
         Takes a function *func* that is called for each feature
         in the `BedTool` object and returns only those
-        for which the function returns True
+        for which the function returns True.
+
+        *args and **kwargs are passed directly to *func*.
+
+        Returns a streaming BedTool; if you want the filename then use the
+        .saveas() method.
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> subset = a.filter(lambda b: b.chrom == 'chr1' and b.start < 150)
@@ -167,11 +172,7 @@ class BedTool(object):
         so it has extracted 2 records from the original 4.
 
         """
-        fh = open(self._tmp(), "w")
-        for feat in (f for f in self if func(f)):
-            fh.write(str(feat) + "\n")
-        fh.close()
-        return BedTool(fh.name)
+        return BedTool((f for f in self if func(f, *args, **kwargs)))
 
     def field_count(self, n=10):
         """
@@ -269,23 +270,31 @@ class BedTool(object):
         if isinstance(self.fn, basestring):
             return IntervalFile(self.fn)
 
-        # TODO: IntervalIterator needs to be able to yield Intervals
         if isinstance(self.fn, file):
             return IntervalIterator(self.fn)
+
+        else:
+            return self.fn
 
     def __repr__(self):
         if isinstance(self.fn, file):
             return '<BedTool(stream)>'
-        if os.path.exists(self.fn):
-            return '<BedTool(%s)>' % self.fn
+        if isinstance(self.fn, basestring):
+            if os.path.exists(self.fn):
+                return '<BedTool(%s)>' % self.fn
+            else:
+                return '<BedTool(MISSING FILE: %s)>'%self.fn
         else:
-            return '<BedTool(MISSING FILE: %s)>'%self.fn
+            return repr(self.fn)
 
     def __str__(self):
-        f = open(self.fn)
-        s = f.read()
-        f.close()
-        return s
+        if isinstance(self.fn, basestring):
+            f = open(self.fn)
+            s = f.read()
+            f.close()
+            return s
+        else:
+            return '\n'.join(str(i) for i in self)+'\n'
 
     def __len__(self):
         return self.count()
@@ -1275,24 +1284,6 @@ class BedTool(object):
             raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
         for f in self:
             yield f.count / float(f.stop - f.start)
-
-    def lengths(self):
-        """
-        Returns a list of feature lengths.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            lengths = a.lengths()
-
-            # if you have pylab installed, plot a histogram
-            import pylab
-            pylab.hist(lengths)
-            pylab.show()
-        """
-        for f in self:
-            yield f.stop - f.start
 
 if __name__ == "__main__":
     print 'Running tests...'

@@ -18,6 +18,10 @@ cdef class Window(object):
 
     def __init__(self, iterable, windowsize=100, debug=0):
         """
+        Constructor:
+
+            Window(iterable, windowsize=100, debug=0)
+
         Moving window over an *iterable* of features (e.g., IntervalFile(fn)) of
         size *windowsize*.  Use *debug=1* to see all sorts of output for
         double-checking.
