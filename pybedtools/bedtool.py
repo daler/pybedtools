@@ -50,10 +50,10 @@ class BedTool(object):
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
-            if isinstance(fn, basestring):
+            elif isinstance(fn, basestring):
                 if not os.path.exists(fn):
                     raise ValueError('File "%s" does not exist' % fn)
-            if isinstance(fn, file):
+            else:
                 fn = fn
         else:
             bed_contents = fn
@@ -269,17 +269,22 @@ class BedTool(object):
         if isinstance(self.fn, basestring):
             return IntervalFile(self.fn)
 
-        # TODO: IntervalIterator needs to be able to yield Intervals
         if isinstance(self.fn, file):
             return IntervalIterator(self.fn)
+
+        else:
+            return self.fn
 
     def __repr__(self):
         if isinstance(self.fn, file):
             return '<BedTool(stream)>'
-        if os.path.exists(self.fn):
-            return '<BedTool(%s)>' % self.fn
+        if isinstance(self.fn, basestring):
+            if os.path.exists(self.fn):
+                return '<BedTool(%s)>' % self.fn
+            else:
+                return '<BedTool(MISSING FILE: %s)>'%self.fn
         else:
-            return '<BedTool(MISSING FILE: %s)>'%self.fn
+            return repr(self.fn)
 
     def __str__(self):
         f = open(self.fn)
