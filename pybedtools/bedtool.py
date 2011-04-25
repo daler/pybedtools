@@ -294,8 +294,7 @@ class BedTool(object):
             f.close()
             return s
         else:
-            for i in self:
-                print str(i)
+            return '\n'.join(str(i) for i in self)+'\n'
 
     def __len__(self):
         return self.count()

@@ -54,7 +54,6 @@ def test_cleanup():
     assert os.path.exists(a.fn)
     assert os.path.exists(b.fn)
 
-
 def test_decorators():
     from pybedtools.helpers import _returns_bedtool, _help
 
@@ -107,7 +106,7 @@ def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, **dict(genome='hg17', mysql='nonexistent'))
    
     os.unlink('hg17.genome')
-    """
+"""
 
 def test_stream():
     a = pybedtools.example_bedtool('a.bed')
@@ -126,7 +125,6 @@ def test_stream():
         assert str(i) == str(j)
 
     # make sure it works for GFF too.
-
     # TODO: once you get IntervalIterators properly yielding GFF intervals,
     # these should run
     #f = pybedtools.example_bedtool('d.gff')
@@ -134,6 +132,16 @@ def test_stream():
     #g2 = f.intersect(a, stream=True)
     #for i,j in zip(g1,g2):
     #    assert str(i) == str(j)
+
+
+def test_generator():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.BedTool(iter(a))
+    expected = str(a)
+    observed = str(b)
+    print expected
+    print observed
+    assert expected == observed
 
 def test_subset():
     a = pybedtools.example_bedtool('a.bed')
@@ -560,7 +568,6 @@ def test_counts():
     c = a.intersect(b, c=True)
     counts = list(c.counts())
     assert counts == [0, 1, 1, 1], counts
-
 
 def test_normalized_counts():
     a = pybedtools.example_bedtool('a.bed')
