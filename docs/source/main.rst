@@ -88,13 +88,11 @@ with::
 Example 1: Save a BED file of intersections, with track line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This example saves a new BED file of intersections between ``a.bed`` and
-``b.bed``, adding a track line to the output:
+``b.bed``, adding a track line to the output::
 
-.. doctest::
 
     >>> a = BedTool('a.bed')
     >>> a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b' color=128,0,0")
-    >>> print a
 
 Example 2: Intersections for a 3-way Venn diagram
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
