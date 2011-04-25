@@ -113,7 +113,7 @@ class BedTool(object):
                                     % str_fns)
 
             if not answer.lower()[0] == 'y':
-                print 'OK, not deleting.'
+                print('OK, not deleting.')
                 return
         for fn in to_delete:
             os.unlink(fn)
@@ -169,7 +169,7 @@ class BedTool(object):
         """
         fh = open(self._tmp(), "w")
         for feat in (f for f in self if func(f)):
-            print >> fh, str(feat)
+            fh.write(str(feat) + "\n")
         fh.close()
         return BedTool(fh.name)
 
