@@ -238,8 +238,18 @@ cdef Interval create_interval(BED b):
 
 cpdef Interval create_interval_from_list(list fields):
     cdef Interval pyb = Interval.__new__(Interval)
-    pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
+    # BED
+    if (fields[1] + fields[2]).isdigit():
+        # if it's too short, just add some empty fields.
+        if len(fields) < 7:
+            fields.extend(["."] * (6 - len(fields)))
+            fields.extend([[]])
+        pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
                        string(fields[4]), string(fields[5]), list_to_vector(fields[6]))
+    # GFF
+    elif len(fields) == 9 and (fields[3] + fields[4]).isdigit():
+        pyb._bed = new BED(string(fields[0]), int(fields[3]), int(fields[4]), string(fields[2]),
+                           string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
     return pyb
 
 cdef vector[string] list_to_vector(list li):
@@ -248,8 +258,6 @@ cdef vector[string] list_to_vector(list li):
     for i in range(len(li)):
         s.push_back(string(li[i]))
     return s
-
-
 
 cdef list string_vec2list(vector[string] sv):
     cdef size_t size = sv.size(), i
