@@ -3,14 +3,15 @@ import glob
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
-import os
 
 exts = [ Extension("pybedtools.cbedtools",
-              sources=["pybedtools/cbedtools.pyx"] + glob.glob("src/*.cpp"),
+              sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi"] \
+                   + glob.glob("src/*.cpp"),
+               includes=glob.glob("src/*.h"),
               libraries=["stdc++", 'z'],
               include_dirs=["src/"],
               depends = glob.glob("src/*.h"),
-              language="c++"), 
+              language="c++"),
 
          Extension('pybedtools._Window', 
                     sources=['pybedtools/_Window.pyx'],),
@@ -39,8 +40,7 @@ setup(
         description='Wrapper around BEDTools for bioinformatics work',
         long_description=long_description,
         url="none",
-        package_data = {'src': ['*.pyx', "*.c", "*.cpp", "*.h", "README.rst"],
-                        'pybedtools':['test/data/*']},
+        package_data = {'pybedtools':['test/data/*', "*.pyx", "*.pxi", "*.cpp"]},
         package_dir = {"pybedtools": "pybedtools"},
         scripts = ['pybedtools/scripts/venn_gchart.py', 'pybedtools/scripts/venn_mpl.py'],
         cmdclass = {'build_ext': build_ext},

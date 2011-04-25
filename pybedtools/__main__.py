@@ -13,8 +13,7 @@ def script_names(module):
     return [script for script in  module.__all__ if not script[:2] == "__"]
 
 
-if __name__ == "__main__":
-
+def main():
     m = import_module("pybedtools.scripts")
     scripts = script_names(m)
     mods = [import_module("pybedtools.scripts.%s" % s) for s in scripts]
@@ -30,3 +29,5 @@ if __name__ == "__main__":
          module = mods[i]
          module.main()
 
+if __name__ == "__main__":
+    main()
