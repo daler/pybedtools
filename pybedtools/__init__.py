@@ -2,13 +2,14 @@ import os
 import sys
 import subprocess
 import tempfile
-import scripts
+from . import scripts
 
 from cbedtools import Interval, IntervalFile, overlap, create_interval_from_list
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, find_tagged
 from bedtool import BedTool
 import genome_registry
+from __main__ import main
 
 __version__ = '0.2.2dev'
 
@@ -180,9 +181,9 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
                              bufsize=1)
         stdout, stderr = p.communicate()
         if stderr:
-            print stderr
-            print 'Commands were:\n'
-            print subprocess.list2cmdline(cmds)
+            print(stderr)
+            print('Commands were:\n')
+            print(subprocess.list2cmdline(cmds))
 
         lines = stdout.splitlines()[1:]
         d = {}
@@ -205,6 +206,6 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
             raise
 
 if __name__ == "__main__":
-    print 'Running tests...'
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    main()
