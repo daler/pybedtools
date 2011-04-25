@@ -28,30 +28,21 @@ Development version, as well as documentation, can be found on github:
     http://github.com/daler/pybedtools
 
 """
-def get_data_files():
-    here = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(here, 'pybedtools', 'test','data')
-    data_files = []
-    for df in os.listdir(data_dir):
-        df = os.path.join(data_dir, df)
-        df = os.path.relpath(df, start=here)
-        data_files.append(df)
-    return data_files
 
 setup( 
         name="pybedtools",
         version="0.2.3dev",
         ext_modules=exts,
-        packages=['pybedtools','pybedtools.test', 'pybedtools.scripts'],
+        requires=['argparse','cython'],
+        packages=['pybedtools','pybedtools.test', 'pybedtools.scripts', 'pybedtools.test.data'],
         author="Ryan Dale",
         description='Wrapper around BEDTools for bioinformatics work',
         long_description=long_description,
         url="none",
-        package_data = {'src': ['*.pyx', "*.c", "*.cpp", "*.h", "README.rst"]},
-        data_files = [('pybedtools/pybedtools/test/data', get_data_files())],
+        package_data = {'src': ['*.pyx', "*.c", "*.cpp", "*.h", "README.rst"],
+                        'pybedtools':['test/data/*']},
         package_dir = {"pybedtools": "pybedtools"},
         scripts = ['pybedtools/scripts/venn_gchart.py', 'pybedtools/scripts/venn_mpl.py'],
         cmdclass = {'build_ext': build_ext},
         author_email="dalerr@niddk.nih.gov",
-        test_suite='nose.collector',
     )
