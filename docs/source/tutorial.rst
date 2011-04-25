@@ -313,8 +313,8 @@ ChIP-seq data:
     chr1    150 500 feature3    0   -
     chr1    900 950 feature4    0   +
     
-    >>> a.lengths()
-    [99, 100, 350, 50]
+    >>> list(a.lengths())
+    [99L, 100L, 350L, 50L]
 
 
 Creating genome files ('chromSizes')
@@ -356,12 +356,10 @@ Filtering
 ~~~~~~~~~
 Only get features of a certain size:
 
-.. doctest::
-    :options: +NORMALIZE_WHITESPACE +REPORT_NDIFF
+.. todo::
+   
+   TODO: reimplement using the ``each()`` method.
 
-    >>> # only features that are smaller than 60 bp
-    >>> a.size_filter(min=0, max=60).head()
-    chr1 900 950 feature4 0 +
 
 
 Working with counted intersections
@@ -386,7 +384,7 @@ You can retrieve these counts later using the :meth:`BedTool.counts` method:
     :options: +NORMALIZE_WHITESPACE
 
     >>> result = a.intersect(b, c=True)
-    >>> print result.counts()
+    >>> print list(result.counts())
     [0, 1, 1, 1]
 
 

@@ -68,10 +68,6 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.saveas
 
-:class:`BedTool.size_filter`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.size_filter
-
 :class:`BedTool.lengths`
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.lengths

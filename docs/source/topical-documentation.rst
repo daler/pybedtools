@@ -177,7 +177,7 @@ example files that ship with :mod:`pybedtools` with the
 
    >>> # list the example bed files
    >>> pybedtools.list_example_files()
-   ['a.bed', 'b.bed']
+   ['a.bed', 'b.bed', 'c.gff', 'd.gff', 'rmsk.hg18.chr21.small.bed', 'rmsk.hg18.chr21.small.bed.gz']
 
 Once you decide on a file to use, feed the your choice to the
 :func:`example_filename` function to get the full path:

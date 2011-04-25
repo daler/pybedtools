@@ -3,10 +3,26 @@
 
 .. _Python Package Index: http://pypi.python.org/pypi
 
+.. _Cython: http://cython.org/
+
+.. _argparse: http://code.google.com/p/argparse/
+
 .. _installation:
 
 Installation
 ------------
+
+Requirements
+~~~~~~~~~~~~
+* argparse_ (unless you're running Python 2.7, which comes with ``argparse`` already)
+* Cython_ - part of :mod:`pybedtools` is written in Cython_ for speed
+* BEDTools_
+
+Both argparse and Cython can be installed with pip_::
+
+    pip install cython argparse
+
+
 To use :mod:`pybedtools` you'll need the latest version of the package and
 the latest version of BEDTools_.
 
@@ -28,9 +44,20 @@ To install the latest version of :mod:`pybedtools` you have 2 options:
 
       (you may need admin rights to do this)
 
-**Option 2:** use pip_ to automatically download from the `Python Package Index`_::
+**Option 2:** use pip_ to automatically download the latest stable version
+from the `Python Package Index`_::
 
         sudo pip install --upgrade pybedtools
+
+
+You can run the tests with::
+
+    sh test.sh
+
+Note, however, that you will need to have ``nosetests`` installed in order to run
+the tests, e.g.,::
+
+    pip install nosetests
 
 
 Installing BEDTools_
@@ -39,7 +66,6 @@ To install BEDTools_,
 
     * follow the instructions at https://github.com/arq5x/bedtools to install
     * make sure all its programs are on your path
-
 
 
 Three brief examples
@@ -52,7 +78,7 @@ info can be found in the docstrings of :mod:`pybedtools` methods and in the
 
 ::
 
-    >>> from pybedtools import bedtool, cleanup
+    >>> from pybedtools import BedTool, cleanup
 
 After running the examples, clean up any intermediate temporary files
 with::
@@ -64,7 +90,8 @@ Example 1: Save a BED file of intersections, with track line
 This example saves a new BED file of intersections between ``a.bed`` and
 ``b.bed``, adding a track line to the output::
 
-    >>> a = bedtool('a.bed')
+
+    >>> a = BedTool('a.bed')
     >>> a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b' color=128,0,0")
 
 Example 2: Intersections for a 3-way Venn diagram
