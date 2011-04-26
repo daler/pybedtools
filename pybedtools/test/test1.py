@@ -570,13 +570,6 @@ def test_closest():
     r = a.closest(b)
     assert len(r) == len(a)
 
-def test_counts():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.intersect(b, c=True)
-    counts = list(c.counts())
-    assert counts == [0, 1, 1, 1], counts
-
 def test_cat():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')

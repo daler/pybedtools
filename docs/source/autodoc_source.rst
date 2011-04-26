@@ -92,10 +92,6 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.sequence_coverage
 
-:class:`BedTool.counts`
-~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.counts
-
 :class:`BedTool.delete_temporary_history`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.delete_temporary_history

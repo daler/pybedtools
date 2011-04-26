@@ -479,37 +479,6 @@ in the :mod:`featurefuncs` module.
     <BLANKLINE>
 
 
-
-Working with counted intersections
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-There are several methods that help you deal with counted intersections --
-the files that are returned when you use the *c=True* kwarg with
-:meth:`BedTool.intersect`.  First, do an intersection:
-
-.. doctest::
-    :options: +NORMALIZE_WHITESPACE
-    
-    >>> a = pybedtools.example_bedtool('a.bed')
-    >>> b = pybedtools.example_bedtool('b.bed')
-    >>> print a.intersect(b, c=True)
-    chr1    1   100 feature1    0   +   0
-    chr1    100 200 feature2    0   +   1
-    chr1    150 500 feature3    0   -   1
-    chr1    900 950 feature4    0   +   1
-
-You can retrieve these counts later using the :meth:`BedTool.counts` method:
-
-.. doctest::
-    :options: +NORMALIZE_WHITESPACE
-
-    >>> result = a.intersect(b, c=True)
-    >>> print list(result.counts())
-    [0, 1, 1, 1]
-
-
-    
-
 .. _`working with history`:
 
 Using the history and tags
