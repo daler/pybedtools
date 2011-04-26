@@ -388,18 +388,27 @@ class BedTool(object):
         """
 
         other = b
+        stdin = None
         if 'b' not in kwargs:
             if isinstance(other, basestring):
                 kwargs['b'] = other
             else:
                 assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
-                kwargs['b'] = other.fn
+                if isinstance(other.fn, basestring):
+                    kwargs['b'] = other.fn
+                else:
+                    # If it's not a filename, then we have to collapse, cause
+                    # BEDTools won't take a stream for 'b'
+                    collapsed = self.saveas(self._tmp())
+                    kwargs['b'] = collapsed.fn
+
 
         if ('abam' not in kwargs) and ('a' not in kwargs):
             if isinstance(self.fn, basestring):
                 kwargs['a'] = self.fn
             if isinstance(self.fn, file):
-                kwargs['-'] = self.fn
+                kwargs['-'] = None
+                stdin = self.fn
         try:
             if kwargs.pop('stream'):
                 tmp = None
@@ -410,7 +419,7 @@ class BedTool(object):
         cmds.extend(parse_kwargs(**kwargs))
 
 
-        stream = call_bedtools(cmds, tmp, stdin=self.fn)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
 
         other = BedTool(stream)
 

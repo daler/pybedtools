@@ -317,6 +317,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     Output goes to *tmpfn*, or, if None, output stays in subprocess.PIPE and
     can be iterated over.
 
+    *stdin* is an optional file-like object that will be sent to subprocess.Popen.
+
     Prints some useful help upon getting common errors.
 
     *check_stderr* is a function that takes the stderr string as input and
@@ -329,14 +331,14 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     try:
         if tmpfn is None:
             output = subprocess.PIPE
-            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin)
 
             # TODO: Still need a good way of capturing stderr but not consuming
             # all of stdout, which is to be iterated over.  
             stderr = None
         else:
             output = open(tmpfn, 'w')
-            p = subprocess.Popen(cmds, stdout=output, stderr=subprocess.PIPE)
+            p = subprocess.Popen(cmds, stdout=output, stderr=subprocess.PIPE, stdin=stdin)
             stdout,stderr = p.communicate()
 
         # Check if it's OK; if so dump it to sys.stderr and reset it to None so
