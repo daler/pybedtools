@@ -96,10 +96,6 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.counts
 
-:class:`BedTool.normalized_counts`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.normalized_counts
-
 :class:`BedTool.delete_temporary_history`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.delete_temporary_history

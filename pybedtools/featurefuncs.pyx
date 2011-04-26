@@ -18,6 +18,29 @@ cpdef center(object feature, int width=100):
 
 cpdef greater_than(object feature, int size=100):
     """
-    Only return features with length > *size*
+    Return True if feature length > *size*
     """
     return len(feature) > size
+
+cpdef less_than(object feature, int size=100):
+    """
+    Return True if feature length < *size*
+    """
+    return len(feature) < size
+
+cpdef normalized_to_length(object feature, int idx=4, float scalar=0.001):
+    """
+    Normalizes the value at feature[idx] to the feature's length, in kb.
+
+    *idx*, by default, is the score field for a BED file, but specify any
+    integer.
+
+    The value at *idx* will be replaced with its scaled value.
+
+    *scalar* will be multiplied by the value at *idx*, by default this is
+    0.001, or per kb.
+
+    Useful for calculating RPKM after running intersect with counts
+    """
+    feature[idx] = str(float(feature[idx]) * scalar / len(feature))
+    return feature
