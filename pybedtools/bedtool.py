@@ -1211,37 +1211,6 @@ class BedTool(object):
         for f in self:
             yield f.count
 
-    def normalized_counts(self):
-        """
-        After running :meth:`BedTool.intersect` with the kwarg *c=True*, use
-        this method to return a list of the density of features in "b" that
-        intersected each feature in "a".
-
-        This takes the counts in each feature and divides by the bp in that
-        feature.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            # intersect, with c=True to get counts -- number of features in
-            # 'other.bed' that intersect with features in a
-            b = a.intersect('other.bed', c=True)
-
-            # number of features in 'other.bed' found in each feature in "a",
-            # divided by the size of the feature in "a"
-            counts = b.normalized_counts()
-
-            # assuming you have matplotlib installed, plot a histogram
-
-            import pylab
-            pylab.hist(counts)
-            pylab.show()
-        """
-        if not self._hascounts:
-            raise ValueError, 'Need intersection counts; run intersection(fn, c=True) for this or manually set self._hascounts=True.'
-        for f in self:
-            yield f.count / float(f.stop - f.start)
 
 if __name__ == "__main__":
     print 'Running tests...'

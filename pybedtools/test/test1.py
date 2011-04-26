@@ -577,14 +577,6 @@ def test_counts():
     counts = list(c.counts())
     assert counts == [0, 1, 1, 1], counts
 
-def test_normalized_counts():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.intersect(b, c=True)
-    normalized = list(c.normalized_counts())
-    assert len(normalized) == 4
-    # TODO: more tests.
-
 def test_cat():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
