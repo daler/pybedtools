@@ -22,14 +22,20 @@ class BedTool(object):
         (https://github.com/arq5x/bedtools); also contains many useful
         methods for more detailed work with BED files.
 
-        *fn* is a BED format file, or alternatively another BedTool instance.
+        *fn* is typically the name of a BED-like file, but can also be one of the following:
 
-        If *from_string* is True, then treat all spaces as TABs and write to
-        tempfile, treating whatever you pass as *fn* as the contents of the bed
-        file.  This also strips empty lines.
+            * a string filename
+            * another BedTool object
+            * an iterable of Interval objects
+            * an open file object
+            * a "file contents" string (see below)
+
+        If *from_string* is True, then you can pass a string that contains the
+        contents of the BedTool you want to create.  This will treat all spaces
+        as TABs and write to tempfile, treating whatever you pass as *fn* as
+        the contents of the bed file.  This also strips empty lines.
 
         Typical usage is to point to an existing file::
-
 
             a = BedTool('a.bed')
 
