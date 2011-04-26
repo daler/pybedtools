@@ -945,23 +945,6 @@ class BedTool(object):
         else:
             return c
 
-    def tostring(self):
-        '''
-        Returns the BED file as a string.  You can also ``print`` the BedTool object
-        to view its contents.
-
-        Example usage::
-
-            a = BedTool('in.bed')
-
-            # this is one looong string which contains the entire file
-            long_string = a.tostring()
-        '''
-        f = open(self.fn)
-        s = f.read()
-        f.close()
-        return s
-
     @_returns_bedtool()
     def saveas(self, fn, trackline=None):
         """

@@ -84,10 +84,6 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.cat
 
-:class:`BedTool.tostring`
-~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.tostring
-
 :class:`BedTool.sequence_coverage`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.sequence_coverage
