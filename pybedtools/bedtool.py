@@ -261,13 +261,19 @@ class BedTool(object):
         return tmpfn
 
     def __iter__(self):
-        '''Iterator that returns lines from BED file'''
+        """
+        Dispatches the right iterator depending on how this BedTool was
+        created
+        """
+        # Plain ol' filename
         if isinstance(self.fn, basestring):
             return IntervalFile(self.fn)
 
+        # Open file, like subprocess.PIPE.
         if isinstance(self.fn, file):
             return IntervalIterator(self.fn)
 
+        # Otherwise assume fn is already an iterable
         else:
             return self.fn
 
@@ -283,13 +289,20 @@ class BedTool(object):
             return repr(self.fn)
 
     def __str__(self):
+        """
+        Different methods to return the string, depending on how the BedTool
+        was created.  If self.fn is anything but a basestring, the iterable
+        will be consumed.
+        """
         if isinstance(self.fn, basestring):
             f = open(self.fn)
             s = f.read()
             f.close()
             return s
+        elif isinstance(self.fn, file):
+            return self.fn.read()
         else:
-            return '\n'.join(str(i) for i in self)+'\n'
+            return '\n'.join(str(i) for i in iter(self))+'\n'
 
     def __len__(self):
         return self.count()
