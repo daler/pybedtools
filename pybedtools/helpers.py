@@ -263,6 +263,53 @@ def _help(command):
 
     return decorator
 
+def parse_kwargs(**kwargs):
+    """
+    Given a set of keyword arguments, turns them into a command line-ready
+    list of strings.  E.g., the kwarg dict::
+
+        kwargs = dict(c=True,f=0.5)
+
+    will be returned as::
+
+        ['-c','-f','0.5']
+
+    If there are symbols (e.g., "|"), then the parameter is quoted."
+    """
+    illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
+    cmds = []
+
+    # If we're aiming to use stdin, then the '-' needs to be first.
+    try:
+        kwargs.pop('-')
+        cmds.append('-')
+    except KeyError:
+        pass
+
+    for key,value in kwargs.items():
+        # e.g., u=True --> -u
+        if value is True:
+            cmds.append('-'+key)
+            continue
+
+        # support for lists of items
+        if (type(value) is tuple) or (type(value) is list):
+            value = ','.join(map(str,value))
+
+        # left over from os.system() calls; subprocess.Popen does the nice
+        # parsing for you
+        if type(value) is str:
+            for i in illegal_chars:
+                if i in value:
+                    value = '%s' % value
+                    break
+
+        # e.g., b='f.bed' --> ['-b', 'f.bed']
+        cmds.append('-'+key)
+        cmds.append(str(value))
+
+    return cmds
+
 def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.

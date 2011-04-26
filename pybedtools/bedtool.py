@@ -6,7 +6,8 @@ import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
+    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator,\
+    parse_kwargs
 
 from cbedtools import IntervalFile
 import pybedtools
@@ -400,7 +401,7 @@ class BedTool(object):
             tmp = self._tmp()
 
         cmds = ['intersectBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
 
 
         stream = call_bedtools(cmds, tmp, stdin=self.fn)
@@ -444,7 +445,7 @@ class BedTool(object):
             return False
 
         cmds = ['fastaFromBed']
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         call_bedtools(cmds, tmp, check_stderr=check_sequence_stderr)
         self.seqfn = tmp
         return self
@@ -481,7 +482,7 @@ class BedTool(object):
                 kwargs['b'] = other.fn
 
         cmds = ['subtractBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         return BedTool(tmp)
@@ -547,7 +548,7 @@ class BedTool(object):
             kwargs['g'] = genome_fn
 
         cmds = ['slopBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         return BedTool(tmp)
@@ -585,7 +586,7 @@ class BedTool(object):
             kwargs['i'] = self.fn
 
         cmds = ['mergeBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         return BedTool(tmp)
@@ -620,7 +621,7 @@ class BedTool(object):
                 kwargs['b'] = other.fn
 
         cmds = ['closestBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         newbedtool = BedTool(tmp)
@@ -652,7 +653,7 @@ class BedTool(object):
                 kwargs['b'] = other.fn
 
         cmds = ['windowBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         return BedTool(tmp)
@@ -668,7 +669,7 @@ class BedTool(object):
             kwargs['i'] = self.fn
 
         cmds = ['shuffleBed',]
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         return BedTool(tmp)
@@ -681,7 +682,7 @@ class BedTool(object):
             kwargs['i'] = self.fn
 
         cmds = ['sortBed']
-        cmds.extend(self.parse_kwargs(**kwargs))
+        cmds.extend(parse_kwargs(**kwargs))
         tmp = self._tmp()
         call_bedtools(cmds, tmp)
         return BedTool(tmp)
@@ -1104,53 +1105,6 @@ class BedTool(object):
         for feature in b.features():
             total_bp += len(feature)
         return total_bp
-
-    def parse_kwargs(self,**kwargs):
-        """
-        Given a set of keyword arguments, turns them into a command line-ready
-        list of strings.  E.g., the kwarg dict::
-
-            kwargs = dict(c=True,f=0.5)
-
-        will be returned as::
-
-            ['-c','-f','0.5']
-
-        If there are symbols (e.g., "|"), then the parameter is quoted."
-        """
-        illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
-        cmds = []
-
-        # If we're aiming to use stdin, then the '-' needs to be first.
-        try:
-            kwargs.pop('-')
-            cmds.append('-')
-        except KeyError:
-            pass
-
-        for key,value in kwargs.items():
-            # e.g., u=True --> -u
-            if value is True:
-                cmds.append('-'+key)
-                continue
-
-            # support for lists of items
-            if (type(value) is tuple) or (type(value) is list):
-                value = ','.join(map(str,value))
-
-            # left over from os.system() calls; subprocess.Popen does the nice
-            # parsing for you
-            if type(value) is str:
-                for i in illegal_chars:
-                    if i in value:
-                        value = '%s' % value
-                        break
-
-            # e.g., b='f.bed' --> ['-b', 'f.bed']
-            cmds.append('-'+key)
-            cmds.append(str(value))
-
-        return cmds
 
     @_returns_bedtool()
     def rename_features(self, new_name):
