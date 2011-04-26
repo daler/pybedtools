@@ -18,10 +18,10 @@ Contents:
 ---------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    main
-   tutorial
+   tutorial-contents
    topical-documentation
    autodoc_source
 

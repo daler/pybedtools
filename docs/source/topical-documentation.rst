@@ -1,9 +1,4 @@
-
-.. _BEDTools: http://github.com/arq5x/BEDTools
-
-.. _filo: https://github.com/arq5x/filo
-
-.. _R: http://www.r-project.org/
+.. include:: includeme.rst
 
 .. _topical:
 

@@ -1,3 +1,5 @@
+.. include:: includeme.rst
+
 .. testsetup:: *
     :options: +NORMALIZE_WHITESPACE
 
