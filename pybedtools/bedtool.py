@@ -1181,11 +1181,10 @@ class BedTool(object):
 
         Example usage::
 
-            a = BedTool('in.bed')
-
-            # Choose 5 random features from 'in.bed'
-            b = a.random_subset(5)
-
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = a.random_subset(2)
+        >>> len(b)
+        2
         '''
         idxs = range(len(self))
         random.shuffle(idxs)
