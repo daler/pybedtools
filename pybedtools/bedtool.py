@@ -1131,9 +1131,9 @@ class BedTool(object):
         Example usage::
 
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> b = a.random_subset(2)
-        >>> len(b)
-        2
+        >>> b = a.saveas('other.bed')
+        >>> b.fn
+        'other.bed'
         """
         fout = open(fn, 'w')
         if trackline is not None:
