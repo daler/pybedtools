@@ -709,6 +709,7 @@ class BedTool(object):
     @_help('windowBed')
     @_file_or_bedtool()
     @_implicit('-a')
+    @_returns_bedtool()
     @_log_to_history
     def window(self, b=None, **kwargs):
         """
@@ -754,6 +755,7 @@ class BedTool(object):
 
     @_help('sortBed')
     @_implicit('-i')
+    @_returns_bedtool()
     @_log_to_history
     def sort(self,**kwargs):
         """
@@ -787,6 +789,7 @@ class BedTool(object):
 
     @_help('annotateBed')
     @_implicit('-i')
+    @_returns_bedtool()
     @_log_to_history
     def annotate(self, **kwargs):
         """
@@ -811,6 +814,7 @@ class BedTool(object):
 
     @_help('flankBed')
     @_implicit('-i')
+    @_returns_bedtool()
     @_log_to_history
     def flank(self, genome=None, **kwargs):
         """
