@@ -326,20 +326,31 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     needed, e.g., for calling fastaFromBed which will report that it has to
     make a .fai for a fasta file.
     """
+    instream = stdin is not None
+    outstream = tmpfn is None
+
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
     try:
-        if tmpfn is None:
-            output = subprocess.PIPE
-            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin)
-
-            # TODO: Still need a good way of capturing stderr but not consuming
-            # all of stdout, which is to be iterated over.  
+        if instream and outstream:
+            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
+            for line in stdin:
+                p.stdin.write(line)
+            output = p.stdout
             stderr = None
-        else:
-            output = open(tmpfn, 'w')
-            p = subprocess.Popen(cmds, stdout=output, stderr=subprocess.PIPE, stdin=stdin)
+        if instream and not outstream:
+
+            p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
+            stdout, stderr = p.communicate(stdin.read())
+            output = tmpfn
+        if not instream and outstream:
+            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
+            output = p.stdout
+            stderr = None
+        if not instream and not outstream:
+            p = subprocess.Popen(cmds, stdout=open(tmpfn, 'w'), stderr=subprocess.PIPE, bufsize=1)
             stdout,stderr = p.communicate()
+            output = tmpfn
 
         # Check if it's OK; if so dump it to sys.stderr and reset it to None so
         # we don't raise an exception
@@ -367,10 +378,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         print '\n\t'+'\n\t'.join(problems[err.errno])
         raise OSError('See above for commands that gave the error')
 
-    if tmpfn is None:
-        return p.stdout
-    else:
-        return tmpfn
+    return output
 
 # TODO: not sure how to yield intervals
 def IntervalIterator(stream):
