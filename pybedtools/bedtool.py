@@ -379,15 +379,17 @@ class BedTool(object):
         # Dict of programs and which arguments *self.fn* can be used as
         implicit_instream1 = {'intersectBed':'a',
                               'subtractBed' :'a',
-                              'slopBed'     :'i',
-                              'fastaFromBed':'bed',
                               'closestBed'  :'a',
-                              'mergeBed'    :'i'}
+                              'windowBed'   :'a',
+                              'slopBed'     :'i',
+                              'mergeBed'    :'i',
+                              'fastaFromBed':'bed',}
 
         # Which arguments *other.fn* can be used as
         implicit_instream2 = {'intersectBed':'b',
                               'subtractBed' :'b',
-                              'closestBed'  :'b'}
+                              'closestBed'  :'b',
+                              'windowBed'   :'b',}
 
         stdin = None
 
@@ -704,31 +706,36 @@ class BedTool(object):
     @_file_or_bedtool()
     @_implicit('-a')
     @_log_to_history
-    def window(self, other, **kwargs):
+    def window(self, b=None, **kwargs):
         """
         Intersect with a window.
 
         Example usage::
 
-            a = BedTool('in.bed')
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> b = pybedtools.example_bedtool('b.bed')
+            >>> print a.window(b, w=1000) #doctest: +NORMALIZE_WHITESPACE
+            chr1	1	100	feature1	0	+	chr1	155	200	feature5	0	-
+            chr1	1	100	feature1	0	+	chr1	800	901	feature6	0	+
+            chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-
+            chr1	100	200	feature2	0	+	chr1	800	901	feature6	0	+
+            chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-
+            chr1	150	500	feature3	0	-	chr1	800	901	feature6	0	+
+            chr1	900	950	feature4	0	+	chr1	155	200	feature5	0	-
+            chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
+            <BLANKLINE>
 
-            # Consider features up to 500 bp away as overlaps
-            b = a.window(w=500)
+
         """
-        if 'a' not in kwargs:
-            kwargs['a'] = self.fn
-        if 'b' not in kwargs:
-            if isinstance(other, basestring):
-                kwargs['b'] = other
-            else:
-                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
-                kwargs['b'] = other.fn
+        kwargs['b'] = b
 
-        cmds = ['windowBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        return BedTool(tmp)
+        if ('abam' not in kwargs) and ('a' not in kwargs):
+            kwargs['a'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='windowBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
 
     @_help('shuffleBed')
     @_implicit('-i')
