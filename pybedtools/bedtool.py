@@ -1142,37 +1142,6 @@ class BedTool(object):
         fout.close()
         return BedTool(fn)
 
-    @_file_or_bedtool()
-    def intersection_report(self, other, basename=True, **kwargs):
-        """
-        Prints a report of the reciprocal intersections with another bed file
-        or :class:`BedTool` object.
-
-        If *basename* is True (default), only prints the basename of the file
-        and not the whole path.
-
-        a = BedTool('in.bed')
-        a.intersection_report('other.bed')
-        """
-        if (type(other) is str) or (type(other) is unicode):
-            other = BedTool(other)
-
-        int1 = self.intersect(other, **kwargs).count()
-        int2 = other.intersect(self.fn, **kwargs).count()
-
-        count1 = self.count()
-        count2 = other.count()
-
-        self_fn = self.fn
-        other_fn = other.fn
-
-        if basename:
-            self_fn = os.path.basename(self_fn)
-            other_fn = os.path.basename(other_fn)
-
-        print '%s\n\t%s total\n\t%s (%.1f%%) of these intersect %s' % (self_fn, count1,  int1,  (float(int1)/count1)*100, other_fn)
-        print '%s\n\t%s total\n\t%s (%.1f%%) of these intersect %s' % (other_fn, count2,  int2, (float(int2)/count2)*100, self_fn)
-
     @_returns_bedtool()
     def random_subset(self,n):
         '''
