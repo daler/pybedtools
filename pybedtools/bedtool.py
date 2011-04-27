@@ -1199,53 +1199,6 @@ class BedTool(object):
         tmp.close()
         return BedTool(tmpfn)
 
-    def sorted(self,col, reverse=None):
-        '''Returns a new BedTool object, sorted by the column specified. col
-        can be a list of columns.  BED columns that are ints (start, stop and
-        value) will be sorted numerically; other columns will be
-        alphabetical.
-
-        reverse is a list of booleans, same length as col, specifying which
-        fields to reverse-sort.
-
-        TODO: currently multiple columns aren't working!
-
-        a = BedTool('in.fn')
-        b = a.sorted(col=2) # sort by start position
-        c = a.sorted(col=5,reverse=True) # reverse sort on the values
-        '''
-
-        if type(col) is not list:
-            col = [col]
-
-        if reverse is None:
-            reverse = [False for i in col]
-        elif type(reverse) is not list:
-            reverse = [reverse]
-
-        assert len(reverse) == len(col), 'reverse must be same length as col'
-
-        if len(col) > 1:
-            raise NotImplementedError,'multi-column sort not yet working correctly'
-
-        d = {1:'1,1',
-             2:'2n,2n',
-             3:'3n,3n',
-             4:'4,4',
-             5:'5n,5n'}
-
-        tmp = self._tmp()
-        cmds = ['sort']
-        for c,r in zip(col,reverse):
-            if r:
-                cmds.append('-k '+d[c]+'r')
-            else:
-                cmds.append('-k '+d[c])
-        cmds.append(self.fn)
-        cmds.extend( ['>',tmp] )
-        os.system(' '.join(cmds))
-        return BedTool(tmp)
-
     def total_coverage(self):
         """
         Returns the total number of bases covered by this BED file.  Does a
