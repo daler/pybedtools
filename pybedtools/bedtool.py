@@ -378,6 +378,7 @@ class BedTool(object):
         # Dict of programs and which arguments *self.fn* can be used as
         implicit_instream1 = {'intersectBed':'a',
                               'subtractBed' :'a',
+                              'slopBed'     :'i',
                               'fastaFromBed':'bed',
                               'mergeBed'    :'i'}
 
@@ -662,12 +663,9 @@ class BedTool(object):
         """
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
-
-        cmds = ['mergeBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        return BedTool(tmp)
+        cmds, tmp, stdin = self.handle_kwargs(prog='mergeBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
 
     @_help('closestBed')
     @_file_or_bedtool()
