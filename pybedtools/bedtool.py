@@ -1072,12 +1072,19 @@ class BedTool(object):
         self.intersect().  By default, intersectkwargs=dict(u=True).
         Example usage::
 
-        >>> a = pybedtools.example_bedtool('a.bed')
+        Make chromsizes a rather small genome for this example:
+        >>> chromsizes = {'chr1':(1,1000)}
+
+        Set the random seed so this example will always return the same results
+        >>> import random
+        >>> random.seed(1)
+
+        >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
         >>> b = pybedtools.example_bedtool('b.bed')
-        >>> print lista.randomintersection(b, 10, s=True))
-        
+
+        >>> print list(a.randomintersection(b, 10))
+        [2, 1, 1, 2, 1, 1, 2, 2, 2, 2]
         """
-        # TODO: do we need this function?
         if kwargs == {}: kwargs['u'] = True
         for i in range(iterations):
             tmp = self.pybedtools_shuffle()
