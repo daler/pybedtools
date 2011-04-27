@@ -383,6 +383,8 @@ class BedTool(object):
                               'windowBed'   :'a',
                               'slopBed'     :'i',
                               'mergeBed'    :'i',
+                              'sortBed'     :'i',
+                              'shuffleBed'  :'i',
                               'fastaFromBed':'bed',}
 
         # Which arguments *other.fn* can be used as
@@ -724,8 +726,6 @@ class BedTool(object):
             chr1	900	950	feature4	0	+	chr1	155	200	feature5	0	-
             chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
             <BLANKLINE>
-
-
         """
         kwargs['b'] = b
 
@@ -747,24 +747,42 @@ class BedTool(object):
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
-        cmds = ['shuffleBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        return BedTool(tmp)
+        cmds, tmp, stdin = self.handle_kwargs(prog='shuffleBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
 
     @_help('sortBed')
     @_implicit('-i')
     @_log_to_history
     def sort(self,**kwargs):
+        """
+        Note that chromosomes are sorted lexograpically, so chr12 will come
+        before chr9.
+
+        Example usage:
+
+        >>> a = pybedtools.BedTool('''
+        ... chr9 300 400
+        ... chr1 100 200
+        ... chr1 1 50
+        ... chr12 1 100
+        ... chr9 500 600
+        ... ''', from_string=True)
+        >>> print a.sort() #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	50
+        chr1	100	200
+        chr12	1	100
+        chr9	300	400
+        chr9	500	600
+        <BLANKLINE>
+
+        """
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
-        cmds = ['sortBed']
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        return BedTool(tmp)
+        cmds, tmp, stdin = self.handle_kwargs(prog='sortBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
 
     def features(self):
         """
