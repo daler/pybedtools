@@ -344,9 +344,13 @@ class BedTool(object):
                 break
             print line,
 
+    @_returns_bedtool()
     def set_chromsizes(self, chromsizes):
         """
-        Set the chromsizes for this genome.
+        Set the chromsizes for this genome. If *chromsizes* is a string, it
+        will be considered a genome assembly name.  If that assembly name is
+        not available in pybedtools.genome_registry, then it will be searched
+        for on the UCSC Genome Browser.
 
         Example usage::
 
@@ -359,7 +363,12 @@ class BedTool(object):
             >>> # Now you can use things like pybedtools_shuffle
             >>> b = a.pybedtools_shuffle()
         """
-        self.chromsizes = chromsizes
+        if isinstance(chromsizes, basestring):
+            self.chromsizes = pybedtools.chromsizes(chromsizes)
+        elif isinstance(chromsizes, dict):
+            self.chromsizes = chromsizes
+        else:
+            raise ValueError, 'Need to specify chromsizes either as a string (assembly name) or a dictionary'
         return self
 
     def handle_kwargs(self, prog, **kwargs):
