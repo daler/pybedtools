@@ -486,48 +486,14 @@ class BedTool(object):
 
             >>> unique_to_a = a.intersect(b, v=True)
         """
-
-        other = b
-        stdin = None
-        if 'b' not in kwargs:
-            if isinstance(other, basestring):
-                kwargs['b'] = other
-            else:
-                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
-                if isinstance(other.fn, basestring):
-                    kwargs['b'] = other.fn
-                else:
-                    # If it's not a filename, then we have to collapse, cause
-                    # BEDTools won't take a stream for 'b'
-                    collapsed = self.saveas(self._tmp())
-                    kwargs['b'] = collapsed.fn
-
+        kwargs['b'] = b
 
         if ('abam' not in kwargs) and ('a' not in kwargs):
-            if isinstance(self.fn, basestring):
-                kwargs['a'] = self.fn
-            if isinstance(self.fn, file):
-                kwargs['-'] = None
-                stdin = self.fn
-        try:
-            if kwargs.pop('stream'):
-                tmp = None
-        except KeyError:
-            tmp = self._tmp()
+            kwargs['a'] = self.fn
 
-        cmds = ['intersectBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-
-
+        cmds, tmp, stdin = self.handle_kwargs(prog='intersectBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
-
-        other = BedTool(stream)
-
-        # tag the new BedTool as having counts
-        if 'c' in kwargs:
-            other._hascounts = True
-
-        return other
+        return BedTool(stream)
 
     @_help('fastaFromBed')
     @_implicit('-bed')
