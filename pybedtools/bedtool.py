@@ -385,6 +385,7 @@ class BedTool(object):
                               'mergeBed'    :'i',
                               'sortBed'     :'i',
                               'shuffleBed'  :'i',
+                              'annotateBed' :'i',
                               'fastaFromBed':'bed',}
 
         # Which arguments *other.fn* can be used as
@@ -781,6 +782,30 @@ class BedTool(object):
             kwargs['i'] = self.fn
 
         cmds, tmp, stdin = self.handle_kwargs(prog='sortBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
+    @_help('annotateBed')
+    @_implicit('-i')
+    @_log_to_history
+    def annotate(self, **kwargs):
+        """
+        Annotate this BedTool with a list of other files.
+        Example usage:
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b_fn = pybedtools.example_filename('b.bed')
+        >>> print a.annotate(files=b_fn) #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	100	feature1	0	+	0.000000	
+        chr1	100	200	feature2	0	+	0.450000	
+        chr1	150	500	feature3	0	-	0.128571	
+        chr1	900	950	feature4	0	+	0.020000	
+        <BLANKLINE>
+        """
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='annotateBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
