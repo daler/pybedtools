@@ -385,61 +385,68 @@ class BedTool(object):
         implicit_instream2 = {'intersectBed':'b',
                               'subtractBed' :'b'}
 
-        # e.g., 'a' for intersectBed
-        inarg1 = implicit_instream1[prog]
+        stdin = None
 
-        # e.g., self.fn
-        instream1 = kwargs[inarg1]
-
-        # e.g., 'b' for intersectBed
-        inarg2 = implicit_instream2[prog]
-
-        # e.g., another BedTool
-        instream2  = kwargs[implicit_instream2[prog]]
-
-        # -----------------------------------------------------------
-        # Decide how to send instream1 to BEDTools.
+        # -----------------------------------------------------------------
+        # Decide how to send instream1 to BEDTools.  If there's no implicit
+        # instream1 arg, then do nothing.
         #
-        # If it's a BedTool, then get underlying stream
-        if isinstance(instream1, BedTool):
-            instream1 = instream1.fn
+        try:
+            # e.g., 'a' for intersectBed
+            inarg1 = implicit_instream1[prog]
 
-        # Filename? No pipe, just provide the file
-        if isinstance(instream1, basestring):
-            kwargs[inarg1] = instream1
-            stdin = None
+            # e.g., self.fn
+            instream1 = kwargs[inarg1]
+            # If it's a BedTool, then get underlying stream
+            if isinstance(instream1, BedTool):
+                instream1 = instream1.fn
 
-        # Open file? Pipe it
-        elif isinstance(instream1, file):
-            kwargs[inarg1] = 'stdin'
-            stdin = instream1
+            # Filename? No pipe, just provide the file
+            if isinstance(instream1, basestring):
+                kwargs[inarg1] = instream1
+                stdin = None
 
-        # A generator or iterator: pipe it
-        else:
-            kwargs[inarg1] = 'stdin'
-            stdin = (str(i) for i in instream1)
+            # Open file? Pipe it
+            elif isinstance(instream1, file):
+                kwargs[inarg1] = 'stdin'
+                stdin = instream1
 
-        # -----------------------------------------------------------
-        # Decide how to send instream2 to BEDTools.
-        #
-        # Get stream if BedTool
-        if isinstance(instream2, BedTool):
-            instream2 = instream2.fn
+            # A generator or iterator: pipe it
+            else:
+                kwargs[inarg1] = 'stdin'
+                stdin = (str(i) for i in instream1)
+        except KeyError:
+            pass
 
-        # Filename
-        if isinstance(instream2, basestring):
-            kwargs[inarg2] = instream2
+        try:
+            # e.g., 'b' for intersectBed
+            inarg2 = implicit_instream2[prog]
 
-        # Otherwise we need to collapse it in order to send to BEDTools
-        # programs
-        else:
-            collapsed_fn = self._tmp()
-            fout = open(collapsed_fn,'w')
-            for i in instream2:
-                # TODO: does this need newlines?
-                fout.write(str(i))
-            fout.close()
-            kwargs[inarg2] = collapsed_fn
+            # e.g., another BedTool
+            instream2  = kwargs[implicit_instream2[prog]]
+            # -----------------------------------------------------------------
+            # Decide how to send instream2 to BEDTools.
+            #
+            # Get stream if BedTool
+            if isinstance(instream2, BedTool):
+                instream2 = instream2.fn
+
+            # Filename
+            if isinstance(instream2, basestring):
+                kwargs[inarg2] = instream2
+
+            # Otherwise we need to collapse it in order to send to BEDTools
+            # programs
+            else:
+                collapsed_fn = self._tmp()
+                fout = open(collapsed_fn,'w')
+                for i in instream2:
+                    # TODO: does this need newlines?
+                    fout.write(str(i))
+                fout.close()
+                kwargs[inarg2] = collapsed_fn
+        except KeyError:
+            pass
 
         # If stream not specified, then a tempfile will be created
         try:
@@ -458,7 +465,6 @@ class BedTool(object):
             else:
                 cmds.append('-'+key)
                 cmds.append(str(value))
-        #print cmds, tmp, stdin
         return cmds, tmp, stdin
 
     @_help('intersectBed')
@@ -621,11 +627,9 @@ class BedTool(object):
             pybedtools.chromsizes_to_file(kwargs['g'], genome_fn)
             kwargs['g'] = genome_fn
 
-        cmds = ['slopBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        return BedTool(tmp)
+        cmds, tmp, stdin = self.handle_kwargs(prog='slopBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
 
     @_help('mergeBed')
     @_implicit('-i')
