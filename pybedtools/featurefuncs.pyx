@@ -44,3 +44,11 @@ cpdef normalized_to_length(object feature, int idx=4, float scalar=0.001):
     """
     feature[idx] = str(float(feature[idx]) * scalar / len(feature))
     return feature
+
+cpdef rename(object feature, str name):
+    """
+    Forces a rename of all features, e.g., for renaming everything in a file
+    'exon'
+    """
+    feature.name = name
+    return feature

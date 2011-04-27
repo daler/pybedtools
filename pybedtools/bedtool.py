@@ -1265,20 +1265,6 @@ class BedTool(object):
         return total_bp
 
     @_returns_bedtool()
-    def rename_features(self, new_name):
-        """
-        Forces a rename of all features.  Useful for if you have a BED file of
-        exons and you want all of them to have the name "exon".
-        """
-        tmpfn = self._tmp()
-        tmp = open(tmpfn, 'w')
-        for f in self:
-            f.name = new_name
-            print >>tmp, str(f)
-        tmp.close()
-        return BedTool(tmpfn)
-
-    @_returns_bedtool()
     def with_attrs(self, **kwargs):
         """
         Given arbitrary keyword arguments, turns the keys and values into
