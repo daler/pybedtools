@@ -86,9 +86,9 @@ files; support for other file types is under development.
 ~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.cat
 
-:class:`BedTool.sequence_coverage`
+:class:`BedTool.total_coverage`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.sequence_coverage
+.. automethod:: BedTool.total_coverage
 
 :class:`BedTool.delete_temporary_history`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

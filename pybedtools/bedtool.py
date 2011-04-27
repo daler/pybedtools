@@ -1246,17 +1246,25 @@ class BedTool(object):
         os.system(' '.join(cmds))
         return BedTool(tmp)
 
-    def sequence_coverage(self):
+    def total_coverage(self):
         """
         Returns the total number of bases covered by this BED file.  Does a
         self.merge() first to remove potentially multiple-counting bases.
 
         Example usage::
 
-            a = BedTool('in.bed')
+        >>> a = pybedtools.example_bedtool('a.bed')
 
-            # total bp in genome covered by 'in.bed'
-            total_bp = a.sequence_coverage()
+        This does a merge() first, so this is what the total coverage is
+        counting:
+
+        >>> print a.merge() #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	500
+        chr1	900	950
+        <BLANKLINE>
+
+        >>> print a.total_coverage()
+        549
         """
         b = self.merge()
         total_bp = 0
