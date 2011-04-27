@@ -1,6 +1,7 @@
 import tempfile
 from math import floor, ceil
 import os
+import sys
 import random
 import string
 
@@ -380,11 +381,13 @@ class BedTool(object):
                               'subtractBed' :'a',
                               'slopBed'     :'i',
                               'fastaFromBed':'bed',
+                              'closestBed'  :'a',
                               'mergeBed'    :'i'}
 
         # Which arguments *other.fn* can be used as
         implicit_instream2 = {'intersectBed':'b',
-                              'subtractBed' :'b'}
+                              'subtractBed' :'b',
+                              'closestBed'  :'b'}
 
         stdin = None
 
@@ -663,6 +666,7 @@ class BedTool(object):
         """
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
+
         cmds, tmp, stdin = self.handle_kwargs(prog='mergeBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
@@ -672,9 +676,9 @@ class BedTool(object):
     @_implicit('-a')
     @_returns_bedtool()
     @_log_to_history
-    def closest(self, other, **kwargs):
+    def closest(self, b=None, **kwargs):
         """
-        Return a new BedTool object containing closest features in *other*.  Note
+        Return a new BedTool object containing closest features in *b*.  Note
         that the resulting file is no longer a valid BED format; use the
         special "_closest" methods to work with the resulting file.
 
@@ -686,23 +690,15 @@ class BedTool(object):
             b = a.closest('other.bed', s=True)
 
         """
-        if 'a' not in kwargs:
+        kwargs['b'] = b
+
+        if ('abam' not in kwargs) and ('a' not in kwargs):
             kwargs['a'] = self.fn
 
-        if 'b' not in kwargs:
-            if isinstance(other, basestring):
-                kwargs['b'] = other
-            else:
-                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
-                kwargs['b'] = other.fn
+        cmds, tmp, stdin = self.handle_kwargs(prog='closestBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
 
-        cmds = ['closestBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        newbedtool = BedTool(tmp)
-        newbedtool.closest_output = True
-        return newbedtool
 
     @_help('windowBed')
     @_file_or_bedtool()
