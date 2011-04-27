@@ -1059,7 +1059,7 @@ class BedTool(object):
 
         return s
 
-    def randomintersection(self, other, iterations, **kwargs):
+    def randomintersection(self, other, iterations, u=True, **kwargs):
         """
         Performs *iterations* shufflings of self, each time intersecting with
         *other*.
@@ -1068,8 +1068,9 @@ class BedTool(object):
         intersections of one shuffled file with *other*; this distribution can
         be used in downstream analysis for things like empirical p-values.
 
-        *intersectkwargs* is a dictionary of kwargs to be passed to
-        self.intersect().  By default, intersectkwargs=dict(u=True).
+        Other `**kwargs` are passed to self.intersect().  By default,
+        u=True.
+
         Example usage::
 
         Make chromsizes a rather small genome for this example:
