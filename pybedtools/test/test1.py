@@ -148,15 +148,19 @@ def test_stream_gen():
 
 def test_stream_of_stream():
     a = pybedtools.example_bedtool('a.bed')
-    stream1  = a.intersect(a, stream=True)
-    stream2 = a.intersect(stream1, stream=True)
-    s1 = str(stream1)
-    s2 = str(stream2)
-    print 'stream1'
-    print s1
-    print 'stream2'
-    print s2
-    assert s1 == s2
+
+    nonstream1 = a.intersect(a)
+    stream1    = a.intersect(a, stream=True)
+
+    assert str(nonstream1) == str(stream1)
+
+    # Have to reconstruct stream1 cause it was consumed in the print
+    nonstream1 = a.intersect(a)
+    stream1    = a.intersect(a, stream=True)
+    nonstream2 = a.intersect(nonstream1)
+    stream2    = a.intersect(stream1, stream=True)
+    assert str(nonstream2) == str(stream2)
+
 
 def test_generator():
     a = pybedtools.example_bedtool('a.bed')
