@@ -535,7 +535,7 @@ class BedTool(object):
     @_file_or_bedtool()
     @_returns_bedtool()
     @_log_to_history
-    def subtract(self, other, **kwargs):
+    def subtract(self, b=None, **kwargs):
         """
         Subtracts from another BED file and returns a new BedTool object.
 
@@ -552,21 +552,14 @@ class BedTool(object):
 
             >>> c = a.subtract(b, f=0.5)
         """
+        kwargs['b'] = b
+
         if 'a' not in kwargs:
             kwargs['a'] = self.fn
 
-        if 'b' not in kwargs:
-            if isinstance(other, basestring):
-                kwargs['b'] = other
-            else:
-                assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
-                kwargs['b'] = other.fn
-
-        cmds = ['subtractBed',]
-        cmds.extend(parse_kwargs(**kwargs))
-        tmp = self._tmp()
-        call_bedtools(cmds, tmp)
-        return BedTool(tmp)
+        cmds, tmp, stdin = self.handle_kwargs(prog='subtractBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
 
     @_help('slopBed')
     @_implicit('-i')
