@@ -386,6 +386,7 @@ class BedTool(object):
                               'sortBed'     :'i',
                               'shuffleBed'  :'i',
                               'annotateBed' :'i',
+                              'flankBed'    :'i',
                               'fastaFromBed':'bed',}
 
         # Which arguments *other.fn* can be used as
@@ -404,8 +405,9 @@ class BedTool(object):
             # e.g., 'a' for intersectBed
             inarg1 = implicit_instream1[prog]
 
-            # e.g., self.fn
+            # e.g., self.fn or 'a.bed' or an iterator...
             instream1 = kwargs[inarg1]
+
             # If it's a BedTool, then get underlying stream
             if isinstance(instream1, BedTool):
                 instream1 = instream1.fn
@@ -420,7 +422,7 @@ class BedTool(object):
                 kwargs[inarg1] = 'stdin'
                 stdin = instream1
 
-            # A generator or iterator: pipe it
+            # A generator or iterator: pipe it as a generator of lines
             else:
                 kwargs[inarg1] = 'stdin'
                 stdin = (str(i) for i in instream1)
@@ -704,7 +706,6 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
-
     @_help('windowBed')
     @_file_or_bedtool()
     @_implicit('-a')
@@ -736,7 +737,6 @@ class BedTool(object):
         cmds, tmp, stdin = self.handle_kwargs(prog='windowBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
-
 
     @_help('shuffleBed')
     @_implicit('-i')
@@ -806,6 +806,38 @@ class BedTool(object):
             kwargs['i'] = self.fn
 
         cmds, tmp, stdin = self.handle_kwargs(prog='annotateBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
+    @_help('flankBed')
+    @_implicit('-i')
+    @_log_to_history
+    def flank(self, genome=None, **kwargs):
+        """
+        Create flanking intervals on either side of input BED.
+
+        Example usage:
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> print a.flank(genome='hg19', b=100) #doctest: +NORMALIZE_WHITESPACE
+        chr1	0	1	feature1	0	+
+        chr1	100	200	feature1	0	+
+        chr1	0	100	feature2	0	+
+        chr1	200	300	feature2	0	+
+        chr1	50	150	feature3	0	-
+        chr1	500	600	feature3	0	-
+        chr1	800	900	feature4	0	+
+        chr1	950	1050	feature4	0	+
+        <BLANKLINE>
+
+        """
+        if genome is not None:
+            genome_fn = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
+            kwargs['g'] = genome_fn
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='flankBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
