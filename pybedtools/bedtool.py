@@ -1282,15 +1282,18 @@ class BedTool(object):
     def with_attrs(self, **kwargs):
         """
         Given arbitrary keyword arguments, turns the keys and values into
-        attributes.
+        attributes.  Useful for labeling BedTools at creation time.
 
         Example usage::
 
-            # add a "label" attribute to each BedTool
-            a = BedTool('a.bed').with_attrs(label='transcription factor 1')
-            b = BedTool('b.bed').with_attrs(label='transcription factor 2')
-            for i in [a,b]:
-                print i.count(), 'features for', i.label
+        >>> # add a "label" attribute to each BedTool
+        >>> a = pybedtools.example_bedtool('a.bed').with_attrs(label='transcription factor 1')
+        >>> b = pybedtools.example_bedtool('b.bed').with_attrs(label='transcription factor 2')
+        >>> for i in [a,b]:
+        ...     print i.count(), 'features for', i.label
+        4 features for transcription factor 1
+        2 features for transcription factor 2
+
         """
         for key,value in kwargs.items():
             setattr(self,key,value)
