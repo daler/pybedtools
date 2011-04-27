@@ -1093,14 +1093,16 @@ class BedTool(object):
 
         Example usage::
 
-            a = BedTool('in.bed')
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> print a.cat(b) #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	500
+        chr1	800	950
+        <BLANKLINE>
 
-            # concatenate and merge features together if they overlap and are
-            # on the same strand
-            b = a.cat('other.bed', s=True)
         """
         tmp = self._tmp()
-        if (type(other) is str) or (type(other) is unicode):
+        if isinstance(other, basestring):
             other = BedTool(other)
         else:
             assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
