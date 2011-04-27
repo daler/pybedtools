@@ -524,7 +524,7 @@ class BedTool(object):
     @_help('fastaFromBed')
     @_implicit('-bed')
     @_returns_bedtool()
-    def sequence(self, **kwargs):
+    def sequence(self, fi, **kwargs):
         '''
         Wraps ``fastaFromBed``.  *fi* is passed in by the user; *bed* is
         automatically passed in as the bedfile of this object; *fo* by default
@@ -535,15 +535,26 @@ class BedTool(object):
 
         Example usage::
 
-            a = pybedtools.example_bedtool('a.bed')
-            a.sequence(fi='genome.fa')
-            a.print_sequence()
+        >>> a = pybedtools.BedTool("""
+        ... chr1 1 10
+        ... chr1 50 55""", from_string=True)
+        >>> fasta = pybedtools.example_filename('test.fa')
+        >>> a = a.sequence(fi=fasta)
+        >>> print open(a.seqfn).read()
+        >chr1:1-10
+        GATGAGTCT
+        >chr1:50-55
+        CCATC
+        <BLANKLINE>
+
         '''
+        kwargs['fi'] = fi
+
         if 'bed' not in kwargs:
             kwargs['bed'] = self.fn
 
-        tmp = self._tmp()
         if 'fo' not in kwargs:
+            tmp = self._tmp()
             kwargs['fo'] = tmp
 
         def check_sequence_stderr(x):
@@ -551,10 +562,9 @@ class BedTool(object):
                 return True
             return False
 
-        cmds = ['fastaFromBed']
-        cmds.extend(parse_kwargs(**kwargs))
-        call_bedtools(cmds, tmp, check_stderr=check_sequence_stderr)
-        self.seqfn = tmp
+        cmds, tmp, stdin = self.handle_kwargs(prog='fastaFromBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin, check_stderr=check_sequence_stderr)
+        self.seqfn = kwargs['fo']
         return self
 
     @_help('subtractBed')
