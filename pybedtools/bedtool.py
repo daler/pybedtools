@@ -1063,7 +1063,10 @@ class BedTool(object):
         self.intersect().  By default, intersectkwargs=dict(u=True).
         Example usage::
 
-            r = BedTool('in.bed').randomintersection('other.bed', 100)
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> print lista.randomintersection(b, 10, s=True))
+        
         """
         # TODO: do we need this function?
         if kwargs == {}: kwargs['u'] = True
