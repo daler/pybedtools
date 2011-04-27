@@ -1134,6 +1134,8 @@ class BedTool(object):
         >>> b = a.saveas('other.bed')
         >>> b.fn
         'other.bed'
+        >>> print b == a
+        True
         """
         fout = open(fn, 'w')
         if trackline is not None:
