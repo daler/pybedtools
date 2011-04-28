@@ -1171,6 +1171,10 @@ class BedTool(object):
         'other.bed'
         >>> print b == a
         True
+
+        >>> b = a.saveas('other.bed', trackline="name='test run' color=128,255,0")
+        >>> open(b.fn).readline()
+        "name='test run' color=128,255,0\\n"
         """
         fout = open(fn, 'w')
         if trackline is not None:
