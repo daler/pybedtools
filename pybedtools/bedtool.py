@@ -316,16 +316,19 @@ class BedTool(object):
         return self.count()
 
     def __eq__(self, other):
-        if isinstance(self.fn, file) or isinstance(other.fn, file):
-            raise NotImplementedError('Testing equality not supported for streams')
-        if open(self.fn).read() == open(other.fn).read():
+        if isinstance(other, basestring):
+            other_str = other
+        elif isinstance(other, BedTool):
+            if not isinstance(self.fn, basestring) or not isinstance(other.fn, basestring):
+                raise NotImplementedError('Testing equality only supported for BedTools '
+                                          'that point to files')
+            other_str = open(other.fn).read()
+        if open(self.fn).read() == other_str:
             return True
         return False
 
     def __ne__(self, other):
-        if open(self.fn).read() == open(other.fn).read():
-            return False
-        return True
+        return not self.__eq__(other)
 
     @_file_or_bedtool()
     def __add__(self,other):

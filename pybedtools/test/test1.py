@@ -631,6 +631,53 @@ def test_random_intersection():
     li = list(a.randomintersection(b, N))
     assert len(li) == N, li
 
+def test_cat():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    b_fn = pybedtools.example_filename('b.bed')
+    assert a.cat(b) == a.cat(b_fn)
+    expected =  fix("""
+    chr1 1   500
+    chr1 800 950
+    """)
+    assert a.cat(b) == expected
+
+def test_eq():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('a.bed')
+
+    # BedTool to BedTool
+    assert a == b
+
+    # BedTool to string
+    assert a == """chr1	1	100	feature1	0	+
+chr1	100	200	feature2	0	+
+chr1	150	500	feature3	0	-
+chr1	900	950	feature4	0	+
+"""
+    # Test not equa on bedtool
+    b = pybedtools.example_bedtool('b.bed')
+    assert b != a
+
+    # and string
+    assert a != "blah"
+
+    # Don't allow testing equality on streams
+    c = a.intersect(b, stream=True)
+    d = a.intersect(b)
+    assert_raises(NotImplementedError, c.__eq__, d)
+    assert_raises(NotImplementedError, d.__eq__, c)
+
+    # Test it on iterator, too....
+    e = pybedtools.BedTool((i for i in a))
+    assert_raises(NotImplementedError, e.__eq__, a)
+    assert_raises(NotImplementedError, a.__eq__, e)
+
+    # Make sure that if we force the iterator to be consumed, it is in fact
+    # equal
+    assert a == str(e)
+
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
