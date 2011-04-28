@@ -1043,35 +1043,6 @@ class BedTool(object):
         }
         return d
 
-    def print_randomstats(self, other, iterations, intersectkwargs=None):
-        """
-        Nicely prints the reciprocal randomization of two files.
-        """
-        if (type(other) is str) or (type(other) is unicode):
-            other = BedTool(other)
-
-        d1 = self.randomstats(other, iterations, intersectkwargs)
-        d2 = other.randomstats(self, iterations, intersectkwargs)
-
-        s = '\n'
-        s += 'Randomizing %s:' % self.fn
-        s += '\t%s features in %s' % (d1[self.fn],self.fn)
-        s += '\t%s features in %s' % (d1[other.fn],other.fn)
-        s += '\t%s actual intersections' % d1['actual']
-        s += '\t%.2f median randomized' % d1['median randomized']
-        s += '\t%.2f enrichment score' % d1['normalized']
-        s += '\t%.2f percentile' % d1['percentile']
-        s += '\n'
-        s += 'Randomizing %s:' % other.fn
-        s += '\t%s features in %s' % (d2[other.fn],other.fn)
-        s += '\t%s features in %s' % (d2[self.fn],self.fn)
-        s += '\t%s actual intersection count' % d2['actual']
-        s += '\t%.2f median randomized' % d2['median randomized']
-        s += '\t%.2f enrichment score' % d2['normalized']
-        s += '\t%.2f percentile' % d2['percentile']
-
-        return s
-
     def randomintersection(self, other, iterations, u=True, **kwargs):
         """
         Performs *iterations* shufflings of self, each time intersecting with
