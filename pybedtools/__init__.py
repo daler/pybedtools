@@ -3,8 +3,8 @@ import sys
 import subprocess
 import tempfile
 from . import scripts
-
-from cbedtools import Interval, IntervalFile, overlap, create_interval_from_list
+from cbedtools import Interval, IntervalFile, overlap, \
+                    create_interval_from_list
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, find_tagged
 from bedtool import BedTool
