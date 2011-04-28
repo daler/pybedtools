@@ -977,19 +977,47 @@ class BedTool(object):
         TMP.close()
         return BedTool(tmp)
 
-    def randomstats(self, other, iterations, intersectkwargs=None):
+    def randomstats(self, other, iterations, **kwargs):
         """
         Sends args to :meth:`BedTool.randomintersection` and compiles results
         into a dictionary with useful stats.  Requires scipy and numpy.
 
-        Example usage::
+        This is one way of assigning significance to overlaps between two
+        files. See, for example:
 
-            a = BedTool('in.bed')
+            Negre N, Brown CD, Shah PK, Kheradpour P, Morrison CA, et al. 2010
+            A Comprehensive Map of Insulator Elements for the Drosophila Genome.
+            PLoS Genet 6(1): e1000814. doi:10.1371/journal.pgen.1000814
 
-            # Randomization results from 100 iterations, using the u=True kwarg (report
-            # features in "a" only once for each intersection).
-            results = a.randomstats('other.bed', iterations=100, intersectkwargs={'u':True})
+        Example usage:
+
+        Make chromsizes a very small genome for this example:
+        >>> chromsizes = {'chr1':(1,1000)}
+
+        Set the random seed so this example will always return the same results
+        >>> import random
+        >>> random.seed(1)
+
+        >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
+        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> results = a.randomstats(b, 100)
+
+        *results* is a dictionary that you can inspect.  The actual overlap:
+        >>> print results['actual']
+        3
+
+        The median of all randomized overlaps:
+        >>> print results['median randomized']
+        1.0
+
+        The percentile of the actual overlap in the distribution of randomized
+        overlaps, which can be used to get an empirical p-value:
+        >>> print results['percentile']
+        93.0
         """
+        if not 'u' in kwargs:
+            kwargs['u'] = True
+
         try:
             from scipy import stats
             import numpy as np
@@ -1002,11 +1030,11 @@ class BedTool(object):
             assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
 
         # Actual (unshuffled) counts.
-        actual = len(self.intersect(other,**intersectkwargs))
+        actual = len(self.intersect(other,**kwargs))
 
         # List of counts from randomly shuffled versions.  Length of counts == *iterations*.
-        distribution = self.randomintersection(other, iterations=iterations, intersectkwargs=intersectkwargs)
-        distribution = np.array(distribution)
+        distribution = self.randomintersection(other, iterations=iterations, **kwargs)
+        distribution = np.array(list(distribution))
 
         # Median of distribution
         med_count = np.median(distribution)
@@ -1043,12 +1071,12 @@ class BedTool(object):
         }
         return d
 
-    def randomintersection(self, other, iterations, u=True, **kwargs):
+    def randomintersection(self, other, iterations, **kwargs):
         """
         Performs *iterations* shufflings of self, each time intersecting with
         *other*.
 
-        Returns a list of integers where each integer is the number of
+        Returns a generator of integers where each integer is the number of
         intersections of one shuffled file with *other*; this distribution can
         be used in downstream analysis for things like empirical p-values.
 
@@ -1070,7 +1098,8 @@ class BedTool(object):
         >>> print list(a.randomintersection(b, 10))
         [2, 1, 1, 2, 1, 1, 2, 2, 2, 2]
         """
-        if kwargs == {}: kwargs['u'] = True
+        if not 'u' in kwargs:
+            kwargs['u'] = True
         for i in range(iterations):
             tmp = self.pybedtools_shuffle()
             tmp2 = tmp.intersect(other, **kwargs)
@@ -1079,6 +1108,7 @@ class BedTool(object):
             os.unlink(tmp2.fn)
             del(tmp)
             del(tmp2)
+
 
     @_file_or_bedtool()
     @_returns_bedtool()
