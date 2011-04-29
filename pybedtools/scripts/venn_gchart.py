@@ -72,7 +72,7 @@ def venn_gchart(a, b, c, colors=None, outfn=None, labels=None, size='300x300'):
 def main():
     """Create a 3-way Venn diagram using Google Charts API"""
 
-    op = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])    
+    op = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
     op.add_argument('-a', help='File to use for the left-most circle')
     op.add_argument('-b', help='File to use for the right-most circle')
     op.add_argument('-c', help='File to use for the bottom circle')
@@ -80,7 +80,7 @@ def main():
                        'for circles a, b, and c.  E.g., --colors=FF0000,00FF00,0000FF')
     op.add_argument('--labels', help='Optional comma-separated list of labels for a, b, and c')
     op.add_argument('--size', default='300x300',
-                  help='Optional size of PNG, in pixels.  Default is "%default"')
+                  help='Optional size of PNG, in pixels.  Default is "%(default)s"')
     op.add_argument('-o', default='out.png', 
                   help='Output file to save as, in PNG format')
     op.add_argument('--test', action='store_true', help='run test, overriding all other options.')

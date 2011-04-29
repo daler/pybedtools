@@ -111,7 +111,7 @@ def main():
                        'for circles a, b, and c.  E.g., --colors=r,b,k')
     op.add_argument('-o', default='out.png', 
                   help='Output file to save as.  Extension is '
-                       'meaningful, e.g., out.pdf, out.png, out.svg.  Default is "%default"')
+                       'meaningful, e.g., out.pdf, out.png, out.svg.  Default is "%(default)s"')
     op.add_argument('--test', action='store_true', help='run test, overriding all other options.')
     options = op.parse_args()
 
