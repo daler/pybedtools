@@ -927,7 +927,9 @@ class BedTool(object):
         fout = open(fn,'w')
         fout.write(open(self.seqfn).read())
         fout.close()
-        return BedTool(fn)
+        new_bedtool = BedTool(self.fn)
+        new_bedtool.seqfn = fn
+        return new_bedtool
 
     def pybedtools_shuffle(self):
         """
@@ -982,8 +984,8 @@ class BedTool(object):
         Sends args to :meth:`BedTool.randomintersection` and compiles results
         into a dictionary with useful stats.  Requires scipy and numpy.
 
-        This is one way of assigning significance to overlaps between two
-        files. See, for example:
+        This is one possible way of assigning significance to overlaps between
+        two files. See, for example:
 
             Negre N, Brown CD, Shah PK, Kheradpour P, Morrison CA, et al. 2010
             A Comprehensive Map of Insulator Elements for the Drosophila Genome.

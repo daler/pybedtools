@@ -303,8 +303,9 @@ def test_history_step():
     assert not os.path.exists(c.fn) # this is the only thing that should change
     assert os.path.exists(d.fn)
 
+# TODO: there's enough stuff in here that it's probably worth it to eventuall
+# make a TestSequenceStuff class
 def test_sequence():
-
     """
     From UCSC:
 
@@ -334,15 +335,16 @@ def test_sequence():
     AAAAAAAAAAAAAAAAAAAAAAAAAAAATCT
     """
     a = pybedtools.BedTool(s, from_string=True)
-    
+    assert_raises(ValueError, a.save_seqs, ('none',))
+
     fout = open(fi,'w')
     for line in fasta.splitlines(True):
         fout.write(line.lstrip())
     fout.close()
 
-    b = a.sequence(fi=fi)
-    assert b.fn == a.fn
-    seqs = open(b.seqfn).read()
+    f = a.sequence(fi=fi)
+    assert f.fn == f.fn
+    seqs = open(f.seqfn).read()
     print seqs
     expected = """>chrX:9-16
 TGCACTG
@@ -357,8 +359,8 @@ TCT
     print expected 
     assert seqs == expected
     
-    b = a.sequence(fi=fi,s=True)
-    seqs = open(b.seqfn).read()
+    f = a.sequence(fi=fi,s=True)
+    seqs = open(f.seqfn).read()
     expected = """>chrX:9-16(+)
 TGCACTG
 >chrX:9-16(-)
@@ -372,10 +374,19 @@ TCT
     print expected
     print ''.join(difflib.ndiff(seqs,expected))
     assert seqs == expected
-       
+
+    f = f.save_seqs('deleteme.fa')
+    assert open('deleteme.fa').read() == expected
+    assert f.print_sequence() == expected
+    os.unlink('deleteme.fa')
+
+    fresh_a = pybedtools.BedTool(s, from_string=True)
+    assert fresh_a == f
+
     os.unlink(fi)
     if os.path.exists(fi+'.fai'):
         os.unlink(fi+'.fai')
+
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines
