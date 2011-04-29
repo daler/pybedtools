@@ -390,7 +390,3 @@ def IntervalIterator(stream):
     """
     for line in stream:
         yield pybedtools.create_interval_from_list(line.rstrip("\r\n").split("\t"))
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
