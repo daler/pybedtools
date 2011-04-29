@@ -444,15 +444,15 @@ class BedTool(object):
         except KeyError:
             pass
 
+        # -----------------------------------------------------------------
+        # Decide how to send instream2 to BEDTools.
         try:
             # e.g., 'b' for intersectBed
             inarg2 = implicit_instream2[prog]
 
             # e.g., another BedTool
             instream2  = kwargs[implicit_instream2[prog]]
-            # -----------------------------------------------------------------
-            # Decide how to send instream2 to BEDTools.
-            #
+
             # Get stream if BedTool
             if isinstance(instream2, BedTool):
                 instream2 = instream2.fn
@@ -768,8 +768,24 @@ class BedTool(object):
     @_implicit('-i')
     @_log_to_history
     def shuffle(self, genome=None, **kwargs):
+        """
+        Shuffle coordinates.
+
+        Example usage:
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> seed = 1 # so this test always returns the same results
+        >>> b = a.shuffle(genome='hg19', chrom=True, seed=seed)
+        >>> print b #doctest: +NORMALIZE_WHITESPACE
+        chr1	59535036	59535135	feature1	0	+
+        chr1	99179023	99179123	feature2	0	+
+        chr1	186189051	186189401	feature3	0	-
+        chr1	219133189	219133239	feature4	0	+
+        <BLANKLINE>
+
+        """
         if genome is not None:
-            genome_fn = pybedtools.chromsizes_to_file(pybedtools.get_chromsizes_from_ucsc(genome))
+            genome_fn = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
             kwargs['g'] = genome_fn
         if 'i' not in kwargs:
             kwargs['i'] = self.fn

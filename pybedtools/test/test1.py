@@ -303,7 +303,7 @@ def test_history_step():
     assert not os.path.exists(c.fn) # this is the only thing that should change
     assert os.path.exists(d.fn)
 
-# TODO: there's enough stuff in here that it's probably worth it to eventuall
+# TODO: there's enough stuff in here that it's probably worth it to eventually
 # make a TestSequenceStuff class
 def test_sequence():
     """
@@ -386,7 +386,6 @@ TCT
     os.unlink(fi)
     if os.path.exists(fi+'.fai'):
         os.unlink(fi+'.fai')
-
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines
