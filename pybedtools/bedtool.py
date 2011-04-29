@@ -1257,9 +1257,3 @@ class BedTool(object):
         for key,value in kwargs.items():
             setattr(self,key,value)
         return self
-
-
-if __name__ == "__main__":
-    print 'Running tests...'
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
