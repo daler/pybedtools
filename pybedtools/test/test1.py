@@ -81,6 +81,12 @@ def test_call():
     from pybedtools.helpers import call_bedtools, BEDToolsError
     assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
 
+    pybedtools.set_bedtools_path('nonexistent')
+    a = pybedtools.example_bedtool('a.bed')
+    assert_raises(OSError, a.intersect, a)
+    pybedtools.set_bedtools_path()
+    assert a.intersect(a,u=True) == a
+
 # TODO: test for connection + mysql
 def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')

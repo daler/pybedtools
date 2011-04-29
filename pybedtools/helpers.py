@@ -331,6 +331,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
+
+    # use specifed path, "" by default.
+    cmds[0] = os.path.join(pybedtools._path, cmds[0])
+
     try:
         if instream and outstream:
             p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
@@ -390,3 +394,14 @@ def IntervalIterator(stream):
     """
     for line in stream:
         yield pybedtools.create_interval_from_list(line.rstrip("\r\n").split("\t"))
+
+def set_bedtools_path(path=""):
+    """
+    If BEDTools is not available on your system path, specify the path to the
+    dir containing the BEDTools executables (intersectBed, subtractBed, etc)
+    with this function.
+
+    To reset and use the default system path, call this function with no
+    arguments or use path="".
+    """
+    pybedtools._path = path

@@ -7,10 +7,13 @@ from . import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
                     create_interval_from_list
 from _Window import Window
-from helpers import get_tempdir, set_tempdir, cleanup, find_tagged
+from helpers import get_tempdir, set_tempdir, cleanup, \
+                    find_tagged, set_bedtools_path
 from bedtool import BedTool
 import genome_registry
 from __main__ import main
+
+_path = ""
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
@@ -204,6 +207,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
                           "specify the path with the 'mysql' kwarg.")
         else:
             raise
+
 
 def internet_on():
     try:
