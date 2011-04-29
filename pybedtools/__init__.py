@@ -11,11 +11,7 @@ from bedtool import BedTool
 import genome_registry
 from __main__ import main
 
-__version__ = '0.2.2dev'
-
-
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
-
 
 def check_for_bedtools(program_to_check='intersectBed'):
     try:

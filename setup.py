@@ -4,6 +4,8 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
+from version import get_git_version
+
 exts = [ Extension("pybedtools.cbedtools",
               sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi"] \
                    + glob.glob("src/*.cpp"),
@@ -33,7 +35,7 @@ Development version, as well as documentation, can be found on github:
 
 setup( 
         name="pybedtools",
-        version="0.2.3dev",
+        version=get_git_version(),
         ext_modules=exts,
         requires=['argparse','cython'],
         packages=['pybedtools','pybedtools.test', 'pybedtools.scripts', 'pybedtools.test.data'],
