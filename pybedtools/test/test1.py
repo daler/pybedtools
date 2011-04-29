@@ -171,6 +171,10 @@ def test_generator():
     print observed
     assert expected == observed
 
+    b1 = a.intersect(a)
+    b2 = pybedtools.BedTool((i for i in a)).intersect(a)
+    assert str(b1) == str(b2)
+
 def test_subset():
     a = pybedtools.example_bedtool('a.bed')
     import random
@@ -303,7 +307,7 @@ def test_history_step():
     assert not os.path.exists(c.fn) # this is the only thing that should change
     assert os.path.exists(d.fn)
 
-# TODO: there's enough stuff in here that it's probably worth it to eventuall
+# TODO: there's enough stuff in here that it's probably worth it to eventually
 # make a TestSequenceStuff class
 def test_sequence():
     """
