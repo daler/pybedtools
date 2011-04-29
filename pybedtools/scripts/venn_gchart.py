@@ -1,6 +1,15 @@
 #/usr/bin/python
+"""
+    Given 3 files, creates a 3-way Venn diagram of intersections using the
+    Google Chart API.
 
-import optparse
+    The values in the diagram assume:
+
+        * unstranded intersections
+        * no features that are nested inside larger features
+"""
+
+import argparse
 import sys
 from math import floor
 import pybedtools
@@ -60,30 +69,22 @@ def venn_gchart(a, b, c, colors=None, outfn=None, labels=None, size='300x300'):
     f.write(response.read())
     f.close()
 
-if __name__ == "__main__":
+def main():
+    """Create a 3-way Venn diagram using Google Charts API"""
 
-    usage = """
-    Given 3 files, creates a 3-way Venn diagram of intersections using the
-    Google Chart API.
-
-    The values in the diagram assume:
-
-        * unstranded intersections
-        * no features that are nested inside larger features
-    """
-    op = optparse.OptionParser(usage=usage)
-    op.add_option('-a', help='File to use for the left-most circle')
-    op.add_option('-b', help='File to use for the right-most circle')
-    op.add_option('-c', help='File to use for the bottom circle')
-    op.add_option('--colors', help='Optional comma-separated list of hex colors '
+    op = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])    
+    op.add_argument('-a', help='File to use for the left-most circle')
+    op.add_argument('-b', help='File to use for the right-most circle')
+    op.add_argument('-c', help='File to use for the bottom circle')
+    op.add_argument('--colors', help='Optional comma-separated list of hex colors '
                        'for circles a, b, and c.  E.g., --colors=FF0000,00FF00,0000FF')
-    op.add_option('--labels', help='Optional comma-separated list of labels for a, b, and c')
-    op.add_option('--size', default='300x300',
+    op.add_argument('--labels', help='Optional comma-separated list of labels for a, b, and c')
+    op.add_argument('--size', default='300x300',
                   help='Optional size of PNG, in pixels.  Default is "%default"')
-    op.add_option('-o', default='out.png', 
+    op.add_argument('-o', default='out.png', 
                   help='Output file to save as, in PNG format')
-    op.add_option('--test', action='store_true', help='run test, overriding all other options.')
-    options,args = op.parse_args()
+    op.add_argument('--test', action='store_true', help='run test, overriding all other options.')
+    options = op.parse_args()
 
     reqd_args = ['a','b','c']
     if not options.test:
@@ -113,8 +114,7 @@ if __name__ == "__main__":
          size=options.size,
          outfn=options.o)
 
-def main():
-    """
-    plot a venn chart of 3 bed files with google chart api"
-    """
-    venn_gchart()
+if __name__ == "__main__":
+    import doctest
+    if doctest.testmod(optionflags=doctest.ELLIPSIS).failed == 0:
+        main()
