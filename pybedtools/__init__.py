@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import tempfile
+import urllib2
 from . import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
                     create_interval_from_list
@@ -164,6 +165,9 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
         ('chrYHet', (1, 347038))
 
     """
+    if not internet_on():
+        raise ValueError('It appears you don\'t have an internet connection '
+                         '-- unable to get chromsizes from UCSC')
     cmds = [mysql,
             '--user=genome',
             '--host=genome-mysql.cse.ucsc.edu',
@@ -200,3 +204,11 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
                           "specify the path with the 'mysql' kwarg.")
         else:
             raise
+
+def internet_on():
+    try:
+        response=urllib2.urlopen('http://google.com',timeout=1)
+        return True
+    except urllib2.URLError as err: pass
+    return False
+
