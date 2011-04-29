@@ -1,0 +1,1 @@
+cd docs && make doctest
