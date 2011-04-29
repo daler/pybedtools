@@ -200,8 +200,3 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
                           "specify the path with the 'mysql' kwarg.")
         else:
             raise
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-    main()
