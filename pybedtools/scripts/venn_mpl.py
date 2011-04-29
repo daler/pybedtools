@@ -1,11 +1,20 @@
 #/usr/bin/python
+"""
+    Given 3 files, creates a 3-way Venn diagram of intersections using matplotlib.  
 
-import optparse
+    Numbers are placed on the diagram.  If you don't have matplotlib installed.
+    try venn_gchart.py to use the Google Chart API instead.
+
+    The values in the diagram assume:
+
+        * unstranded intersections
+        * no features that are nested inside larger features
+"""
+
+import argparse
 import sys
 import os
 import pybedtools
-
-
 
 def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
     """
@@ -88,34 +97,23 @@ def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
 
     plt.close(fig)
 
-if __name__ == "__main__":
-
-    usage = """
-    Given 3 files, creates a 3-way Venn diagram of intersections using matplotlib.  
-    
-    Numbers are placed on the diagram.  If you don't have matplotlib installed.
-    try venn_gchart.py to use the Google Chart API instead.
-
-    The values in the diagram assume:
-
-        * unstranded intersections
-        * no features that are nested inside larger features
-    """
-    op = optparse.OptionParser()
-    op.add_option('-a', help='File to use for the left-most circle')
-    op.add_option('-b', help='File to use for the right-most circle')
-    op.add_option('-c', help='File to use for the bottom circle')
-    op.add_option('--labels',
+def main():
+    """Create a 3-way Venn diagram, using matplotlib"""
+    op = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
+    op.add_argument('-a', help='File to use for the left-most circle')
+    op.add_argument('-b', help='File to use for the right-most circle')
+    op.add_argument('-c', help='File to use for the bottom circle')
+    op.add_argument('--labels',
                   help='Optional comma-separated list of '
                        'labels for a, b, and c')
-    op.add_option('--colors', default='r,b,g',
+    op.add_argument('--colors', default='r,b,g',
                   help='Comma-separated list of matplotlib-valid colors '
                        'for circles a, b, and c.  E.g., --colors=r,b,k')
-    op.add_option('-o', default='out.png', 
+    op.add_argument('-o', default='out.png', 
                   help='Output file to save as.  Extension is '
                        'meaningful, e.g., out.pdf, out.png, out.svg.  Default is "%default"')
-    op.add_option('--test', action='store_true', help='run test, overriding all other options.')
-    options,args = op.parse_args()
+    op.add_argument('--test', action='store_true', help='run test, overriding all other options.')
+    options = op.parse_args()
 
     reqd_args = ['a','b','c']
     if not options.test:
@@ -143,8 +141,7 @@ if __name__ == "__main__":
              labels=options.labels.split(','), 
              outfn=options.o)
 
-def main():
-    """
-    plot a venn chart of 3 bed files with matplotlib
-    """
-    venn_mpl()
+if __name__ == "__main__":
+    import doctest
+    if doctest.testmod(optionflags=doctest.ELLIPSIS).failed == 0:
+        main()
