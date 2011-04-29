@@ -139,12 +139,17 @@ def chromsizes_to_file(chromsizes, fn=None):
     return fn
 
 
-def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
+def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
     """
     Download chrom size info for *genome* from UCSC and returns the dictionary.
 
     If you need the file, then specify a filename with *saveas* (the dictionary
     will still be returned as well).
+
+    If ``mysql`` is not on your path, specify where to find it with
+    *mysql=<path to mysql executable>*.
+
+    *timeout* is how long to wait for a response; mostly used for testing.  Will only be used if 
 
     Example usage:
 
@@ -168,7 +173,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
         ('chrYHet', (1, 347038))
 
     """
-    if not internet_on():
+    if not internet_on(timeout=timeout):
         raise ValueError('It appears you don\'t have an internet connection '
                          '-- unable to get chromsizes from UCSC')
     cmds = [mysql,
@@ -209,9 +214,9 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql'):
             raise
 
 
-def internet_on():
+def internet_on(timeout=1):
     try:
-        response=urllib2.urlopen('http://google.com',timeout=1)
+        response=urllib2.urlopen('http://google.com',timeout=timeout)
         return True
     except urllib2.URLError as err: pass
     return False

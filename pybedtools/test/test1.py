@@ -90,37 +90,35 @@ def test_call():
 # TODO: test for connection + mysql
 def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')
+    assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc, 'dm3', timeout=0)
+    try:
 
-    if not pybedtools.internet_on():
-        assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc('dm3'))
+        assert pybedtools.chromsizes('dm3') == pybedtools.get_chromsizes_from_ucsc('dm3')
 
-    if pybedtools.internet_on():
-        try:
+        hg17 = pybedtools.chromsizes('hg17')
 
-            assert pybedtools.chromsizes('dm3') == pybedtools.get_chromsizes_from_ucsc('dm3')
+        assert hg17['chr1'] == (1,245522847)
 
-            hg17 = pybedtools.chromsizes('hg17')
+        fn = pybedtools.chromsizes_to_file(hg17, fn='hg17.genome')
+        expected = 'chr1\t245522847\n'
+        results = open(fn).readline()
+        print results
+        assert expected == results
 
-            assert hg17['chr1'] == (1,245522847)
+        # make sure the tempfile version works, too
+        fn = pybedtools.chromsizes_to_file(hg17, fn=None)
+        expected = 'chr1\t245522847\n'
+        results = open(fn).readline()
+        print results
+        assert expected == results
 
-            fn = pybedtools.chromsizes_to_file(hg17, fn='hg17.genome')
-            expected = 'chr1\t245522847\n'
-            results = open(fn).readline()
-            print results
-            assert expected == results
+        assert_raises(OSError,
+                      pybedtools.get_chromsizes_from_ucsc, 
+                      **dict(genome='hg17', mysql='nonexistent'))
 
-            # make sure the tempfile version works, too
-            fn = pybedtools.chromsizes_to_file(hg17, fn=None)
-            expected = 'chr1\t245522847\n'
-            results = open(fn).readline()
-            print results
-            assert expected == results
-
-            assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, **dict(genome='hg17', mysql='nonexistent'))
-
-            os.unlink('hg17.genome')
-        except OSError:
-            sys.stdout.write('mysql error')
+        os.unlink('hg17.genome')
+    except OSError:
+        sys.stdout.write("mysql error -- test for chromsizes from UCSC didn't run")
 
 def test_ff_center():
     from pybedtools.featurefuncs import center
