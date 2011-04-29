@@ -23,7 +23,8 @@ class BedTool(object):
         (https://github.com/arq5x/bedtools); also contains many useful
         methods for more detailed work with BED files.
 
-        *fn* is typically the name of a BED-like file, but can also be one of the following:
+        *fn* is typically the name of a BED-like file, but can also be
+        one of the following:
 
             * a string filename
             * another BedTool object
@@ -31,10 +32,10 @@ class BedTool(object):
             * an open file object
             * a "file contents" string (see below)
 
-        If *from_string* is True, then you can pass a string that contains the
-        contents of the BedTool you want to create.  This will treat all spaces
-        as TABs and write to tempfile, treating whatever you pass as *fn* as
-        the contents of the bed file.  This also strips empty lines.
+        If *from_string* is True, then you can pass a string that contains
+        the contents of the BedTool you want to create.  This will treat all
+        spaces as TABs and write to tempfile, treating whatever you pass as
+        *fn* as the contents of the bed file.  This also strips empty lines.
 
         Typical usage is to point to an existing file::
 
@@ -292,7 +293,7 @@ class BedTool(object):
             if os.path.exists(self.fn):
                 return '<BedTool(%s)>' % self.fn
             else:
-                return '<BedTool(MISSING FILE: %s)>'%self.fn
+                return '<BedTool(MISSING FILE: %s)>' % self.fn
         else:
             return repr(self.fn)
 
@@ -310,7 +311,7 @@ class BedTool(object):
         elif isinstance(self.fn, file):
             return self.fn.read()
         else:
-            return '\n'.join(str(i) for i in iter(self))+'\n'
+            return '\n'.join(str(i) for i in iter(self)) + '\n'
 
     def __len__(self):
         return self.count()
@@ -319,9 +320,10 @@ class BedTool(object):
         if isinstance(other, basestring):
             other_str = other
         elif isinstance(other, BedTool):
-            if not isinstance(self.fn, basestring) or not isinstance(other.fn, basestring):
-                raise NotImplementedError('Testing equality only supported for BedTools '
-                                          'that point to files')
+            if not isinstance(self.fn, basestring) or not \
+                            isinstance(other.fn, basestring):
+                raise NotImplementedError('Testing equality only supported for'
+                                          ' BedTools that point to files')
             other_str = open(other.fn).read()
         if open(self.fn).read() == other_str:
             return True
@@ -331,7 +333,7 @@ class BedTool(object):
         return not self.__eq__(other)
 
     @_file_or_bedtool()
-    def __add__(self,other):
+    def __add__(self, other):
         return self.intersect(other, u=True)
 
     @_file_or_bedtool()
@@ -342,7 +344,7 @@ class BedTool(object):
         """
         Prints the first *n* lines
         """
-        for i,line in enumerate(open(self.fn)):
+        for i, line in enumerate(open(self.fn)):
             if i == (n):
                 break
             print line,
@@ -371,7 +373,8 @@ class BedTool(object):
         elif isinstance(chromsizes, dict):
             self.chromsizes = chromsizes
         else:
-            raise ValueError, 'Need to specify chromsizes either as a string (assembly name) or a dictionary'
+            raise ValueError("Need to specify chromsizes either as a string"
+                             " (assembly name) or a dictionary")
         return self
 
     def handle_kwargs(self, prog, **kwargs):
@@ -389,23 +392,23 @@ class BedTool(object):
         the `-` argument, or a filename with the `-a` argument.
         """
         # Dict of programs and which arguments *self.fn* can be used as
-        implicit_instream1 = {'intersectBed':'a',
-                              'subtractBed' :'a',
-                              'closestBed'  :'a',
-                              'windowBed'   :'a',
-                              'slopBed'     :'i',
-                              'mergeBed'    :'i',
-                              'sortBed'     :'i',
-                              'shuffleBed'  :'i',
-                              'annotateBed' :'i',
-                              'flankBed'    :'i',
-                              'fastaFromBed':'bed',}
+        implicit_instream1 = {'intersectBed': 'a',
+                               'subtractBed': 'a',
+                                'closestBed': 'a',
+                                 'windowBed': 'a',
+                                   'slopBed': 'i',
+                                  'mergeBed': 'i',
+                                   'sortBed': 'i',
+                                'shuffleBed': 'i',
+                               'annotateBed': 'i',
+                                  'flankBed': 'i',
+                              'fastaFromBed': 'bed', }
 
         # Which arguments *other.fn* can be used as
-        implicit_instream2 = {'intersectBed':'b',
-                              'subtractBed' :'b',
-                              'closestBed'  :'b',
-                              'windowBed'   :'b',}
+        implicit_instream2 = {'intersectBed': 'b',
+                               'subtractBed': 'b',
+                                'closestBed': 'b',
+                                 'windowBed': 'b', }
 
         stdin = None
 
