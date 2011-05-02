@@ -35,10 +35,10 @@ def get_gff_name(field):
 def gen_get_name(b, afields):
     btype = b.file_type
     if btype == "bed":
-        get_name = lambda fields: fields[afields + 4]
+        get_name = lambda fields: fields[afields + 3]
     elif btype == "gff":
         def get_name(fields):
-            return get_gff_name(fields[afields + 8])
+            return get_gff_name(fields[afields + 7])
     else:
         raise Exception("not implemented")
     return get_name 
@@ -48,7 +48,6 @@ def add_closest(aname, bname):
 
     afields = a.field_count()
     c = a.closest(b, d=True)
-    btype = b.file_type
     get_name = gen_get_name(b, afields)
 
     d = open(c._tmp(), "w")
@@ -73,6 +72,7 @@ def add_xstream(a, b, dist, updown, report_distance=False):
 
     c = a.window(b, **kwargs)
     afields = a.field_count()
+
     get_name = gen_get_name(b, afields)
 
     seen = collections.defaultdict(set)
@@ -80,9 +80,10 @@ def add_xstream(a, b, dist, updown, report_distance=False):
     for row in c:
         key = "\t".join(row[:afields])
         seen[key].update([get_name(row)])
-    d = open(c._tmp(), "w")
+
+    d = open(BedTool._tmp(), "w")
     for row in seen:
-        print row + "\t" + ",".join(sorted(seen[row]))
+        d.write(row + "\t" + ",".join(sorted(seen[row])) + "\n")
     d.close()
     return BedTool(d.name)
 
