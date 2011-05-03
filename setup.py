@@ -1,10 +1,19 @@
 import glob
+import os
 #from setuptools import setup
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 from version import get_git_version
+
+git_version = get_git_version()
+
+# write the version to file so that pybedtools can import it
+version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
+fout = open(version_py,'w')
+fout.write('__version__="%s"' % git_version)
+fout.close()
 
 exts = [ Extension("pybedtools.cbedtools",
               sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi"] \
@@ -35,7 +44,7 @@ Development version, as well as documentation, can be found on github:
 
 setup( 
         name="pybedtools",
-        version=get_git_version(),
+        version=git_version,
         ext_modules=exts,
         requires=['argparse','cython'],
         packages=['pybedtools','pybedtools.test', 'pybedtools.scripts', 'pybedtools.test.data'],
