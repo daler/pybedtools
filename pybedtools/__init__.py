@@ -12,7 +12,7 @@ from helpers import get_tempdir, set_tempdir, cleanup, \
 from bedtool import BedTool
 import genome_registry
 from __main__ import main
-
+from version import __version__
 _path = ""
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
