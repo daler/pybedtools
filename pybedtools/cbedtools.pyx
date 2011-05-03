@@ -25,6 +25,50 @@ cpdef parse_attributes(str attr_str):
         _attributes[field] = value.replace('"', '')
     return _attributes
 
+
+cdef class Attributes:
+    """
+    Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
+    """
+    cdef str sep, field_sep, _string
+    cdef object _interval_obj
+    cdef dict _dict
+
+    def __init__(self, interval_obj, attr_str=""):
+        self._string = attr_str
+        self._interval_obj = interval_obj
+
+        # quick exit
+        if attr_str == "":
+            return
+
+        self.sep, self.field_sep = (";", "=") if "=" in attr_str else (";", " ")
+        kvs = map(str.strip, attr_str.strip().split(self.sep))
+        self._dict = {}
+        for field, value in [kv.split(self.field_sep) for kv in kvs if kv]:
+            self._dict[field] = value.replace('"', '')
+
+    def __setitem__(self, key, value):
+        """
+        Sets both the key/item in self.dict *as well as* the interval object's
+        attrs field if it's a GFF Interval
+        """
+        self._dict[key] = value
+        if self._interval_obj.file_type == 'gff':
+            print 'setting %s fields 8 = %s' % (self._interval_obj, (key,value))
+            self._interval_obj.fields[8] = str(self)
+        else:
+            raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
+
+    def __getitem__(self, key):
+        return self._dict[key]
+
+    def __str__(self):
+        return self.sep.join([self.field_sep.join(kvs) for kvs in self._dict.items()])
+
+    def __repr__(self):
+        return repr(self._dict)
+
 cdef class Interval:
     """
     >>> from pybedtools import Interval
@@ -37,12 +81,14 @@ cdef class Interval:
 
     """
     cdef BED *_bed
+    cdef object _attrs
 
     def __init__(self, chrom, start, end, strand=None):
         if strand is None:
             self._bed = new BED(string(chrom), start, end)
         else:
             self._bed = new BED(string(chrom), start, end, string(strand))
+        self._attrs = None
 
     property chrom:
         """ the chromosome of the feature"""
@@ -100,6 +146,18 @@ cdef class Interval:
     property fields:
         def __get__(self):
             return string_vec2list(self._bed.fields)
+
+    property attrs:
+        def __get__(self):
+            cdef string ftype = self._bed.file_type
+            if self._attrs is None:
+                if ftype == <char *>"gff":
+                    self._attrs = Attributes(self, self._bed.fields[8].c_str())
+                else:
+                    self._attrs = Attributes(self, "")
+            return self._attrs
+        def __set__(self, attrs):
+            self._attrs = attrs
 
     # TODO: make this more robust.
     @property
@@ -203,6 +261,8 @@ cdef class Interval:
 
     def __getitem__(self, object key):
         cdef int i
+        cdef string ftype = self._bed.file_type
+
         if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
             if key >= nfields:
@@ -216,6 +276,12 @@ cdef class Interval:
                           key.step or 1)]
 
         elif isinstance(key, basestring):
+            if ftype == <char *>"gff":
+                attrs = parse_attributes(self._bed.fields[8].c_str())
+                try:
+                    return attrs[key]
+                except:
+                    return getattr(self, key)
             return getattr(self, key)
 
     def __setitem__(self, object key, object value):
