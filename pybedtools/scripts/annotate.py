@@ -49,16 +49,23 @@ def add_closest(aname, bname):
     c = a.closest(b, d=True)
     get_name = gen_get_name(b, afields)
 
-    d = open(c._tmp(), "w")
+    dbed = open(BedTool._tmp(), "w")
     # keep the name and distance
-    seen = {}
-    for row in c:
-        new_line = "\t".join(row[:afields] + [get_name(row), row[-1]])
-        if new_line in seen: continue
-        print >>d, new_line
-        seen[new_line] = None
-    d.close()
-    return BedTool(d.name)
+    seen_by_line = collections.defaultdict(list)
+    for feat in c:
+        key = "\t".join(feat[:afields])
+        seen_by_line[key].append([feat[-1], get_name(feat)])
+
+    for key, dist_names in seen_by_line.iteritems():
+        if len(dist_names) > 0:
+            assert len(set([d[0] for d in dist_names])) == 1
+        names = ",".join(sorted(set(d[1] for d in dist_names)))
+        new_line = "\t".join([key] + [names] + [dist_names[0][0]])
+        dbed.write(new_line + "\n")
+    dbed.close()
+    d = BedTool(dbed.name)
+    assert len(d) == len(a)
+    return d
 
 def add_xstream(a, b, dist, updown, report_distance=False):
     # run a window up or downstream.
@@ -83,8 +90,17 @@ def add_xstream(a, b, dist, updown, report_distance=False):
     d = open(BedTool._tmp(), "w")
     for row in seen:
         d.write(row + "\t" + ",".join(sorted(seen[row])) + "\n")
+
+    # write the entries that did not appear in the window'ed Bed
+    for row in a:
+        key = "\t".join(row[:afields])
+        if key in seen: continue
+        d.write(str(row) + "\t.\n")
+
     d.close()
-    return BedTool(d.name)
+    dbed = BedTool(d.name)
+    assert len(dbed) == len(a)
+    return dbed
 
 def main():
     """
@@ -114,7 +130,7 @@ def main():
                         args.report_distance)
 
     for row in c.sort():
-        print row
+        print(row)
 
 if __name__ == "__main__":
     import doctest
