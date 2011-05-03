@@ -55,7 +55,6 @@ cdef class Attributes:
         """
         self._dict[key] = value
         if self._interval_obj.file_type == 'gff':
-            print 'setting %s fields 8 = %s' % (self._interval_obj, (key,value))
             self._interval_obj.fields[8] = str(self)
         else:
             raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
