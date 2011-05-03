@@ -257,6 +257,7 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
+    @classmethod
     def _tmp(self):
         '''
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
