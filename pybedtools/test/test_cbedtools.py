@@ -121,6 +121,18 @@ class IntervalTest(unittest.TestCase):
         self.assertEqual(iv['chrom'], 'chrfake')
         self.assertEqual(iv.chrom, 'chrfake')
 
+    def testSetAttrs(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        if iv.file_type != 'gff':
+            self.assertRaises(ValueError, iv.attrs.__setitem__, 'a','b')
+            return
+        iv.attrs['ID'] = 'fake'
+        iv.attrs['field0'] = 'asdf'
+        self.assertEqual(str(iv.attrs), iv[8])
+        self.assert_('field0=asdf' in iv[8])
+        self.assert_('ID=fake' in iv[8])
+
     def testAppend(self):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
