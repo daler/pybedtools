@@ -8,8 +8,22 @@
 """
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
-from pybedtools.helpers import parse_attributes
 import sys
+
+cpdef parse_attributes(str attr_str):
+    """
+    parse the attribute string from gff or gtf into a dictionary
+    # copied from genomicfeatures
+    #>>> parse_attributes('ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805') == {'rname': 'thaliana_1_465_805', 'ID': 'thaliana_1_465_805', 'match': 'scaffold_801404.1'}
+    #True
+    """
+    cdef str sep, field_sep
+    cdef dict _attributes = {}
+    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
+    kvs = map(str.strip, attr_str.strip().split(sep))
+    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
+        _attributes[field] = value.replace('"', '')
+    return _attributes
 
 cdef class Interval:
     """
