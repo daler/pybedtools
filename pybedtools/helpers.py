@@ -256,13 +256,17 @@ def _help(command):
 
         return decorator
     except OSError:
-        def not_implemented_func(*args, **kwargs):
-            raise NotImplementedError('"%s" does not appear to be installed '
-                                      'or on the path, so this method is '
-                                      'disabled.  Please install a more recent '
-                                      'version of BEDTools and re-import to '
-                                      'use this method.'%command)
-        return not_implemented_func
+        def decorator(func):
+            help_str = '"%s" does not appear to be installed '\
+                       'or on the path, so this method is '\
+                       'disabled.  Please install a more recent '\
+                       'version of BEDTools and re-import to '\
+                       'use this method.'%command
+            def not_implemented_func(*args, **kwargs):
+                raise NotImplementedError(help_str)
+            not_implemented_func.__doc__ = help_str
+            return not_implemented_func
+        return decorator
 
 def parse_kwargs(**kwargs):
     """
