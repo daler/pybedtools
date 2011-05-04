@@ -452,7 +452,7 @@ class BedTool(object):
             inarg2 = implicit_instream2[prog]
 
             # e.g., another BedTool
-            instream2  = kwargs[implicit_instream2[prog]]
+            instream2 = kwargs[implicit_instream2[prog]]
 
             # Get stream if BedTool
             if isinstance(instream2, BedTool):
@@ -466,7 +466,7 @@ class BedTool(object):
             # programs
             else:
                 collapsed_fn = self._tmp()
-                fout = open(collapsed_fn,'w')
+                fout = open(collapsed_fn, 'w')
                 for i in instream2:
                     # TODO: does this need newlines?
                     fout.write(str(i))
@@ -488,9 +488,9 @@ class BedTool(object):
         cmds = [prog]
         for key, value in kwargs.items():
             if value is True:
-                cmds.append('-'+key)
+                cmds.append('-' + key)
             else:
-                cmds.append('-'+key)
+                cmds.append('-' + key)
                 cmds.append(str(value))
         return cmds, tmp, stdin
 
@@ -515,7 +515,7 @@ class BedTool(object):
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> overlaps = a.intersect(b)
 
-            Use `v=True` to get the inverse -- that is, those unique to "a.bed":
+            Use `v=True` to get the inverse -- those unique to "a.bed":
 
             >>> unique_to_a = a.intersect(b, v=True)
         """
@@ -570,7 +570,8 @@ class BedTool(object):
             return False
 
         cmds, tmp, stdin = self.handle_kwargs(prog='fastaFromBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin, check_stderr=check_sequence_stderr)
+        _ = call_bedtools(cmds, tmp, stdin=stdin, \
+                          check_stderr=check_sequence_stderr)
         self.seqfn = kwargs['fo']
         return self
 
@@ -656,7 +657,8 @@ class BedTool(object):
                 kwargs['g'] = self.chromsizes
 
             except AttributeError:
-                raise ValueError('No genome specified. Either pass a "g" argument or use set_chromsizes()')
+                raise ValueError('No genome specified. Either pass a "g"'
+                                'argument or use set_chromsizes()')
 
         # If it's a dictionary, then convert to file and overwrite kwargs['g'].
         if isinstance(kwargs['g'], dict):
@@ -786,8 +788,9 @@ class BedTool(object):
 
         """
         if genome is not None:
-            genome_fn = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
-            kwargs['g'] = genome_fn
+            kwargs['g'] = pybedtools.chromsizes_to_file(
+                                    pybedtools.chromsizes(genome))
+
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
@@ -799,7 +802,7 @@ class BedTool(object):
     @_implicit('-i')
     @_returns_bedtool()
     @_log_to_history
-    def sort(self,**kwargs):
+    def sort(self, **kwargs):
         """
         Note that chromosomes are sorted lexograpically, so chr12 will come
         before chr9.
@@ -841,10 +844,10 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b_fn = pybedtools.example_filename('b.bed')
         >>> print a.annotate(files=b_fn) #doctest: +NORMALIZE_WHITESPACE
-        chr1	1	100	feature1	0	+	0.000000	
-        chr1	100	200	feature2	0	+	0.450000	
-        chr1	150	500	feature3	0	-	0.128571	
-        chr1	900	950	feature4	0	+	0.020000	
+        chr1	1	100	feature1	0	+	0.000000
+        chr1	100	200	feature2	0	+	0.450000
+        chr1	150	500	feature3	0	-	0.128571
+        chr1	900	950	feature4	0	+	0.020000
         <BLANKLINE>
         """
         if 'i' not in kwargs:
@@ -878,8 +881,8 @@ class BedTool(object):
 
         """
         if genome is not None:
-            genome_fn = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
-            kwargs['g'] = genome_fn
+            kwargs['g'] = pybedtools.chromsizes_to_file(
+                                        pybedtools.chromsizes(genome))
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
@@ -915,14 +918,14 @@ class BedTool(object):
 
         See usage example in :meth:`BedTool.sequence`.
         """
-        if not hasattr(self,'seqfn'):
-            raise ValueError, 'Use .sequence(fasta_fn) to get the sequence first'
+        if not hasattr(self, 'seqfn'):
+            raise ValueError('Use .sequence(fasta) to get the sequence first')
         f = open(self.seqfn)
         s = f.read()
         f.close()
         return s
 
-    def save_seqs(self,fn):
+    def save_seqs(self, fn):
         """
         Save sequences of features in this BedTool object as a fasta file *fn*.
 
@@ -942,9 +945,9 @@ class BedTool(object):
             # in "a"
             a.save_seqs('seqs.fa')
         """
-        if not hasattr(self,'seqfn'):
-            raise ValueError, 'Use .sequence(fasta_fn) to get the sequence first'
-        fout = open(fn,'w')
+        if not hasattr(self, 'seqfn'):
+            raise ValueError('Use .sequence(fasta) to get the sequence first')
+        fout = open(fn, 'w')
         fout.write(open(self.seqfn).read())
         fout.close()
         new_bedtool = BedTool(self.fn)
@@ -953,9 +956,9 @@ class BedTool(object):
 
     def pybedtools_shuffle(self):
         """
-        Quite fast implementation of shuffleBed; assumes shuffling within chroms.
+        Fast implementation of shuffleBed; assumes shuffling within chroms.
 
-        You need to call self.set_chromsizes() to tell this BedTool object what the
+        First call self.set_chromsizes() to tell this BedTool object what the
         chromosome sizes are that you want to shuffle within.
 
         Example usage::
@@ -977,25 +980,26 @@ class BedTool(object):
             a.set_chromsizes(array_extent)
             b = a.pybedtools_shuffle()
 
-        This is equivalent to the following command-line usage of ``shuffleBed``::
+        Th equivalent command-line usage of ``shuffleBed`` is::
 
-            shuffleBed -i in.bed -g dm3.genome -chrom -seed $RANDOM > /tmp/tmpfile
+            shuffleBed -i in.bed -g dm3.genome -chrom -seed $RANDOM > tmpfile
 
         """
         if not hasattr(self, 'chromsizes'):
-            raise AttributeError, "Please use the set_chromsizes() method of this instance before randomizing"
+            raise AttributeError("Please use the set_chromsizes() method of"
+                                 " this instance before randomizing")
 
         tmp = self._tmp()
-        TMP = open(tmp,'w')
+        TMP = open(tmp, 'w')
         for f in self:
-            length = f.stop-f.start
-            newstart = random.randint(self.chromsizes[f.chrom][0], self.chromsizes[f.chrom][1]-length)
-            f.stop = newstart + length
+            newstart = random.randint(self.chromsizes[f.chrom][0],
+                                      self.chromsizes[f.chrom][1] - f.length)
+            f.stop = newstart + f.length
 
             # Just overwrite start and stop, leaving the rest of the line in
             # place
             f.start = newstart
-            TMP.write(str(f)+'\n')
+            TMP.write(str(f) + '\n')
         TMP.close()
         return BedTool(tmp)
 
@@ -1008,8 +1012,8 @@ class BedTool(object):
         two files. See, for example:
 
             Negre N, Brown CD, Shah PK, Kheradpour P, Morrison CA, et al. 2010
-            A Comprehensive Map of Insulator Elements for the Drosophila Genome.
-            PLoS Genet 6(1): e1000814. doi:10.1371/journal.pgen.1000814
+            A Comprehensive Map of Insulator Elements for the Drosophila
+            Genome. PLoS Genet 6(1): e1000814. doi:10.1371/journal.pgen.1000814
 
         Example usage:
 
@@ -1044,18 +1048,21 @@ class BedTool(object):
             from scipy import stats
             import numpy as np
         except ImportError:
-            raise ImportError, "Need to install NumPy and SciPy for stats..."
+            raise ImportError("Need to install NumPy and SciPy for stats...")
 
         if isinstance(other, basestring):
             other = BedTool(other)
         else:
-            assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
+            assert isinstance(other, BedTool),\
+                 'Either filename or another BedTool instance required'
 
         # Actual (unshuffled) counts.
-        actual = len(self.intersect(other,**kwargs))
+        actual = len(self.intersect(other, **kwargs))
 
-        # List of counts from randomly shuffled versions.  Length of counts == *iterations*.
-        distribution = self.randomintersection(other, iterations=iterations, **kwargs)
+        # List of counts from randomly shuffled versions.
+        # Length of counts == *iterations*.
+        distribution = self.randomintersection(other, iterations=iterations,
+                                               **kwargs)
         distribution = np.array(list(distribution))
 
         # Median of distribution
@@ -1063,33 +1070,33 @@ class BedTool(object):
 
         n = float(len(distribution))
 
-        frac_above = sum(distribution >= actual)/n
-        frac_below = sum(distribution <= actual)/n
+        frac_above = sum(distribution >= actual) / n
+        frac_below = sum(distribution <= actual) / n
 
-        normalized = actual/med_count
+        normalized = actual / med_count
 
         lower_thresh = 2.5
         upper_thresh = 97.5
         lower = stats.scoreatpercentile(distribution, lower_thresh)
         upper = stats.scoreatpercentile(distribution, upper_thresh)
 
-        actual_percentile = stats.percentileofscore(distribution,actual)
+        actual_percentile = stats.percentileofscore(distribution, actual)
         d = {
-        'iterations':iterations,
-        'actual': actual,
-        'file_a':self.fn,
-        'file_b':other.fn,
-        self.fn: len(self),
-        other.fn: len(other),
-        'self':len(self),
-        'other':len(other),
+        'iterations': iterations,
+            'actual': actual,
+            'file_a': self.fn,
+            'file_b': other.fn,
+             self.fn: len(self),
+            other.fn: len(other),
+              'self': len(self),
+             'other': len(other),
         'frac randomized above actual': frac_above,
         'frac randomized below actual': frac_below,
         'median randomized': med_count,
         'normalized': normalized,
-        'lower_%sth'%lower_thresh: lower,
-        'upper_%sth'%upper_thresh: upper,
         'percentile': actual_percentile,
+        'lower_%sth' % lower_thresh: lower,
+        'upper_%sth' % upper_thresh: upper,
         }
         return d
 
@@ -1131,7 +1138,6 @@ class BedTool(object):
             del(tmp)
             del(tmp2)
 
-
     @_file_or_bedtool()
     @_returns_bedtool()
     def cat(self, other, postmerge=True, **kwargs):
@@ -1161,8 +1167,9 @@ class BedTool(object):
         if isinstance(other, basestring):
             other = BedTool(other)
         else:
-            assert isinstance(other, BedTool), 'Either filename or another BedTool instance required'
-        TMP = open(tmp,'w')
+            assert isinstance(other, BedTool),\
+                    'Either filename or another BedTool instance required'
+        TMP = open(tmp, 'w')
         for f in self:
             TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
         for f in other:
@@ -1195,9 +1202,9 @@ class BedTool(object):
         >>> print b == a
         True
 
-        >>> b = a.saveas('other.bed', trackline="name='test run' color=128,255,0")
+        >>> b = a.saveas('other.bed', trackline="name='test run' color=0,55,0")
         >>> open(b.fn).readline()
-        "name='test run' color=128,255,0\\n"
+        "name='test run' color=0,55,0\\n"
         """
         fout = open(fn, 'w')
         if trackline is not None:
@@ -1207,7 +1214,7 @@ class BedTool(object):
         return BedTool(fn)
 
     @_returns_bedtool()
-    def random_subset(self,n):
+    def random_subset(self, n):
         '''
         Returns a new bedtools object containing a random subset of the
         features in this subset.
@@ -1224,10 +1231,10 @@ class BedTool(object):
         idxs = idxs[:n]
 
         tmpfn = self._tmp()
-        tmp = open(tmpfn,'w')
+        tmp = open(tmpfn, 'w')
         for i, f in enumerate(self):
             if i in idxs:
-                tmp.write(str(f)+'\n')
+                tmp.write(str(f) + '\n')
         tmp.close()
         return BedTool(tmpfn)
 
@@ -1266,14 +1273,16 @@ class BedTool(object):
         Example usage::
 
         >>> # add a "label" attribute to each BedTool
-        >>> a = pybedtools.example_bedtool('a.bed').with_attrs(label='transcription factor 1')
-        >>> b = pybedtools.example_bedtool('b.bed').with_attrs(label='transcription factor 2')
-        >>> for i in [a,b]:
+        >>> a = pybedtools.example_bedtool('a.bed')\
+                                   .with_attrs(label='transcription factor 1')
+        >>> b = pybedtools.example_bedtool('b.bed')\
+                                   .with_attrs(label='transcription factor 2')
+        >>> for i in [a, b]:
         ...     print i.count(), 'features for', i.label
         4 features for transcription factor 1
         2 features for transcription factor 2
 
         """
-        for key,value in kwargs.items():
-            setattr(self,key,value)
+        for key, value in kwargs.items():
+            setattr(self, key, value)
         return self
