@@ -13,8 +13,7 @@ for each of the up and downstream columns.
 
 import argparse
 import sys
-from pybedtools import BedTool
-from pybedtools.helpers import parse_attributes
+from pybedtools import BedTool, parse_attributes
 import collections
 
 # PYTHONPATH=$PYTHONPATH:. python scripts/annotate.py -a data/new.regions.bed -b data/Homo_sapiens.hg18.gtf --upstream 5000

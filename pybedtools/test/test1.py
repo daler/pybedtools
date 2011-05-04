@@ -703,6 +703,22 @@ chr1	900	950	feature4	0	+
     # equal
     assert a == str(e)
 
+def test_help():
+    from pybedtools.helpers import _help
+
+    # test support for uninstalled programs
+    @_help('nonexistent')
+    def dummyfunc():
+        return 100
+    assert_raises(NotImplementedError, dummyfunc)
+
+    # test invariant return value
+    @_help('intersectBed')
+    def dummyfunc():
+        return 100
+    assert dummyfunc() == 100
+
+
 
 def teardown():
     # always run this!
