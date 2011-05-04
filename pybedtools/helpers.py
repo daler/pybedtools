@@ -220,31 +220,53 @@ def _implicit(option):
 
 def _help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
-    docstring of the method that calls the program'''
+    docstring of the method that calls the program.
 
-    p = subprocess.Popen([command,'-h'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    help_str = p.communicate()[1]
-    help_str = help_str.replace('_','**')
+    If the program can't be found, then the function will return a "dummy" version of the
+    method that will always return NotImplementedError.
 
-    # insert tabs into the help
-    help_str = help_str.split('\n')
-    help_str = ['\t'+i for i in help_str]
-    help_str = '\n'.join(help_str)
+    This is will happen, for example, when a user has an old version of
+    BEDTools installed (e.g., only later versions of BEDTools have flankBed, so
+    the BedTool.flank() method will return NotImplementedError if this is not
+    available.
+    '''
 
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ = '*pybedtools help:*\n'
-        func.__doc__ += orig
-        func.__doc__ += '\n\n*Original BEDtools program help:*\n'
-        func.__doc__ += help_str
-        return func
+    try:
+        p = subprocess.Popen([command,'-h'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        help_str = p.communicate()[1]
+        help_str = help_str.replace('_','**')
 
-    return decorator
+        # insert tabs into the help
+        help_str = help_str.split('\n')
+        help_str = ['\t'+i for i in help_str]
+        help_str = '\n'.join(help_str)
+
+        def decorator(func):
+            """
+            Adds the help to the function's __doc__
+            """
+            if func.__doc__ is None:
+                func.__doc__ = ''
+            orig = func.__doc__
+            func.__doc__ = '*pybedtools help:*\n'
+            func.__doc__ += orig
+            func.__doc__ += '\n\n*Original BEDtools program help:*\n'
+            func.__doc__ += help_str
+            return func
+
+        return decorator
+    except OSError:
+        def decorator(func):
+            help_str = '"%s" does not appear to be installed '\
+                       'or on the path, so this method is '\
+                       'disabled.  Please install a more recent '\
+                       'version of BEDTools and re-import to '\
+                       'use this method.'%command
+            def not_implemented_func(*args, **kwargs):
+                raise NotImplementedError(help_str)
+            not_implemented_func.__doc__ = help_str
+            return not_implemented_func
+        return decorator
 
 def parse_kwargs(**kwargs):
     """
