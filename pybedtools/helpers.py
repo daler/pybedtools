@@ -351,9 +351,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
             p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
             if isinstance(stdin, file):
-                stdout, stderr = p.communicate(stdin.read())
+                stdout, stderr = p.communicate(stdin)
             else:
-                stdout, stderr = p.communicate('\n'.join(stdin))
+                for item in stdin:
+                    p.stdin.write(item + "\n")
+                stdout, stderr = p.communicate()
             output = tmpfn
         if not instream and outstream:
             p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
