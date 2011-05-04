@@ -703,6 +703,12 @@ chr1	900	950	feature4	0	+
     # equal
     assert a == str(e)
 
+def test_help():
+    from pybedtools.helpers import _help
+    @_help('nonexistent')
+    def dummyfunc():
+        pass
+    assert_raises(NotImplementedError, dummyfunc)
 
 def teardown():
     # always run this!
