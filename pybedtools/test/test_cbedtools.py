@@ -149,6 +149,22 @@ class IntervalTest(unittest.TestCase):
         if iv.file_type == "gff":
             self.assert_("bart" in iv.fields[8])
 
+    def testStart(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        orig_string = str(iv)
+        orig_start = iv.start
+        iv.start = orig_start
+        second_string = str(iv)
+        second_start = iv.start
+        iv.start = second_start
+        print '   orig:', '(start=%s)'%orig_start, orig_string
+        print ' second:', '(start=%s)'%second_start, second_string
+        print 'current:', '(start=%s)'%iv.start, str(iv)
+        self.assert_(orig_start == second_start == iv.start)
+        self.assert_(orig_string == second_string == str(iv))
+
+
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
 
