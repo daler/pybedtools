@@ -99,12 +99,16 @@ cdef class Interval:
             self._bed.fields[idx] = string(chrom)
 
     property start:
-        """ the start of the feature"""
+        """ the 0-based start of the feature"""
         def __get__(self):
             return self._bed.start
         def __set__(self, int start):
             self._bed.start = start
             idx = LOOKUPS[self.file_type]["start"]
+
+            # Non-BED files should have 1-based coords in fields
+            if self.file_type != 'bed': start += 1
+
             s = str(start)
             self._bed.fields[idx] = string(s)
 
