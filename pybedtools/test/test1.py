@@ -718,7 +718,11 @@ def test_help():
         return 100
     assert dummyfunc() == 100
 
-
+def test_kwargs():
+    a = pybedtools.example_bedtool('a.bed')
+    b = a.intersect(a, s=False)
+    c = a.intersect(a)
+    assert str(b) == str(c)
 
 def teardown():
     # always run this!

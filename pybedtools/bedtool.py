@@ -7,8 +7,7 @@ import string
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator,\
-    parse_kwargs
+    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
 
 from cbedtools import IntervalFile
 import pybedtools
@@ -489,6 +488,8 @@ class BedTool(object):
         for key, value in kwargs.items():
             if value is True:
                 cmds.append('-' + key)
+            elif value is False:
+                continue
             else:
                 cmds.append('-' + key)
                 cmds.append(str(value))

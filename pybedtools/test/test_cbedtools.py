@@ -149,6 +149,22 @@ class IntervalTest(unittest.TestCase):
         if iv.file_type == "gff":
             self.assert_("bart" in iv.fields[8])
 
+    def testStart(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        orig_string = str(iv)
+        orig_start = iv.start
+        iv.start = orig_start
+        second_string = str(iv)
+        second_start = iv.start
+        iv.start = second_start
+        print '   orig:', '(start=%s)'%orig_start, orig_string
+        print ' second:', '(start=%s)'%second_start, second_string
+        print 'current:', '(start=%s)'%iv.start, str(iv)
+        self.assert_(orig_start == second_start == iv.start)
+        self.assert_(orig_string == second_string == str(iv))
+
+
 class IntervalFileGzTest(IntervalFileTest):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
 
@@ -164,6 +180,35 @@ class IntervalFileGFFTest(IntervalTest):
         start, end, strand = 1, 100, "+"
         self.i = Interval("chr1", start, end, strand)
         self.start, self.end, self.strand = start, end, strand
+
+    # Overwrite IntervalTest.testStart
+    def testStart(self):
+        ivf = IntervalFile(self.file)
+        iv = ivf.next()
+        orig_string = str(iv)
+
+        # 0-based.
+        orig_start = iv.start
+
+        # Setting .start always sets 0-based coord.
+        iv.start = orig_start
+
+        # But for GFF setting .start should also make the .fields[3] the GFF
+        # 1-based coord
+        assert iv.start == int(iv.fields[3])-1
+
+        second_string = str(iv)
+        second_start = iv.start
+        iv.start = second_start
+
+        # Check .start and .fields[3] internal consistency again
+        assert iv.start == int(iv.fields[3])-1
+
+        print '   orig:', '(start=%s)'%orig_start, orig_string
+        print ' second:', '(start=%s)'%second_start, second_string
+        print 'current:', '(start=%s)'%iv.start, str(iv)
+        self.assert_(orig_start == second_start == iv.start)
+        self.assert_(orig_string == second_string == str(iv))
 
 
 

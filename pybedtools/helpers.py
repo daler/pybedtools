@@ -268,53 +268,6 @@ def _help(command):
             return not_implemented_func
         return decorator
 
-def parse_kwargs(**kwargs):
-    """
-    Given a set of keyword arguments, turns them into a command line-ready
-    list of strings.  E.g., the kwarg dict::
-
-        kwargs = dict(c=True,f=0.5)
-
-    will be returned as::
-
-        ['-c','-f','0.5']
-
-    If there are symbols (e.g., "|"), then the parameter is quoted."
-    """
-    illegal_chars = '!@#$%^&*(),-;:.<>?/|[]{} \'\\\"'
-    cmds = []
-
-    # If we're aiming to use stdin, then the '-' needs to be first.
-    try:
-        kwargs.pop('-')
-        cmds.append('-')
-    except KeyError:
-        pass
-
-    for key,value in kwargs.items():
-        # e.g., u=True --> -u
-        if value is True:
-            cmds.append('-'+key)
-            continue
-
-        # support for lists of items
-        if (type(value) is tuple) or (type(value) is list):
-            value = ','.join(map(str,value))
-
-        # left over from os.system() calls; subprocess.Popen does the nice
-        # parsing for you
-        if type(value) is str:
-            for i in illegal_chars:
-                if i in value:
-                    value = '%s' % value
-                    break
-
-        # e.g., b='f.bed' --> ['-b', 'f.bed']
-        cmds.append('-'+key)
-        cmds.append(str(value))
-
-    return cmds
-
 def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
@@ -341,14 +294,16 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     cmds[0] = os.path.join(pybedtools._path, cmds[0])
 
     try:
+        # coming from an iterator, sending as iterator
         if instream and outstream:
             p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
             for line in stdin:
                 p.stdin.write(line)
             output = p.stdout
             stderr = None
-        if instream and not outstream:
 
+        # coming from an iterator, writing to file
+        if instream and not outstream:
             p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
             if isinstance(stdin, file):
                 stdout, stderr = p.communicate(stdin)
@@ -357,17 +312,22 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                     p.stdin.write(item + "\n")
                 stdout, stderr = p.communicate()
             output = tmpfn
+
+        # coming from a file, sending as iterator
         if not instream and outstream:
             p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
             output = p.stdout
             stderr = None
+
+        # file-to-file
         if not instream and not outstream:
             p = subprocess.Popen(cmds, stdout=open(tmpfn, 'w'), stderr=subprocess.PIPE, bufsize=1)
             stdout,stderr = p.communicate()
             output = tmpfn
 
-        # Check if it's OK; if so dump it to sys.stderr and reset it to None so
-        # we don't raise an exception
+        # Check if it's OK using a provided function to check stder. If it's
+        # OK, dump it to sys.stderr so it's printed, and reset it to None so we
+        # don't raise an exception
         if check_stderr is not None:
             if check_stderr(stderr):
                 sys.stderr.write(stderr)
@@ -394,13 +354,20 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
     return output
 
-# TODO: not sure how to yield intervals
 def IntervalIterator(stream):
     """
     Given an open file handle, yield the Intervals.
     """
     for line in stream:
-        yield pybedtools.create_interval_from_list(line.rstrip("\r\n").split("\t"))
+        # create_interval_from_list expect the first 7 fields to be strings and
+        # the last to be a list.
+        fields = line.rstrip("\r\n").split("\t")
+        if len(fields) > 7:
+            new_fields = fields[:6]
+            new_fields.append(fields[6:])
+        else:
+            new_fields = fields
+        yield pybedtools.create_interval_from_list(new_fields)
 
 def set_bedtools_path(path=""):
     """
