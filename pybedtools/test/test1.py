@@ -158,6 +158,23 @@ def test_stream_gen():
     for i,j in zip(g1, g2):
         assert str(i) == str(j)
 
+def test_malformed():
+    a = pybedtools.BedTool("""
+    chr1 100 200
+    chr1 100 90
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    """, from_string=True)
+    a_i = iter(a)
+
+    # first feature is OK
+    print a_i.next()
+
+    # but next one is not and should raise ValueError
+    assert_raises(ValueError, a_i.next)
+
 def test_stream_of_stream():
     a = pybedtools.example_bedtool('a.bed')
 
@@ -172,7 +189,6 @@ def test_stream_of_stream():
     nonstream2 = a.intersect(nonstream1)
     stream2    = a.intersect(stream1, stream=True)
     assert str(nonstream2) == str(stream2)
-
 
 def test_generator():
     a = pybedtools.example_bedtool('a.bed')

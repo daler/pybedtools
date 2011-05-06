@@ -32,6 +32,7 @@ Create Cython definitions for the Interval API defined in Interval.h
 """
 cdef extern from "bedFile.h":
     cdef enum BedLineStatus:
+        BED_MALFORMED = -2
         BED_INVALID = -1
         BED_HEADER = 0
         BED_BLANK = 1
