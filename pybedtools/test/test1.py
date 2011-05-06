@@ -158,6 +158,11 @@ def test_stream_gen():
     for i,j in zip(g1, g2):
         assert str(i) == str(j)
 
+    # this was segfaulting at one point, just run to make sure
+    g3 = f.intersect(a, stream=True)
+    for i in iter(g3):
+        print i
+
 def test_stream_of_stream():
     a = pybedtools.example_bedtool('a.bed')
 
