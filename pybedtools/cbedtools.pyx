@@ -1,3 +1,5 @@
+# cython: profile=True
+
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
     
