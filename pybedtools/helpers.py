@@ -359,15 +359,8 @@ def IntervalIterator(stream):
     Given an open file handle, yield the Intervals.
     """
     for line in stream:
-        # create_interval_from_list expect the first 7 fields to be strings and
-        # the last to be a list.
         fields = line.rstrip("\r\n").split("\t")
-        if len(fields) > 7:
-            new_fields = fields[:6]
-            new_fields.append(fields[6:])
-        else:
-            new_fields = fields
-        yield pybedtools.create_interval_from_list(new_fields)
+        yield pybedtools.create_interval_from_list(fields)
 
 def set_bedtools_path(path=""):
     """

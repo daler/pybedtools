@@ -321,6 +321,7 @@ cdef Interval create_interval(BED b):
 
 cpdef Interval create_interval_from_list(list fields):
     cdef Interval pyb = Interval.__new__(Interval)
+    orig_fields = fields[:]
     # BED
     if (fields[1] + fields[2]).isdigit():
         # if it's too short, just add some empty fields.
@@ -333,6 +334,7 @@ cpdef Interval create_interval_from_list(list fields):
     elif len(fields) == 9 and (fields[3] + fields[4]).isdigit():
         pyb._bed = new BED(string(fields[0]), int(fields[3]), int(fields[4]), string(fields[2]),
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
+    pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 
 cdef vector[string] list_to_vector(list li):
