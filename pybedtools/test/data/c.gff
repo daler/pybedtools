@@ -6,7 +6,7 @@ chr1	ucb	gene	631	899	.	+	.	ID=AT1G01010;Name=AT1G01010;rname=AT1G01010
 chr1	ucb	mRNA	631	913	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
 chr1	ucb	CDS	760	913	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
 chr1	ucb	CDS	486	605	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
-chr1	ucb	CDS	706	095	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
+chr1	ucb	CDS	706	1095	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
 chr1	ucb	CDS	174	326	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
 chr1	ucb	CDS	439	630	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
 chr1	ucb	mRNA	496	576	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
