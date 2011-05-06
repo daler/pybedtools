@@ -71,7 +71,7 @@ cdef class Attributes:
 cdef class Interval:
     """
     >>> from pybedtools import Interval
-    >>> i = Interval("chr1", 22, 44, '-')
+    >>> i = Interval("chr1", 22, 44, strand='-')
     >>> i
     Interval(chr1:22-44)
 
@@ -82,11 +82,19 @@ cdef class Interval:
     cdef BED *_bed
     cdef object _attrs
 
-    def __init__(self, chrom, start, end, strand=None):
-        if strand is None:
-            self._bed = new BED(string(chrom), start, end)
-        else:
-            self._bed = new BED(string(chrom), start, end, string(strand))
+    def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
+        if otherfields is None:
+            otherfields = []
+        self._bed = new BED()
+        self._bed.chrom = string(chrom)
+        self._bed.start = start
+        self._bed.end = end
+        self._bed.name = string(name)
+        self._bed.score = string(score)
+        self._bed.strand = string(strand)
+        fields = [chrom, str(start), str(end), name, score, strand]
+        fields.extend(otherfields)
+        self._bed.fields = list_to_vector(fields)
         self._attrs = None
 
     property chrom:

@@ -46,7 +46,7 @@ class IntervalTest(unittest.TestCase):
     def setUp(self):
         self.file = os.path.join(PATH, self.file)
         start, end, strand = 9719768, 9739768, "-"
-        self.i = Interval("chr21", start, end, strand)
+        self.i = Interval("chr21", start, end, strand=strand)
         self.start, self.end, self.strand = start, end, strand
 
     def testLengths(self):
@@ -178,7 +178,7 @@ class IntervalFileGFFTest(IntervalTest):
     def setUp(self):
         self.file = os.path.join(PATH, self.file)
         start, end, strand = 1, 100, "+"
-        self.i = Interval("chr1", start, end, strand)
+        self.i = Interval("chr1", start, end, strand=strand)
         self.start, self.end, self.strand = start, end, strand
 
     # Overwrite IntervalTest.testStart
