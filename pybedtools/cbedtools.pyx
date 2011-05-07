@@ -1,3 +1,5 @@
+# cython: profile=True
+
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
     
@@ -395,6 +397,8 @@ cdef class IntervalFile:
             return create_interval(b)
         elif b.status == BED_INVALID:
             raise StopIteration
+        elif b.status == BED_MALFORMED:
+            raise ValueError("malformed line")
         else:
             return self.next()
 

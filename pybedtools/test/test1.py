@@ -134,20 +134,38 @@ def test_ff_center():
 
 
 def test_stream():
+    orig_tempdir = pybedtools.get_tempdir()
+
+    if os.path.exists('unwriteable'):
+        raise ValueError('test_stream needs to make a dir "./unwriteable" but there already seems to be one')
+
+    os.system('mkdir unwriteable')
+    os.system('chmod -w unwriteable')
+
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
     c = a.intersect(b)
+
+    pybedtools.set_tempdir('unwriteable')
     d = a.intersect(b, stream=True)
+    pybedtools.set_tempdir(orig_tempdir)
+
     assert_raises(NotImplementedError, c.__eq__,d)
     d_contents = d.fn.read()
     c_contents = open(c.fn).read()
     assert d_contents == c_contents
 
+    pybedtools.set_tempdir(orig_tempdir)
     c = a.intersect(b)
+
+    pybedtools.set_tempdir('unwriteable')
     d = a.intersect(b, stream=True)
 
     for i,j in zip(c, d):
         assert str(i) == str(j)
+
+    pybedtools.set_tempdir(orig_tempdir)
+    os.system('rm -fr unwriteable')
 
 def test_stream_gen():
     # these should run
@@ -155,6 +173,7 @@ def test_stream_gen():
     f = pybedtools.example_bedtool('d.gff')
     g1 = f.intersect(a)
     g2 = f.intersect(a, stream=True)
+
     for i,j in zip(g1, g2):
         assert str(i) == str(j)
 
@@ -162,6 +181,23 @@ def test_stream_gen():
     g3 = f.intersect(a, stream=True)
     for i in iter(g3):
         print i
+
+def test_malformed():
+    a = pybedtools.BedTool("""
+    chr1 100 200
+    chr1 100 90
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    """, from_string=True)
+    a_i = iter(a)
+
+    # first feature is OK
+    print a_i.next()
+
+    # but next one is not and should raise ValueError
+    assert_raises(ValueError, a_i.next)
 
 def test_stream_of_stream():
     a = pybedtools.example_bedtool('a.bed')
@@ -177,7 +213,6 @@ def test_stream_of_stream():
     nonstream2 = a.intersect(nonstream1)
     stream2    = a.intersect(stream1, stream=True)
     assert str(nonstream2) == str(stream2)
-
 
 def test_generator():
     a = pybedtools.example_bedtool('a.bed')
