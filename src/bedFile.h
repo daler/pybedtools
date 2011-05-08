@@ -542,7 +542,7 @@ private:
             }
             if (bed.start > bed.end) {
                 cerr << "Error: malformed GFF entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl;
-                exit(1);
+                BED_MALFORMED;
             }
             else if ( (bed.start < 0) || (bed.end < 0) ) {
                 cerr << "Error: malformed GFF entry at line " << _lineNum << ". Coordinate detected that is < 1. Exiting." << endl;
