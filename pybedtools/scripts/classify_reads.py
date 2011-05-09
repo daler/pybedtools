@@ -44,7 +44,7 @@ def main():
             if feature[2] in ('exon', 'intron'):
                 feature.name = feature[2]
                 fout.write(str(feature)+'\n')
-        except ValueError:
+        except pybedtools.MalformedBedLineError:
             continue
         except StopIteration:
             break
