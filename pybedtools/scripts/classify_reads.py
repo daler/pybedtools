@@ -120,7 +120,7 @@ def main():
     ap.add_argument('-v', action='store_true', help='Verbose (goes to stderr)') 
     args = ap.parse_args()
 
-    classify_reads(args.gff, args.bam, args.o, args.v)
+    classify_reads(args.gff, args.bam, args.o, args.v, args.stranded)
 
 if __name__ == "__main__":
     main()
