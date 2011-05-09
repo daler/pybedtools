@@ -11,15 +11,17 @@ import pybedtools
 # programs (basic security)
 _prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
 'linksBed', 'overlap', 'shuffleBed', 'subtractBed', 'bamToBed', 'bedToIgv',
-'coverageBed', 'genomeCoverageBed','maskFastaFromBed', 'pairToBed', 'slopBed',
+'coverageBed', 'genomeCoverageBed', 'maskFastaFromBed', 'pairToBed', 'slopBed',
 'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
 'mergeBed', 'pairToPair', 'sortBed', 'windowBed', ]
 
 _tags = {}
 
+
 class Error(Exception):
     """Base class for this module's exceptions"""
     pass
+
 
 class BEDToolsError(Error):
     pass
@@ -38,6 +40,7 @@ def find_tagged(tag):
             pass
     return '%s not found' % tag
 
+
 def _flatten_list(x):
     nested = True
     while nested:
@@ -54,6 +57,7 @@ def _flatten_list(x):
         x = flattened[:]
     return x
 
+
 class History(list):
     def __init__(self):
         """
@@ -62,8 +66,9 @@ class History(list):
         """
         list.__init__(self)
 
+
 class HistoryStep(object):
-    def __init__(self, method, args, kwargs, bedtool_instance, 
+    def __init__(self, method, args, kwargs, bedtool_instance,
                  parent_tag, result_tag):
         """
         Class to represent one step in the history.
@@ -79,7 +84,7 @@ class HistoryStep(object):
         self.parent_tag = parent_tag
         self.result_tag = result_tag
 
-    def _clean_arg(self,arg):
+    def _clean_arg(self, arg):
         """
         Wrap strings in quotes and convert bedtool instances to filenames.
         """
@@ -96,11 +101,14 @@ class HistoryStep(object):
         if os.path.exists(self.fn):
             s += 'BedTool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
         else:
-            s += 'BedTool("MISSING FILE: %(fn)s").%(method)s(%%s%%s)' % self.__dict__
+            s += 'BedTool("MISSING FILE: %(fn)s")' % self.__dict__
+            s += '.%(method)s(%%s%%s)' % self.__dict__
 
         # Format args and kwargs
         args_string = ','.join(map(self._clean_arg, self.args))
-        kwargs_string = ','.join(['%s=%s'% (i[0], self._clean_arg(i[1])) for i in self.kwargs.items()])
+        kwargs_string = ','.join(['%s=%s' % \
+                        (i[0], self._clean_arg(i[1])) \
+                        for i in self.kwargs.items()])
 
         # stick a comma on the end if there's something here
         if len(args_string) > 0:
@@ -111,6 +119,7 @@ class HistoryStep(object):
         s += ', result tag: %s' % self.result_tag
         return s
 
+
 def set_tempdir(tempdir):
     """
     Sets the directory for temp files.  Useful for clusters that use a /scratch
@@ -118,14 +127,17 @@ def set_tempdir(tempdir):
     tempfile.tempdir.
     """
     if not os.path.exists(tempdir):
-        raise ValueError, 'The tempdir you specified, %s, does not exist' % tempdir
+        errstr = 'The tempdir you specified, %s, does not exist' % tempdir
+        raise ValueError(errstr)
     tempfile.tempdir = tempdir
+
 
 def get_tempdir():
     """
     Gets the current tempdir for the module.
     """
     return tempfile.tempdir
+
 
 def cleanup(verbose=True, remove_all=False):
     """
@@ -146,6 +158,7 @@ def cleanup(verbose=True, remove_all=False):
         fns = glob.glob(os.path.join(get_tempdir(), 'pybedtools.*.tmp'))
         for fn in fns:
             os.unlink(fn)
+
 
 def _file_or_bedtool():
     '''
@@ -172,6 +185,7 @@ def _file_or_bedtool():
 
     return decorator
 
+
 def _returns_bedtool():
     '''
     Decorator that adds a line to the docstring indicating
@@ -195,6 +209,7 @@ def _returns_bedtool():
 
     return decorator
 
+
 def _implicit(option):
     '''
     Decorator that adds a line to the docstring indicating
@@ -203,7 +218,8 @@ def _implicit(option):
     extra_help = """
     .. note::
 
-        For convenience, the file this bedtool object points to is passed as "%s"
+        For convenience, the file this bedtool object points to is
+        passed as "%s"
     """ % option
 
     def decorator(func):
@@ -218,12 +234,13 @@ def _implicit(option):
 
     return decorator
 
+
 def _help(command):
     '''Decorator that adds help from each of the BEDtools programs to the
     docstring of the method that calls the program.
 
-    If the program can't be found, then the function will return a "dummy" version of the
-    method that will always return NotImplementedError.
+    If the program can't be found, then the function will return a "dummy"
+    version of the method that will always return NotImplementedError.
 
     This is will happen, for example, when a user has an old version of
     BEDTools installed (e.g., only later versions of BEDTools have flankBed, so
@@ -232,13 +249,15 @@ def _help(command):
     '''
 
     try:
-        p = subprocess.Popen([command,'-h'], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        p = subprocess.Popen([command, '-h'],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         help_str = p.communicate()[1]
-        help_str = help_str.replace('_','**')
+        help_str = help_str.replace('_', '**')
 
         # insert tabs into the help
         help_str = help_str.split('\n')
-        help_str = ['\t'+i for i in help_str]
+        help_str = ['\t' + i for i in help_str]
         help_str = '\n'.join(help_str)
 
         def decorator(func):
@@ -261,12 +280,15 @@ def _help(command):
                        'or on the path, so this method is '\
                        'disabled.  Please install a more recent '\
                        'version of BEDTools and re-import to '\
-                       'use this method.'%command
+                       'use this method.' % command
+
             def not_implemented_func(*args, **kwargs):
                 raise NotImplementedError(help_str)
+
             not_implemented_func.__doc__ = help_str
             return not_implemented_func
         return decorator
+
 
 def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     """
@@ -275,7 +297,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     Output goes to *tmpfn*, or, if None, output stays in subprocess.PIPE and
     can be iterated over.
 
-    *stdin* is an optional file-like object that will be sent to subprocess.Popen.
+    *stdin* is an optional file-like object that will be sent to
+    subprocess.Popen.
 
     Prints some useful help upon getting common errors.
 
@@ -296,7 +319,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     try:
         # coming from an iterator, sending as iterator
         if instream and outstream:
-            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
+            p = subprocess.Popen(cmds,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 stdin=subprocess.PIPE,
+                                 bufsize=1)
             for line in stdin:
                 p.stdin.write(line)
             output = p.stdout
@@ -304,7 +331,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from an iterator, writing to file
         if instream and not outstream:
-            p = subprocess.Popen(cmds, stdout=open(tmpfn,'w'), stderr=subprocess.PIPE, stdin=subprocess.PIPE, bufsize=1)
+            p = subprocess.Popen(cmds,
+                                 stdout=open(tmpfn, 'w'),
+                                 stderr=subprocess.PIPE,
+                                 stdin=subprocess.PIPE,
+                                 bufsize=1)
             if isinstance(stdin, file):
                 stdout, stderr = p.communicate(stdin)
             else:
@@ -315,14 +346,20 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from a file, sending as iterator
         if not instream and outstream:
-            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
+            p = subprocess.Popen(cmds,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 bufsize=1)
             output = p.stdout
             stderr = None
 
         # file-to-file
         if not instream and not outstream:
-            p = subprocess.Popen(cmds, stdout=open(tmpfn, 'w'), stderr=subprocess.PIPE, bufsize=1)
-            stdout,stderr = p.communicate()
+            p = subprocess.Popen(cmds,
+                                 stdout=open(tmpfn, 'w'),
+                                 stderr=subprocess.PIPE,
+                                 bufsize=1)
+            stdout, stderr = p.communicate()
             output = tmpfn
 
         # Check if it's OK using a provided function to check stder. If it's
@@ -336,23 +373,26 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         if stderr:
             print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
             print 'Error message was:\n'
-            #print '\n'.join([i for i in stderr.splitlines() if i.startswith('***')])
             print stderr
-            raise BEDToolsError('See above for commands and error message', stderr)
+            raise BEDToolsError('See above for commands and error message',
+                                stderr)
 
     except (OSError, IOError) as err:
         print '%s: %s' % (type(err), os.strerror(err.errno))
         print 'The command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
 
-        problems = {2 :('* Did you spell the command correctly?', '* Do you have BEDTools installed and on the path?'),
-                    13:('* Do you have permission to write to the output file ("%s")?' % tmpfn,),
+        problems = {2: ('* Did you spell the command correctly?',
+                        '* Do you have BEDTools installed and on the path?'),
+                    13: ('* Do you have permission to write '
+                         'to the output file ("%s")?' % tmpfn,),
                    }
 
         print 'Things to check:'
-        print '\n\t'+'\n\t'.join(problems[err.errno])
+        print '\n\t' + '\n\t'.join(problems[err.errno])
         raise OSError('See above for commands that gave the error')
 
     return output
+
 
 def IntervalIterator(stream):
     """
@@ -361,6 +401,7 @@ def IntervalIterator(stream):
     for line in stream:
         fields = line.rstrip("\r\n").split("\t")
         yield pybedtools.create_interval_from_list(fields)
+
 
 def set_bedtools_path(path=""):
     """
