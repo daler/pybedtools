@@ -197,7 +197,7 @@ def test_malformed():
     print a_i.next()
 
     # but next one is not and should raise ValueError
-    assert_raises(ValueError, a_i.next)
+    assert_raises(pybedtools.MalformedBedLineError, a_i.next)
 
 def test_stream_of_stream():
     a = pybedtools.example_bedtool('a.bed')

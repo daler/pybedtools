@@ -12,6 +12,10 @@ include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
 import sys
 
+
+class MalformedBedLineError(Exception): pass
+
+
 cpdef parse_attributes(str attr_str):
     """
     parse the attribute string from gff or gtf into a dictionary
@@ -398,7 +402,7 @@ cdef class IntervalFile:
         elif b.status == BED_INVALID:
             raise StopIteration
         elif b.status == BED_MALFORMED:
-            raise ValueError("malformed line")
+            raise MalformedBedLineError("malformed line: %s" % string_vec2list(b.fields))
         else:
             return self.next()
 

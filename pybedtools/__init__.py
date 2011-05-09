@@ -5,7 +5,8 @@ import tempfile
 import urllib2
 from . import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
-                    create_interval_from_list, parse_attributes
+                    create_interval_from_list, parse_attributes, \
+                    MalformedBedLineError
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
                     find_tagged, set_bedtools_path
