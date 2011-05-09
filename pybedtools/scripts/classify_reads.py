@@ -16,7 +16,7 @@ import time
 import argparse
 import pybedtools
 
-def classify_reads(gff, bam, stranded=False, output=None, verbose=False):
+def classify_reads(gff, bam, stranded=False, output=None, post_cleanup=True, verbose=False):
 
     a = pybedtools.BedTool(gff)
 
@@ -109,7 +109,8 @@ def classify_reads(gff, bam, stranded=False, output=None, verbose=False):
     if output:
         fout.close()
 
-    pybedtools.cleanup(verbose=False)
+    if post_cleanup:
+        pybedtools.cleanup(verbose=False)
 
 def main():
     ap = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]), description=__doc__)
