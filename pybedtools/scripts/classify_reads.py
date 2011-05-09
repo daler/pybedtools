@@ -16,17 +16,11 @@ import time
 import argparse
 import pybedtools
 
-def main():
-    ap = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]),description=__doc__)
-    ap.add_argument('--gff', help='GFF or GTF file containing annotations')
-    ap.add_argument('--bam', help='BAM file containing reads to be counted')
-    ap.add_argument('-o', help='Optional file to which results will be written; default is stdout')
-    ap.add_argument('-v', action='store_true', help='Verbose (goes to stderr)') 
-    args = ap.parse_args()
+def classify_reads(gff, bam, output=None, verbose=False):
 
-    a = pybedtools.BedTool(args.gff)
+    a = pybedtools.BedTool(gff)
 
-    if args.v:
+    if verbose:
         sys.stderr.write('Cleaning GFF file and only keeping intron/exons...')
         sys.stderr.flush()
         t0 = time.time()
@@ -50,10 +44,10 @@ def main():
             break
     fout.close()
 
-    if args.v:
+    if verbose:
         sys.stderr.write('(%.1fs)\n'% (time.time()-t0))
 
-    if args.v:
+    if verbose:
         sys.stderr.write('Merging intron/exons...')
         sys.stderr.flush()
         t0 = time.time()
@@ -63,22 +57,22 @@ def main():
     # merged.
     b = pybedtools.BedTool(tmp).merge(nms=True, d=-1)
 
-    if args.v:
+    if verbose:
         sys.stderr.write('(%.1fs)\n'% (time.time()-t0))
 
-    if args.v:
+    if verbose:
         sys.stderr.write('Intersecting with BAM file...')
         sys.stderr.flush()
         t0 = time.time()
 
     # Here we're using b's filename for *b*.  Create BED output, and make sure all
     # reads are written to file.
-    c = b.intersect(abam=args.bam, b=b.fn, bed=True, wao=True)
+    c = b.intersect(abam=bam, b=b.fn, bed=True, wao=True)
 
-    if args.v:
+    if verbose:
         sys.stderr.write('(%.1fs)\n'% (time.time()-t0))
 
-    if args.v:
+    if verbose:
         sys.stderr.write('Counting reads...')
         sys.stderr.flush()
         t0 = time.time()
@@ -97,11 +91,11 @@ def main():
         elif intersected_with == 'exon;intron': ambiguous += 1
         else: other += 1
 
-    if args.v:
-        sys.stderr.write('(%.1fs)\n\n'% (time.time()-t0))
+    if verbose:
+        sys.stderr.write('(%.1fs)\n\n' % (time.time()-t0))
 
-    if args.o:
-        fout = open(args.o,'w')
+    if output:
+        fout = open(output, 'w')
     else:
         fout = sys.stdout
 
@@ -112,10 +106,20 @@ def main():
     fout.write('     ambiguous: %s (%.1f%%)\n' % (ambiguous, ambiguous / total * 100))
     fout.write('         other: %s (%.1f%%)\n' % (other,     other     / total * 100))
 
-    if args.o:
+    if output:
         fout.close()
 
     pybedtools.cleanup(verbose=False)
+
+def main():
+    ap = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]), description=__doc__)
+    ap.add_argument('--gff', help='GFF or GTF file containing annotations')
+    ap.add_argument('--bam', help='BAM file containing reads to be counted')
+    ap.add_argument('-o', help='Optional file to which results will be written; default is stdout')
+    ap.add_argument('-v', action='store_true', help='Verbose (goes to stderr)') 
+    args = ap.parse_args()
+
+    classify_reads(args.gff, args.bam, args.o, args.v)
 
 if __name__ == "__main__":
     main()
