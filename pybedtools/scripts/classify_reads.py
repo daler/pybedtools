@@ -16,7 +16,7 @@ import time
 import argparse
 import pybedtools
 
-def classify_reads(gff, bam, output=None, verbose=False):
+def classify_reads(gff, bam, stranded=False, output=None, verbose=False):
 
     a = pybedtools.BedTool(gff)
 
@@ -55,7 +55,7 @@ def classify_reads(gff, bam, output=None, verbose=False):
     # nms=True creates new features like exon;intron
     # d=-1 means that bookended features (which introns and exon are) will not be
     # merged.
-    b = pybedtools.BedTool(tmp).merge(nms=True, d=-1)
+    b = pybedtools.BedTool(tmp).merge(nms=True, d=-1, s=stranded)
 
     if verbose:
         sys.stderr.write('(%.1fs)\n'% (time.time()-t0))
@@ -67,7 +67,7 @@ def classify_reads(gff, bam, output=None, verbose=False):
 
     # Here we're using b's filename for *b*.  Create BED output, and make sure all
     # reads are written to file.
-    c = b.intersect(abam=bam, b=b.fn, bed=True, wao=True)
+    c = b.intersect(abam=bam, b=b.fn, bed=True, wao=True, s=stranded)
 
     if verbose:
         sys.stderr.write('(%.1fs)\n'% (time.time()-t0))
@@ -115,6 +115,7 @@ def main():
     ap = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]), description=__doc__)
     ap.add_argument('--gff', help='GFF or GTF file containing annotations')
     ap.add_argument('--bam', help='BAM file containing reads to be counted')
+    ap.add_argument('--stranded', help='Use strand-specific merging and overlap.')
     ap.add_argument('-o', help='Optional file to which results will be written; default is stdout')
     ap.add_argument('-v', action='store_true', help='Verbose (goes to stderr)') 
     args = ap.parse_args()
