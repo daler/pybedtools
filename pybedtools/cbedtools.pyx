@@ -2,10 +2,10 @@
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
-    
+
     Authors: Aaron Quinlan[1], Brent Pedersen[2]
     Affl:    [1] Center for Public Health Genomics, University of Virginia
-             [2] 
+             [2]
     Email:  aaronquinlan at gmail dot com
 """
 include "cbedtools.pxi"
@@ -13,15 +13,13 @@ from cython.operator cimport dereference as deref
 import sys
 
 
-class MalformedBedLineError(Exception): pass
+class MalformedBedLineError(Exception):
+    pass
 
 
 cpdef parse_attributes(str attr_str):
     """
     parse the attribute string from gff or gtf into a dictionary
-    # copied from genomicfeatures
-    #>>> parse_attributes('ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805') == {'rname': 'thaliana_1_465_805', 'ID': 'thaliana_1_465_805', 'match': 'scaffold_801404.1'}
-    #True
     """
     cdef str sep, field_sep
     cdef dict _attributes = {}
@@ -107,6 +105,7 @@ cdef class Interval:
         """ the chromosome of the feature"""
         def __get__(self):
             return self._bed.chrom.c_str()
+
         def __set__(self, char* chrom):
             self._bed.chrom = string(chrom)
             idx = LOOKUPS[self.file_type]["chrom"]
@@ -116,12 +115,14 @@ cdef class Interval:
         """ the 0-based start of the feature"""
         def __get__(self):
             return self._bed.start
+
         def __set__(self, int start):
             self._bed.start = start
             idx = LOOKUPS[self.file_type]["start"]
 
             # Non-BED files should have 1-based coords in fields
-            if self.file_type != 'bed': start += 1
+            if self.file_type != 'bed':
+                start += 1
 
             s = str(start)
             self._bed.fields[idx] = string(s)
@@ -130,6 +131,7 @@ cdef class Interval:
         """ the end of the feature"""
         def __get__(self):
             return self._bed.end
+
         def __set__(self, int end):
             self._bed.end = end
             e = str(end)
@@ -140,6 +142,7 @@ cdef class Interval:
         """ the end of the feature"""
         def __get__(self):
             return self._bed.end
+
         def __set__(self, int end):
             idx = LOOKUPS[self.file_type]["stop"]
             e = str(end)
@@ -150,6 +153,7 @@ cdef class Interval:
         """ the strand of the feature"""
         def __get__(self):
             return self._bed.strand.c_str()
+
         def __set__(self, strand):
             idx = LOOKUPS[self.file_type]["strand"]
             self._bed.fields[idx] = string(strand)
@@ -173,6 +177,7 @@ cdef class Interval:
                 else:
                     self._attrs = Attributes(self, "")
             return self._attrs
+
         def __set__(self, attrs):
             self._attrs = attrs
 
@@ -200,7 +205,8 @@ cdef class Interval:
                 attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
-                    if key in attrs: return attrs[key]
+                    if key in attrs:
+                        return attrs[key]
 
             elif ftype == <char *>"vcf":
                 s = self.fields[2]
@@ -216,14 +222,15 @@ cdef class Interval:
                 attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
-                    if not key in attrs: continue
+                    if not key in attrs:
+                        continue
                     attrs[key] = value
                     attr_str = self._bed.fields[8].c_str()
                     field_sep, quote = ("=", "") if "=" in attr_str \
                                                  else (" ", '"')
                     attr_str = ";".join(["%s%s%s%s%s" % \
                          (k, field_sep, quote, v, quote) \
-                             for k,v in attrs.iteritems()])
+                             for k, v in attrs.iteritems()])
 
                     self._bed.fields[8] = string(attr_str)
                     break
@@ -237,6 +244,7 @@ cdef class Interval:
     property score:
         def __get__(self):
             return self._bed.score.c_str()
+
         def __set__(self, value):
             self._bed.score = string(value)
             idx = LOOKUPS[self.file_type]["score"]
@@ -284,7 +292,8 @@ cdef class Interval:
             nfields = self._bed.fields.size()
             if key >= nfields:
                 raise IndexError('field index out of range')
-            elif key < 0: key = nfields + key
+            elif key < 0:
+                key = nfields + key
             return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
             return [self._bed.fields.at(i).c_str() for i in \
@@ -304,16 +313,16 @@ cdef class Interval:
     def __setitem__(self, object key, object value):
         cdef string ft_string
         cdef char* ft_char
-        if isinstance(key, (int,long)):
+        if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
             if key >= nfields:
                 raise IndexError('field index out of range')
-            elif key < 0: key = nfields + key
+            elif key < 0:
+                key = nfields + key
             self._bed.fields[key] = string(value)
 
             ft_string = self._bed.file_type
             ft = <char *>ft_string.c_str()
-
 
             if key in LOOKUPS[ft]:
                 setattr(self, LOOKUPS[ft][key], value)
@@ -373,7 +382,7 @@ cdef list bed_vec2list(vector[BED] bv):
 
 
 def overlap(int s1, int s2, int e1, int e2):
-    return min(e1,e2) - max(s1,s2)
+    return min(e1, e2) - max(s1, s2)
 
 
 cdef class IntervalFile:
@@ -384,7 +393,7 @@ cdef class IntervalFile:
     def __init__(self, intervalFile):
         self.intervalFile_ptr = new BedFile(string(intervalFile))
         self._loaded = 0
-        self._open   = 0
+        self._open = 0
 
     def __dealloc__(self):
         del self.intervalFile_ptr
@@ -413,7 +422,8 @@ cdef class IntervalFile:
         return self.intervalFile_ptr.file_type.c_str()
 
     def loadIntoMap(self):
-        if self._loaded: return
+        if self._loaded:
+            return
         self.intervalFile_ptr.loadBedFileIntoMap()
         self._loaded = 1
 
@@ -462,6 +472,6 @@ cdef class IntervalFile:
         self.loadIntoMap()
 
         if same_strand == False:
-           return self.intervalFile_ptr.CountOverlapsPerBin(deref(interval._bed), overlap)
+            return self.intervalFile_ptr.CountOverlapsPerBin(deref(interval._bed), overlap)
         else:
-           return self.intervalFile_ptr.CountOverlapsPerBin(deref(interval._bed), same_strand, overlap)
+            return self.intervalFile_ptr.CountOverlapsPerBin(deref(interval._bed), same_strand, overlap)
