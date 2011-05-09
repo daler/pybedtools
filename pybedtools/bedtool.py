@@ -486,14 +486,42 @@ class BedTool(object):
         # Parse the kwargs into BEDTools-ready args
         cmds = [prog]
         for key, value in kwargs.items():
-            if value is True:
-                cmds.append('-' + key)
-            elif value is False:
-                continue
+            if isinstance(value, bool):
+                if value:
+                    cmds.append('-' + key)
+                else:
+                    continue
             else:
                 cmds.append('-' + key)
                 cmds.append(str(value))
         return cmds, tmp, stdin
+
+    @_returns_bedtool()
+    @_log_to_history
+    def remove_invalid(self):
+        """
+        Remove invalid features and return a new BedTool.
+
+        >>> a = pybedtools.BedTool("chr1 10 100\\nchr1 10 1",
+        ... from_string=True)
+        >>> print a.remove_invalid() #doctest: +NORMALIZE_WHITESPACE
+        chr1	10	100
+        <BLANKLINE>
+
+        """
+        tmp = self._tmp()
+        fout = open(tmp, 'w')
+        i = iter(self)
+        while True:
+            try:
+                fout.write(str(i.next()) + '\n')
+            except pybedtools.MalformedBedLineError:
+                continue
+            except StopIteration:
+                break
+        fout.close()
+        return BedTool(tmp)
+
 
     @_help('intersectBed')
     @_file_or_bedtool()
