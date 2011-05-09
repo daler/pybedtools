@@ -9,10 +9,11 @@ cpdef center(object feature, int width=100):
         return feature
     cdef int start = feature.start
     cdef int stop = feature.stop
-    cdef int center = start + (stop-start)/2
-    feature.start = center - width/2
-    if feature.start < 1: feature.start = 1
-    feature.stop = center + width/2
+    cdef int center = start + (stop - start) / 2
+    feature.start = center - width / 2
+    if feature.start < 1:
+        feature.start = 1
+    feature.stop = center + width / 2
     return feature
 
 
@@ -22,11 +23,13 @@ cpdef greater_than(object feature, int size=100):
     """
     return len(feature) > size
 
+
 cpdef less_than(object feature, int size=100):
     """
     Return True if feature length < *size*
     """
     return len(feature) < size
+
 
 cpdef normalized_to_length(object feature, int idx=4, float scalar=0.001):
     """
@@ -44,6 +47,7 @@ cpdef normalized_to_length(object feature, int idx=4, float scalar=0.001):
     """
     feature[idx] = str(float(feature[idx]) * scalar / len(feature))
     return feature
+
 
 cpdef rename(object feature, str name):
     """
