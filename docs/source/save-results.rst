@@ -16,9 +16,19 @@ opening up the files afterward and manually adding a trackline:
    >>> a_with_b = a.intersect(b)
 
 .. doctest::
+    :options: +NORMALIZE_WHITESPACE
 
-    >>> a_with_b.saveas('intersection-of-a-and-b.bed', trackline='track name="a and b"')
-    <BedTool(intersection-of-a-and-b.bed)>
+    >>> c = a_with_b.saveas('intersection-of-a-and-b.bed', trackline='track name="a and b"')
+    >>> print c.fn
+    intersection-of-a-and-b.bed
+
+    >>> print c
+    track name="a and b"
+    chr1	155	200	feature2	0	+
+    chr1	155	200	feature3	0	-
+    chr1	900	901	feature4	0	+
+    <BLANKLINE>
+
 
 Note that the :meth:`BedTool.saveas` method returns a new :class:`BedTool`
 object which points to the newly created file on disk.  This allows you to

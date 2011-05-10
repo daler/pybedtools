@@ -118,6 +118,8 @@ arbitrarily complex "genome algebra" operations, and the history of the
 situtation, but the ability to backtrack and have a record of what you've
 done can sometimes be helpful.
 
+Deleting temp files specific to a single :class:`BedTool`
+---------------------------------------------------------
 You can delete temp files that have been created over the history of a
 :class:`BedTool` with :meth:`BedTool.delete_temporary_history`.  This method
 will inspect the history, figure out which items point to files in the temp dir
@@ -135,4 +137,5 @@ Note that the file that *f* points to is left alone.  To clarify, the
 :meth:`BedTool.delete_temporary_history` will only delete temp files that match
 the pattern ``<TEMP_DIR>/pybedtools.*.tmp`` from the history of *f*, up to but
 not including the file for *f* itself.  Any :class:`BedTool` instances that do
-not match the pattern are left alone.
+not match the pattern are left alone.  Use the kwarg `ask=False` to disable
+the prompt.

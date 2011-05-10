@@ -2,8 +2,10 @@
 
 Filtering
 ~~~~~~~~~
-The :meth:`filter` method lets you pass in a function that accepts an :class:`Interval` as its first
-argument and returns True for False.  For example, to only get features of a certain size:
+The :meth:`filter` method lets you pass in a function that accepts an
+:class:`Interval` as its first argument and returns True for False.  For
+example, here's how to get a new :class:`BedTool` containing features from
+`a` that are more than 100 bp long:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
@@ -14,17 +16,26 @@ argument and returns True for False.  For example, to only get features of a cer
     chr1	150	500	feature3	0	-
     <BLANKLINE>
 
-The :meth:`filter` method will pass its `*args` and `**kwargs` to the function
-provided.  So a more generic case would be the following, where the function is defined once
-and different arguments are passed in for filtering on different lengths:
+The :meth:`filter` method will pass its `*args` and `**kwargs` to the
+function provided.  So here is a more generic case would be the following,
+where the function is defined once and different arguments are passed in
+for filtering on different lengths:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
     >>> def len_filter(feature, L):
+    ...     "Returns True if feature is longer than L"
     ...     return len(feature) > L
 
+Now we can pass different lengths without defining a new function for each
+length of interest:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
     >>> a = pybedtools.example_bedtool('a.bed')
+
     >>> print a.filter(len_filter, L=10)
     chr1	1	100	feature1	0	+
     chr1	100	200	feature2	0	+
@@ -41,45 +52,12 @@ and different arguments are passed in for filtering on different lengths:
     chr1	150	500	feature3	0	-
     <BLANKLINE>
 
-The :meth:`filter` method uses a file-based format, where the new
-:class:`BedTool` object refers to a new temp file.  You can use a generator
-function to create a new :class:`BedTool` if you want to save disk space:
 
-.. doctest::
-    :options: +NORMALIZE_WHITESPACE
+See :ref:`BedTools as iterators`_ for more advanced and space-efficient usage
+of :meth:`filter` using iterators.
 
-    >>> a = pybedtools.example_bedtool('a.bed')
-    >>> b = pybedtools.BedTool( (i for i in a if len_filter(i, L=200)))
-    >>> print b
-    chr1	150	500	feature3	0	-
-    <BLANKLINE>
-
-However, keep in mind that printing `b`, which was created using a
-generator expression, has now been consumed -- so printing `b` again will
-do nothing:
-
-.. doctest::
-
-   >>> print b
-   <BLANKLINE>
-   <BLANKLINE>
-
-If you create a :class:`BedTool` with a generator expression, you can
-always save it as a file for later use. This is what :meth:`filter` is
-doing:
-
-.. doctest::
-    :options: +NORMALIZE_WHITESPACE
-
-    >>> a = pybedtools.example_bedtool('a.bed')
-    >>> b = pybedtools.BedTool( (i for i in a if len_filter(i, L=200))).saveas('len-filtered-b.bed')
-    >>> print b
-    chr1	150	500	feature3	0	-
-    <BLANKLINE>
-
-    >>> print b
-    chr1	150	500	feature3	0	-
-    <BLANKLINE>
+Fast filtering functions in Cython
+----------------------------------
 
 The :mod:`featurefuncs` module contains some ready-made functions written
 in Cython that will be faster than pure Python equivalents.  For example,
@@ -97,3 +75,4 @@ about 70% faster.  In IPython::
 
     >>> %timeit a.filter(L, 100)
     1 loops, best of 3: 2.96 s per loop
+

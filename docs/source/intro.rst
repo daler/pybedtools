@@ -17,15 +17,13 @@ A brief note on conventions
 Throughout this documentation I've tried to use consistent typography, as
 follows:
 
-* Python variables and arguments are shown in italics: *s=True*
-* Files look like this: :file:`filename.bed`
+* Python variables and arguments, as well as filenames look like this: `s=True`
 * Methods, which are often linked to documentation look like this:
   :meth:`BedTool.merge`.
-* BEDTools_ programs look like this: ``intersectBed``.
 * Arguments that are passed to BEDTools_ programs, as if you were on the
   command line, look like this: ``-d``.
 * The ">>>" in the examples below indicates a Python interpreter prompt and
-  means to type the code into an interactive Python interpreter like IPython_
-  (don't type the >>>) 
+  means to type the code into an interactive Python interpreter like
+  IPython_ or in a script.  (don't type the >>>) 
 
 Onward!
