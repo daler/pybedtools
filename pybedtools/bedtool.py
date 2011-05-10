@@ -522,7 +522,6 @@ class BedTool(object):
         fout.close()
         return BedTool(tmp)
 
-
     @_help('intersectBed')
     @_file_or_bedtool()
     @_implicit('-a')

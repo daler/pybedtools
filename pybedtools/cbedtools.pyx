@@ -67,7 +67,9 @@ cdef class Attributes:
         return self._attr_dict[key]
 
     def __str__(self):
-        return self.sep.join([self.field_sep.join(kvs) for kvs in self._attr_dict.items()])
+        # stringify all items first
+        items = [(i, str(j)) for i,j in self._attr_dict.items()]
+        return self.sep.join([self.field_sep.join(kvs) for kvs in items])
 
     def __repr__(self):
         return repr(self._attr_dict)
