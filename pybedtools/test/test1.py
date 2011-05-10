@@ -137,7 +137,7 @@ def test_stream():
     orig_tempdir = pybedtools.get_tempdir()
 
     if os.path.exists('unwriteable'):
-        raise ValueError('test_stream needs to make a dir "./unwriteable" but there already seems to be one')
+        os.system('rm -rf unwriteable')
 
     os.system('mkdir unwriteable')
     os.system('chmod -w unwriteable')
