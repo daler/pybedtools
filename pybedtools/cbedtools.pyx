@@ -255,6 +255,9 @@ cdef class Interval:
         def __get__(self):
             return self._bed.file_type.c_str()
 
+        def __set__(self, value):
+            self._bed.file_type = string(value)
+
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
     def o_start(self):
@@ -353,10 +356,12 @@ cpdef Interval create_interval_from_list(list fields):
             fields.extend([[]])
         pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
                        string(fields[4]), string(fields[5]), list_to_vector(fields[6]))
+        pyb.file_type = 'bed'
     # GFF
     elif len(fields) == 9 and (fields[3] + fields[4]).isdigit():
-        pyb._bed = new BED(string(fields[0]), int(fields[3]), int(fields[4]), string(fields[2]),
+        pyb._bed = new BED(string(fields[0]), int(fields[3])-1, int(fields[4]), string(fields[2]),
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
+        pyb.file_type = 'gff'
     pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 
