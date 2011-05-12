@@ -52,7 +52,8 @@ def classify_reads(gff, bam, stranded=False, output=None, disable_cleanup=False,
         x.name = x[2]
         return x
 
-    b = a.remove_invalid().filter(intron_exon).each(renamer)
+    tmp = a._tmp()
+    b = a.remove_invalid().filter(intron_exon).each(renamer).saveas(tmp)
 
     if verbose:
         sys.stderr.write('(%.1fs), file=%s\n'% ((time.time()-t0), b.fn))
