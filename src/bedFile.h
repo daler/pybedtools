@@ -355,7 +355,7 @@ private:
                             return parseGffLine(bed, lineVector, numFields);
                         default:
                             printf("ERROR: file type encountered. Exiting\n");
-                            exit(1);
+                            return BED_MALFORMED;
                     }
                 }
                 // line parsing for first non-header line: figure out file contents 
@@ -382,15 +382,15 @@ private:
                         return parseGffLine(bed, lineVector, numFields);
                     }
                     else {
-                        cerr << "Unexpected file format.  Please use tab-delimited BED, GFF, or VCF. " << 
-                                "Perhaps you have non-integer starts or ends at line " << _lineNum << "?" << endl << cerr;
-                        exit(1);
+                        //cerr << "Unexpected file format.  Please use tab-delimited BED, GFF, or VCF. " << 
+                        //        "Perhaps you have non-integer starts or ends at line " << _lineNum << "?" << endl << cerr;
+                        return BED_MALFORMED;
                     }
                 }
                 bed.fields = lineVector;
             }
             else {
-                cerr << "It looks as though you have less than 3 columns at line: " << _lineNum << ".  Are you sure your files are tab-delimited?" << endl;
+                //cerr << "It looks as though you have less than 3 columns at line: " << _lineNum << ".  Are you sure your files are tab-delimited?" << endl;
                 return BED_MALFORMED;
             }
         }
@@ -436,8 +436,8 @@ private:
                 bed.strand = lineVector[5];         
             }
             else if (this->bedType != 3) {
-                cerr << "Error: unexpected number of fields at line: " << _lineNum 
-                     << ".  Verify that your files are TAB-delimited.  Exiting..." << endl; 
+                //cerr << "Error: unexpected number of fields at line: " << _lineNum 
+                //     << ".  Verify that your files are TAB-delimited.  Exiting..." << endl; 
                 return BED_MALFORMED;
             }
             
@@ -446,24 +446,24 @@ private:
                 return BED_VALID;
             }
             else if (bed.start > bed.end) {
-                cerr << "Error: malformed BED entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl; 
+                //cerr << "Error: malformed BED entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl; 
                 return BED_MALFORMED;
             }
             else if ( (bed.start < 0) || (bed.end < 0) ) {
-                cerr << "Error: malformed BED entry at line " << _lineNum << ". Coordinate detected that is < 0. Exiting." << endl;
+                //cerr << "Error: malformed BED entry at line " << _lineNum << ". Coordinate detected that is < 0. Exiting." << endl;
                 return BED_MALFORMED;
             }
         }
         else if (numFields == 1) {
-            cerr << "Only one BED field detected: " << _lineNum << ".  Verify that your files are TAB-delimited.  Exiting..." << endl;
+            //cerr << "Only one BED field detected: " << _lineNum << ".  Verify that your files are TAB-delimited.  Exiting..." << endl;
             return BED_MALFORMED;
         }
         else if ((numFields != this->bedType) && (numFields != 0)) {
-            cerr << "Differing number of BED fields encountered at line: " << _lineNum << ".  Exiting..." << endl;
+            //cerr << "Differing number of BED fields encountered at line: " << _lineNum << ".  Exiting..." << endl;
             return BED_MALFORMED;
         }
         else if ((numFields < 3) && (numFields != 0)) {
-            cerr << "TAB delimited BED file with at least 3 fields (chrom, start, end) is required at line: "<< _lineNum << ".  Exiting..." << endl;
+            //cerr << "TAB delimited BED file with at least 3 fields (chrom, start, end) is required at line: "<< _lineNum << ".  Exiting..." << endl;
             return BED_MALFORMED;
         }
         return BED_MALFORMED;
@@ -493,24 +493,24 @@ private:
                 return BED_VALID;
             }
             else if (bed.start > bed.end) {
-                cerr << "Error: malformed VCF entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl;
+                //cerr << "Error: malformed VCF entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl;
                 return BED_MALFORMED;
             }
             else if ( (bed.start < 0) || (bed.end < 0) ) {
-                cerr << "Error: malformed VCF entry at line " << _lineNum << ". Coordinate detected that is < 0. Exiting." << endl;
+                //cerr << "Error: malformed VCF entry at line " << _lineNum << ". Coordinate detected that is < 0. Exiting." << endl;
                 return BED_MALFORMED;
             }
         }
         else if (numFields == 1) {
-            cerr << "Only one VCF field detected: " << _lineNum << ".  Verify that your files are TAB-delimited.  Exiting..." << endl;
+            //cerr << "Only one VCF field detected: " << _lineNum << ".  Verify that your files are TAB-delimited.  Exiting..." << endl;
             return BED_MALFORMED;
         }
         else if ((numFields != this->bedType) && (numFields != 0)) {
-            cerr << "Differing number of VCF fields encountered at line: " << _lineNum << ".  Exiting..." << endl;
+            //cerr << "Differing number of VCF fields encountered at line: " << _lineNum << ".  Exiting..." << endl;
             return BED_MALFORMED;
         }
         else if ((numFields < 2) && (numFields != 0)) {
-            cerr << "TAB delimited VCF file with at least 2 fields (chrom, pos) is required at line: "<< _lineNum << ".  Exiting..." << endl;
+            //cerr << "TAB delimited VCF file with at least 2 fields (chrom, pos) is required at line: "<< _lineNum << ".  Exiting..." << endl;
             return BED_MALFORMED;
         }
         return BED_MALFORMED;
@@ -536,30 +536,30 @@ private:
                 bed.file_type = this->file_type;
             }
             else {
-                cerr << "Error: unexpected number of fields at line: " << _lineNum << 
-                        ".  Verify that your files are TAB-delimited and that your GFF file has 9 fields.  Exiting..." << endl;
+                //cerr << "Error: unexpected number of fields at line: " << _lineNum << 
+                //        ".  Verify that your files are TAB-delimited and that your GFF file has 9 fields.  Exiting..." << endl;
                 return BED_MALFORMED;
             }
             if (bed.start > bed.end) {
-                cerr << "Error: malformed GFF entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl;
+                //cerr << "Error: malformed GFF entry at line " << _lineNum << ". Start was greater than end. Exiting." << endl;
                 return BED_MALFORMED;
             }
             else if ( (bed.start < 0) || (bed.end < 0) ) {
-                cerr << "Error: malformed GFF entry at line " << _lineNum << ". Coordinate detected that is < 1. Exiting." << endl;
+                //cerr << "Error: malformed GFF entry at line " << _lineNum << ". Coordinate detected that is < 1. Exiting." << endl;
                 return BED_MALFORMED;
             }
             else return BED_VALID;
         }
         else if (numFields == 1) {
-            cerr << "Only one GFF field detected: " << _lineNum << ".  Verify that your files are TAB-delimited.  Exiting..." << endl;
+            //cerr << "Only one GFF field detected: " << _lineNum << ".  Verify that your files are TAB-delimited.  Exiting..." << endl;
             return BED_MALFORMED;
         }
         else if ((numFields != this->bedType) && (numFields != 0)) {
-            cerr << "Differing number of GFF fields encountered at line: " << _lineNum << ".  Exiting..." << endl;
+            //cerr << "Differing number of GFF fields encountered at line: " << _lineNum << ".  Exiting..." << endl;
             return BED_MALFORMED;
         }
         else if ((numFields < 9) && (numFields != 0)) {
-            cerr << "TAB delimited GFF file with 9 fields is required at line: "<< _lineNum << ".  Exiting..." << endl;
+            //cerr << "TAB delimited GFF file with 9 fields is required at line: "<< _lineNum << ".  Exiting..." << endl;
             return BED_MALFORMED;
         }
         return BED_MALFORMED;
