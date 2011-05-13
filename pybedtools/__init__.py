@@ -75,7 +75,7 @@ def list_example_files():
 
     """
     candidate_fns = os.listdir(data_dir())
-    exts = ('.bed', '.gff', '.gtf', '.bed.gz', '.bam')
+    exts = ('.bed', '.gff', '.gtf', '.bed.gz', '.bam', '.gff.gz')
     valid_fns = [f for f in candidate_fns if f.endswith(exts)]
     return sorted(valid_fns)
 
