@@ -19,7 +19,7 @@ files that ship with :mod:`pybedtools`:
 .. doctest::
 
     >>> pybedtools.list_example_files()
-    ['a.bed', 'b.bed', 'c.gff', 'd.gff', 'hg19-genes.bed.gz', 'rmsk.hg18.chr21.small.bed', 'rmsk.hg18.chr21.small.bed.gz']
+    ['a.bed', 'b.bed', 'c.gff', 'd.gff', 'dm3-chr2L-5M-invalid.gff.gz', 'dm3-chr2L-5M.gff.gz', 'dmel-all-r5.33-cleaned.gff', 'hg19-genes.bed.gz', 'rmsk.hg18.chr21.small.bed', 'rmsk.hg18.chr21.small.bed.gz', 'x.bam']
 
 Note that there are BED and GFF files, some of which are compressed.  All
 files supported by BEDTools_ are supported by :mod:`pybedtools`.
