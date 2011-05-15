@@ -918,6 +918,40 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
+    @_help('genomeCoverageBed')
+    @_implicit('-i')
+    @_returns_bedtool()
+    @_log_to_history
+    def genome_coverage(self, genome=None, **kwargs):
+        """
+        Calculates coverage at each position in the genome.
+
+        Use *bg=True* to have the resulting BedTool return valid BED-like
+        features.
+
+        Example usage:
+
+        >>> a = pybedtools.example_bedtool('x.bam')
+        >>> b = a.genome_coverage(ibam=a.fn, genome='dm3', bg=True)
+        >>> b.head(3) #doctest: +NORMALIZE_WHITESPACE
+        chr2L	9329	9365	1
+        chr2L	10212	10248	1
+        chr2L	10255	10291	1
+
+
+        """
+        if genome is not None:
+            kwargs['g'] = pybedtools.chromsizes_to_file(
+                                        pybedtools.chromsizes(genome))
+
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='genomeCoverageBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
+
     def features(self):
         """
         Returns an iterator of :class:`feature` objects.
