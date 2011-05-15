@@ -979,6 +979,36 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
+    @_help('maskFastaFromBed')
+    @_implicit('-bed')
+    @_log_to_history
+    @_returns_bedtool()
+    def mask_fasta(self, **kwargs):
+        """
+        Masks a fasta file at the positions in a BED file and saves result as
+        *out*. This method returns None, and sets self.seqfn to *out*.
+
+        >>> a = pybedtools.BedTool('chr1 100 110', from_string=True)
+        >>> fasta_fn = pybedtools.example_filename('test.fa')
+        >>> a = a.mask_fasta(fi=fasta_fn, fo='masked.fa.example')
+        >>> b = a.slop(b=2, genome='hg19')
+        >>> b = b.sequence(a.seqfn)
+        >>> print b.print_sequence()
+        >chr1:98-112
+        TTNNNNNNNNNNAT
+        <BLANKLINE>
+        >>> os.unlink('masked.fa.example')
+        >>> if os.path.exists('masked.fa.example.fai'):
+        ...     os.unlink('masked.fa.example.fai')
+
+        """
+        if 'bed' not in kwargs:
+            kwargs['bed'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='maskFastaFromBed', **kwargs)
+        _ = call_bedtools(cmds, tmp, stdin=stdin)
+        self.seqfn = kwargs['fo']
+        return self
 
     def features(self):
         """
