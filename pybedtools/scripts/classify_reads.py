@@ -266,7 +266,7 @@ def classify_reads(gff, bam, stranded=False, include=None, exclude=None,
             fout.write('%s\t%s\t%.2f\t%s\t%.1f\t%s\n' % values)
 
         sorted_results_rev = sorted(results_rev.items(),
-                                    key=lambda: x[1],
+                                    key=lambda x: x[1],
                                     reverse=True)
 
         for key, value_rev in sorted_results_rev:
