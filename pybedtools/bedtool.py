@@ -646,6 +646,7 @@ class BedTool(object):
         pybedtools.chromsizes() ) it will be converted to a temp file for use
         with slopBed.  If it is a string, then it is assumed to be a filename.
 
+        Alternatively, use *genome* to indicate a pybedtools-created genome.
         Example usage:
 
             >>> a = pybedtools.example_bedtool('a.bed')
@@ -680,23 +681,56 @@ class BedTool(object):
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
-        if 'g' not in kwargs:
-            try:
-                kwargs['g'] = self.chromsizes
 
-            except AttributeError:
-                raise ValueError('No genome specified. Either pass a "g"'
-                                'argument or use set_chromsizes()')
+        kwargs = self.check_genome(**kwargs)
 
-        # If it's a dictionary, then convert to file and overwrite kwargs['g'].
-        if isinstance(kwargs['g'], dict):
-            genome_fn = self._tmp()
-            pybedtools.chromsizes_to_file(kwargs['g'], genome_fn)
-            kwargs['g'] = genome_fn
 
         cmds, tmp, stdin = self.handle_kwargs(prog='slopBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
+
+    def check_genome(self, **kwargs):
+        """
+        Handles the different ways of specifying a genome in kwargs:
+
+        g='genome.file' specifies a file directly
+        genome='dm3' gets the file from genome registry
+        self.chromsizes could be a dict.\
+        """
+
+        # If both g and genome are missing, assume self.chromsizes
+        if ('g' not in kwargs) and ('genome' not in kwargs):
+            if hasattr(self, 'chromsizes'):
+                kwargs['g'] = self.chromsizes
+            else:
+                raise ValueError('No genome specified. Use the "g" or "genome" '
+                                 'kwargs, or use the .set_chromsizes() method')
+
+
+        # If both specified, rather than make an implicit decision, raise an
+        # exception
+        if 'g' in kwargs and 'genome' in kwargs:
+            raise ValueError('Cannot specify both "g" and "genome"')
+
+        # Something like genome='dm3' was specified
+        if 'g' not in kwargs and 'genome' in kwargs:
+            genome_dict = pybedtools.chromsizes(kwargs['genome'])
+            genome_file = pybedtools.chromsizes_to_file(genome_dict)
+            kwargs['g'] = genome_file
+            del kwargs['genome']
+
+        # By the time we get here, 'g' is specified.
+
+        # If a dict was provided, convert to tempfile here
+        if isinstance(kwargs['g'], dict):
+            kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
+
+        if not os.path.exists(kwargs['g']):
+            raise ValueError('Genome file "%s" does not exist')
+
+        return kwargs
+
+
 
     @_help('mergeBed')
     @_implicit('-i')
@@ -798,7 +832,7 @@ class BedTool(object):
     @_help('shuffleBed')
     @_implicit('-i')
     @_log_to_history
-    def shuffle(self, genome=None, **kwargs):
+    def shuffle(self, **kwargs):
         """
         Shuffle coordinates.
 
@@ -815,9 +849,7 @@ class BedTool(object):
         <BLANKLINE>
 
         """
-        if genome is not None:
-            kwargs['g'] = pybedtools.chromsizes_to_file(
-                                    pybedtools.chromsizes(genome))
+        kwargs = self.check_genome(**kwargs)
 
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
@@ -889,7 +921,7 @@ class BedTool(object):
     @_implicit('-i')
     @_returns_bedtool()
     @_log_to_history
-    def flank(self, genome=None, **kwargs):
+    def flank(self, **kwargs):
         """
         Create flanking intervals on either side of input BED.
 
@@ -908,15 +940,75 @@ class BedTool(object):
         <BLANKLINE>
 
         """
-        if genome is not None:
-            kwargs['g'] = pybedtools.chromsizes_to_file(
-                                        pybedtools.chromsizes(genome))
+        kwargs = self.check_genome(**kwargs)
+
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
         cmds, tmp, stdin = self.handle_kwargs(prog='flankBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
+
+    @_help('genomeCoverageBed')
+    @_implicit('-i')
+    @_returns_bedtool()
+    @_log_to_history
+    def genome_coverage(self, **kwargs):
+        """
+        Calculates coverage at each position in the genome.
+
+        Use *bg=True* to have the resulting BedTool return valid BED-like
+        features
+
+        Example usage:
+
+        >>> a = pybedtools.example_bedtool('x.bam')
+        >>> b = a.genome_coverage(ibam=a.fn, genome='dm3', bg=True)
+        >>> b.head(3) #doctest: +NORMALIZE_WHITESPACE
+        chr2L	9329	9365	1
+        chr2L	10212	10248	1
+        chr2L	10255	10291	1
+
+        """
+        kwargs = self.check_genome(**kwargs)
+
+        if 'i' not in kwargs:
+            kwargs['i'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='genomeCoverageBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
+    @_help('maskFastaFromBed')
+    @_implicit('-bed')
+    @_log_to_history
+    @_returns_bedtool()
+    def mask_fasta(self, **kwargs):
+        """
+        Masks a fasta file at the positions in a BED file and saves result as
+        *out*. This method returns None, and sets self.seqfn to *out*.
+
+        >>> a = pybedtools.BedTool('chr1 100 110', from_string=True)
+        >>> fasta_fn = pybedtools.example_filename('test.fa')
+        >>> a = a.mask_fasta(fi=fasta_fn, fo='masked.fa.example')
+        >>> b = a.slop(b=2, genome='hg19')
+        >>> b = b.sequence(a.seqfn)
+        >>> print b.print_sequence()
+        >chr1:98-112
+        TTNNNNNNNNNNAT
+        <BLANKLINE>
+        >>> os.unlink('masked.fa.example')
+        >>> if os.path.exists('masked.fa.example.fai'):
+        ...     os.unlink('masked.fa.example.fai')
+
+        """
+        if 'bed' not in kwargs:
+            kwargs['bed'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='maskFastaFromBed', **kwargs)
+        _ = call_bedtools(cmds, tmp, stdin=stdin)
+        self.seqfn = kwargs['fo']
+        return self
 
     def features(self):
         """
