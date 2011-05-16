@@ -402,7 +402,8 @@ class BedTool(object):
                                 'shuffleBed': 'i',
                                'annotateBed': 'i',
                                   'flankBed': 'i',
-                              'fastaFromBed': 'bed', }
+                              'fastaFromBed': 'bed',
+                          'maskFastaFromBed': 'bed', }
 
         # Which arguments *other.fn* can be used as
         implicit_instream2 = {'intersectBed': 'b',
