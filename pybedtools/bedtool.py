@@ -715,7 +715,10 @@ class BedTool(object):
 
         # Something like genome='dm3' was specified
         if 'g' not in kwargs and 'genome' in kwargs:
-            genome_dict = pybedtools.chromsizes(kwargs['genome'])
+            if isinstance(kwargs['genome'], dict):
+                 genome_dict = kwargs['genome']
+            else:
+                genome_dict = pybedtools.chromsizes(kwargs['genome'])
             genome_file = pybedtools.chromsizes_to_file(genome_dict)
             kwargs['g'] = genome_file
             del kwargs['genome']
