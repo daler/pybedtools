@@ -682,9 +682,7 @@ class BedTool(object):
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
-
         kwargs = self.check_genome(**kwargs)
-
 
         cmds, tmp, stdin = self.handle_kwargs(prog='slopBed', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
@@ -704,9 +702,9 @@ class BedTool(object):
             if hasattr(self, 'chromsizes'):
                 kwargs['g'] = self.chromsizes
             else:
-                raise ValueError('No genome specified. Use the "g" or "genome" '
-                                 'kwargs, or use the .set_chromsizes() method')
-
+                raise ValueError('No genome specified. Use the "g" or '
+                                 '"genome" kwargs, or use the '
+                                 '.set_chromsizes() method')
 
         # If both specified, rather than make an implicit decision, raise an
         # exception
@@ -729,12 +727,11 @@ class BedTool(object):
         if isinstance(kwargs['g'], dict):
             kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
 
+
         if not os.path.exists(kwargs['g']):
             raise ValueError('Genome file "%s" does not exist')
 
         return kwargs
-
-
 
     @_help('mergeBed')
     @_implicit('-i')
@@ -979,7 +976,8 @@ class BedTool(object):
         if 'i' not in kwargs:
             kwargs['i'] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='genomeCoverageBed', **kwargs)
+        cmds, tmp, stdin = self.handle_kwargs(prog='genomeCoverageBed',
+                                              **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
@@ -1009,7 +1007,8 @@ class BedTool(object):
         if 'bed' not in kwargs:
             kwargs['bed'] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='maskFastaFromBed', **kwargs)
+        cmds, tmp, stdin = self.handle_kwargs(prog='maskFastaFromBed',
+                                              **kwargs)
         _ = call_bedtools(cmds, tmp, stdin=stdin)
         self.seqfn = kwargs['fo']
         return self
