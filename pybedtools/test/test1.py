@@ -93,11 +93,13 @@ def test_chromsizes():
     assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc, 'dm3', timeout=0)
     try:
 
+        print pybedtools.chromsizes('dm3')
+        print pybedtools.get_chromsizes_from_ucsc('dm3')
         assert pybedtools.chromsizes('dm3') == pybedtools.get_chromsizes_from_ucsc('dm3')
 
         hg17 = pybedtools.chromsizes('hg17')
 
-        assert hg17['chr1'] == (1,245522847)
+        assert hg17['chr1'] == (0, 245522847)
 
         fn = pybedtools.chromsizes_to_file(hg17, fn='hg17.genome')
         expected = 'chr1\t245522847\n'

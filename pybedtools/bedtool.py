@@ -363,7 +363,7 @@ class BedTool(object):
             >>> a = pybedtools.example_bedtool('a.bed')
             >>> a = a.set_chromsizes(hg19)
             >>> print a.chromsizes['chr1']
-            (1, 249250621)
+            (0, 249250621)
 
             >>> # Now you can use things like pybedtools_shuffle
             >>> b = a.pybedtools_shuffle()
