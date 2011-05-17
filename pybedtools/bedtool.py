@@ -403,13 +403,15 @@ class BedTool(object):
                                'annotateBed': 'i',
                                   'flankBed': 'i',
                               'fastaFromBed': 'bed',
-                          'maskFastaFromBed': 'bed', }
+                          'maskFastaFromBed': 'bed',
+                               'coverageBed': 'a'}
 
         # Which arguments *other.fn* can be used as
         implicit_instream2 = {'intersectBed': 'b',
                                'subtractBed': 'b',
                                 'closestBed': 'b',
-                                 'windowBed': 'b', }
+                                 'windowBed': 'b',
+                               'coverageBed': 'b'}
 
         stdin = None
 
@@ -977,6 +979,29 @@ class BedTool(object):
             kwargs['i'] = self.fn
 
         cmds, tmp, stdin = self.handle_kwargs(prog='genomeCoverageBed',
+                                              **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
+    @_help('coverageBed')
+    @_implicit('-a')
+    @_returns_bedtool()
+    @_log_to_history
+    def coverage(self, b=None, **kwargs):
+        """
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> c = a.coverage(b)
+        >>> c.head(3) #doctest: +NORMALIZE_WHITESPACE
+        chr1	155	200	feature5	0	-	2	45	45	1.0000000
+        chr1	800	901	feature6	0	+	1	1	101	0.0099010
+        """
+        if ('abam' not in kwargs) and ('a' not in kwargs):
+            kwargs['a'] = self.fn
+
+        kwargs['b'] = b
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='coverageBed',
                                               **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
