@@ -4,6 +4,7 @@ import os
 import sys
 import random
 import string
+from itertools import groupby
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
@@ -225,6 +226,23 @@ class BedTool(object):
         """
         return BedTool((func(f, *args, **kwargs) for f in self))
 
+    @_help('bed12ToBed6')
+    @_file_or_bedtool()
+    @_implicit('-i')
+    @_returns_bedtool()
+    @_log_to_history
+    def bed6(self, **kwargs):
+        """
+        convert a BED12 to a BED6 file
+        """
+        if not 'i' in kwargs:
+            kwargs['i'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='bed12ToBed6', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
+
     @property
     def file_type(self):
         """
@@ -399,6 +417,7 @@ class BedTool(object):
                                    'slopBed': 'i',
                                   'mergeBed': 'i',
                                    'sortBed': 'i',
+                               'bed12ToBed6': 'i',
                                 'shuffleBed': 'i',
                                'annotateBed': 'i',
                                   'flankBed': 'i',
