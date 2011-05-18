@@ -7,6 +7,6 @@ Topical Documentation
 
     topical-iterators
     topical-bam
-    topical-random
+    topical-wrapping
     topical-genome
 
