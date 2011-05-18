@@ -475,6 +475,11 @@ def test_repr_and_printing():
 
     print a.head(1)
 
+def test_bed6():
+    a = pybedtools.example_bedtool('mm9.bed12')
+    b = a.bed6()
+
+
 def test_intersect():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
