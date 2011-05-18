@@ -479,6 +479,19 @@ def test_bed6():
     a = pybedtools.example_bedtool('mm9.bed12')
     b = a.bed6()
 
+def test_introns():
+    a = pybedtools.example_bedtool('mm9.bed12')
+    t = pybedtools.BedTool._tmp()
+    b = pybedtools.BedTool((f for f in a if f.name == "Tcea1,uc007afj.1"))
+    b.saveas(t)
+    b = pybedtools.BedTool(t)
+    bfeat = iter(b).next()
+
+    bi = b.introns()
+    # b[9] is the exonCount from teh bed12 file. there should be
+    # b[9] -1 introns assuming no utrs.
+    assert len(bi) == int(bfeat[9]) - 1, (len(bi), len(b))
+
 
 def test_intersect():
     a = pybedtools.example_bedtool('a.bed')

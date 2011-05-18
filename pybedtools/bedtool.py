@@ -242,6 +242,78 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
+    def introns(self, gene="gene", exon="exon"):
+        """
+        Given a BED12 or a GFF with exons, create a new `BedTool` with
+        just introns.
+        the output is a bed6 file with the score column (5) being one of
+        'intron'/'utr5'/'utr3'
+        """
+        # iterate over all the features in the gene.
+        s = self.sort()
+        if self.file_type == "gff":
+            exon_iter = BedTool((f for f in s if f[2] == gene))
+            gene_iter = BedTool((f for f in s if f[2] == exon))
+
+        elif self.file_type == "bed":
+            if s.field_count() == 12:
+                exon_iter = s.bed6()
+                gene_iter = s
+            else:
+                # TODO: bed6. groupby on name and find smallest start,
+                # largest stop.
+                exon_iter = s
+                gene_iter = None
+                raise NotImplementedError('.introns() only supported for bed12'
+                                          'and GFF')
+
+        else:
+            raise NotImplementedError('.introns() only'
+                            'supported for BED and GFF')
+        from heapq import merge
+        gene_exon_iter = merge(exon_iter, gene_iter)
+
+        fh = open(BedTool._tmp(), "w")
+
+        # group on the name.
+        for name, gene_features in groupby(gene_exon_iter, lambda f: f.name):
+            features = list(gene_features)
+            if self.file_type == "bed":
+                gene_feature = [f for f in features if len(f.fields) == 12]
+                exons = [f for f in features if len(f.fields) != 12]
+            else:
+                gene_feature = [f for f in features if f[2] == gene]
+                exons = [f for f in features if f[2] == exon]
+            assert len(gene_feature) == 1, (gene_feature, exons, features)
+            gene_feature = gene_feature[0]
+
+            gstart, gend = gene_feature.start, gene_feature.end
+            for i, exon in enumerate(exons):
+                # 5' utr between gene start and first intron
+                if i == 0 and exon.start > gstart:
+                    utr = {"+": "utr5", "-": "utr3"}[gene_feature.strand]
+                    print >>fh, "%s\t%i\t%i\t%s\t%s\t%s" % (gene_feature.chrom,
+                                                   gene_feature.start,
+                                                   exon.start,
+                                                   gene_feature.name,
+                                                   utr, gene_feature.strand)
+                elif i == len(exons) - 1 and exon.end < gend:
+                    utr = {"+": "utr3", "-": "utr5"}[gene_feature.strand]
+                    print >>fh, "%s\t%i\t%i\t%s\t%s\t%s" % (gene_feature.chrom,
+                                                   exon.end,
+                                                   gene_feature.end,
+                                                   gene_feature.name,
+                                                   utr, gene_feature.strand)
+                elif i  != len(exons) - 1:
+                    istart = exon.end
+                    iend = exons[i + 1].start
+                    print >>fh, "%s\t%i\t%i\t%s\tintron\t%s" % \
+                                              (gene_feature.chrom,
+                                               istart, iend,
+                                               gene_feature.name,
+                                               gene_feature.strand)
+        fh.close()
+        return BedTool(fh.name)
 
     @property
     def file_type(self):
@@ -735,7 +807,7 @@ class BedTool(object):
         # Something like genome='dm3' was specified
         if 'g' not in kwargs and 'genome' in kwargs:
             if isinstance(kwargs['genome'], dict):
-                 genome_dict = kwargs['genome']
+                genome_dict = kwargs['genome']
             else:
                 genome_dict = pybedtools.chromsizes(kwargs['genome'])
             genome_file = pybedtools.chromsizes_to_file(genome_dict)
@@ -747,7 +819,6 @@ class BedTool(object):
         # If a dict was provided, convert to tempfile here
         if isinstance(kwargs['g'], dict):
             kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
-
 
         if not os.path.exists(kwargs['g']):
             raise ValueError('Genome file "%s" does not exist')
