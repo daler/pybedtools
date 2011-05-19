@@ -14,18 +14,8 @@ for each of the up and downstream columns.
 import argparse
 import sys
 from pybedtools import BedTool
-from pybedtools.cbedtools import parse_attributes
+from pybedtools.cbedtools import parse_attributes, create_interval_from_list
 import collections
-
-# PYTHONPATH=$PYTHONPATH:. python scripts/annotate.py -a data/new.regions.bed -b data/Homo_sapiens.hg18.gtf --upstream 5000
-
-# $ pybedtools annotate -a regions.bed -b knownGene.bed --upstream 10000
-#                  --downstream 5000 --report-distance
-# a bed: regions.bed and another:
-# annotation.bed, it would add 4 columns to regions.bed:
-# nearest-feature, nearest-distance, upstream-features, downstream-features
-# where the up/downstream features are determined by a distance
-# parameter, e.g. like --upstream 10000 --downstream 5000
 
 def get_gff_name(field):
     attrs = parse_attributes(field)
@@ -41,30 +31,60 @@ def gen_get_name(b, afields):
             return get_gff_name(fields[afields + 7])
     else:
         raise Exception("not implemented")
-    return get_name 
+    return get_name
 
 def add_closest(aname, bname):
-    a, b = BedTool(aname), BedTool(bname)
+    a, full_b = BedTool(aname), BedTool(bname)
 
+    def exonify(f):
+        f[4] = "exon"
+        return f
+
+    bintrons = full_b.introns()
+    bexons = full_b.bed6().each(exonify)
+
+    fb = open(BedTool._tmp(), "w")
+    for bi in bintrons:
+        fb.write(str(bi) + "\n")
+    for be in bexons:
+        fb.write(str(be) + "\n")
+    fb.close()
+
+    b = BedTool(fb.name).sort()
+    b.saveas('b.bed')
     afields = a.field_count()
-    c = a.closest(b, d=True)
+    c = a.closest(b, d=True, t="all")
     get_name = gen_get_name(b, afields)
 
     dbed = open(BedTool._tmp(), "w")
-    # keep the name and distance
-    seen_by_line = collections.defaultdict(list)
-    for feat in c:
-        key = "\t".join(feat[:afields])
-        seen_by_line[key].append([feat[-1], get_name(feat)])
 
-    for key, dist_names in seen_by_line.iteritems():
-        if len(dist_names) > 0:
-            assert len(set([d[0] for d in dist_names])) == 1
-        names = ",".join(sorted(set(d[1] for d in dist_names)))
-        new_line = "\t".join([key] + [names] + [dist_names[0][0]])
+    # keep the name, distance and feature type.
+    seen_by_line = collections.defaultdict(list)
+    c.saveas('c.bed')
+    assert len(c) > 1
+    for feat in c:
+        fields = feat.fields
+        key = "\t".join(fields[:afields])
+        distance = int(fields[-1])
+        seen_by_line[key].append({'distance': distance, 'name': get_name(feat),
+                                  'type': fields[afields + 4]})
+
+
+    for key, dist_info in seen_by_line.iteritems():
+        if len(dist_info) > 1:
+            assert all(d['distance'] == 0 for d in dist_info), (dist_info)
+
+        # if the distance is zero. figure it it's intron or exon.
+        dist = dist_info[0]['distance']
+        if all(d['distance'] == 0 for d in dist_info):
+            dist = ";".join(sorted(set(d['type'] for d in dist_info)))
+
+        names = ",".join(sorted(set(d['name'] for d in dist_info)))
+        new_line = "\t".join([key, names, str(dist)])
         dbed.write(new_line + "\n")
     dbed.close()
     d = BedTool(dbed.name)
+    d.saveas('y.bed')
     assert len(d) == len(a)
     return d
 

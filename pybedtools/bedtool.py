@@ -376,6 +376,10 @@ class BedTool(object):
         else:
             return self.fn
 
+    @property
+    def intervals(self):
+        return IntervalFile(self.fn)
+
     def __repr__(self):
         if isinstance(self.fn, file):
             return '<BedTool(stream)>'
