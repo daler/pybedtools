@@ -242,7 +242,6 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
-
     @property
     def file_type(self):
         """
@@ -1153,7 +1152,7 @@ class BedTool(object):
         90.0
         """
         if 'intersect_kwargs' not in kwargs:
-            kwargs['intersect_kwargs']  = {'u': True}
+            kwargs['intersect_kwargs'] = {'u': True}
         try:
             from scipy import stats
             import numpy as np
@@ -1244,7 +1243,7 @@ class BedTool(object):
         if shuffle_kwargs is None:
             shuffle_kwargs = {}
         if intersect_kwargs is None:
-            intersect_kwargs = {'u':True}
+            intersect_kwargs = {'u': True}
 
         if not 'u' in intersect_kwargs:
             intersect_kwargs['u'] = True
