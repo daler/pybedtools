@@ -9,4 +9,5 @@ Topical Documentation
     topical-bam
     topical-wrapping
     topical-genome
+    topical-random
 

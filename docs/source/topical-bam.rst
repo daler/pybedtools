@@ -48,6 +48,7 @@ file:
 The resulting BedTool `d` refers to a BED file and can be used like any other:
 
 .. doctest::
+    :options: +NORMALIZE_WHITESPACE
 
     >>> d.count()
     341324
