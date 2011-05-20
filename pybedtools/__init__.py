@@ -9,7 +9,8 @@ from cbedtools import Interval, IntervalFile, overlap, \
                     MalformedBedLineError
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
-                    find_tagged, set_bedtools_path
+                    find_tagged, set_bedtools_path, \
+                    IntervalIterator
 from bedtool import BedTool
 import genome_registry
 from __main__ import main
