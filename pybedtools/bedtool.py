@@ -374,7 +374,7 @@ class BedTool(object):
         not available in pybedtools.genome_registry, then it will be searched
         for on the UCSC Genome Browser.
 
-        Example usage::
+        Example usage:
 
             >>> hg19 = pybedtools.chromsizes('hg19')
             >>> a = pybedtools.example_bedtool('a.bed')
@@ -587,7 +587,7 @@ class BedTool(object):
         The end result is that this BedTool will have an attribute, self.seqfn,
         that points to the new fasta file.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.BedTool("""
         ... chr1 1 10
@@ -1119,7 +1119,7 @@ class BedTool(object):
 
     def randomstats(self, other, iterations, **kwargs):
         """
-        Sends args and **kwargs to :meth:`BedTool.randomintersection` and
+        Sends args and kwargs to :meth:`BedTool.randomintersection` and
         compiles results into a dictionary with useful stats.  Requires scipy
         and numpy.
 
@@ -1230,14 +1230,15 @@ class BedTool(object):
         iteration.  To get around this and to allow for tests, debug=True will
         set the seed to the iteration number.
 
-        Example usage::
+        Example usage:
 
-        >>> chromsizes = {'chr1':(0, 1000)}
-        >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
-        >>> b = pybedtools.example_bedtool('b.bed')
-        >>> results = a.randomintersection(b, 10, debug=True)
-        >>> print list(results)
-        [2, 2, 2, 0, 2, 3, 2, 1, 2, 3]
+            >>> chromsizes = {'chr1':(0, 1000)}
+            >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
+            >>> b = pybedtools.example_bedtool('b.bed')
+            >>> results = a.randomintersection(b, 10, debug=True)
+            >>> print list(results)
+            [2, 2, 2, 0, 2, 3, 2, 1, 2, 3]
+
         """
 
         if shuffle_kwargs is None:
@@ -1274,7 +1275,7 @@ class BedTool(object):
 
         kwargs are sent to :meth:`BedTool.merge`.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
@@ -1314,7 +1315,7 @@ class BedTool(object):
         A newline is automatically added to the trackline if it does not
         already have one.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = a.saveas('other.bed')
@@ -1340,7 +1341,7 @@ class BedTool(object):
         Returns a new bedtools object containing a random subset of the
         features in this subset.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = a.random_subset(2)
@@ -1364,7 +1365,7 @@ class BedTool(object):
         Returns the total number of bases covered by this BED file.  Does a
         self.merge() first to remove potentially multiple-counting bases.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
 
@@ -1391,7 +1392,7 @@ class BedTool(object):
         Given arbitrary keyword arguments, turns the keys and values into
         attributes.  Useful for labeling BedTools at creation time.
 
-        Example usage::
+        Example usage:
 
         >>> # add a "label" attribute to each BedTool
         >>> a = pybedtools.example_bedtool('a.bed')\
