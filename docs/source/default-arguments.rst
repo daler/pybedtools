@@ -25,21 +25,40 @@ We could have supplied the arguments ``a=a.fn`` and ``b=b.fn``:
 .. doctest::
 
     >>> another_way = a.intersect(a=a.fn, b=b.fn, u=True)
-    >>> assert another_way == a_with_b
+    >>> another_way == a_with_b
+    True
 
-But since we're calling a method on `a`, :mod:`pybedtools` assumes that the
-file `a` points to (specifically, `a.fn`) is the one we want to use as
-input.  So by default, we don't need to explicitly give the keyword
-argument `a=a.fn` because the :meth:`a.intersect` method does so
-automatically.
+But since we're calling a method on the :class:`BedTool` object `a`,
+:mod:`pybedtools` assumes that the file `a` points to (stored in the
+attribute `a.fn`) is the one we want to use as input.  So by default, we
+don't need to explicitly give the keyword argument `a=a.fn` because the
+:meth:`a.intersect` method does so automatically.
 
 We're also calling a method that takes a second bed file as input  -- other
-such methods include :meth:`BedTool.subtract` and :meth:`BedTool.closest`.
-In these cases, :mod:`pybedtools` assumes the first unnamed argument to
-these methods are the second file you want to operate on (and if you pass a
-:class:`BedTool`, it'll automatically use the file in the `fn` attribute of
-that :class:`BedTool`).  So `a.intersect(b)` is just a more convenient
-form of `a.intersect(a=a.fn, b=b.fn)`, which does the same thing.
+such methods include :meth:`BedTool.subtract` and :meth:`BedTool.closest`,
+and others.  For these methods, in addition to assuming `-a` is taken care
+of by the :attr:`BedTool.fn` attribute, :mod:`pybedtools` also assumes the
+first unnamed argument to these methods are the second file you want to
+operate on (and if you pass a :class:`BedTool`, it'll automatically use the
+file in the `fn` attribute of that :class:`BedTool`).  
+
+An example may help to illustrate: these different ways of calling
+:meth:`BedTool.intersect` all have the same results, with the first version
+being the most compact (and probably most convenient):
+
+.. doctest::
+
+    >>> # these all have identical results
+    >>> x1 = a.intersect(b)
+    >>> x2 = a.intersect(a=a.fn, b=b.fn)
+    >>> x3 = a.intersect(b=b.fn)
+    >>> x4 = a.intersect(b, a=a.fn)
+    >>> x1 == x2 == x3 == x4
+    True
+
+Note that `a.intersect(a=a.fn, b)` is not a valid Python expression, since
+non-keyword arguments must come before keyword arguments, but
+`a.intersect(b, a=a.fn)` works fine.
 
 If you're ever unsure, the docstring for these methods indicates which, if
 any, arguments are used as default.  For example, in the

@@ -8,7 +8,19 @@
 
 .. module:: pybedtools
 
+.. _autodoc:
+
+:mod:`pybedtools` Reference
++++++++++++++++++++++++++++
+
+This section is the module reference documentation, and includes the full
+docstrings for methods and functions in :mod:`pybedtools`.  It is separated
+into :ref:`module-level`, :ref:`wrappers`, and :ref:`pbt-unique`.
+
 .. contents::
+
+
+.. _module-level:
 
 :mod:`pybedtools` module-level functions
 ========================================
@@ -17,7 +29,8 @@ Functions for working with example files
 ----------------------------------------
 
 .. automodule:: pybedtools
-    :members: example_bedtool, example_filename, list_example_files
+    :members: example_bedtool, example_filename, list_example_files,
+              data_dir
 
 Functions for specifying genome assemblies
 ------------------------------------------
@@ -33,8 +46,10 @@ Setup
 Utilities
 ---------
 .. automodule:: pybedtools
-    :members: cleanup, IntervalIterator
+    :members: cleanup, IntervalIterator, find_tagged
 
+
+.. _wrappers:
 
 :class:`BedTool` methods that wrap BEDTools programs
 ====================================================
@@ -70,6 +85,10 @@ Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.slop
 
+:meth:`flank` (wraps "flankBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: Bedtool.flank
+
 :meth:`shuffle` (wraps "shuffleBed")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.shuffle
@@ -81,6 +100,13 @@ Utilities
 :meth:`coverage` (wraps "coverageBed")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.coverage
+
+:meth:`genome_coverage` (wraps "genomeCoverageBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.genome_coverage
+
+
+
 
 Methods for converting between formats
 --------------------------------------
@@ -101,6 +127,8 @@ Methods for working with sequences
 .. automethod:: BedTool.mask_fasta
 
 
+.. _pbt-unique:
+
 :class:`BedTool` methods unique to :mod:`pybedtools`
 ====================================================
 
@@ -116,10 +144,6 @@ Introspection
 :meth:`print_sequence`
 ~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.print_sequence
-
-:meth:`file_type`
-~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.file_type
 
 :meth:`field_count`
 ~~~~~~~~~~~~~~~~~~~

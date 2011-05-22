@@ -13,6 +13,11 @@ Welcome to pybedtools's documentation!
    :mod:`pybedtools` is still very much in progress.  Please keep that in
    mind when assesing whether to use this package in production code.
 
+The documentation is separated into 4 main parts, depending on the depth you'd
+like to cover.  Lazy, or just want to jump in?  Check out :ref:`3examples` to
+get a feel for the package.  Want a guided tour?  Give the :ref:`tutorial` a
+shot.  More advanced features are described in the :ref:`topical` section. Finally, 
+doctested module documentation can be found in :ref:`autodoc`.
 
 Contents:
 ---------
@@ -21,6 +26,7 @@ Contents:
    :maxdepth: 3
 
    main
+   3-brief-examples
    tutorial-contents
    topical-documentation-contents
    autodoc_source
