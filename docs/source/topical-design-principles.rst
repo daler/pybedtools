@@ -1,3 +1,4 @@
+.. include:: includeme.rst
 
 .. _`Design principles`:
 
@@ -17,8 +18,8 @@ temporary files on disk.  Even when using the iterator protocol of
 BEDTools programs (see Iterators_ for more on this latter topic).
 
 Let's illustrate some of the design principles behind :mod:`pybedtools` by
-merging features in :file:`a.bed` that are 100 bp or less apart (*d=100*)
-in a strand-specific way (*s=True*):
+merging features in :file:`a.bed` that are 100 bp or less apart (`d=100`)
+in a strand-specific way (`s=True`):
 
 .. doctest::
 
@@ -27,15 +28,15 @@ in a strand-specific way (*s=True*):
     >>> a = BedTool(pybedtools.example_filename('a.bed'))
     >>> merged_a = a.merge(d=100, s=True)
 
-Now *merged_a* is a :class:`BedTool` instance that contains the results of the
+Now `merged_a` is a :class:`BedTool` instance that contains the results of the
 merge.
 
 :class:`BedTool` objects must always point to a file on disk.  So in the
-example above, *merged_a* is a :class:`BedTool`, but what file does it
+example above, `merged_a` is a :class:`BedTool`, but what file does it
 point to?  You can always check the :attr:`BedTool.fn` attribute to find
 out::
 
-    >>> # what file does *merged_a* point to?
+    >>> # what file does `merged_a` point to?
     >>> merged_a.fn
     '/tmp/pybedtools.MPPp5f.tmp'
 
@@ -86,7 +87,7 @@ Returning again to this example::
 
 This demonstrates that the :class:`BedTool` methods that wrap BEDTools_
 programs do the same thing and take the exact same arguments as the
-BEDTools_ program.  Here we can pass *d=100* and *s=True* only because the
+BEDTools_ program.  Here we can pass `d=100` and `s=True` only because the
 underlying BEDTools_ program, `mergeBed`, can accept these arguments.
 Need to know what arguments `mergeBed` can take?  See the docs for
 :meth:`BedTool.merge`; for more on this see :ref:`good docs principle`.
@@ -115,7 +116,7 @@ If we were running the ``mergeBed`` program from the command line, we would
 would have to specify the input file with the :option:`mergeBed -i` option.
 
 :mod:`pybedtools` assumes that if we're calling the :meth:`merge` method on
-the :class:`BedTool`, `a`, we want to operate on the bed file that *a*
+the :class:`BedTool`, `a`, we want to operate on the bed file that `a`
 points to.
 
 In general, BEDTools_ programs that accept a single BED file as input
@@ -193,7 +194,7 @@ Only the BEDTools_ arguments that refer to BED (or other interval) files have
 defaults.  In the current version of BEDTools_, this means only the `-i`,
 `-a`, and `-b` arguments have defaults.  All others have no defaults
 specified by :mod:`pybedtools`; they pass the buck to BEDTools programs.  This
-means if you do not specify the *d* kwarg when calling :meth:`BedTool.merge`,
+means if you do not specify the `d` kwarg when calling :meth:`BedTool.merge`,
 then it will use whatever the installed version of BEDTools_ uses for `-d`
 (currently, `mergeBed`'s default for `-d` is 0).
 
@@ -201,11 +202,11 @@ then it will use whatever the installed version of BEDTools_ uses for `-d`
 `-d` is an option to BEDTools_ `mergeBed` that accepts a value, while
 `-s` is an option that acts as a switch.  In :mod:`pybedtools`, simply
 pass a value (integer, float, whatever) for value-type options like `-d`,
-and boolean values (*True* or *False*) for the switch-type options like
+and boolean values (`True` or `False`) for the switch-type options like
 `-s`.
 
 Here's another example using both types of keyword arguments; the
-:class:`BedTool` object *b* (or it could be a string filename too) is
+:class:`BedTool` object `b` (or it could be a string filename too) is
 implicitly passed to `intersectBed` as `-b` (see :ref:`default args
 principle` above)::
 
@@ -223,8 +224,8 @@ Most methods return new :class:`BedTool` objects, allowing you to chain
 things together just like piping commands together on the command line.  To
 give you a flavor of this, here is how you would get the merged regions of
 features shared between :file:`a.bed` (as referred to by the
-:class:`BedTool` *a* we made previously) and :file:`b.bed`: (as referred to
-by the :class:`BedTool` *b*):
+:class:`BedTool` `a` we made previously) and :file:`b.bed`: (as referred to
+by the :class:`BedTool` `b`):
 
 .. doctest::
     

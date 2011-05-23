@@ -5,13 +5,19 @@ Using BedTool objects as iterators/generators
 
 Typically, :mod:`BedTool` objects are used somewhat like handles to individual
 files on disk that contain BED lines.  To save disk space, :mod:`BedTool`
-objects also have the ability to "stream", much like piping in Unix.
+objects also have the ability to "stream", much like piping in Unix.  That
+is, the data are created only one line at a time in memory, instead of
+either creating a list of all data in memory or writing all data to disk.
 
-You'll need to be careful when using :mod:`BedTool` objects as generators,
-since any operation that reads all the features of a :mod:`BedTool` will
-consume the iterable.
+.. warning::
 
-To get a streaming BedTool, use the `stream=True` kwarg:
+    You'll need to be careful when using :mod:`BedTool` objects as
+    generators, since any operation that reads all the features of a
+    :mod:`BedTool` will consume the iterable.
+
+To get a streaming BedTool, use the `stream=True` kwarg.  This
+:class:`BedTool` will act a little differently from a standard, file-based
+:class:`BedTool`.
 
 .. doctest::
 
@@ -69,7 +75,8 @@ fact, this is what the :meth:`BedTool.filter` method does for you:
     >>> c = a.filter(lambda x: x.start > 200)
 
 We need to "render" these BedTools to string before we can check equality
-since they are both iterables for which `==` is not defined:
+-- consuming them both -- since they are both iterables for which `==` is
+not defined:
 
 .. doctest::
     :options: +ELLIPSIS

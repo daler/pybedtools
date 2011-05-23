@@ -23,8 +23,9 @@ If `a` referred to a BED file like `a.bed`, we could just do
 gzipped GFF file would be passed as `-b`.  In order to use a BAM file,
 however, we need to explicitly specify an `abam` kwarg.  In addition, since
 Python doesn't allow non-keyword arguments after keyword arguments, we need
-to explicitly specify a `b` kwarg.  This should be much clearer with a
-simple example:
+to explicitly specify a `b` kwarg.  
+
+This should be much clearer with a simple example:
 
 .. doctest::
 
@@ -32,9 +33,9 @@ simple example:
 
 Now `c` points to a new BAM file on disk.  Keep in mind that there is not
 yet iterable BAM support in :mod:`pybedtools`, so things like `c.count()`
-or iterating over `c` with a `for feature in c: ...` won't work.  For now,
-consider using a package like HTSeq_ for access to individual reads in BAM
-format.
+or iterating over `c` with a `for feature in c: ...` (i.e, as described in
+:ref:`BedTools as iterators` for BED files) won't work.  For now, consider
+using a package like HTSeq_ for access to individual reads in BAM format.
 
 Alternatively, we can specify the `bed=True` kwarg to convert the
 intersected BAM results to BED format, and use those like a normal BED

@@ -10,6 +10,7 @@ This section contains additional documentation not covered in the tutorial.
     :maxdepth: 3
 
     topical-design-principles
+    topical-create-a-bedtool
     topical-iterators
     topical-bam
     topical-genome
