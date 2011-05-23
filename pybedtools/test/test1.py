@@ -22,6 +22,9 @@ def fix(x):
         s += i
     return s
 
+# ----------------------------------------------------------------------------
+# Streaming and non-file BedTool tests
+# ----------------------------------------------------------------------------
 def test_stream():
     orig_tempdir = pybedtools.get_tempdir()
 
@@ -71,23 +74,6 @@ def test_stream_gen():
     for i in iter(g3):
         print i
 
-def test_malformed():
-    a = pybedtools.BedTool("""
-    chr1 100 200
-    chr1 100 90
-    chr1 100 200
-    chr1 100 200
-    chr1 100 200
-    chr1 100 200
-    """, from_string=True)
-    a_i = iter(a)
-
-    # first feature is OK
-    print a_i.next()
-
-    # but next one is not and should raise ValueError
-    assert_raises(pybedtools.MalformedBedLineError, a_i.next)
-
 def test_stream_of_stream():
     a = pybedtools.example_bedtool('a.bed')
 
@@ -116,207 +102,22 @@ def test_generator():
     b2 = pybedtools.BedTool((i for i in a)).intersect(a)
     assert str(b1) == str(b2)
 
-def test_subset():
-    a = pybedtools.example_bedtool('a.bed')
-    import random
-    random.seed(1)
-
-    s = list(a.random_subset(1).features())
-    assert len(s) == 1
-    assert isinstance(s[0], pybedtools.Interval)
-
-    s2 = list(a.random_subset(len(a)).features())
-    print len(s2)
-    assert len(s2) == len(a)
-
-def test_count_bed():
-    a = pybedtools.example_bedtool('a.bed')
-    assert a.count() == 4
-    assert len(a) == 4
-
-def test_feature_centers():
-    from pybedtools import featurefuncs
+def test_malformed():
     a = pybedtools.BedTool("""
-                           chr1 1 100
-                           chr5 3000 4000
-                           """, from_string=True)
-    b = a.each(featurefuncs.center, 1)
-    results = list(b.features())
+    chr1 100 200
+    chr1 100 90
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    """, from_string=True)
+    a_i = iter(a)
 
-    print results
+    # first feature is OK
+    print a_i.next()
 
-    assert results[0].start == 50
-    assert results[0].stop == 51
-    assert results[0].chrom == 'chr1'
-
-    assert results[1].start == 3500
-    assert results[1].stop == 3501
-    assert results[1].chrom == 'chr5'
-
-def test_bedtool_creation():
-    # make sure we can make a bedtool from a bedtool and that it points to the
-    # same file
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.BedTool(a)
-    assert b.fn == a.fn
-    assert_raises(ValueError, pybedtools.BedTool,'nonexistent.bed')
-
-    # note that *s* has both tabs and spaces....
-    s = """
-    chr1	1	100	feature1  0	+
-    chr1	100	200	feature2  0	+
-    chr1	150	500	feature3  0	-
-    chr1	900	950	feature4  0	+
-    """
-    from_string = pybedtools.BedTool(s, from_string=True)
-
-    # difflib used here to show a bug where a newline was included when using
-    # from_string
-    print ''.join(difflib.ndiff(str(from_string), str(a)))
-
-    assert str(from_string) == str(a)
-
-def test_special_methods():
-    # note that *s* has both tabs and spaces....
-    s = """
-    chr1	1	100	feature1  0	+
-    chr1	100	200	feature2  0	+
-    chr1	150	500	feature3  0	-
-    chr1	900	950	feature4  0	+
-    """
-    from_string = pybedtools.BedTool(s, from_string=True)
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-
-    assert from_string == a
-    assert from_string != b
-    assert not from_string == b
-    assert not from_string != a
-
-def test_add_subtract():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    assert a.intersect(b,u=True) == (a+b)
-    assert a.intersect(b,v=True) == (a-b)
-
-def test_flatten():
-    from pybedtools.helpers import _flatten_list 
-    result = _flatten_list([[1,2,3,0,[0,5],9],[100]])
-    print result
-    assert result == [1, 2, 3, 0, 0, 5, 9, 100]
-
-def test_history_step():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.intersect(b)
-    d = c.subtract(a)
-
-    print d.history
-    d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'n')
-    assert os.path.exists(a.fn)
-    assert os.path.exists(b.fn)
-    assert os.path.exists(c.fn)
-    assert os.path.exists(d.fn)
-
-    d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'Yes')
-    assert os.path.exists(a.fn)
-    assert os.path.exists(b.fn)
-    assert not os.path.exists(c.fn) # this is the only thing that should change
-    assert os.path.exists(d.fn)
-
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.intersect(b)
-    d = c.subtract(a)
-    d.delete_temporary_history(ask=False)
-    assert os.path.exists(a.fn)
-    assert os.path.exists(b.fn)
-    assert not os.path.exists(c.fn) # this is the only thing that should change
-    assert os.path.exists(d.fn)
-
-# TODO: there's enough stuff in here that it's probably worth it to eventually
-# make a TestSequenceStuff class
-def test_sequence():
-    """
-    From UCSC:
-
-    chromStart - The starting position of the feature in the chromosome or
-    scaffold. The first base in a chromosome is numbered 0.
-
-    chromEnd - The ending position of the feature in the chromosome or
-    scaffold. The chromEnd base is not included in the display of the feature.
-    For example, the first 100 bases of a chromosome are defined as
-    chromStart=0, chromEnd=100, and span the bases numbered 0-99. """
-
-    fi = os.path.join(testdir, 'test.fasta')
-
-    s = """
-    chrX 9  16 . . +
-    chrX 9  16 . . -
-    chrY 1  4  . . +
-    chrZ 28 31 . . +
-    """
-
-    fasta = """
-    >chrX
-    AAAAAAAAATGCACTGAAAAAAAAAAAAAAA
-    >chrY
-    GCTACCCCCCCCCCCCCCCCCCCCCCCCCCC
-    >chrZ
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAATCT
-    """
-    a = pybedtools.BedTool(s, from_string=True)
-    assert_raises(ValueError, a.save_seqs, ('none',))
-
-    fout = open(fi,'w')
-    for line in fasta.splitlines(True):
-        fout.write(line.lstrip())
-    fout.close()
-
-    f = a.sequence(fi=fi)
-    assert f.fn == f.fn
-    seqs = open(f.seqfn).read()
-    print seqs
-    expected = """>chrX:9-16
-TGCACTG
->chrX:9-16
-TGCACTG
->chrY:1-4
-CTA
->chrZ:28-31
-TCT
-"""
-    print ''.join(difflib.ndiff(seqs,expected))
-    print expected 
-    assert seqs == expected
-
-    f = a.sequence(fi=fi,s=True)
-    seqs = open(f.seqfn).read()
-    expected = """>chrX:9-16(+)
-TGCACTG
->chrX:9-16(-)
-CAGTGCA
->chrY:1-4(+)
-CTA
->chrZ:28-31(+)
-TCT
-"""
-    print seqs
-    print expected
-    print ''.join(difflib.ndiff(seqs,expected))
-    assert seqs == expected
-
-    f = f.save_seqs('deleteme.fa')
-    assert open('deleteme.fa').read() == expected
-    assert f.print_sequence() == expected
-    os.unlink('deleteme.fa')
-
-    fresh_a = pybedtools.BedTool(s, from_string=True)
-    assert fresh_a == f
-
-    os.unlink(fi)
-    if os.path.exists(fi+'.fai'):
-        os.unlink(fi+'.fai')
+    # but next one is not and should raise ValueError
+    assert_raises(pybedtools.MalformedBedLineError, a_i.next)
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines
@@ -337,16 +138,9 @@ def test_iterator():
     results = list(a)
     assert str(results[0]) == 'chrX\t1\t10', results
 
-def test_repr_and_printing():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a+b
-    os.unlink(c.fn)
-    assert 'a.bed' in repr(a)
-    assert 'b.bed' in repr(b)
-    assert 'MISSING FILE' in repr(c)
-
-    print a.head(1)
+# ----------------------------------------------------------------------------
+# BEDTools wrapper tests
+# ----------------------------------------------------------------------------
 
 def test_bed6():
     a = pybedtools.example_bedtool('mm9.bed12')
@@ -525,62 +319,111 @@ def test_closest():
     r = a.closest(b)
     assert len(r) == len(a)
 
-def test_cat():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.cat(b, postmerge=False)
-    assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
-
-def test_field_count():
-    a = pybedtools.example_bedtool('a.bed')
-    assert a.field_count() == 6
-
-def test_cut():
-    a = pybedtools.example_bedtool('a.bed')
-    c = a.cut([0, 1, 2, 4])
-    assert c.field_count() == 4, c
-
-def test_name():
-    c = iter(pybedtools.example_bedtool('c.gff')).next()
-    assert c.name == "thaliana_1_465_805" , c.name
-
-def test_filter():
-    a = pybedtools.example_bedtool('a.bed')
-
-    b = a.filter(lambda f: f.length < 100 and f.length > 0)
-    assert len(b) == 2
-
-def test_gff_stuff():
-    s = """
-    chr1  fake  gene 1 100 . + . ID=gene1
-    chr1  fake  mRNA 1 100 . + . Name=mRNA1
-    chr1  fake  CDS 50 90 . + . other=nothing
+# TODO: there's enough stuff in here that it's probably worth it to eventually
+# make a TestSequenceStuff class
+def test_sequence():
     """
-    d = pybedtools.BedTool(s, from_string=True)
-    f1, f2, f3 = d.features()
-    assert f1.name == 'gene1', f1.name
-    assert f2.name == 'mRNA1', f2.name
-    assert f3.name is None, f3.name
+    From UCSC:
 
-def test_random_intersection():
-    # TODO:
-    return
-    N = 4
+    chromStart - The starting position of the feature in the chromosome or
+    scaffold. The first base in a chromosome is numbered 0.
+
+    chromEnd - The ending position of the feature in the chromosome or
+    scaffold. The chromEnd base is not included in the display of the feature.
+    For example, the first 100 bases of a chromosome are defined as
+    chromStart=0, chromEnd=100, and span the bases numbered 0-99. """
+
+    fi = os.path.join(testdir, 'test.fasta')
+
+    s = """
+    chrX 9  16 . . +
+    chrX 9  16 . . -
+    chrY 1  4  . . +
+    chrZ 28 31 . . +
+    """
+
+    fasta = """
+    >chrX
+    AAAAAAAAATGCACTGAAAAAAAAAAAAAAA
+    >chrY
+    GCTACCCCCCCCCCCCCCCCCCCCCCCCCCC
+    >chrZ
+    AAAAAAAAAAAAAAAAAAAAAAAAAAAATCT
+    """
+    a = pybedtools.BedTool(s, from_string=True)
+    assert_raises(ValueError, a.save_seqs, ('none',))
+
+    fout = open(fi,'w')
+    for line in fasta.splitlines(True):
+        fout.write(line.lstrip())
+    fout.close()
+
+    f = a.sequence(fi=fi)
+    assert f.fn == f.fn
+    seqs = open(f.seqfn).read()
+    print seqs
+    expected = """>chrX:9-16
+TGCACTG
+>chrX:9-16
+TGCACTG
+>chrY:1-4
+CTA
+>chrZ:28-31
+TCT
+"""
+    print ''.join(difflib.ndiff(seqs,expected))
+    print expected 
+    assert seqs == expected
+
+    f = a.sequence(fi=fi,s=True)
+    seqs = open(f.seqfn).read()
+    expected = """>chrX:9-16(+)
+TGCACTG
+>chrX:9-16(-)
+CAGTGCA
+>chrY:1-4(+)
+CTA
+>chrZ:28-31(+)
+TCT
+"""
+    print seqs
+    print expected
+    print ''.join(difflib.ndiff(seqs,expected))
+    assert seqs == expected
+
+    f = f.save_seqs('deleteme.fa')
+    assert open('deleteme.fa').read() == expected
+    assert f.print_sequence() == expected
+    os.unlink('deleteme.fa')
+
+    fresh_a = pybedtools.BedTool(s, from_string=True)
+    assert fresh_a == f
+
+    os.unlink(fi)
+    if os.path.exists(fi+'.fai'):
+        os.unlink(fi+'.fai')
+
+# ----------------------------------------------------------------------------
+# Operator tests
+# ----------------------------------------------------------------------------
+def test_add_subtract():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
-    li = list(a.randomintersection(b, N))
-    assert len(li) == N, li
+    assert a.intersect(b,u=True) == (a+b)
+    assert a.intersect(b,v=True) == (a-b)
 
-def test_cat():
+def test_subset():
     a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    b_fn = pybedtools.example_filename('b.bed')
-    assert a.cat(b) == a.cat(b_fn)
-    expected =  fix("""
-    chr1 1   500
-    chr1 800 950
-    """)
-    assert a.cat(b) == expected
+    import random
+    random.seed(1)
+
+    s = list(a.random_subset(1).features())
+    assert len(s) == 1
+    assert isinstance(s[0], pybedtools.Interval)
+
+    s2 = list(a.random_subset(len(a)).features())
+    print len(s2)
+    assert len(s2) == len(a)
 
 def test_eq():
     a = pybedtools.example_bedtool('a.bed')
@@ -616,6 +459,188 @@ chr1	900	950	feature4	0	+
     # Make sure that if we force the iterator to be consumed, it is in fact
     # equal
     assert a == str(e)
+
+
+# ----------------------------------------------------------------------------
+# Other BedTool method tests
+# ----------------------------------------------------------------------------
+
+def test_count_bed():
+    a = pybedtools.example_bedtool('a.bed')
+    assert a.count() == 4
+    assert len(a) == 4
+
+def test_feature_centers():
+    from pybedtools import featurefuncs
+    a = pybedtools.BedTool("""
+                           chr1 1 100
+                           chr5 3000 4000
+                           """, from_string=True)
+    b = a.each(featurefuncs.center, 1)
+    results = list(b.features())
+
+    print results
+
+    assert results[0].start == 50
+    assert results[0].stop == 51
+    assert results[0].chrom == 'chr1'
+
+    assert results[1].start == 3500
+    assert results[1].stop == 3501
+    assert results[1].chrom == 'chr5'
+
+def test_bedtool_creation():
+    # make sure we can make a bedtool from a bedtool and that it points to the
+    # same file
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.BedTool(a)
+    assert b.fn == a.fn
+    assert_raises(ValueError, pybedtools.BedTool,'nonexistent.bed')
+
+    # note that *s* has both tabs and spaces....
+    s = """
+    chr1	1	100	feature1  0	+
+    chr1	100	200	feature2  0	+
+    chr1	150	500	feature3  0	-
+    chr1	900	950	feature4  0	+
+    """
+    from_string = pybedtools.BedTool(s, from_string=True)
+
+    # difflib used here to show a bug where a newline was included when using
+    # from_string
+    print ''.join(difflib.ndiff(str(from_string), str(a)))
+
+    assert str(from_string) == str(a)
+
+def test_special_methods():
+    # note that *s* has both tabs and spaces....
+    s = """
+    chr1	1	100	feature1  0	+
+    chr1	100	200	feature2  0	+
+    chr1	150	500	feature3  0	-
+    chr1	900	950	feature4  0	+
+    """
+    from_string = pybedtools.BedTool(s, from_string=True)
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+
+    assert from_string == a
+    assert from_string != b
+    assert not from_string == b
+    assert not from_string != a
+
+def test_field_count():
+    a = pybedtools.example_bedtool('a.bed')
+    assert a.field_count() == 6
+
+def test_cat():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.cat(b, postmerge=False)
+    assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
+
+def test_repr_and_printing():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a+b
+    os.unlink(c.fn)
+    assert 'a.bed' in repr(a)
+    assert 'b.bed' in repr(b)
+    assert 'MISSING FILE' in repr(c)
+
+    print a.head(1)
+
+def test_cut():
+    a = pybedtools.example_bedtool('a.bed')
+    c = a.cut([0, 1, 2, 4])
+    assert c.field_count() == 4, c
+
+def test_filter():
+    a = pybedtools.example_bedtool('a.bed')
+
+    b = a.filter(lambda f: f.length < 100 and f.length > 0)
+    assert len(b) == 2
+
+def test_random_intersection():
+    # TODO:
+    return
+    N = 4
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    li = list(a.randomintersection(b, N))
+    assert len(li) == N, li
+
+def test_cat():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    b_fn = pybedtools.example_filename('b.bed')
+    assert a.cat(b) == a.cat(b_fn)
+    expected =  fix("""
+    chr1 1   500
+    chr1 800 950
+    """)
+    assert a.cat(b) == expected
+
+
+
+# ----------------------------------------------------------------------------
+# Interval tests
+# ----------------------------------------------------------------------------
+
+def test_gff_stuff():
+    s = """
+    chr1  fake  gene 1 100 . + . ID=gene1
+    chr1  fake  mRNA 1 100 . + . Name=mRNA1
+    chr1  fake  CDS 50 90 . + . other=nothing
+    """
+    d = pybedtools.BedTool(s, from_string=True)
+    f1, f2, f3 = d.features()
+    assert f1.name == 'gene1', f1.name
+    assert f2.name == 'mRNA1', f2.name
+    assert f3.name is None, f3.name
+
+def test_name():
+    c = iter(pybedtools.example_bedtool('c.gff')).next()
+    assert c.name == "thaliana_1_465_805" , c.name
+
+# ----------------------------------------------------------------------------
+# Other tests
+# ----------------------------------------------------------------------------
+
+def test_flatten():
+    from pybedtools.helpers import _flatten_list 
+    result = _flatten_list([[1,2,3,0,[0,5],9],[100]])
+    print result
+    assert result == [1, 2, 3, 0, 0, 5, 9, 100]
+
+def test_history_step():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.intersect(b)
+    d = c.subtract(a)
+
+    print d.history
+    d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'n')
+    assert os.path.exists(a.fn)
+    assert os.path.exists(b.fn)
+    assert os.path.exists(c.fn)
+    assert os.path.exists(d.fn)
+
+    d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'Yes')
+    assert os.path.exists(a.fn)
+    assert os.path.exists(b.fn)
+    assert not os.path.exists(c.fn) # this is the only thing that should change
+    assert os.path.exists(d.fn)
+
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.intersect(b)
+    d = c.subtract(a)
+    d.delete_temporary_history(ask=False)
+    assert os.path.exists(a.fn)
+    assert os.path.exists(b.fn)
+    assert not os.path.exists(c.fn) # this is the only thing that should change
+    assert os.path.exists(d.fn)
 
 def test_kwargs():
     a = pybedtools.example_bedtool('a.bed')
