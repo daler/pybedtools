@@ -392,6 +392,18 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
+    def _collapse(self, iterable):
+        """
+        Collapses an iterable into a new tempfile.  Returns the newly created
+        filename.
+        """
+        tmp = self._tmp()
+        fout = open(tmp, 'w')
+        for i in iterable:
+            fout.write(str(i) + '\n')
+        fout.close()
+        return tmp
+
     def handle_kwargs(self, prog, **kwargs):
         """
         Handle most cases of BEDTool program calls, but leave the specifics
@@ -483,13 +495,8 @@ class BedTool(object):
             # Otherwise we need to collapse it in order to send to BEDTools
             # programs
             else:
-                collapsed_fn = self._tmp()
-                fout = open(collapsed_fn, 'w')
-                for i in instream2:
-                    # TODO: does this need newlines?
-                    fout.write(str(i))
-                fout.close()
-                kwargs[inarg2] = collapsed_fn
+                kwargs[inarg2] = self._collapse(instream2)
+
         except KeyError:
             pass
 
