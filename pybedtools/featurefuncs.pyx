@@ -10,10 +10,13 @@ cpdef center(object feature, int width=100):
     cdef int start = feature.start
     cdef int stop = feature.stop
     cdef int center = start + (stop - start) / 2
-    feature.start = center - width / 2
+    halfwidth = width / 2
+    feature.start = center - halfwidth
     if feature.start < 1:
         feature.start = 1
-    feature.stop = center + width / 2
+    if halfwidth == 0:
+        halfwidth = 1
+    feature.stop = center + halfwidth
     return feature
 
 

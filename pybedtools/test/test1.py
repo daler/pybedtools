@@ -248,30 +248,30 @@ def test_count_bed():
     assert len(a) == 4
 
 def test_feature_centers():
-    return # TODO: fix this
+    from pybedtools import featurefuncs
     a = pybedtools.BedTool("""
                            chr1 1 100
                            chr5 3000 4000
                            """, from_string=True)
-    b = a.feature_centers(1)
+    b = a.each(featurefuncs.center, 1)
     results = list(b.features())
 
     print results
-    
+
     assert results[0].start == 50
     assert results[0].stop == 51
-    assert results[0].chr == 'chr1'
-    
+    assert results[0].chrom == 'chr1'
+
     assert results[1].start == 3500
     assert results[1].stop == 3501
-    assert results[1].chr == 'chr5'
+    assert results[1].chrom == 'chr5'
 
 def test_getting_example_beds():
     assert 'a.bed' in pybedtools.list_example_files()
 
     a_fn = pybedtools.example_filename('a.bed')
     assert a_fn == os.path.join(testdir, 'data', 'a.bed')
-    
+
     a = pybedtools.example_bedtool('a.bed')
     assert a.fn == os.path.join(testdir, 'data', 'a.bed')
 
@@ -314,7 +314,7 @@ def test_special_methods():
     from_string = pybedtools.BedTool(s, from_string=True)
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
-    
+
     assert from_string == a
     assert from_string != b
     assert not from_string == b
@@ -337,7 +337,7 @@ def test_history_step():
     b = pybedtools.example_bedtool('b.bed')
     c = a.intersect(b)
     d = c.subtract(a)
-    
+
     print d.history
     d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'n')
     assert os.path.exists(a.fn)
@@ -416,7 +416,7 @@ TCT
     print ''.join(difflib.ndiff(seqs,expected))
     print expected 
     assert seqs == expected
-    
+
     f = a.sequence(fi=fi,s=True)
     seqs = open(f.seqfn).read()
     expected = """>chrX:9-16(+)
@@ -447,7 +447,7 @@ TCT
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines
-    
+
     s = """
     track name="test"
 
@@ -493,7 +493,7 @@ def test_intersect():
     chr1 900 901 feature4 0 +
     """)
     assert str(a.intersect(b)) == expected
-    
+
     # a that have b
     expected = fix("""
     chr1 100 200 feature2 0 +
@@ -501,7 +501,7 @@ def test_intersect():
     chr1 900 950 feature4 0 +
     """)
     assert str(a.intersect(b,u=True)) == expected
-    
+
     # stranded straight-up
     expected = fix("""
     chr1 155 200 feature3 0 -
@@ -531,8 +531,8 @@ def test_intersect():
 
 
 
-    
-    
+
+
 
 def test_subtract():
     a = pybedtools.example_bedtool('a.bed')
@@ -576,7 +576,7 @@ def test_subtract():
     chr1	150	500	feature3	0	-
     chr1	900	950	feature4	0	+""")
     assert results == expected
-    
+
     # f < 0.1103, so should get a subtraction
     results = str(a.subtract(b,s=True,f=0.1))
     print results
@@ -608,8 +608,8 @@ def test_slop():
     chr1	800	951	feature4	0	+
     """)
     assert results == expected
-    
-    
+
+
     # Make sure it complains if no genome is set
     assert_raises(ValueError, a.slop, **dict(l=100, r=1))
 
