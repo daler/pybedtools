@@ -129,3 +129,5 @@ def test_i_methods():
                 f = partial(run, method, i, expected, **send_kwargs)
                 f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
                 yield (f, )
+def teardown():
+    pybedtools.cleanup(remove_all=True)
