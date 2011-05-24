@@ -1,0 +1,37 @@
+import pybedtools
+
+g = pybedtools.BedTool('example.gff')
+
+def renamer(x):
+    x.name = x[2]
+    return x
+
+def filter_func(x):
+    if x[2] in ('intron', 'exon'):
+        return True
+    return False
+
+
+g2 = g.filter(filter_func).each(renamer)
+g2 = g2.saveas('edited.gff')
+merged = g2.merge(nms=True, d=-1, s=False, scores='sum')
+reads_in_features = merged.intersect(abam='example.bam',
+                                     b=merged.fn,
+                                     s=True, 
+                                     bed=True,
+                                     wao=True)
+
+from collections import defaultdict
+results = defaultdict(int)
+total = 0.0
+for intersected_read in reads_in_features:
+    total += 1
+    intersected_feature = feature[-4]
+    key = ';'.join(sorted(list(set(intersected_with.split(';')))))
+    results[key] += 1
+
+results['intergenic'] = results.pop('.')
+results['total'] = int(total)
+print results
+
+pybedtools.cleanup()

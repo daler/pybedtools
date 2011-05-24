@@ -12,19 +12,22 @@
 Installation
 ------------
 
-Requirements
-~~~~~~~~~~~~
-* argparse_ (unless you're running Python 2.7, which comes with ``argparse`` already)
+Python requirements
+~~~~~~~~~~~~~~~~~~~
+* Python 2.5 or greater; Python 3 support coming soon
+* argparse_ if you are running Python < 2.7 (Python 2.7 comes with
+  `argparse` already)
 * Cython_ - part of :mod:`pybedtools` is written in Cython_ for speed
-* BEDTools_
 
 Both argparse and Cython can be installed with pip_::
 
     pip install cython argparse
 
 
-To use :mod:`pybedtools` you'll need the latest version of the package and
-the latest version of BEDTools_.
+or `easy_install`::
+
+    easy_install cython argparse
+
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +42,7 @@ To install the latest version of :mod:`pybedtools` you have 2 options:
       comfortable with
     * unzip into a temporary directory
     * from the command line, run::
-            
+
             python setup.py install
 
       (you may need admin rights to do this)
@@ -49,102 +52,51 @@ from the `Python Package Index`_::
 
         sudo pip install --upgrade pybedtools
 
+.. warning:: 
 
-You can run the tests with::
-
-    sh test.sh
-
-Note, however, that you will need to have ``nosetests`` installed in order to run
-the tests, e.g.,::
-
-    pip install nosetests
-
+    These docs are written for the latest version on git.  For docs
+    specific to the version you have installed, please see the docs
+    included with that version
 
 Installing BEDTools_
 ~~~~~~~~~~~~~~~~~~~~
-To install BEDTools_,
+:mod:`pybedtools` relies heavily on BEDTools_.  To install BEDTools_,
 
-    * follow the instructions at https://github.com/arq5x/bedtools to install
+    * follow the instructions at https://github.com/arq5x/bedtools to
+      install
+
     * make sure all its programs are on your path
 
 
-Three brief examples
---------------------
-Here are three examples to show typical usage of :mod:`pybedtools`.  More
-info can be found in the docstrings of :mod:`pybedtools` methods and in the
-:ref:`tutorial`.  Before running the examples, you need to import
-:mod:`pybedtools`:
+Testing your installation
+~~~~~~~~~~~~~~~~~~~~~~~~~
+A quick functional test is to create a new script with the following
+contents::
 
+    import pybedtools
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    print a.intersect(b)
 
-::
+If this script is called `test.py`, then running it with `python test.py`
+should print out::
 
-    >>> from pybedtools import BedTool, cleanup
+    chr1	155	200	feature2	0	+
+    chr1	155	200	feature3	0	-
+    chr1	900	901	feature4	0	+
 
-After running the examples, clean up any intermediate temporary files
-with::
+For more extensive testing:
 
-    >>> cleanup()
+* If you have `nosetest` installed (e.g., via `pip install nose`) you can
+  run the test suite with::
 
-Example 1: Save a BED file of intersections, with track line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This example saves a new BED file of intersections between ``a.bed`` and
-``b.bed``, adding a track line to the output::
+    sh test.sh $VERSION
 
+  where `$VERSION` is the version of Python you'd like to run the tests
+  with, e.g., `2.7`.
 
-    >>> a = BedTool('a.bed')
-    >>> a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b' color=128,0,0")
+* If you have `sphinx` installed (e.g., via `pip install sphinx`), you can
+  run the doctests by going to the `docs` directory and running::
 
-Example 2: Intersections for a 3-way Venn diagram
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This example gets values for a 3-way Venn diagram of overlaps.  This
-demonstrates operator overloading of :class:`bedtool` objects::
+    make doctest
 
-    >>> # set up 3 different bedtools
-    >>> a = bedtool('a.bed')
-    >>> b = bedtool('b.bed')
-    >>> c = bedtool('c.bed')
-    
-    >>> (a-b-c).count()  # unique to a
-    >>> (a+b-c).count()  # in a and b, not c
-    >>> (a+b+c).count()  # common to all 
-    >>> # ... and so on, for all the combinations.
-
-Example 3: Flanking sequences
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This example gets the genomic sequences of the 100 bp on either side of
-features.
-
-The :meth:`bedtool.slop()` method automatically downloads the
-``chromSizes`` table from UCSC for the dm3 genome, but you can pass your
-own file using the standard BEDTools ``slop`` argument of ``g``.  Note that
-this example assumes you have a local copy of the entire dm3 genome saved
-as ``dm3.fa``.
-
-::
-    
-    >>> # set up bedtool
-    >>> mybed = bedtool('in.bed')
-
-    >>> # add 100 bp of "slop" to either side.  genome='dm3' tells
-    >>> # the slop() method to download the dm3 chromSizes table from
-    >>> # UCSC.
-    >>> extended_by_100 = mybed.slop(genome='dm3', l=100, r=100)
-
-    >>> # Delete the middle of the now-200-bp-bigger features so 
-    >>> # all we're left with is the flanking region
-    >>> flanking_features = extended_by_100.subtract('in.bed')
-
-    >>> # Assuming you have the dm3 genome on disk as 'dm3.fa', save the
-    >>> # sequences as a new file 'flanking.fa'
-    >>> seqs = flanking_features.sequence(fi='dm3.fa').save_seqs('flanking.fa')
-
-    >>> # We could have done this all in one line 
-    >>> # (this demonstrates "chaining" of bedtool objects)
-    >>> bedtool('in.bed').slop(genome='dm3',l=100,r=100).subtract('in.bed').flanking_features.sequence(fi='dm3.fa').save_seqs('flanking.fa')
-
-    
-
-For more, continue on to the :ref:`tutorial`, and then check out the :ref:`topical`.
-
-.. _BEDTools: http://github.com/arq5x/bedtools
-.. |dl| image:: images/downloads.png

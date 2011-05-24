@@ -53,7 +53,7 @@ length of interest:
     <BLANKLINE>
 
 
-See :ref:`BedTools as iterators`_ for more advanced and space-efficient usage
+See :ref:`BedTools as iterators` for more advanced and space-efficient usage
 of :meth:`filter` using iterators.
 
 Fast filtering functions in Cython
@@ -63,6 +63,8 @@ The :mod:`featurefuncs` module contains some ready-made functions written
 in Cython that will be faster than pure Python equivalents.  For example,
 there are :func:`greater_than` and :func:`less_than` functions, which are
 about 70% faster.  In IPython::
+
+    >>> from pybedtools.featurefuncs import greater_than
 
     >>> len(a)
     310456

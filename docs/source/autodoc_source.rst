@@ -6,90 +6,221 @@
     import pybedtools
     from pybedtools import chromsizes
 
+.. module:: pybedtools
 
-Module documentation
-====================
+.. _autodoc:
+
+:mod:`pybedtools` Reference
++++++++++++++++++++++++++++
+
+This section is the module reference documentation, and includes the full
+docstrings for methods and functions in :mod:`pybedtools`.  It is separated
+into :ref:`module-level`, :ref:`wrappers`, and :ref:`pbt-unique`.
+
+.. contents::
+
+
+.. _module-level:
 
 :mod:`pybedtools` module-level functions
+========================================
+
+Functions for working with example files
 ----------------------------------------
 
 .. automodule:: pybedtools
-    :members:
+    :members: example_bedtool, example_filename, list_example_files,
+              data_dir
+
+Functions for specifying genome assemblies
+------------------------------------------
+
+.. automodule:: pybedtools
+    :members: chromsizes, chromsizes_to_file, get_chromsizes_from_ucsc
+
+Setup
+-----
+.. automodule:: pybedtools
+    :members: set_tempdir, get_tempdir, set_bedtools_path
+
+Utilities
+---------
+.. automodule:: pybedtools
+    :members: cleanup, IntervalIterator, find_tagged
+
+
+.. _wrappers:
 
 :class:`BedTool` methods that wrap BEDTools programs
-----------------------------------------------------
-The following methods wrap BEDTools_ programs.  This package is still in
-development; the goal is to eventually support all BEDTools_ programs.
+====================================================
 
-:class:`BedTool.intersect`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+"Genome algebra" methods
+------------------------
+
+:meth:`intersect` (wraps "intersectBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.intersect
 
-:class:`BedTool.merge`
-~~~~~~~~~~~~~~~~~~~~~~
+:meth:`merge` (wraps "mergeBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.merge
 
-:class:`BedTool.subtract`
-~~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`subtract` (wraps "subtractBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.subtract
 
-:class:`BedTool.sequence`
-~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.sequence
-
-:class:`BedTool.closest`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`closest` (wraps "closestBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.closest
 
-:class:`BedTool.window`
-~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`window` (wraps "windowBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.window
 
-:class:`BedTool.sort`
-~~~~~~~~~~~~~~~~~~~~~
+:meth:`sort` (wraps "sortBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.sort
 
-:class:`BedTool.slop`
-~~~~~~~~~~~~~~~~~~~~~
+:meth:`slop` (wraps "slopBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.slop
 
-:class:`BedTool.shuffle`
-~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`flank` (wraps "flankBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: Bedtool.flank
+
+:meth:`shuffle` (wraps "shuffleBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.shuffle
 
-:class:`BedTool` methods unique to :mod:`pybedtools`
-----------------------------------------------------
-The following methods are currently only supported for use with BED format
-files; support for other file types is under development.
+:meth:`annotate` (wraps "annotateBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.annotate
 
-:class:`BedTool.count`
-~~~~~~~~~~~~~~~~~~~~~~
+:meth:`coverage` (wraps "coverageBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.coverage
+
+:meth:`genome_coverage` (wraps "genomeCoverageBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.genome_coverage
+
+
+
+
+Methods for converting between formats
+--------------------------------------
+
+:meth:`bed6` (wraps "Bed12To6")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.bed6
+
+Methods for working with sequences
+----------------------------------
+
+:meth:`sequence` (wraps "fastaFromBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.sequence
+
+:meth:`mask_fasta` (wraps "maskFastaFromBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.mask_fasta
+
+
+.. _pbt-unique:
+
+:class:`BedTool` methods unique to :mod:`pybedtools`
+====================================================
+
+
+
+Introspection
+-------------
+
+:meth:`count`
+~~~~~~~~~~~~~
 .. automethod:: BedTool.count
 
-:class:`BedTool.saveas`
-~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.saveas
-
-:class:`BedTool.features`
-~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.features
-
-:class:`BedTool.print_sequence`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`print_sequence`
+~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.print_sequence
 
-:class:`BedTool.save_seqs`
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`field_count`
+~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.field_count
+
+
+
+
+
+Saving
+------
+
+:meth:`saveas`
+~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.saveas
+
+:meth:`save_seqs`
+~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.save_seqs
 
-:class:`BedTool.cat`
-~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+Utilities
+---------
+
+:meth:`with_attrs`
+~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.with_attrs
+
+:meth:`cat`
+~~~~~~~~~~~
 .. automethod:: BedTool.cat
 
-:class:`BedTool.total_coverage`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`total_coverage`
+~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.total_coverage
 
-:class:`BedTool.delete_temporary_history`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:meth:`delete_temporary_history`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.delete_temporary_history
+
+
+
+
+
+Feature-by-feature operations
+-----------------------------
+
+:meth:`each`
+~~~~~~~~~~~~
+.. automethod:: BedTool.each
+
+:meth:`filter`
+~~~~~~~~~~~~~~
+.. automethod:: BedTool.filter
+
+:meth:`cut`
+~~~~~~~~~~~
+.. automethod:: BedTool.cut
+
+:meth:`features`
+~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.features
+
+
+Randomization helpers
+---------------------
+
+:meth:`randomintersection`
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.randomintersection
+
+:meth:`randomstats`
+~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.randomstats
+
+
+

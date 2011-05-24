@@ -17,5 +17,3 @@ Tutorial Contents
     filtering
     each
     history
-    bedtools-as-iterators
-    more-documentation

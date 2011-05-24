@@ -1,0 +1,107 @@
+
+import pybedtools
+
+# Create a BedTool for the GFF file of annotations
+g = pybedtools.BedTool('example.gff')
+
+
+# Set up two functions that will filter and then rename features to set up for
+# merging
+
+
+def renamer(x):
+    """
+    *x* is an Interval object representing a GFF feature.
+
+    Renames the feature after the feature type; this is needed for when
+    .merge() combines names together in a later step. 
+    """
+
+    # This illustrates setting and getting fields in an Interval object based
+    # on attribute or index
+    x.name = x[2]
+    return x
+
+
+def filter_func(x):
+    """
+    *x* is an Interval object representing a GFF feature.
+
+    This filter function will only pass features of type "intron" or "exon"
+    """
+    if x[2] in ('intron', 'exon'):
+        return True
+    return False
+
+
+# Filter and rename the GFF features by passing the above functions to
+# .filter() and .each(). Note that since each method returns a new BedTool,
+# methods can be chained together
+g2 = g.filter(filter_func).each(renamer)
+
+# Save a copy of the new GFF file for later inspection
+g2 = g2.saveas('edited.gff')
+
+
+# Here we call mergeBed, which operates on the file pointed to by g2
+# (that is, 'edited.gff').
+#
+# We use several options for BEDTools mergeBed: 
+#
+#   `nms` combines names of merged features (after filtering and renaming, this
+#   is either "intron" or "exon") into a semicolon-delimited list;
+#
+#   d=-1 does not merge bookended features together; 
+#
+#   s=True ensures a stranded merge;
+#
+#   scores='sum' ensures a valid BED file result, with a score field before the
+#   strand field
+#
+merged = g2.merge(nms=True, d=-1, s=False, scores='sum')
+
+# Next, we intersect a BAM file with the merged features.  Here, we explicitly
+# specify the `abam` and `b` arguments, ensure stranded intersections, use
+# BED-format output, and report the entire a and b features in the output:
+#
+reads_in_features = merged.intersect(abam='example.bam',
+                                     b=merged.fn,
+                                     s=True, 
+                                     bed=True,
+                                     wao=True)
+
+# Set up a dictionary to hold counts
+from collections import defaultdict
+results = defaultdict(int)
+
+# Iterate through the intersected reads, parse out the names of the features
+# they intersected, and increment counts in the dictionary. This illustrates
+# how BedTool objects follow the iterator protocol, each time yielding an
+# Interval object:
+#
+total = 0.0
+for intersected_read in reads_in_features:
+    total += 1
+
+    # Extract the name of the feature this read intersected by indexing into
+    # the Interval
+    intersected_feature = feature[-4]
+
+    # Convert names like "intron;intron;intron", which indicates overlapping
+    # isoforms or genes all with introns in this region, to the simple class of
+    # "intron"
+    key = ';'.join(sorted(list(set(intersected_with.split(';')))))
+
+    # Increment the count for this class
+    results[key] += 1
+
+# Rename the "." key to something more meaningful
+results['intergenic'] = results.pop('.')
+
+# Add the total to the dictionary
+results['total'] = int(total)
+
+print results
+
+# Delete any temporary files created
+pybedtools.cleanup()

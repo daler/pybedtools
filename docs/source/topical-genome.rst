@@ -76,4 +76,36 @@ Make sure that all these different methods return the same results
     >>> b == c == d == e
     True
 
+Converting to a file
+--------------------
+Since BEDTools_ programs operate on files, the fastest choice will be to
+use an existing file.  While the time to convert a dictionary to a file is
+extremely small, over 1000's of files (e.g., for Monte Carlo simulations),
+the time may add up.  The function :func:`pybedtools.chromsizes_to_file`
+will create a file from a dictionary or string:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> # with no filename specified, a tempfile will be created
+    >>> pybedtools.chromsizes_to_file(pybedtools.chromsizes('dm3'), 'dm3.genome')
+    'dm3.genome'
+    >>> print open('dm3.genome').read()
+    chr2L	23011544
+    chr2LHet	368872
+    chr2R	21146708
+    chr2RHet	3288761
+    chr3L	24543557
+    chr3LHet	2555491
+    chr3R	27905053
+    chr3RHet	2517507
+    chr4	1351857
+    chrM	19517
+    chrU	10049037
+    chrUextra	29004656
+    chrX	22422827
+    chrXHet	204112
+    chrYHet	347038
+    <BLANKLINE>
+
 

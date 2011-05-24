@@ -21,25 +21,25 @@ For example, this intersect and merge can be combined into one command:
     :options: +NORMALIZE_WHITESPACE
 
     >>> # These two lines...
-    >>> a_with_b = a.intersect(b, u=True)
-    >>> a_with_b_merged_1 = a_with_b.merge()
+    >>> x1 = a.intersect(b, u=True)
+    >>> x2 = x1.merge()
 
-    >>> # Could be combined into one line:
-    >>> a_with_b_merged_2 = a.intersect(b, u=True).merge()
+    >>> # ...can be combined into one line:
+    >>> x3 = a.intersect(b, u=True).merge()
 
-    >>> a_with_b_merged_1 == a_with_b_merged_2
+    >>> x2 == x3
     True
 
 
-In general, methods that return :class:`BedTool` objects have the following text in
-their docstring to indicate this::
+In general, methods that return :class:`BedTool` objects have the following
+text in their docstring to indicate this::
 
         .. note::
 
             This method returns a new BedTool instance
 
 A rule of thumb is that all methods that wrap BEDTools_ programs return
-:class:`BedTool` objects, so you can chain these together. Other
+:class:`BedTool` objects, so you can chain these together. Many
 :mod:`pybedtools`-unique methods return :class:`BedTool` objects too, just
 check the docs (according to :ref:`good docs principle`). For example, as
 we saw in one of the examples above, the :meth:`BedTool.saveas` method
@@ -49,12 +49,15 @@ meaningful filenames for later use. For example:
 
 .. doctest::
 
-    >>> a_with_b_merged_3 = a.intersect(b, u=True).saveas('a-with-b.bed').merge().saveas('a-with-b-merged.bed')
+    >>> x4 = a.intersect(b, u=True).saveas('a-with-b.bed').merge().saveas('a-with-b-merged.bed')
 
 Now we have new files in the current directory called :file:`a-with-b.bed`
 and :file:`a-with-b-merged.bed`.  Since :meth:`BedTool.saveas` returns a
-:class:`BedTool` object, ``x2`` points to the :file:`a-with-b-merged.bed`
+:class:`BedTool` object, `x4` points to the :file:`a-with-b-merged.bed`
 file.
+
+Operator overloading
+--------------------
 
 There's an even easier way to chain together commands.
 
@@ -64,38 +67,40 @@ To illustrate, these two example commands do the same thing:
 
 .. doctest::
  
-    >>> a_with_b_1 = a.intersect(b, u=True)
-    >>> a_with_b_2 = a+b
+    >>> x5 = a.intersect(b, u=True)
+    >>> x6 = a + b
 
-    >>> a_with_b_1 == a_with_b_2
+    >>> x5 == x6
     True
+
+Just as the `+` operator assumes `intersectBed` with the `-u` arg, the `-`
+operator assumes `intersectBed` with the `-v` arg:
+
 
 .. doctest::
 
-    >>> a_without_b_1 = a.intersect(b, v=True)
-    >>> a_without_b_2 = a-b
+    >>> x7 = a.intersect(b, v=True)
+    >>> x8 = a - b
 
-    >>> a_without_b_1 == a_without_b_2
+    >>> x7 == x8
     True
 
-Note that the ``+`` operator assumes the ``-u`` option and the ``-``
-operator assumes ``intersectBed``'s ``-v`` option:
 
 If you want to operating on the resulting :class:`BedTool` that is
 returned by an addition or subtraction, you'll need to wrap the operation
-in parentheses:
+in parentheses.  This is another way to do the chaining together of the
+intersection and merge example from above:
 
 .. doctest:: 
 
-    >>> a_with_b_merged_4 = (a+b).merge()
+    >>> x9 = (a + b).merge()
 
 And to double-check that all these methods return the same thing:
 
 .. doctest::
 
-    >>> a_with_b_merged_1 == a_with_b_merged_2 == a_with_b_merged_3 == a_with_b_merged_4
+    >>> x2 == x3 == x4 == x9
     True
-
 
 
 You can learn more about chaining in :ref:`chaining principle`.

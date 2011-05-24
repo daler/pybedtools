@@ -13,7 +13,7 @@ First, let's get a :class:`BedTool` to work with:
 
 We can access the :class:`Intervals` of `a` several different ways. The
 most common use is probably by using the :class:`BedTool` `a` as an
-iterator.  For now, let's look at a single :class:`Interval`:
+iterator.  For now though, let's look at a single :class:`Interval`:
 
 .. doctest::
 
@@ -90,8 +90,8 @@ This illustrates that default values are empty strings.
 Indexing into :class:`Interval` objects
 ---------------------------------------
 
-:class:`Interval` objects can be indexed by position into the original line
-(like a list) or indexed by name of attribute (like a dictionary).
+:class:`Interval` objects can also be indexed by position into the original
+line (like a list) or indexed by name of attribute (like a dictionary).
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
@@ -113,17 +113,32 @@ Indexing into :class:`Interval` objects
     1L
 
 
+Fields
+------
+:class:`Interval` objects have a :attr:`Interval.fields` attribute that
+contains the original line split into a list of strings.  When an integer
+index is used on the :class:`Interval` (for example, `feature[3]`), it is
+the `fields` attribute that is actually being indexed into.
+
+.. doctest::
+
+    >>> f = iter(pybedtools.BedTool('chr1 1 100 asdf 0 + a b c d', from_string=True)).next()
+    >>> f.fields
+    ['chr1', '1', '100', 'asdf', '0', '+', 'a', 'b', 'c', 'd']
+    >>> len(f.fields)
+    10
+
 
 BED is 0-based, others are 1-based
 ----------------------------------
 One troublesome part about working with multiple formats is that BED files
 have a different coordinate system than GFF/GTF/VCF/ files.
 
-**BED files** are 0-based (the first base of the chromosome is considered
-position 0) and the feature does not include the stop position. 
+**BED files are 0-based** (the first base of the chromosome is considered
+position 0) and the **feature does not include the stop position**.
 
-**GFF, GTF, and VCF files** are 1-based (the first base of the chromosome
-is considered position 1) and the feature includes the stop position.
+**GFF, GTF, and VCF files are 1-based** (the first base of the chromosome
+is considered position 1) and the **feature includes the stop position**.
 
 .. note::
 
@@ -134,15 +149,17 @@ is considered position 1) and the feature includes the stop position.
       feature.
 
     * Getting the `len()` of an :class:`Interval` will always return
-      `Interval.stop - Interval.start`, so no matter what format the original
-      file was in, the length will be correct.
+      `Interval.stop - Interval.start`, so no matter what format the
+      original file was in, the length will be correct.
 
     * The contents of :attr:`Interval.fields` will **always** be strings,
       which in turn always represent the original line in the file.  This
-      means that for a GFF feature, :attr:`Interval.fields[3]`, which is
-      1-based according to the file format, will always be one bp larger
-      than :attr:`Interval.start`, which always contains the 0-based start
-      position.
+      means that for a GFF feature, :attr:`Interval.fields[3]` or
+      :attr:`Interval[3]`, which is 1-based according to the file format,
+      will always be one bp larger than :attr:`Interval.start`, which
+      always contains the 0-based start position.  However,
+      :attr:`Interval[3]` will be a string and
+      :attr:`Interval.start` will be a long.
 
 To illustrate and confirm, let's create a GFF feature and a BED feature
 from scratch and compare them:
@@ -154,7 +171,7 @@ from scratch and compare them:
     >>> gff = ["chr1",
     ...        "fake",
     ...        "mRNA",
-    ...        "51",   # (1 greater than the BED start below)
+    ...        "51",   # <- start is 1 greater than start for the BED feature below
     ...        "300",
     ...        ".", 
     ...        "+",
@@ -212,12 +229,15 @@ dictionary.
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
+    >>> # original feature
     >>> print gff
     chr1	fake	mRNA	51	300	.	+	.	ID=mRNA1;Parent=gene1;
 
+    >>> # original attributes
     >>> gff.attrs
     {'ID': 'mRNA1', 'Parent': 'gene1'}
 
+    >>> # add some new attributes
     >>> gff.attrs['Awesomeness'] = 99
     >>> gff.attrs['ID'] = 'transcript1'
 

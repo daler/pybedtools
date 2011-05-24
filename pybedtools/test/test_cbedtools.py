@@ -224,5 +224,6 @@ class IntervalFileGFFTest(IntervalTest):
 
 if __name__ == "__main__":
     unittest.main()
+    pybedtools.cleanup(remove_all=True)
 
 

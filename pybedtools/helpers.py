@@ -337,7 +337,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stdin=subprocess.PIPE,
                                  bufsize=1)
             if isinstance(stdin, file):
-                stdout, stderr = p.communicate(stdin)
+                stdout, stderr = p.communicate(stdin.read())
             else:
                 for item in stdin:
                     p.stdin.write(item + "\n")

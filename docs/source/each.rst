@@ -21,21 +21,34 @@ and `**kwargs` are sent to the function.
     >>> # with an additional field representing the counts.
     >>> with_counts = a.intersect(b, c=True)
 
-The :func:`featurefuncs.normalized_to_length` function divides the value at
-position `N` by the length.  Here we specify `N=-1`, which refers to the
-count from the previous step:
+Let's define a function that will take the number of counts in each feature
+as calculated above and divide by the number of bases in that feature.  We
+can also supply an optional scalar, like 0.001, to get the results in
+"number of intersections per kb".  We then insert that value into the score
+field of the feature.  Here's the function:
+
+.. doctest::
+
+    >>> def normalize_count(feature, scalar=0.001):
+    ...     """
+    ...     assume feature's last field is the count
+    ...     """
+    ...     counts = float(feature[-1])
+    ...     normalized = counts / len(feature) * scalar
+    ...
+    ...     # need to convert back to string to insert into feature
+    ...     feature.score = str(normalized)
+    ...     return feature
+
+And we apply it like this:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> from pybedtools import featurefuncs
-
-    >>> normalized = with_counts.each(featurefuncs.normalized_to_length, -1)
-
+    >>> normalized = with_counts.each(normalize_count)
     >>> print normalized
-    chr1	1	100	feature1	0	+	0.0
-    chr1	100	200	feature2	0	+	1.0000000475e-05
-    chr1	150	500	feature3	0	-	2.85714299285e-06
-    chr1	900	950	feature4	0	+	2.00000009499e-05
+    chr1	1	100	feature1	0.0	+	0
+    chr1	100	200	feature2	1e-05	+	1
+    chr1	150	500	feature3	2.85714285714e-06	-	1
+    chr1	900	950	feature4	2e-05	+	1
     <BLANKLINE>
-

@@ -451,7 +451,7 @@ class BedTool(object):
         not available in pybedtools.genome_registry, then it will be searched
         for on the UCSC Genome Browser.
 
-        Example usage::
+        Example usage:
 
             >>> hg19 = pybedtools.chromsizes('hg19')
             >>> a = pybedtools.example_bedtool('a.bed')
@@ -459,8 +459,6 @@ class BedTool(object):
             >>> print a.chromsizes['chr1']
             (0, 249250621)
 
-            >>> # Now you can use things like pybedtools_shuffle
-            >>> b = a.pybedtools_shuffle()
         """
         if isinstance(chromsizes, basestring):
             self.chromsizes = pybedtools.chromsizes(chromsizes)
@@ -470,6 +468,26 @@ class BedTool(object):
             raise ValueError("Need to specify chromsizes either as a string"
                              " (assembly name) or a dictionary")
         return self
+
+    def _collapse(self, iterable, fn=None, trackline=None):
+        """
+        Collapses an iterable into file *fn* (or a new tempfile if *fn* is
+        None).
+
+        Returns the newly created filename.
+        """
+        if fn is None:
+            fn = self._tmp()
+
+        fout = open(fn, 'w')
+
+        if trackline:
+            fout.write(trackline.strip()+'\n')
+
+        for i in iterable:
+            fout.write(str(i) + '\n')
+        fout.close()
+        return fn
 
     def handle_kwargs(self, prog, **kwargs):
         """
@@ -562,13 +580,8 @@ class BedTool(object):
             # Otherwise we need to collapse it in order to send to BEDTools
             # programs
             else:
-                collapsed_fn = self._tmp()
-                fout = open(collapsed_fn, 'w')
-                for i in instream2:
-                    # TODO: does this need newlines?
-                    fout.write(str(i))
-                fout.close()
-                kwargs[inarg2] = collapsed_fn
+                kwargs[inarg2] = self._collapse(instream2)
+
         except KeyError:
             pass
 
@@ -666,7 +679,7 @@ class BedTool(object):
         The end result is that this BedTool will have an attribute, self.seqfn,
         that points to the new fasta file.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.BedTool("""
         ... chr1 1 10
@@ -1196,59 +1209,11 @@ class BedTool(object):
         new_bedtool.seqfn = fn
         return new_bedtool
 
-    def pybedtools_shuffle(self):
-        """
-        Fast implementation of shuffleBed; assumes shuffling within chroms.
-
-        First call self.set_chromsizes() to tell this BedTool object what the
-        chromosome sizes are that you want to shuffle within.
-
-        Example usage::
-
-            from pybedtools.genome_registry import hg19
-
-            a = BedTool('in.bed')
-            a.set_chromsizes(pybedtools.chromsizes('dm3'))
-
-            # randomly shuffled version of "a"
-            b = a.newshuffle()
-
-        Alternatively, you can use a custom genome to shuffle within -- perhaps
-        the regions probed by a tiling array::
-
-            a = BedTool('in.bed')
-            array_extent = {'chr11': (500000, 1100000),
-                            'chr5': (1, 14000)}
-            a.set_chromsizes(array_extent)
-            b = a.pybedtools_shuffle()
-
-        Th equivalent command-line usage of ``shuffleBed`` is::
-
-            shuffleBed -i in.bed -g dm3.genome -chrom -seed $RANDOM > tmpfile
-
-        """
-        if not hasattr(self, 'chromsizes'):
-            raise AttributeError("Please use the set_chromsizes() method of"
-                                 " this instance before randomizing")
-
-        tmp = self._tmp()
-        TMP = open(tmp, 'w')
-        for f in self:
-            newstart = random.randint(self.chromsizes[f.chrom][0],
-                                      self.chromsizes[f.chrom][1] - f.length)
-            f.stop = newstart + f.length
-
-            # Just overwrite start and stop, leaving the rest of the line in
-            # place
-            f.start = newstart
-            TMP.write(str(f) + '\n')
-        TMP.close()
-        return BedTool(tmp)
-
     def randomstats(self, other, iterations, **kwargs):
         """
-        Sends args to :meth:`BedTool.randomintersection` and compiles results
-        into a dictionary with useful stats.  Requires scipy and numpy.
+        Sends args and kwargs to :meth:`BedTool.randomintersection` and
+        compiles results into a dictionary with useful stats.  Requires scipy
+        and numpy.
 
         This is one possible way of assigning significance to overlaps between
         two files. See, for example:
@@ -1261,14 +1226,9 @@ class BedTool(object):
 
         Make chromsizes a very small genome for this example:
         >>> chromsizes = {'chr1':(1,1000)}
-
-        Set the random seed so this example will always return the same results
-        >>> import random
-        >>> random.seed(1)
-
         >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
         >>> b = pybedtools.example_bedtool('b.bed')
-        >>> results = a.randomstats(b, 100)
+        >>> results = a.randomstats(b, 100, debug=True)
 
         *results* is a dictionary that you can inspect.  The actual overlap:
         >>> print results['actual']
@@ -1276,16 +1236,15 @@ class BedTool(object):
 
         The median of all randomized overlaps:
         >>> print results['median randomized']
-        1.0
+        2.0
 
         The percentile of the actual overlap in the distribution of randomized
         overlaps, which can be used to get an empirical p-value:
         >>> print results['percentile']
-        93.0
+        90.0
         """
-        if not 'u' in kwargs:
-            kwargs['u'] = True
-
+        if 'intersect_kwargs' not in kwargs:
+            kwargs['intersect_kwargs'] = {'u': True}
         try:
             from scipy import stats
             import numpy as np
@@ -1299,7 +1258,7 @@ class BedTool(object):
                  'Either filename or another BedTool instance required'
 
         # Actual (unshuffled) counts.
-        actual = len(self.intersect(other, **kwargs))
+        actual = len(self.intersect(other, **kwargs['intersect_kwargs']))
 
         # List of counts from randomly shuffled versions.
         # Length of counts == *iterations*.
@@ -1342,38 +1301,51 @@ class BedTool(object):
         }
         return d
 
-    def randomintersection(self, other, iterations, **kwargs):
+    def randomintersection(self, other, iterations, intersect_kwargs=None,
+                           shuffle_kwargs=None, debug=False):
         """
         Performs *iterations* shufflings of self, each time intersecting with
         *other*.
 
         Returns a generator of integers where each integer is the number of
-        intersections of one shuffled file with *other*; this distribution can
+        intersections of a shuffled file with *other*. This distribution can
         be used in downstream analysis for things like empirical p-values.
 
-        Other `**kwargs` are passed to self.intersect().  By default,
-        u=True.
+        *intersect_kwargs* and *shuffle_kwargs* are passed to self.intersect()
+        and self.shuffle() respectively.  By default for intersect, u=True is
+        specified -- but s=True might be a useful option for strand-specific
+        work.
 
-        Example usage::
+        Useful kwargs for *shuffle_kwargs* are chrom, excl, or incl.  If you
+        use the "seed" kwarg, that seed will be used *each* time shuffleBed is
+        called -- so all your randomization results will be identical for each
+        iteration.  To get around this and to allow for tests, debug=True will
+        set the seed to the iteration number.
 
-        Make chromsizes a rather small genome for this example:
-        >>> chromsizes = {'chr1':(1,1000)}
+        Example usage:
 
-        Set the random seed so this example will always return the same results
-        >>> import random
-        >>> random.seed(1)
+            >>> chromsizes = {'chr1':(0, 1000)}
+            >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
+            >>> b = pybedtools.example_bedtool('b.bed')
+            >>> results = a.randomintersection(b, 10, debug=True)
+            >>> print list(results)
+            [2, 2, 2, 0, 2, 3, 2, 1, 2, 3]
 
-        >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
-        >>> b = pybedtools.example_bedtool('b.bed')
-
-        >>> print list(a.randomintersection(b, 10))
-        [2, 1, 1, 2, 1, 1, 2, 2, 2, 2]
         """
-        if not 'u' in kwargs:
-            kwargs['u'] = True
+
+        if shuffle_kwargs is None:
+            shuffle_kwargs = {}
+        if intersect_kwargs is None:
+            intersect_kwargs = {'u': True}
+
+        if not 'u' in intersect_kwargs:
+            intersect_kwargs['u'] = True
+
         for i in range(iterations):
-            tmp = self.pybedtools_shuffle()
-            tmp2 = tmp.intersect(other, **kwargs)
+            if debug:
+                shuffle_kwargs['seed'] = i
+            tmp = self.shuffle(**shuffle_kwargs)
+            tmp2 = tmp.intersect(other, **intersect_kwargs)
             yield len(tmp2)
             os.unlink(tmp.fn)
             os.unlink(tmp2.fn)
@@ -1395,7 +1367,7 @@ class BedTool(object):
 
         kwargs are sent to :meth:`BedTool.merge`.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
@@ -1435,7 +1407,7 @@ class BedTool(object):
         A newline is automatically added to the trackline if it does not
         already have one.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = a.saveas('other.bed')
@@ -1448,11 +1420,7 @@ class BedTool(object):
         >>> open(b.fn).readline()
         "name='test run' color=0,55,0\\n"
         """
-        fout = open(fn, 'w')
-        if trackline is not None:
-            fout.write(trackline.strip() + '\n')
-        fout.write(str(self))
-        fout.close()
+        fn = self._collapse(self, fn=fn, trackline=trackline)
         return BedTool(fn)
 
     @_returns_bedtool()
@@ -1461,7 +1429,7 @@ class BedTool(object):
         Returns a new bedtools object containing a random subset of the
         features in this subset.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = a.random_subset(2)
@@ -1485,7 +1453,7 @@ class BedTool(object):
         Returns the total number of bases covered by this BED file.  Does a
         self.merge() first to remove potentially multiple-counting bases.
 
-        Example usage::
+        Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
 
@@ -1512,7 +1480,7 @@ class BedTool(object):
         Given arbitrary keyword arguments, turns the keys and values into
         attributes.  Useful for labeling BedTools at creation time.
 
-        Example usage::
+        Example usage:
 
         >>> # add a "label" attribute to each BedTool
         >>> a = pybedtools.example_bedtool('a.bed')\

@@ -9,7 +9,8 @@ from cbedtools import Interval, IntervalFile, overlap, \
                     MalformedBedLineError
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
-                    find_tagged, set_bedtools_path
+                    find_tagged, set_bedtools_path, \
+                    IntervalIterator
 from bedtool import BedTool
 import genome_registry
 from __main__ import main
@@ -17,6 +18,7 @@ from version import __version__
 _path = ""
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
+
 
 def check_for_bedtools(program_to_check='intersectBed'):
     try:
@@ -150,7 +152,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
     If ``mysql`` is not on your path, specify where to find it with
     *mysql=<path to mysql executable>*.
 
-    *timeout* is how long to wait for a response; mostly used for testing.  Will only be used if 
+    *timeout* is how long to wait for a response; mostly used for testing.
 
     Example usage:
 
@@ -217,8 +219,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
 
 def internet_on(timeout=1):
     try:
-        response=urllib2.urlopen('http://google.com',timeout=timeout)
+        response = urllib2.urlopen('http://google.com', timeout=timeout)
         return True
-    except urllib2.URLError as err: pass
+    except urllib2.URLError as err:
+        pass
     return False
-
