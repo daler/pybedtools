@@ -1,0 +1,20 @@
+# each test will be expanded into 6 tests, to check stream, file, and generator
+# versions of input and output BedTools
+- method: intersect
+  kwargs:
+    a: a.bed
+    b: b.bed
+    s: True
+  expected: |
+    chr1	155	200	feature3	0	-
+    chr1	900	901	feature4	0	+
+
+- method: intersect
+  kwargs:
+    a: a.bed
+    b: b.bed
+    s: False
+  expected: |
+    chr1	155	200	feature2	0	+
+    chr1	155	200	feature3	0	-
+    chr1	900	901	feature4	0	+
