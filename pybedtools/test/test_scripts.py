@@ -9,16 +9,21 @@ def test_annotate_main():
     assert_raises(SystemExit, annotate.main)
 
 def test_annotate_closest():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
+    a = pybedtools.example_bedtool('m1.bed')
+    b = pybedtools.example_bedtool('mm9.bed12')
     c = annotate.add_closest(a, b)
     assert len(a) == len(c), (len(a), len(c), str(c))
     assert a.field_count() == c.field_count() - 2
+    # in this test-case, the final column should be exon;intron
+    # since m1 completely contains both an exon and an intron.
+    f = iter(c).next()
+    # waiting for fix to bedtools:
+    #assert f.fields[-1] == "exon;intron", f.fields[-1]
 
 
 def test_annotate_xstream():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
+    a = pybedtools.example_bedtool('m1.bed')
+    b = pybedtools.example_bedtool('mm9.bed12')
     c = annotate.add_xstream(a, b, dist=1000, updown="up")
     assert a.field_count() == c.field_count() - 1
     assert len(a) == len(c)

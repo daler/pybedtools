@@ -113,6 +113,20 @@ cdef class Interval:
             idx = LOOKUPS[self.file_type]["chrom"]
             self._bed.fields[idx] = string(chrom)
 
+    # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
+    def __richcmp__(self, other, int op):
+        if self.chrom != other.chrom:
+            if op == 3: return True
+            return 0
+        n = self.name
+        if n is not None and n == other.name:
+            v = 0
+        else:
+            v = cmp(self.start, other.start) or (self.end, other.end)
+        if op in (0, 1, 2): return v
+        if op in (4, 5): return -v
+        return not v
+
     property start:
         """ the 0-based start of the feature"""
         def __get__(self):

@@ -36,6 +36,16 @@ class IntervalFileTest(unittest.TestCase):
         for hit in hits:
             self.assert_(hit.strand == '-')
 
+    def testRichCmp(self):
+        a = Interval("chr21", 9719768, 9739768)
+        b = Interval("chr21", 9719767, 9739768)
+        self.assert_(a < b)
+        self.assert_(b < a)
+        c = Interval("chr21", 9719767, 9739768)
+        self.assert_(c == b)
+        d = Interval("chr22", 9719767, 9739768)
+        self.assert_(c != d)
+
 class IntervalTest(unittest.TestCase):
     file = "data/rmsk.hg18.chr21.small.bed.gz"
     chrpos = 0

@@ -195,6 +195,104 @@ def test_intersect():
     """)
     assert str(a.intersect(b, v=True, s=True)) == expected
 
+
+def test_iterator():
+    # makes sure we're ignoring non-feature lines
+    
+    s = """
+    track name="test"
+
+
+    browser position chrX:1-100
+    # comment line
+    chrX  1 10
+    # more comments
+    track name="another"
+
+
+    """
+    a = pybedtools.BedTool(s, from_string=True)
+    results = list(a)
+    assert str(results[0]) == 'chrX\t1\t10', results
+
+def test_repr_and_printing():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a+b
+    os.unlink(c.fn)
+    assert 'a.bed' in repr(a)
+    assert 'b.bed' in repr(b)
+    assert 'MISSING FILE' in repr(c)
+
+    print a.head(1)
+
+def test_bed6():
+    a = pybedtools.example_bedtool('mm9.bed12')
+    b = a.bed6()
+
+def test_introns():
+    a = pybedtools.example_bedtool('mm9.bed12')
+    t = pybedtools.BedTool._tmp()
+    b = pybedtools.BedTool((f for f in a if f.name == "Tcea1,uc007afj.1"))
+    b.saveas(t)
+    b = pybedtools.BedTool(t)
+    bfeat = iter(b).next()
+
+    bi = b.introns()
+    # b[9] is the exonCount from teh bed12 file. there should be
+    # b[9] -1 introns assuming no utrs.
+    assert len(bi) == int(bfeat[9]) - 1, (len(bi), len(b))
+
+
+def test_intersect():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    assert a.intersect(b.fn) == a.intersect(b)
+
+
+    # straight-up
+    expected = fix("""
+    chr1 155 200 feature2 0 +
+    chr1 155 200 feature3 0 -
+    chr1 900 901 feature4 0 +
+    """)
+    assert str(a.intersect(b)) == expected
+    
+    # a that have b
+    expected = fix("""
+    chr1 100 200 feature2 0 +
+    chr1 150 500 feature3 0 -
+    chr1 900 950 feature4 0 +
+    """)
+    assert str(a.intersect(b,u=True)) == expected
+    
+    # stranded straight-up
+    expected = fix("""
+    chr1 155 200 feature3 0 -
+    chr1 900 901 feature4 0 +
+    """)
+    assert str(a.intersect(b,s=True)) == expected
+
+    # stranded a that have b
+    expected = fix("""
+    chr1 150 500 feature3 0 -
+    chr1 900 950 feature4 0 +
+    """)
+    assert str(a.intersect(b, u=True, s=True)) == expected
+
+    # a with no b
+    expected = fix("""
+    chr1 1 100 feature1 0 +
+    """)
+    assert str(a.intersect(b, v=True)) == expected
+
+    # stranded a with no b
+    expected = fix("""
+    chr1 1   100 feature1 0 +
+    chr1 100 200 feature2 0 +
+    """)
+    assert str(a.intersect(b, v=True, s=True)) == expected
+
 def test_subtract():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')

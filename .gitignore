@@ -10,3 +10,4 @@ docs/source/README.rst
 pybedtools.egg-info/*
 *.pyc
 *.so
+*.fai
