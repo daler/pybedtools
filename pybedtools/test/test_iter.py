@@ -43,7 +43,7 @@ def run(method, a, b, expected, **kwargs):
     print result
     print 'Expected:'
     print expected
-    assert str(result) == expected
+    assert str(result) == fix(expected)
 
 def test_a_b_methods():
     """
