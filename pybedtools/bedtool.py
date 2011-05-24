@@ -392,17 +392,25 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
-    def _collapse(self, iterable):
+    def _collapse(self, iterable, fn=None, trackline=None):
         """
-        Collapses an iterable into a new tempfile.  Returns the newly created
-        filename.
+        Collapses an iterable into file *fn* (or a new tempfile if *fn* is
+        None).
+
+        Returns the newly created filename.
         """
-        tmp = self._tmp()
-        fout = open(tmp, 'w')
+        if fn is None:
+            fn = self._tmp()
+
+        fout = open(fn, 'w')
+
+        if trackline:
+            fout.write(trackline.strip()+'\n')
+
         for i in iterable:
             fout.write(str(i) + '\n')
         fout.close()
-        return tmp
+        return fn
 
     def handle_kwargs(self, prog, **kwargs):
         """
@@ -1335,11 +1343,7 @@ class BedTool(object):
         >>> open(b.fn).readline()
         "name='test run' color=0,55,0\\n"
         """
-        fout = open(fn, 'w')
-        if trackline is not None:
-            fout.write(trackline.strip() + '\n')
-        fout.write(str(self))
-        fout.close()
+        fn = self._collapse(self, fn=fn, trackline=trackline)
         return BedTool(fn)
 
     @_returns_bedtool()
