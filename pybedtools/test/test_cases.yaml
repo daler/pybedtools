@@ -1,20 +1,247 @@
 # each test will be expanded into 6 tests, to check stream, file, and generator
 # versions of input and output BedTools
-- method: intersect
-  kwargs:
-    a: a.bed
-    b: b.bed
-    s: True
-  expected: |
-    chr1	155	200	feature3	0	-
-    chr1	900	901	feature4	0	+
 
-- method: intersect
-  kwargs:
-    a: a.bed
-    b: b.bed
-    s: False
-  expected: |
-    chr1	155	200	feature2	0	+
-    chr1	155	200	feature3	0	-
-    chr1	900	901	feature4	0	+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# intersect
+-   method: intersect
+    kwargs:
+        a: a.bed
+        b: b.bed
+        s: True
+    expected: |
+        chr1	155	200	feature3	0	-
+        chr1	900	901	feature4	0	+
+
+-   method: intersect
+    kwargs:
+        a: a.bed
+        b: b.bed
+        s: False
+    expected: |
+        chr1	155	200	feature2	0	+
+        chr1	155	200	feature3	0	-
+        chr1	900	901	feature4	0	+
+
+-   method: intersect
+    kwargs:
+        a: a.bed
+        b: b.bed
+        u: True
+    expected: |
+        chr1	100	200	feature2	0	+
+        chr1	150	500	feature3	0	-
+        chr1	900	950	feature4	0	+
+
+-   method: intersect
+    kwargs:
+        a: a.bed
+        b: b.bed
+        u: True
+        s: True
+    expected: |
+        chr1	150	500	feature3	0	-
+        chr1	900	950	feature4	0	+
+
+-   method: intersect
+    kwargs:
+        a: a.bed
+        b: b.bed
+        v: True
+    expected: |
+        chr1 1 100 feature1 0 +
+
+-   method: intersect
+    kwargs:
+        a: a.bed
+        b: b.bed
+        v: True
+        s: True
+    expected: |
+        chr1 1   100 feature1 0 +
+        chr1 100 200 feature2 0 +
+
+# TODO: need to make good BAM test files
+#-   method: intersect
+#    kwargs:
+#        abam: x.bam
+#        b: a.bed
+#        bed: True
+#    expected: |
+#
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# subtract
+
+-   method: subtract
+    kwargs:
+        a: a.bed
+        b: b.bed
+    expected: |
+        chr1	1	100	feature1	0	+
+        chr1	100	155	feature2	0	+
+        chr1	150	155	feature3	0	-
+        chr1	200	500	feature3	0	-
+        chr1	901	950	feature4	0	+
+
+-   method: subtract
+    kwargs:
+        a: a.bed
+        b: b.bed
+        s: True
+    expected: |
+        chr1	1	100	feature1	0	+
+        chr1	100	200	feature2	0	+
+        chr1	150	155	feature3	0	-
+        chr1	200	500	feature3	0	-
+        chr1	901	950	feature4	0	+
+
+# the difference in f=0.2 and f=0.1 is in feature5 of b.  Since feature2
+# and feature3 of a overlap, it's seeing the 'a' feature as a 399-bp
+# feature (chr1:100-500), and feature5 of 'b' overlaps this by 44 bp.
+#
+# So the threshold fraction should be
+#
+#   44/399 = 0.1103 
+#
+# f > 0.1103 should return no subtractions, because nothing in b overlaps by that much.
+# However, 0.12 doesn't work; need to go to 0.13 . . .
+-   method: subtract
+    kwargs:
+        a: a.bed
+        b: b.bed
+        s: True
+        f: 0.13
+    expected: |
+        chr1	1	100	feature1	0	+
+        chr1	100	200	feature2	0	+
+        chr1	150	500	feature3	0	-
+        chr1	900	950	feature4	0	+
+
+# f < 0.1103, so should get a subtraction
+-   method: subtract
+    kwargs:
+        a: a.bed
+        b: b.bed
+        s: True
+        f: 0.1
+    expected: |
+        chr1	1	100	feature1	0	+
+        chr1	100	200	feature2	0	+
+        chr1	150	155	feature3	0	-
+        chr1	200	500	feature3	0	-
+        chr1	900	950	feature4	0	+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# slop
+#
+-   method: slop
+    kwargs:
+        i: a.bed
+        b: 100
+        genome: 'hg19'
+    expected: |
+        chr1	0	200	feature1	0	+
+        chr1	0	300	feature2	0	+
+        chr1	50	600	feature3	0	-
+        chr1	800	1050	feature4	0	+
+
+
+-   method: slop
+    kwargs:
+        i: a.bed
+        l: 100
+        r: 1
+        genome: 'hg19'
+    expected: |
+        chr1	0	101	feature1	0	+
+        chr1	0	201	feature2	0	+
+        chr1	50	501	feature3	0	-
+        chr1	800	951	feature4	0	+
+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# merge
+#
+-   method: merge
+    kwargs:
+        i: a.bed
+    expected: |
+        chr1	1	500
+        chr1	900	950
+
+-   method: merge
+    kwargs:
+        i: a.bed
+        s: True
+    expected: |
+        chr1	1	200	+
+        chr1	900	950	+
+        chr1	150	500	-
+
+-   method: merge
+    kwargs:
+        i: b.bed
+        d: 700
+    expected: |
+        chr1 155 901
+
+
+
+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# bed6
+#
+-   method: bed6
+    kwargs:
+        i: mm9.bed12
+    expected: |
+        chr1	4797973	4798063	Lypla1,uc007afh.1	1	+
+        chr1	4798535	4798567	Lypla1,uc007afh.1	1	+
+        chr1	4818664	4818730	Lypla1,uc007afh.1	1	+
+        chr1	4820348	4820396	Lypla1,uc007afh.1	1	+
+        chr1	4822391	4822462	Lypla1,uc007afh.1	1	+
+        chr1	4827081	4827155	Lypla1,uc007afh.1	1	+
+        chr1	4829467	4829569	Lypla1,uc007afh.1	1	+
+        chr1	4831036	4831213	Lypla1,uc007afh.1	1	+
+        chr1	4835043	4836816	Lypla1,uc007afh.1	1	+
+        chr1	4797973	4798063	Lypla1,uc007afg.1	1	+
+        chr1	4798535	4798567	Lypla1,uc007afg.1	1	+
+        chr1	4818664	4818730	Lypla1,uc007afg.1	1	+
+        chr1	4820348	4820396	Lypla1,uc007afg.1	1	+
+        chr1	4822391	4822462	Lypla1,uc007afg.1	1	+
+        chr1	4827081	4827155	Lypla1,uc007afg.1	1	+
+        chr1	4829467	4829569	Lypla1,uc007afg.1	1	+
+        chr1	4831036	4832908	Lypla1,uc007afg.1	1	+
+        chr1	4847894	4848057	Tcea1,uc007afi.1	1	+
+        chr1	4857550	4857613	Tcea1,uc007afi.1	1	+
+        chr1	4868107	4868213	Tcea1,uc007afi.1	1	+
+        chr1	4876824	4876912	Tcea1,uc007afi.1	1	+
+        chr1	4879537	4879683	Tcea1,uc007afi.1	1	+
+        chr1	4880820	4880877	Tcea1,uc007afi.1	1	+
+        chr1	4881995	4882150	Tcea1,uc007afi.1	1	+
+        chr1	4883497	4883644	Tcea1,uc007afi.1	1	+
+        chr1	4885014	4885086	Tcea1,uc007afi.1	1	+
+        chr1	4886436	4887985	Tcea1,uc007afi.1	1	+
+        chr1	4848118	4848584	Tcea1,uc007afj.1	1	+
+        chr1	4857550	4857613	Tcea1,uc007afj.1	1	+
+        chr1	4868107	4868213	Tcea1,uc007afj.1	1	+
+        chr1	4876824	4876912	Tcea1,uc007afj.1	1	+
+        chr1	4879537	4879683	Tcea1,uc007afj.1	1	+
+        chr1	4880820	4880877	Tcea1,uc007afj.1	1	+
+        chr1	5073253	5073359	Atp6v1h,uc007afn.1	1	+
+        chr1	5074497	5074644	Atp6v1h,uc007afn.1	1	+
+        chr1	5079089	5079192	Atp6v1h,uc007afn.1	1	+
+        chr1	5083443	5083533	Atp6v1h,uc007afn.1	1	+
+        chr1	5085695	5085809	Atp6v1h,uc007afn.1	1	+
+        chr1	5088109	5088214	Atp6v1h,uc007afn.1	1	+
+        chr1	5091150	5091204	Atp6v1h,uc007afn.1	1	+
+        chr1	5107470	5107568	Atp6v1h,uc007afn.1	1	+
+        chr1	5114357	5114550	Atp6v1h,uc007afn.1	1	+
+        chr1	5123164	5123343	Atp6v1h,uc007afn.1	1	+
+        chr1	5125892	5126018	Atp6v1h,uc007afn.1	1	+
+        chr1	5133830	5133932	Atp6v1h,uc007afn.1	1	+
+        chr1	5140028	5140142	Atp6v1h,uc007afn.1	1	+
+        chr1	5152185	5152630	Atp6v1h,uc007afn.1	1	+
+

@@ -139,154 +139,20 @@ def test_iterator():
     assert str(results[0]) == 'chrX\t1\t10', results
 
 # ----------------------------------------------------------------------------
-# BEDTools wrapper tests
+# BEDTools wrapper tests --
+#   See test_iter.py, which uses YAML test case definitions, for more complete
+#   tests of BEDTools wrapper methods. 
+#
+#   Here, we assert exception raises and more complicated things that can't be
+#   easily described in YAML
 # ----------------------------------------------------------------------------
-
-def test_bed6():
-    a = pybedtools.example_bedtool('mm9.bed12')
-    b = a.bed6()
-
-def test_intersect():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    assert a.intersect(b.fn) == a.intersect(b)
-
-
-    # straight-up
-    expected = fix("""
-    chr1 155 200 feature2 0 +
-    chr1 155 200 feature3 0 -
-    chr1 900 901 feature4 0 +
-    """)
-    assert str(a.intersect(b)) == expected
-
-    # a that have b
-    expected = fix("""
-    chr1 100 200 feature2 0 +
-    chr1 150 500 feature3 0 -
-    chr1 900 950 feature4 0 +
-    """)
-    assert str(a.intersect(b,u=True)) == expected
-
-    # stranded straight-up
-    expected = fix("""
-    chr1 155 200 feature3 0 -
-    chr1 900 901 feature4 0 +
-    """)
-    assert str(a.intersect(b,s=True)) == expected
-
-    # stranded a that have b
-    expected = fix("""
-    chr1 150 500 feature3 0 -
-    chr1 900 950 feature4 0 +
-    """)
-    assert str(a.intersect(b, u=True, s=True)) == expected
-
-    # a with no b
-    expected = fix("""
-    chr1 1 100 feature1 0 +
-    """)
-    assert str(a.intersect(b, v=True)) == expected
-
-    # stranded a with no b
-    expected = fix("""
-    chr1 1   100 feature1 0 +
-    chr1 100 200 feature2 0 +
-    """)
-    assert str(a.intersect(b, v=True, s=True)) == expected
-
-def test_subtract():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-
-    # plain 'old subtract
-    results = str(a.subtract(b))
-    expected = fix("""
-    chr1	1	100	feature1	0	+
-    chr1	100	155	feature2	0	+
-    chr1	150	155	feature3	0	-
-    chr1	200	500	feature3	0	-
-    chr1	901	950	feature4	0	+""")
-    assert results == expected
-
-    # strand-specific
-    results = str(a.subtract(b,s=True))
-    print results
-    expected = fix("""
-    chr1	1	100	feature1	0	+
-    chr1	100	200	feature2	0	+
-    chr1	150	155	feature3	0	-
-    chr1	200	500	feature3	0	-
-    chr1	901	950	feature4	0	+""")
-    assert results == expected
-
-    # the difference in f=0.2 and f=0.1 is in feature5 of b.  Since feature2
-    # and feature3 of a overlap, it's seeing the 'a' feature as a 399-bp
-    # feature (chr1:100-500), and feature5 of 'b' overlaps this by 44 bp.
-    #
-    # So the threshold fraction should be
-    #
-    #   44/399 = 0.1103 
-    #
-    # f > 0.1103 should return no subtractions, because nothing in b overlaps by that much.
-    # However, 0.12 doesn't work; need to go to 0.13 . . .
-    results = str(a.subtract(b,s=True,f=0.13))
-    expected = fix("""
-    chr1	1	100	feature1	0	+
-    chr1	100	200	feature2	0	+
-    chr1	150	500	feature3	0	-
-    chr1	900	950	feature4	0	+""")
-    assert results == expected
-
-    # f < 0.1103, so should get a subtraction
-    results = str(a.subtract(b,s=True,f=0.1))
-    print results
-    expected = fix("""
-    chr1	1	100	feature1	0	+
-    chr1	100	200	feature2	0	+
-    chr1	150	155	feature3	0	-
-    chr1	200	500	feature3	0	-
-    chr1	900	950	feature4	0	+""")
-    assert results == expected
 
 def test_slop():
     a = pybedtools.example_bedtool('a.bed')
 
-    results = str(a.slop(g=pybedtools.chromsizes('hg19'), b=100))
-    expected = fix("""
-    chr1	0	200	feature1	0	+
-    chr1	0	300	feature2	0	+
-    chr1	50	600	feature3	0	-
-    chr1	800	1050	feature4	0	+
-    """)
-    assert results == expected
-
-    results = str(a.slop(g=pybedtools.chromsizes('hg19'), l=100, r=1))
-    expected = fix("""
-    chr1	0	101	feature1	0	+
-    chr1	0	201	feature2	0	+
-    chr1	50	501	feature3	0	-
-    chr1	800	951	feature4	0	+
-    """)
-    assert results == expected
-
-
     # Make sure it complains if no genome is set
     assert_raises(ValueError, a.slop, **dict(l=100, r=1))
 
-    # OK, so set one...
-    a.set_chromsizes(pybedtools.chromsizes('hg19'))
-
-    # Results should be the same as before.
-    results = str(a.slop(l=100, r=1))
-    expected = fix("""
-    chr1	0	101	feature1	0	+
-    chr1	0	201	feature2	0	+
-    chr1	50	501	feature3	0	-
-    chr1	800	951	feature4	0	+
-    """)
-    print results
-    assert results == expected
 
 def test_merge():
     a = pybedtools.example_bedtool('a.bed')
