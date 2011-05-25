@@ -320,7 +320,7 @@ class BedTool(object):
                                                    gene_feature.end,
                                                    gene_feature.name,
                                                    utr, gene_feature.strand)
-                elif i  != len(exons) - 1:
+                elif i != len(exons) - 1:
                     istart = exon.end
                     iend = exons[i + 1].start
                     print >>fh, "%s\t%i\t%i\t%s\tintron\t%s" % \
@@ -498,7 +498,7 @@ class BedTool(object):
         fout = open(fn, 'w')
 
         if trackline:
-            fout.write(trackline.strip()+'\n')
+            fout.write(trackline.strip() + '\n')
 
         for i in iterable:
             fout.write(str(i) + '\n')
@@ -651,6 +651,7 @@ class BedTool(object):
         tmp = self._tmp()
         fout = open(tmp, 'w')
         i = iter(self)
+
         def _generator():
             while True:
                 try:
