@@ -190,7 +190,7 @@ def classify_reads(gff, bam, stranded=False, include=None, exclude=None,
         # category it is found within.  Total category counts will not add to
         # the total in this case.
         if pool:
-            for key in intersected_with.split(';'):
+            for key in list(set(intersected_with.split(';'))):
                 results[key] += 1
 
         # Otherwise, unique and sort the components of the class, and only
@@ -205,8 +205,15 @@ def classify_reads(gff, bam, stranded=False, include=None, exclude=None,
         for feature in d_rev:
             total_rev += 1
             intersected_with = feature[feature_name_ind]
-            key = ';'.join(sorted(list(set(intersected_with.split(';')))))
-            results_rev[key] += 1
+            if pool:
+                for key in list(set(intersected_with.split(';'))):
+                    results[key] += 1
+
+            # Otherwise, unique and sort the components of the class, and only
+            # count the read for this particular class
+            else:
+                key = ';'.join(sorted(list(set(intersected_with.split(';')))))
+                results[key] += 1
 
     if verbose:
         sys.stderr.write('(%.1fs)\n\n' % (time.time() - t0))
