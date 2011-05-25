@@ -37,7 +37,8 @@ import pybedtools
 
 
 def classify_reads(gff, bam, stranded=False, include=None, exclude=None,
-                   output=None, disable_cleanup=False, verbose=False):
+                   output=None, pool=False, disable_cleanup=False,
+                   verbose=False):
     """
     *gff* is a GFF file
 
@@ -185,11 +186,18 @@ def classify_reads(gff, bam, stranded=False, include=None, exclude=None,
         # semicolon-separated list of intersected featuretypes
         intersected_with = feature[feature_name_ind]
 
-        # ensure uniqueness . . . not sure if mergeBed takes care of this or
-        # not
-        key = ';'.join(sorted(list(set(intersected_with.split(';')))))
+        # 'pool' will count one read multiple times -- it will increment each
+        # category it is found within.  Total category counts will not add to
+        # the total in this case.
+        if pool:
+            for key in intersected_with.split(';'):
+                results[key] += 1
 
-        results[key] += 1
+        # Otherwise, unique and sort the components of the class, and only
+        # count the read for this particular class
+        else:
+            key = ';'.join(sorted(list(set(intersected_with.split(';')))))
+            results[key] += 1
 
     if stranded:
         results_rev = defaultdict(int)
@@ -299,10 +307,11 @@ def main():
     ap.add_argument('--bam', required=True,
                     help='BAM file containing reads to be counted')
     ap.add_argument('--stranded', action='store_true',
-                    help='Use strand-specific merging and overlap.')
+                    help='Use strand-specific merging and overlap. '
+                         'Default is to ignore strand')
     ap.add_argument('--nocleanup', action='store_true',
                     help='Disable automatic deletion of temp files '
-                         'when finished')
+                         'when finished. Useful for debugging.')
     ap.add_argument('-o', '--output',
                     help='Optional file to which results will be written; '
                          'default is stdout')
@@ -310,6 +319,12 @@ def main():
                     help='Verbose (goes to stderr)')
     ap.add_argument('--include', nargs='*', help='Feature types to include.')
     ap.add_argument('--exclude', nargs='*', help='Feature types to exclude.')
+    ap.add_argument('--pool', action='store_true',
+                    help='For a read that falls in multiple featuretypes '
+                         '(like exon;intron), then increment each featuretype '
+                         '(exons += 1, introns +=1) instead of the default '
+                         'behavior of only incrementing the compound class '
+                         '(exon;intron += 1)')
 
     args = ap.parse_args()
 
@@ -318,6 +333,7 @@ def main():
                    stranded=args.stranded,
                    include=args.include,
                    exclude=args.exclude,
+                   pool=args.pool,
                    output=args.output,
                    verbose=args.verbose,
                    disable_cleanup=args.nocleanup)
