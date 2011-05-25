@@ -629,7 +629,14 @@ class BedTool(object):
                 except KeyError:
                     delim = default_list_delimiter
 
-                cmds.append('-' + key + delim.join(map(str, value)))
+                if delim == ' ':
+                    cmds.append('-' + key)
+                    cmds.extend(value)
+
+                # make comma-separated list if that's what's needed
+                else:
+                    cmds.append('-' + key + ' ' + delim.join(map(str, value)))
+
             else:
                 cmds.append('-' + key)
                 cmds.append(str(value))
