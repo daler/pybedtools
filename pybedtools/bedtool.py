@@ -242,6 +242,22 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
+    @_help('bamToBed')
+    @_file_or_bedtool()
+    @_implicit('-i')
+    @_returns_bedtool()
+    @_log_to_history
+    def bam_to_bed(self, **kwargs):
+        """
+        Convert BAM to BED.
+        """
+        if not 'i' in kwargs:
+            kwargs['i'] = self.fn
+
+        cmds, tmp, stdin = self.handle_kwargs(prog='bamToBed', **kwargs)
+        stream = call_bedtools(cmds, tmp, stdin=stdin)
+        return BedTool(stream)
+
     def introns(self, gene="gene", exon="exon"):
         """
         Given a BED12 or a GFF with exons, create a new `BedTool` with
@@ -512,6 +528,7 @@ class BedTool(object):
                                   'mergeBed': 'i',
                                    'sortBed': 'i',
                                'bed12ToBed6': 'i',
+                                  'bamToBed': 'i',
                                 'shuffleBed': 'i',
                                'annotateBed': 'i',
                                   'flankBed': 'i',

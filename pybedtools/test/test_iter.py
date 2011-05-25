@@ -53,6 +53,10 @@ def run(method, bedtool, expected, **kwargs):
     print expected
     assert str(result) == fix(expected)
 
+
+bam_methods = ('bam_to_bed',)
+supported_bam = ('filename',)
+
 def test_a_b_methods():
     """
     Generator that yields tests, inserting different versions of `a` and `b` as
@@ -83,8 +87,7 @@ def test_a_b_methods():
 
             # BAM only works as a filename; add other kinds here as they are
             # supported
-            supported_bam = ('filename',)
-            if 'abam' in send_kwargs:
+            if ('abam' in send_kwargs) or (method in bam_methods):
                 if (kind_a not in supported_bam):
                     continue
 
@@ -124,10 +127,14 @@ def test_i_methods():
                     }
         done = []
         for kind_i in ('file', 'generator', 'stream'):
-                i = converter[kind_i](orig_i)
-                kind = 'i=%(kind_i)s' % locals()
-                f = partial(run, method, i, expected, **send_kwargs)
-                f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
-                yield (f, )
+            if method in bam_methods:
+                if (kind_i not in supported_bam):
+                    continue
+
+            i = converter[kind_i](orig_i)
+            kind = 'i=%(kind_i)s' % locals()
+            f = partial(run, method, i, expected, **send_kwargs)
+            f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
+            yield (f, )
 def teardown():
     pybedtools.cleanup(remove_all=True)
