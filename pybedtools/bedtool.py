@@ -543,6 +543,10 @@ class BedTool(object):
                                  'windowBed': 'b',
                                'coverageBed': 'b'}
 
+        # If you pass in a list, how should it be converted to a BedTools arg?
+        default_list_delimiter = ' '
+        list_delimiters = {'annotateBed': ' '}
+
         stdin = None
 
         # -----------------------------------------------------------------
@@ -619,6 +623,13 @@ class BedTool(object):
                     cmds.append('-' + key)
                 else:
                     continue
+            if isinstance(value, list) or isinstance(value, tuple):
+                try:
+                    delim = list_delimiters[prog]
+                except KeyError:
+                    delim = default_list_delimiter
+
+                cmds.append('-' + key + delim.join(map(str, value)))
             else:
                 cmds.append('-' + key)
                 cmds.append(str(value))
