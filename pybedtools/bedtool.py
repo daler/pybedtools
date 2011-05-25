@@ -623,15 +623,15 @@ class BedTool(object):
         tmp = self._tmp()
         fout = open(tmp, 'w')
         i = iter(self)
-        while True:
-            try:
-                fout.write(str(i.next()) + '\n')
-            except pybedtools.MalformedBedLineError:
-                continue
-            except StopIteration:
-                break
-        fout.close()
-        return BedTool(tmp)
+        def _generator():
+            while True:
+                try:
+                    yield i.next()
+                except pybedtools.MalformedBedLineError:
+                    continue
+                except StopIteration:
+                    break
+        return BedTool(_generator())
 
     @_help('intersectBed')
     @_file_or_bedtool()

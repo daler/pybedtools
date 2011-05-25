@@ -205,6 +205,7 @@ def classify_reads(gff, bam, stranded=False, include=None, exclude=None,
         for feature in d_rev:
             total_rev += 1
             intersected_with = feature[feature_name_ind]
+
             if pool:
                 for key in list(set(intersected_with.split(';'))):
                     results[key] += 1

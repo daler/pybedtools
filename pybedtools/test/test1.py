@@ -119,6 +119,30 @@ def test_malformed():
     # but next one is not and should raise ValueError
     assert_raises(pybedtools.MalformedBedLineError, a_i.next)
 
+def test_remove_invalid():
+    a = pybedtools.BedTool("""
+    chr1 100 200
+    chr1 100 90
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    """, from_string=True)
+
+    b = a.remove_invalid()
+
+    cleaned = pybedtools.BedTool("""
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200
+    chr1 100 200""", from_string=True)
+
+    assert_raises(NotImplementedError, b.__eq__, cleaned)
+    assert str(b) == str(cleaned)
+
+
+
 def test_iterator():
     # makes sure we're ignoring non-feature lines
 
