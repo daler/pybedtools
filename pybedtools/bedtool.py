@@ -623,7 +623,7 @@ class BedTool(object):
                     cmds.append('-' + key)
                 else:
                     continue
-            if isinstance(value, list) or isinstance(value, tuple):
+            elif isinstance(value, list) or isinstance(value, tuple):
                 try:
                     delim = list_delimiters[prog]
                 except KeyError:
