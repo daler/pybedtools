@@ -37,22 +37,6 @@ demonstrates operator overloading of :class:`BedTool` objects::
     >>> (a+b+c).count()  # common to all 
     >>> # ... and so on, for all the combinations.
 
-Example 3: Classify reads into intron/exon
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This example is a little more involved, but highlights some useful features
-of :mod:`pybedtools`.  Here, we classify reads in a BAM file into exon,
-intron, exon and intron (i.e., exonic in one isoform but intronic in
-anotheroverlapping isoform) or intergenic classes in a stranded manner.  A
-more generalized version of this example can be found in the
-:mod:`pybedtools.scripts.classify_reads` script.
-
-
-.. literalinclude:: example-script
-
-Here is the same script without comments, to give a better feel for
-:mod:`pybedtools`:
-
-.. literalinclude:: example-script-nocomments
-
-For more, continue on to the :ref:`tutorial`, and then check out the :ref:`topical`.
+Example 3: (TBD)
+~~~~~~~~~~~~~~~~
 
