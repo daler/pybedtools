@@ -1433,7 +1433,7 @@ class BedTool(object):
             return c
 
     @_returns_bedtool()
-    def saveas(self, fn, trackline=None):
+    def saveas(self, fn=None, trackline=None):
         """
         Save BED file as a new file, adding the optional *trackline* to the
         beginning.
@@ -1456,6 +1456,9 @@ class BedTool(object):
         >>> open(b.fn).readline()
         "name='test run' color=0,55,0\\n"
         """
+        if fn is None:
+            fn = self._tmp()
+
         fn = self._collapse(self, fn=fn, trackline=trackline)
         return BedTool(fn)
 
