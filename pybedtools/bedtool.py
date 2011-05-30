@@ -13,6 +13,8 @@ from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
 from cbedtools import IntervalFile
 import pybedtools
 
+tempfile_prefix = 'pybedtools.'
+tempfile_suffix = '.tmp'
 
 class BedTool(object):
     TEMPFILES = []
@@ -369,8 +371,8 @@ class BedTool(object):
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
         '''
-        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',
-                                            suffix='.tmp', delete=False)
+        tmpfn = tempfile.NamedTemporaryFile(prefix=tempfile_prefix,
+                                            suffix=tempfile_suffix, delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         return tmpfn
