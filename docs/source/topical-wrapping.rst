@@ -109,7 +109,8 @@ new temp file (if `stream=False`) or not, and also converts kwargs like `a`
 to `-a`.  Finally, it creates a list of commands ready for
 :func:`call_bedtools` to run.
 
-To illustrate, we add `a` to the `implicit_instream1` dict:
+To illustrate, since `newProgramBed` can accept stdin as its `-a` argument, we
+add `a` to the `implicit_instream1` dict:
 
 ::
 
@@ -118,17 +119,19 @@ To illustrate, we add `a` to the `implicit_instream1` dict:
                             'closestBed': 'a',
                              'windowBed': 'a',
                                'slopBed': 'i',
-                              'mergeBed': 'i',
-                               'sortBed': 'i',
-                           'bed12ToBed6': 'i',
-                            'shuffleBed': 'i',
-                           'annotateBed': 'i',
-                              'flankBed': 'i',
-                          'fastaFromBed': 'bed',
-                      'maskFastaFromBed': 'bed',
-                           'coverageBed': 'a',
-                           'newthingBed': 'a', # here's the new wrapped program
+                                    ...
+                                    ...
+                           'newProgramBed': 'a', # here's the new wrapped program
                            }
+
+Since `newProgramBed` also takes a `-b` argument that is another BED-like file, we need to register this as well::
+
+    implicit_instream2 = {'intersectBed': 'b',
+                               'subtractBed': 'b',
+                                'closestBed': 'b',
+                                ...
+                             'newProgramBed': 'b',
+                               }
 
 And back in the method body, we call :meth:`BedTool.handle_kwargs` so that
 our method now looks like this::
@@ -138,7 +141,7 @@ our method now looks like this::
         if 'a' not in kwargs:
             kwargs['a'] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='newthingBed', **kwargs)
+        cmds, tmp, stdin = self.handle_kwargs(prog='newProgramBed', **kwargs)
 
 Call BEDTools, and return result
 --------------------------------
