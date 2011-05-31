@@ -139,7 +139,7 @@ def get_tempdir():
     return tempfile.tempdir
 
 
-def cleanup(verbose=True, remove_all=False):
+def cleanup(verbose=False, remove_all=False):
     """
     Deletes all temporary files in the *BedTool.TEMPFILES* class
     variable.
