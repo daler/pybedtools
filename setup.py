@@ -56,7 +56,6 @@ setup(
         package_dir = {"pybedtools": "pybedtools"},
         scripts = ['pybedtools/scripts/venn_gchart.py',
                    'pybedtools/scripts/venn_mpl.py',
-                   'pybedtools/scripts/classify_reads.py',
                    'pybedtools/scripts/annotate.py'],
         cmdclass = {'build_ext': build_ext},
         author_email="dalerr@niddk.nih.gov",

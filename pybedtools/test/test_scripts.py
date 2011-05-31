@@ -29,3 +29,7 @@ def test_annotate_xstream():
     assert len(a) == len(c)
     d = annotate.add_xstream(c, b, dist=1000, updown="down")
     assert a.field_count() == d.field_count() - 2
+
+
+def teardown():
+    pybedtools.cleanup()

@@ -90,6 +90,7 @@ def main():
     if not options.test:
         for ra in reqd_args:
             if not getattr(options,ra):
+                op.print_help()
                 sys.stderr.write('Missing required arg "%s"\n' % ra)
                 sys.exit(1)
 
