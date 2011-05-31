@@ -50,17 +50,15 @@ def add_closest(aname, bname):
         fb.write(str(be) + "\n")
     fb.close()
 
-    b = BedTool(fb.name).sort()
-    b.saveas('b.bed')
+    b = BedTool(fb.name).sort().saveas()
     afields = a.field_count()
-    c = a.closest(b, d=True, t="all")
+    c = a.closest(b, d=True, t="all").saveas()
     get_name = gen_get_name(b, afields)
 
     dbed = open(BedTool._tmp(), "w")
 
     # keep the name, distance and feature type.
     seen_by_line = collections.defaultdict(list)
-    c.saveas('c.bed')
     assert len(c) > 1
     for feat in c:
         fields = feat.fields
@@ -83,8 +81,7 @@ def add_closest(aname, bname):
         new_line = "\t".join([key, names, str(dist)])
         dbed.write(new_line + "\n")
     dbed.close()
-    d = BedTool(dbed.name)
-    d.saveas('y.bed')
+    d = BedTool(dbed.name).saveas()
     assert len(d) == len(a)
     return d
 
@@ -152,6 +149,8 @@ def main():
 
     for row in c.sort():
         print(row)
+
+    pybedtools.cleanup()
 
 if __name__ == "__main__":
     import doctest
