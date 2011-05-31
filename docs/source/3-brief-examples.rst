@@ -37,6 +37,29 @@ demonstrates operator overloading of :class:`BedTool` objects::
     >>> (a+b+c).count()  # common to all 
     >>> # ... and so on, for all the combinations.
 
-Example 3: (TBD)
-~~~~~~~~~~~~~~~~
 
+
+For more, see the :mod:`pybedtools.scripts.venn_mpl` and
+:mod:`pybedtools.scripts.venn_gchart` scripts, which wrap this functionality in
+command-line scripts to create Venn diagrams using either matplotlib or Google
+Charts API respectively.
+
+Example 3: Count reads in introns and exons, in parallel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This example is somewhat more involved, but illustrates several additional
+features of :mod:`pybedtools` such as:
+
+* BAM file support (for more, see :ref:`bam`)
+* indexing into Interval objects (for more, see :ref:`intervals`)
+* filtering (for more, see :ref:`filtering`)
+* streaming (for more, see :ref:`BedTools as iterators`)
+* ability to use parallel processing
+
+The first listing has many explanatory comments, and the second listing shows
+the same code with no comments to give more of a feel for :mod:`pybedtools`.
+
+.. literalinclude:: example_3
+
+Here's the same code but with no comments:
+
+.. literalinclude:: example_3_no_comments

@@ -1,0 +1,48 @@
+import sys
+import multiprocessing
+import pybedtools
+
+gff = pybedtools.example_filename('gdc.gff')
+bam = pybedtools.example_filename('gdc.bam')
+
+g = pybedtools.BedTool(gff).remove_invalid().saveas()
+
+
+def featuretype_filter(feature, featuretype):
+    if feature[2] == featuretype:
+        return True
+    return False
+
+
+def subset_featuretypes(featuretype):
+    return g.filter(featuretype_filter, featuretype).saveas()
+
+
+def count_reads_in_features(features):
+    """
+    Callback function to count reads in features
+    """
+    return features.intersect(abam=bam,
+                             b=features.fn,
+                             bed=True,
+                             stream=True).count()
+
+pool = multiprocessing.Pool()
+
+featuretypes = ('intron', 'exon')
+introns, exons = pool.map(subset_featuretypes, featuretypes)
+
+exon_only = exons.subtract(introns).merge().remove_invalid().saveas()
+intron_only = introns.subtract(exons).merge().remove_invalid().saveas()
+intron_and_exon = exons.intersect(introns).merge().remove_invalid().saveas()
+
+features = (exon_only, intron_only, intron_and_exon)
+results = pool.map(count_reads_in_features, features)
+labels = ('      exon only:',
+          '    intron only:',
+          'intron and exon:')
+
+for label, reads in zip(labels, results):
+    sys.stdout.write('%s %s\n' % (label, reads))
+
+pybedtools.cleanup(verbose=False)

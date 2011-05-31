@@ -1,11 +1,15 @@
+
 .. include:: includeme.rst
+
+.. _filtering:
 
 Filtering
 ~~~~~~~~~
 The :meth:`filter` method lets you pass in a function that accepts an
-:class:`Interval` as its first argument and returns True for False.  For
-example, here's how to get a new :class:`BedTool` containing features from
-`a` that are more than 100 bp long:
+:class:`Interval` as its first argument and returns True for False.  This
+allows you to perform "grep"-like operations on :class:`BedTool` objects.  For
+example, here's how to get a new :class:`BedTool` containing features from `a`
+that are more than 100 bp long:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
@@ -16,10 +20,9 @@ example, here's how to get a new :class:`BedTool` containing features from
     chr1	150	500	feature3	0	-
     <BLANKLINE>
 
-The :meth:`filter` method will pass its `*args` and `**kwargs` to the
-function provided.  So here is a more generic case would be the following,
-where the function is defined once and different arguments are passed in
-for filtering on different lengths:
+The :meth:`filter` method will pass its `*args` and `**kwargs` to the function
+provided.  So here is a more generic case, where the function is defined once
+and different arguments are passed in for filtering on different lengths:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
@@ -29,7 +32,7 @@ for filtering on different lengths:
     ...     return len(feature) > L
 
 Now we can pass different lengths without defining a new function for each
-length of interest:
+length of interest, like this:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
