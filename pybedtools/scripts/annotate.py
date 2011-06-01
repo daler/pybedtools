@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     %prog [options]
 
@@ -17,12 +18,21 @@ from pybedtools import BedTool
 from pybedtools.cbedtools import parse_attributes, create_interval_from_list
 import collections
 
+
 def get_gff_name(field):
+    """
+    Returns the name, parsed from the GFF attributes field, *field*
+    """
     attrs = parse_attributes(field)
     for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
-        if key in attrs: return attrs[key]
+        if key in attrs:
+            return attrs[key]
+
 
 def gen_get_name(b, afields):
+    """
+    Factory for making name-getter functions in a format-specific way
+    """
     btype = b.file_type
     if btype == "bed":
         get_name = lambda fields: fields[afields + 3]
@@ -33,14 +43,23 @@ def gen_get_name(b, afields):
         raise Exception("not implemented")
     return get_name
 
-def add_closest(aname, bname):
+
+def add_closest(aname, bname, save_intermediates=False):
+    """
+    Tags each feature in *aname* with the closest feature, or if the closest
+    feature had a distance of 0, figure out if it was in an intron or exon.
+    """
     a, full_b = BedTool(aname), BedTool(bname)
 
     def exonify(f):
         f[4] = "exon"
         return f
 
+    # Construct introns from a BED12
     bintrons = full_b.introns()
+
+    # From that same BED12, split out the exons and put 'exon' in the score
+    # field
     bexons = full_b.bed6().each(exonify)
 
     fb = open(BedTool._tmp(), "w")
@@ -50,9 +69,26 @@ def add_closest(aname, bname):
         fb.write(str(be) + "\n")
     fb.close()
 
-    b = BedTool(fb.name).sort().saveas()
+    if save_intermediates:
+        bfn = 'b.bed'
+    else:
+        bfn = None
+    b = BedTool(fb.name).sort().saveas(bfn)
+
+    # Alternatively:
+    # b = bintrons.cat(bexons).sort().saveas()
+
     afields = a.field_count()
-    c = a.closest(b, d=True, t="all").saveas()
+
+    # d=True will report distance to closest feature
+    # t='all' will report all ties instead of choosing just one to report.
+    if save_intermediates:
+        cfn = 'c.bed'
+    else:
+        cfn = None
+    c = a.closest(b, d=True, t="all").saveas(cfn)
+
+    # Create a name-getter function based on what kind of file *a* and *b* are
     get_name = gen_get_name(b, afields)
 
     dbed = open(BedTool._tmp(), "w")
@@ -62,11 +98,12 @@ def add_closest(aname, bname):
     assert len(c) > 1
     for feat in c:
         fields = feat.fields
+
+        # Key into the dict is the reconstituted *a* feature
         key = "\t".join(fields[:afields])
         distance = int(fields[-1])
         seen_by_line[key].append({'distance': distance, 'name': get_name(feat),
                                   'type': fields[afields + 4]})
-
 
     for key, dist_info in seen_by_line.iteritems():
         if len(dist_info) > 1:
@@ -78,21 +115,31 @@ def add_closest(aname, bname):
             dist = ";".join(sorted(set(d['type'] for d in dist_info)))
 
         names = ",".join(sorted(set(d['name'] for d in dist_info)))
+
         new_line = "\t".join([key, names, str(dist)])
         dbed.write(new_line + "\n")
     dbed.close()
-    d = BedTool(dbed.name).saveas()
+
+    if save_intermediates:
+        dfn = 'd.bed'
+    else:
+        dfn = None
+    d = BedTool(dbed.name).saveas(dfn)
+
     assert len(d) == len(a)
     return d
+
 
 def add_xstream(a, b, dist, updown, report_distance=False):
     # run a window up or downstream.
     dir = dict(up="l", down="r")[updown]
-    kwargs = {'sw':True, dir: dist}
+    kwargs = {'sw': True, dir: dist}
 
     # have to set the other to 0
-    if "l" in kwargs: kwargs["r"] = 0
-    else: kwargs["l"] = 0
+    if "l" in kwargs:
+        kwargs["r"] = 0
+    else:
+        kwargs["l"] = 0
 
     c = a.window(b, **kwargs)
     afields = a.field_count()
@@ -112,13 +159,15 @@ def add_xstream(a, b, dist, updown, report_distance=False):
     # write the entries that did not appear in the window'ed Bed
     for row in a:
         key = "\t".join(row[:afields])
-        if key in seen: continue
+        if key in seen:
+            continue
         d.write(str(row) + "\t.\n")
 
     d.close()
     dbed = BedTool(d.name)
     assert len(dbed) == len(a)
     return dbed
+
 
 def main():
     """

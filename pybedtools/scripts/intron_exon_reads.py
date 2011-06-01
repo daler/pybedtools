@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pybedtools
 import argparse
 import os
