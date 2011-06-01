@@ -29,6 +29,7 @@ Contents:
    3-brief-examples
    tutorial-contents
    topical-documentation-contents
+   scripts
    autodoc_source
 
 
