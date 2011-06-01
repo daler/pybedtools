@@ -1,4 +1,4 @@
-#/usr/bin/python
+#!/usr/bin/env python
 """
     Given 3 files, creates a 3-way Venn diagram of intersections using matplotlib.  
 
