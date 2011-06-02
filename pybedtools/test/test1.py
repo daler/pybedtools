@@ -141,7 +141,14 @@ def test_remove_invalid():
     assert_raises(NotImplementedError, b.__eq__, cleaned)
     assert str(b) == str(cleaned)
 
-
+def test_create_from_list_long_features():
+    """smoke test.  previously create_interval_from_list was complaining"""
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('c.gff')
+    c = a.intersect(b, wao=True, stream=False)
+    d = a.intersect(b, wao=True, stream=True)
+    for i in d:
+        print i
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines

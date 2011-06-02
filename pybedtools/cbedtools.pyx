@@ -362,16 +362,29 @@ cdef Interval create_interval(BED b):
     return pyb
 
 cpdef Interval create_interval_from_list(list fields):
+    """
+    *fields* is a list with an arbitrary number of items (it can be quite long,
+    say after a -wao intersection of a BED12 and a GFF).
+
+    We need to inspect *fields* to make sure that BED class gets the right
+    thing.  This means detecting BED or GFF, and looking at how many fields
+    there are.  BED constructor gets the first 6 fields; the rest should be a
+    list (converted to a vector)
+    """
     cdef Interval pyb = Interval.__new__(Interval)
     orig_fields = fields[:]
+
     # BED
     if (fields[1] + fields[2]).isdigit():
         # if it's too short, just add some empty fields.
         if len(fields) < 7:
             fields.extend(["."] * (6 - len(fields)))
-            fields.extend([[]])
+            other_fields = []
+        else:
+            other_fields = fields[6:]
+
         pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
-                       string(fields[4]), string(fields[5]), list_to_vector(fields[6]))
+                string(fields[4]), string(fields[5]), list_to_vector(other_fields))
         pyb.file_type = 'bed'
     # GFF
     elif len(fields) == 9 and (fields[3] + fields[4]).isdigit():
