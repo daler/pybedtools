@@ -45,7 +45,8 @@ def test_venn_mpl():
     c = a.random_subset(200).shuffle(genome='hg19', seed=2)
     c = c.cat(b.random_subset(100))
 
-    venn_mpl.venn_mpl(a=a.fn, b=b.fn, c=c.fn, colors=['r','b','g'], outfn='out.png', labels=['a','b','c'])
+    outfn = 'out.png'
+    venn_mpl.venn_mpl(a=a.fn, b=b.fn, c=c.fn, colors=['r','b','g'], outfn=outfn, labels=['a','b','c'])
     assert open(outfn).read() == expected
 
     os.unlink(outfn)
