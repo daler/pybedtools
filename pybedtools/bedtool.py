@@ -534,6 +534,7 @@ class BedTool(object):
                                 'shuffleBed': 'i',
                                'annotateBed': 'i',
                                   'flankBed': 'i',
+                         'genomeCoverageBed': 'i',
                               'fastaFromBed': 'bed',
                           'maskFastaFromBed': 'bed',
                                'coverageBed': 'a'}
