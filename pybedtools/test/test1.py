@@ -211,10 +211,7 @@ def test_repr_and_printing():
 
 def test_introns():
     a = pybedtools.example_bedtool('mm9.bed12')
-    t = pybedtools.BedTool._tmp()
-    b = pybedtools.BedTool((f for f in a if f.name == "Tcea1,uc007afj.1"))
-    b.saveas(t)
-    b = pybedtools.BedTool(t)
+    b = pybedtools.BedTool((f for f in a if f.name == "Tcea1,uc007afj.1")).saveas()
     bfeat = iter(b).next()
 
     bi = b.introns()
