@@ -16,7 +16,7 @@ import pybedtools
 import urllib
 import urllib2
 
-def venn_gchart(a, b, c, colors=None, outfn=None, labels=None, size='300x300'):
+def venn_gchart(a, b, c, colors=None, labels=None, size='300x300'):
     """
     a, b, and c are filenames to BED-like files.
 
@@ -57,7 +57,12 @@ def venn_gchart(a, b, c, colors=None, outfn=None, labels=None, size='300x300'):
         data['chdl'] = '|'.join(labels)
     if colors:
         data['chco'] = ','.join(colors)
+    return data
 
+def gchart(data, outfn='out.png'):
+    """
+    Sends data to Google Chart API
+    """
     data = urllib.urlencode(data)
 
     url = 'https://chart.googleapis.com/chart?'
@@ -70,7 +75,8 @@ def venn_gchart(a, b, c, colors=None, outfn=None, labels=None, size='300x300'):
     f.close()
 
 def main():
-    """Create a 3-way Venn diagram using Google Charts API"""
+    """Create a 3-way Venn diagram using Google Charts API
+    """
 
     op = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
     op.add_argument('-a', help='File to use for the left-most circle')
@@ -109,11 +115,11 @@ def main():
         options.o = 'out.png'
         options.labels = 'a,b,c'
 
-    venn_gchart(a=options.a, b=options.b, c=options.c,
-         colors=options.colors.split(','),
-         labels=options.labels.split(','),
-         size=options.size,
-         outfn=options.o)
+    data = venn_gchart(a=options.a, b=options.b, c=options.c,
+                       colors=options.colors.split(','),
+                       labels=options.labels.split(','),
+                       size=options.size)
+    gchart(data, outfn=options.o)
 
 if __name__ == "__main__":
     import doctest
