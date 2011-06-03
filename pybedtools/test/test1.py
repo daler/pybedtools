@@ -482,12 +482,6 @@ def test_field_count():
     a = pybedtools.example_bedtool('a.bed')
     assert a.field_count() == 6
 
-def test_cat():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a.cat(b, postmerge=False)
-    assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
-
 def test_repr_and_printing():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
@@ -530,6 +524,10 @@ def test_cat():
     """)
     assert a.cat(b) == expected
 
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.cat(b, postmerge=False)
+    assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
 
 
 # ----------------------------------------------------------------------------
