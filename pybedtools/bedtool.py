@@ -16,6 +16,7 @@ import pybedtools
 tempfile_prefix = 'pybedtools.'
 tempfile_suffix = '.tmp'
 
+
 class BedTool(object):
     TEMPFILES = []
 
@@ -342,7 +343,10 @@ class BedTool(object):
         >>> a.file_type
         'bed'
         """
-
+        if not isinstance(self.fn, basestring):
+            raise ValueError('Checking file_type not supported for '
+                             'non-file BedTools. Use .saveas() to '
+                             'save as a temp file first.')
         v = IntervalFile(self.fn)
         return v.file_type
 
@@ -372,7 +376,8 @@ class BedTool(object):
         deletion if you forget to call pybedtools.cleanup().
         '''
         tmpfn = tempfile.NamedTemporaryFile(prefix=tempfile_prefix,
-                                            suffix=tempfile_suffix, delete=False)
+                                            suffix=tempfile_suffix,
+                                            delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         return tmpfn
