@@ -88,3 +88,28 @@ not defined:
 
     >>> str(b) == str(c)
     True
+
+Indexing a :class:`BedTool`
+---------------------------
+In some cases it may be useful to index into a :class:`BedTool` object.  We can
+use standard list slice syntax, and get an iterable of :class:`Interval`
+objects as a result.  This iterable can in turn be used to create a new :class:`BedTool` instance:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE +ELLIPSIS
+
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> a[2:4]
+    <itertools.islice object at 0x...>
+
+    >>> for i in a[2:4]:
+    ...     print i
+    chr1	150	500	feature3	0	-
+    chr1	900	950	feature4	0	+
+    <BLANKLINE>
+
+    >>> b = pybedtools.example_bedtool('b.bed')
+
+    >>> print pybedtools.BedTool(a[:3]).intersect(b)
+    chr1	155	200	feature2	0	+
+    chr1	155	200	feature3	0	-

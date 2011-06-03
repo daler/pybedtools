@@ -4,7 +4,7 @@ import os
 import sys
 import random
 import string
-from itertools import groupby
+from itertools import groupby, islice
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
@@ -448,6 +448,13 @@ class BedTool(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __getitem__(self, key):
+
+        if isinstance(key, slice):
+            return islice(self, key.start, key.stop, key.step)
+        else:
+            return islice(self, key, key+1)
 
     @_file_or_bedtool()
     def __add__(self, other):

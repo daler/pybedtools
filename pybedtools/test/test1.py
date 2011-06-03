@@ -169,6 +169,19 @@ def test_iterator():
     results = list(a)
     assert str(results[0]) == 'chrX\t1\t10', results
 
+def test_indexing():
+    a = pybedtools.example_bedtool('a.bed')
+
+    interval = pybedtools.Interval('chr1', 1, 100, 'feature1', '0', '+')
+
+    results = list(a[0:2])
+
+    assert len(results) == 2
+    assert results[0] == interval
+
+    # check single-integer indexing
+    assert list(a[0])[0] == interval
+
 # ----------------------------------------------------------------------------
 # BEDTools wrapper tests --
 #   See test_iter.py, which uses YAML test case definitions, for more complete
@@ -177,7 +190,6 @@ def test_iterator():
 #   Here, we assert exception raises and more complicated things that can't be
 #   easily described in YAML
 # ----------------------------------------------------------------------------
-
 
 def test_iterator():
     # makes sure we're ignoring non-feature lines
@@ -219,13 +231,11 @@ def test_introns():
     # b[9] -1 introns assuming no utrs.
     assert len(bi) == int(bfeat[9]) - 1, (len(bi), len(b))
 
-
 def test_slop():
     a = pybedtools.example_bedtool('a.bed')
 
     # Make sure it complains if no genome is set
     assert_raises(ValueError, a.slop, **dict(l=100, r=1))
-
 
 def test_merge():
     a = pybedtools.example_bedtool('a.bed')
@@ -543,7 +553,7 @@ def test_name():
     assert c.name == "thaliana_1_465_805" , c.name
 
 # ----------------------------------------------------------------------------
-# Other tests
+# Other non-BedTool tests
 # ----------------------------------------------------------------------------
 
 def test_flatten():
