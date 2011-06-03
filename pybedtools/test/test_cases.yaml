@@ -61,14 +61,29 @@
         chr1 1   100 feature1 0 +
         chr1 100 200 feature2 0 +
 
-# TODO: need to make good BAM test files
-#-   method: intersect
-#    kwargs:
-#        abam: x.bam
-#        b: a.bed
-#        bed: True
-#    expected: |
-#
+-   method: intersect
+    kwargs:
+        abam: gdc.bam
+        b: gdc.gff
+        bed: True
+        v: True
+    expected: |
+        chr2L	10	15	None	255	+
+
+-   method: intersect
+    kwargs:
+        abam: gdc.bam
+        b: gdc.gff
+        bed: True
+        u: True
+    expected: |
+        chr2L	70	75	None	255	-
+        chr2L	140	145	None	255	-
+        chr2L	150	155	None	255	-
+        chr2L	210	215	None	255	+
+        chr2L	70	75	None	255	+
+        chr2L	140	145	None	255	+
+        chr2L	160	165	None	255	+
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
 # subtract
@@ -261,3 +276,90 @@
         chr1	5140028	5140142	Atp6v1h,uc007afn.1	1	+
         chr1	5152185	5152630	Atp6v1h,uc007afn.1	1	+
 
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# shuffle
+#
+#
+-   method: shuffle
+    kwargs:
+        i: a.bed
+        seed: 1
+        genome: hg19
+        chrom: True
+    expected: |
+        chr1	59535036	59535135	feature1	0	+
+        chr1	99179023	99179123	feature2	0	+
+        chr1	186189051	186189401	feature3	0	-
+        chr1	219133189	219133239	feature4	0	+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# annotate
+#
+-   method: annotate
+    kwargs:
+        i: a.bed
+        files: [b.bed, a.bed]
+    expected: |
+        chr1	1	100	feature1	0	+	0.000000	1.000000	
+        chr1	100	200	feature2	0	+	0.450000	1.000000	
+        chr1	150	500	feature3	0	-	0.128571	1.000000	
+        chr1	900	950	feature4	0	+	0.020000	1.000000	
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# flank
+#
+-   method: flank
+    kwargs:
+        i: a.bed
+        b: 100
+        genome: hg19
+    expected: |
+        chr1	0	1	feature1	0	+
+        chr1	100	200	feature1	0	+
+        chr1	0	100	feature2	0	+
+        chr1	200	300	feature2	0	+
+        chr1	50	150	feature3	0	-
+        chr1	500	600	feature3	0	-
+        chr1	800	900	feature4	0	+
+        chr1	950	1050	feature4	0	+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# genomeCoverage
+#
+-   method: genome_coverage
+    kwargs:
+        ibam: gdc.bam
+        genome: dm3
+        bg: True
+    expected: |
+        chr2L	10	15	1
+        chr2L	70	75	2
+        chr2L	140	145	2
+        chr2L	150	155	1
+        chr2L	160	165	1
+        chr2L	210	215	1
+
+-   method: genome_coverage
+    kwargs:
+        i: gdc.bed
+        genome: dm3
+        bg: True
+    expected: |
+        chr2L	10	15	1
+        chr2L	70	75	2
+        chr2L	140	145	2
+        chr2L	150	155	1
+        chr2L	160	165	1
+        chr2L	210	215	1
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# coverage
+#
+-   method: coverage
+    kwargs:
+        a: a.bed
+        b: b.bed
+    expected: |
+        chr1	155	200	feature5	0	-	2	45	45	1.0000000
+        chr1	800	901	feature6	0	+	1	1	101	0.0099010
