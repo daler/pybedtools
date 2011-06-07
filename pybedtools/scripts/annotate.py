@@ -107,7 +107,7 @@ def add_closest(aname, bname, save_intermediates=False):
 
     for key, dist_info in seen_by_line.iteritems():
         if len(dist_info) > 1:
-            assert all(d['distance'] == 0 for d in dist_info), (dist_info)
+            assert len(set(d['distance'] for d in dist_info)) == 1, (dist_info)
 
         # if the distance is zero. figure it it's intron or exon.
         dist = dist_info[0]['distance']
