@@ -450,11 +450,12 @@ class BedTool(object):
         return not self.__eq__(other)
 
     def __getitem__(self, key):
-
         if isinstance(key, slice):
             return islice(self, key.start, key.stop, key.step)
-        else:
+        elif isinstance(key, int):
             return islice(self, key, key+1)
+        else:
+            raise ValueError('Only slices or integers allowed for indexing into a BedTool')
 
     @_file_or_bedtool()
     def __add__(self, other):
