@@ -35,8 +35,14 @@ def test_venn_mpl():
     """
     compares output image to expected
     """
+    try:
+        import matplotlib
+    except ImportError:
+        sys.stderr.write('Need matplotlib installed to test venn_mpl')
+        return
+
     here = os.path.dirname(__file__)
-    expected = open(os.path.join(here, 'mpl-expected.png')).read()
+    expected_fn = os.path.join(here, 'mpl-expected.png')
 
     pybedtools.bedtool.random.seed(1)
     a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
@@ -45,9 +51,17 @@ def test_venn_mpl():
     c = a.random_subset(200).shuffle(genome='hg19', seed=2)
     c = c.cat(b.random_subset(100))
 
-    outfn = 'out.png'
+    outfn = 'mplout.png'
     venn_mpl.venn_mpl(a=a.fn, b=b.fn, c=c.fn, colors=['r','b','g'], outfn=outfn, labels=['a','b','c'])
-    assert open(outfn).read() == expected
+
+    # On a different machine, the created image is not visibly different but is
+    # numerically different.  Not sure what a reasonable tolerance is, but this
+    # seems to work for now....
+    o = matplotlib.image.imread(outfn)
+    e = matplotlib.image.imread(expected_fn)
+
+    TOLERANCE = 25
+    assert abs((o - e).sum()) < TOLERANCE
 
     os.unlink(outfn)
 
