@@ -282,31 +282,6 @@ def test_slop():
     # Make sure it complains if no genome is set
     assert_raises(ValueError, a.slop, **dict(l=100, r=1))
 
-def test_merge():
-    a = pybedtools.example_bedtool('a.bed')
-    results = str(a.merge())
-    expected = fix("""
-    chr1	1	500
-    chr1	900	950
-    """)
-    assert results == expected
-
-    results = str(a.merge(s=True))
-    expected = fix("""
-    chr1	1	200	+
-    chr1	900	950	+
-    chr1	150	500	-
-    """)
-    assert results == expected
-
-    b = pybedtools.example_bedtool('b.bed')
-    results = str(b.merge(d=700))
-    expected = fix("""
-    chr1 155 901 
-    """)
-    print results
-    assert results == expected
-
 def test_closest():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
