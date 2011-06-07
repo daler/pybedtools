@@ -26,44 +26,49 @@ def fix(x):
 # Streaming and non-file BedTool tests
 # ----------------------------------------------------------------------------
 def test_stream():
-    orig_tempdir = pybedtools.get_tempdir()
-
-    if os.path.exists('unwriteable'):
-        os.system('rm -rf unwriteable')
-
-    os.system('mkdir unwriteable')
-    os.system('chmod -w unwriteable')
-
+    """
+    Stream and file-based equality, both whole-file and Interval by
+    Interval
+    """
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
     c = a.intersect(b)
 
-    pybedtools.set_tempdir('unwriteable')
-    d = a.intersect(b, stream=True)
-    pybedtools.set_tempdir(orig_tempdir)
+    # make an unwriteable dir...
+    orig_tempdir = pybedtools.get_tempdir()
+    if os.path.exists('unwriteable'):
+        os.system('rm -rf unwriteable')
+    os.system('mkdir unwriteable')
+    os.system('chmod -w unwriteable')
 
-    assert_raises(NotImplementedError, c.__eq__,d)
+    # ...set that to the new tempdir
+    pybedtools.set_tempdir('unwriteable')
+
+    # this should really not be written anywhere
+    d = a.intersect(b, stream=True)
+
+    assert_raises(NotImplementedError, c.__eq__, d)
     d_contents = d.fn.read()
     c_contents = open(c.fn).read()
     assert d_contents == c_contents
 
-    pybedtools.set_tempdir(orig_tempdir)
-    c = a.intersect(b)
-
+    # reconstruct d and check Interval-by-Interval equality
     pybedtools.set_tempdir('unwriteable')
     d = a.intersect(b, stream=True)
 
     for i,j in zip(c, d):
         assert str(i) == str(j)
 
-    pybedtools.set_tempdir(orig_tempdir)
-    os.system('rm -fr unwriteable')
-
-def test_stream_gen():
-    # these should run
+    # Now do something similar with GFF files.
     a = pybedtools.example_bedtool('a.bed')
     f = pybedtools.example_bedtool('d.gff')
+
+    # file-based
+    pybedtools.set_tempdir(orig_tempdir)
     g1 = f.intersect(a)
+
+    # streaming
+    pybedtools.set_tempdir('unwriteable')
     g2 = f.intersect(a, stream=True)
 
     for i,j in zip(g1, g2):
@@ -74,35 +79,58 @@ def test_stream_gen():
     for i in iter(g3):
         print i
 
+    pybedtools.set_tempdir(orig_tempdir)
+    os.system('rm -fr unwriteable')
+
 def test_stream_of_stream():
+    """
+    Second-level streaming using self-intersections
+    """
     a = pybedtools.example_bedtool('a.bed')
 
-    nonstream1 = a.intersect(a)
-    stream1    = a.intersect(a, stream=True)
+    # Ensure non-stream and stream equality of self-intersection
+    nonstream1 = a.intersect(a, u=True)
+    stream1    = a.intersect(a, u=True, stream=True)
+    nonstream1_str = str(nonstream1)
+    stream1_str    = str(stream1)
+    a_str          = str(a)
+    assert nonstream1_str == stream1_str == a_str
 
-    assert str(nonstream1) == str(stream1)
-
-    # Have to reconstruct stream1 cause it was consumed in the print
-    nonstream1 = a.intersect(a)
-    stream1    = a.intersect(a, stream=True)
-    nonstream2 = a.intersect(nonstream1)
-    stream2    = a.intersect(stream1, stream=True)
-    assert str(nonstream2) == str(stream2)
+    # Have to reconstruct stream1 cause it was consumed in the str() call
+    nonstream1 = a.intersect(a, u=True)
+    stream1    = a.intersect(a, u=True, stream=True)
+    nonstream2 = a.intersect(nonstream1, u=True)
+    stream2    = a.intersect(stream1, u=True, stream=True)
+    nonstream2_str = str(nonstream2)
+    stream2_str    = str(stream2)
+    assert nonstream2_str == stream2_str == nonstream1_str == stream1_str == a_str
 
 def test_generator():
+    """
+    Equality of BedTools created from file, iter(), and generator
+    """
+    # Test creation from file vs 
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.BedTool(iter(a))
-    expected = str(a)
-    observed = str(b)
-    print expected
-    print observed
-    assert expected == observed
+    assert str(a) == str(b)
 
-    b1 = a.intersect(a)
+    # Ensure that streams work well too
+    b1 = a.intersect(a, stream=True)
     b2 = pybedtools.BedTool((i for i in a)).intersect(a)
     assert str(b1) == str(b2)
 
+#TODO: this hangs -- it's the same as above, but with stream=True on the last
+# intersection . . .  is this a Popen issue?
+def tst_():
+    a = pybedtools.example_bedtool('a.bed')
+    b1 = a.intersect(a, stream=True)
+    b2 = pybedtools.BedTool((i for i in a)).intersect(a, stream=True)
+    assert str(b1) == str(b2)
+
 def test_malformed():
+    """
+    Malformed BED lines should raise MalformedBedLineError
+    """
     a = pybedtools.BedTool("""
     chr1 100 200
     chr1 100 90
@@ -116,16 +144,21 @@ def test_malformed():
     # first feature is OK
     print a_i.next()
 
-    # but next one is not and should raise ValueError
+    # but next one is not and should raise exception
     assert_raises(pybedtools.MalformedBedLineError, a_i.next)
 
 def test_remove_invalid():
+    """
+    Remove_invalid() removes invalid lines, track lines, and comments
+    """
     a = pybedtools.BedTool("""
     chr1 100 200
     chr1 100 90
+    track name='try to break parser'
     chr1 100 200
     chr1 100 200
     chr1 100 200
+    #
     chr1 100 200
     """, from_string=True)
 
@@ -142,7 +175,9 @@ def test_remove_invalid():
     assert str(b) == str(cleaned)
 
 def test_create_from_list_long_features():
-    """smoke test.  previously create_interval_from_list was complaining"""
+    """
+    Iterator handles extra fields from long features (BED+GFF -wao intersection)
+    """
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('c.gff')
     c = a.intersect(b, wao=True, stream=False)
@@ -151,8 +186,9 @@ def test_create_from_list_long_features():
         print i
 
 def test_iterator():
-    # makes sure we're ignoring non-feature lines
-
+    """
+    Iterator should ignore non-BED lines
+    """
     s = """
     track name="test"
 
@@ -170,17 +206,41 @@ def test_iterator():
     assert str(results[0]) == 'chrX\t1\t10', results
 
 def test_indexing():
+    """
+    Indexing into BedTools
+    """
     a = pybedtools.example_bedtool('a.bed')
 
+    # This is the first line
     interval = pybedtools.Interval('chr1', 1, 100, 'feature1', '0', '+')
 
-    results = list(a[0:2])
+    # just to make sure
+    assert interval == iter(a).next()
 
+    # test slice behavior
+    results = list(a[0:2])
     assert len(results) == 2
     assert results[0] == interval
 
-    # check single-integer indexing
+    # test single-integer indexing
     assert list(a[0])[0] == interval
+
+    # only slices and integers allowed....
+    assert_raises(ValueError, a.__getitem__, 'key')
+
+def test_repr_and_printing():
+    """
+    Missing files and streams should say so in repr()
+    """
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a+b
+    d = a.intersect(b, stream=True)
+    os.unlink(c.fn)
+    assert 'a.bed' in repr(a)
+    assert 'b.bed' in repr(b)
+    assert 'MISSING FILE' in repr(c)
+    assert 'stream' in repr(d)
 
 # ----------------------------------------------------------------------------
 # BEDTools wrapper tests --
@@ -190,36 +250,6 @@ def test_indexing():
 #   Here, we assert exception raises and more complicated things that can't be
 #   easily described in YAML
 # ----------------------------------------------------------------------------
-
-def test_iterator():
-    # makes sure we're ignoring non-feature lines
-    
-    s = """
-    track name="test"
-
-
-    browser position chrX:1-100
-    # comment line
-    chrX  1 10
-    # more comments
-    track name="another"
-
-
-    """
-    a = pybedtools.BedTool(s, from_string=True)
-    results = list(a)
-    assert str(results[0]) == 'chrX\t1\t10', results
-
-def test_repr_and_printing():
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    c = a+b
-    os.unlink(c.fn)
-    assert 'a.bed' in repr(a)
-    assert 'b.bed' in repr(b)
-    assert 'MISSING FILE' in repr(c)
-
-    print a.head(1)
 
 def test_introns():
     a = pybedtools.example_bedtool('mm9.bed12')
@@ -232,6 +262,9 @@ def test_introns():
     assert len(bi) == int(bfeat[9]) - 1, (len(bi), len(b))
 
 def test_slop():
+    """
+    Calling slop with no genome should raise ValueError
+    """
     a = pybedtools.example_bedtool('a.bed')
 
     # Make sure it complains if no genome is set
