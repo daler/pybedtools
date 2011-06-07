@@ -1,4 +1,5 @@
 import tempfile
+import inspect
 from math import floor, ceil
 import os
 import sys
@@ -15,6 +16,23 @@ import pybedtools
 
 tempfile_prefix = 'pybedtools.'
 tempfile_suffix = '.tmp'
+
+
+_implicit_registry = {}
+_other_registry = {}
+
+def _implicit_register(options):
+    def deco(func):
+        _implicit_registry[func.__name__] = options
+        # TODO: edit docstring here
+        return func
+    return deco
+
+def _other_register(option):
+    def deco(func):
+        _other_registry[func.__name__] = option
+        return func
+    return deco
 
 
 class BedTool(object):
@@ -229,17 +247,26 @@ class BedTool(object):
         """
         return BedTool((func(f, *args, **kwargs) for f in self))
 
+    def add_implicit(self, kwargs):
+        implicit = _implicit_registry[inspect.stack()[1][3]]
+        if implicit not in kwargs:
+            kwargs[implicit] = self.fn
+        return kwargs
+
     @_help('bed12ToBed6')
     @_file_or_bedtool()
     @_implicit('-i')
     @_returns_bedtool()
     @_log_to_history
+    @_implicit_register('i')
     def bed6(self, **kwargs):
         """
         convert a BED12 to a BED6 file
         """
-        if not 'i' in kwargs:
-            kwargs['i'] = self.fn
+        kwargs = self.add_implicit(kwargs)
+
+        #if not 'i' in kwargs:
+        #    kwargs['i'] = self.fn
 
         cmds, tmp, stdin = self.handle_kwargs(prog='bed12ToBed6', **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
@@ -544,7 +571,6 @@ class BedTool(object):
                                    'slopBed': 'i',
                                   'mergeBed': 'i',
                                    'sortBed': 'i',
-                               'bed12ToBed6': 'i',
                                   'bamToBed': 'i',
                                 'shuffleBed': 'i',
                                'annotateBed': 'i',
