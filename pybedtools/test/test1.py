@@ -242,6 +242,18 @@ def test_repr_and_printing():
     assert 'MISSING FILE' in repr(c)
     assert 'stream' in repr(d)
 
+def test_file_type():
+    """
+    Regression test on file_type checks
+
+    Previously file_type was creating a new IntervalFile every time it was
+    called; now it's cached so an IntervalFile is only created once per
+    BedTool.
+    """
+    a = pybedtools.example_bedtool('a.bed')
+    for i in range(5000):
+        a.file_type
+
 # ----------------------------------------------------------------------------
 # BEDTools wrapper tests --
 #   See test_iter.py, which uses YAML test case definitions, for more complete

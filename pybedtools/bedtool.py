@@ -83,7 +83,7 @@ class BedTool(object):
         _tags[tag] = self
         self.fn = fn
         self._hascounts = False
-
+        self._file_type = None
         self.history = History()
 
     def delete_temporary_history(self, ask=True, raw_input_func=None):
@@ -343,12 +343,14 @@ class BedTool(object):
         >>> a.file_type
         'bed'
         """
-        if not isinstance(self.fn, basestring):
-            raise ValueError('Checking file_type not supported for '
-                             'non-file BedTools. Use .saveas() to '
-                             'save as a temp file first.')
-        v = IntervalFile(self.fn)
-        return v.file_type
+        if self._file_type is None:
+            if not isinstance(self.fn, basestring):
+                raise ValueError('Checking file_type not supported for '
+                                 'non-file BedTools. Use .saveas() to '
+                                 'save as a temp file first.')
+            v = IntervalFile(self.fn)
+            self._file_type = v.file_type
+        return self._file_type
 
     def cut(self, indexes):
         """
