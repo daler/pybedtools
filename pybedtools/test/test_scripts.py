@@ -38,6 +38,7 @@ def test_venn_mpl():
     try:
         import matplotlib
     except ImportError:
+        import sys
         sys.stderr.write('Need matplotlib installed to test venn_mpl')
         return
 
