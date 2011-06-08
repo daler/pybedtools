@@ -371,11 +371,12 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 stderr = None
 
         if stderr:
-            print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
-            print 'Error message was:\n'
-            print stderr
-            raise BEDToolsError('See above for commands and error message',
-                                stderr)
+            sys.stderr.write('\nCommand was:\n\n\t%s\n' % \
+                             subprocess.list2cmdline(cmds))
+            sys.stderr.write('\nError message was:\n')
+            sys.stderr.write(stderr)
+            raise BEDToolsError('Error message from BEDTools written to '
+                                'stderr, above', stderr)
 
     except (OSError, IOError) as err:
         print '%s: %s' % (type(err), os.strerror(err.errno))
@@ -413,3 +414,13 @@ def set_bedtools_path(path=""):
     arguments or use path="".
     """
     pybedtools._path = path
+
+
+def _check_sequence_stderr(x):
+    """
+    If stderr created by fastaFromBed starst with 'index file', then don't
+    consider it an error.
+    """
+    if x.startswith('index file'):
+        return True
+    return False
