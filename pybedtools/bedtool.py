@@ -580,11 +580,9 @@ class BedTool(object):
             raise ValueError('Only slices or integers allowed for indexing '
                              'into a BedTool')
 
-    @_file_or_bedtool()
     def __add__(self, other):
         return self.intersect(other, u=True)
 
-    @_file_or_bedtool()
     def __sub__(self, other):
         return self.intersect(other, v=True)
 
@@ -597,7 +595,6 @@ class BedTool(object):
                 break
             print line,
 
-    @_returns_bedtool()
     def set_chromsizes(self, chromsizes):
         """
         Set the chromsizes for this genome. If *chromsizes* is a string, it
@@ -762,7 +759,6 @@ class BedTool(object):
                 cmds.append(str(value))
         return cmds, tmp, stdin
 
-    @_returns_bedtool()
     @_log_to_history
     def remove_invalid(self):
         """
@@ -1364,8 +1360,6 @@ class BedTool(object):
             del(tmp)
             del(tmp2)
 
-    @_file_or_bedtool()
-    @_returns_bedtool()
     def cat(self, other, postmerge=True, **kwargs):
         """
         Concatenates two BedTool objects (or an object and a file) and does an
@@ -1408,7 +1402,6 @@ class BedTool(object):
         else:
             return c
 
-    @_returns_bedtool()
     def saveas(self, fn=None, trackline=None):
         """
         Save BED file as a new file, adding the optional *trackline* to the
@@ -1438,7 +1431,6 @@ class BedTool(object):
         fn = self._collapse(self, fn=fn, trackline=trackline)
         return BedTool(fn)
 
-    @_returns_bedtool()
     def random_subset(self, n):
         '''
         Returns a new bedtools object containing a random subset of the
@@ -1489,7 +1481,6 @@ class BedTool(object):
             total_bp += len(feature)
         return total_bp
 
-    @_returns_bedtool()
     def with_attrs(self, **kwargs):
         """
         Given arbitrary keyword arguments, turns the keys and values into
