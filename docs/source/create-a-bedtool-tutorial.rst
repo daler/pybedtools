@@ -5,49 +5,28 @@ Create a :class:`BedTool`
 First, follow the :ref:`installation` instructions if you haven't already
 done so to install both BEDTools_ and :mod:`pybedtools`.
 
-Then import the :mod:`pybedtools` module:
+Then import the :mod:`pybedtools` module and make a new :class:`BedTool`:
 
 .. doctest::
 
     >>> import pybedtools
 
-This documentation will use example files that ship with :mod:`pybedtools`,
-but you may find it more useful to use your own files.  To create a
-:class:`BedTool` you need to specify a filename.  To get a list of example
-files that ship with :mod:`pybedtools`:
+    >>> # use a BED file that ships with pybedtools...
+    >>> a = pybedtools.example_bedtool('a.bed')
 
-.. doctest::
+    >>> # ...or use your own by passing a filename
+    >>> a = pybedtools.BedTool('peaks.bed')
 
-    >>> pybedtools.list_example_files()
-    ['a.bed', 'b.bed', 'c.gff', 'd.gff', 'dm3-chr2L-5M-invalid.gff.gz', 'dm3-chr2L-5M.gff.gz', 'dmel-all-r5.33-cleaned.gff', 'hg19-genes.bed.gz', 'rmsk.hg18.chr21.small.bed', 'rmsk.hg18.chr21.small.bed.gz', 'x.bam']
+This documentation uses example files that ship with :mod:`pybedtools`.  To
+access these files from their installation location, we use the
+:func:`example_bedtool` function.  This is convenient because if you
+copy-paste the examples, they will work. If you would rather learn using
+your own files, just pass the filename to a new :class:`BedTool`, like the
+above example.
 
-Note that there are BED and GFF files, some of which are compressed.  All
-files supported by BEDTools_ are supported by :mod:`pybedtools`.
+You can use any file that BEDTools_ supports -- this includes BED, VCF,
+GFF, and gzipped versions of any of these. See :ref:`Creating a BedTool`
+for more on the different ways of creating a :class:`BedTool`, including
+from iterators and directly from a string.
 
-Using one of these filenames, get the full path to the file (which will
-depend on your operating system and how you installed the package) with:
-
-.. doctest::
-
-    >>> full_path = pybedtools.example_filename('a.bed')
-
-Once you have a filename (whether it's an example file or your own file),
-creating a :class:`BedTool` is easy:
-
-.. doctest::
-
-    >>> # create a new BedTool using that filename
-    >>> a = pybedtools.BedTool(full_path)
-
-Let's set up a second :class:`BedTool` so we can do intersections and
-subtractions.  This time, we'll use a convenience function for creating
-:class:`BedTool` instances out of example files (if you're using your own
-files, just make another one the same way `a` was made above).
-
-.. doctest::
-
-    >>> # create another BedTool to play around with
-    >>> b = pybedtools.example_bedtool('b.bed')
-
-See :ref:`Creating a BedTool` for more information, including making
-:class:`BedTool` objects directly from strings and iterators.
+Now, let's see how to do a common task performed on BED files: intersections.

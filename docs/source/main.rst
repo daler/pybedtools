@@ -7,6 +7,8 @@
 
 .. _argparse: http://code.google.com/p/argparse/
 
+.. include:: includeme.rst
+
 .. _installation:
 
 Installation

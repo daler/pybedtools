@@ -38,7 +38,7 @@ def find_tagged(tag):
                 return item
         except AttributeError:
             pass
-    return '%s not found' % tag
+    raise ValueError('tag "%s" not found' % tag)
 
 
 def _flatten_list(x):

@@ -39,12 +39,11 @@ Add the :func:`_wraps` decorator
 --------------------------------
 This is where most of the work happens.  
 
-Since most of the work of wrapping BEDTools programs needs to happen every time
-a new program is wrapped, this work is abstracted out into the :func:`_wraps`
-function.
-
-See the :func:`_wraps` docstring and source for the details on what it's
-doing.
+Since most of the work of wrapping BEDTools programs needs to happen every
+time a new program is wrapped, this work is abstracted out into the
+:func:`_wraps` function. The :func:`_wraps` docstring and source is the
+best place to learn the details on what it's doing; here we'll focus on
+using it.
 
 Our hypothetical program, `newProgramBed`, takes `-a` as the first input.
 We'd like to have `-a` implicitly be passed as whatever our
@@ -64,6 +63,7 @@ Python.
 Here's what the new method looks like so far:
 
 ::
+
     @_wraps(prog='newProgramBed', implicit='a', other='b')
     def new_program(self):
         pass

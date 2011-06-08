@@ -48,6 +48,10 @@ Utilities
 .. automodule:: pybedtools
     :members: cleanup, IntervalIterator, find_tagged
 
+Wrapping
+--------
+.. automodule:: pybedtools.bedtool
+    :members: _wrap
 
 .. _wrappers:
 
@@ -149,7 +153,9 @@ Introspection
 ~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.field_count
 
-
+:meth:`BedTool.head`
+~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.head
 
 
 
