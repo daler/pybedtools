@@ -759,6 +759,50 @@ class BedTool(object):
                 cmds.append(str(value))
         return cmds, tmp, stdin
 
+    def check_genome(self, **kwargs):
+        """
+        Handles the different ways of specifying a genome in kwargs:
+
+        g='genome.file' specifies a file directly
+        genome='dm3' gets the file from genome registry
+        self.chromsizes could be a dict.\
+        """
+
+        # If both g and genome are missing, assume self.chromsizes
+        if ('g' not in kwargs) and ('genome' not in kwargs):
+            if hasattr(self, 'chromsizes'):
+                kwargs['g'] = self.chromsizes
+            else:
+                raise ValueError('No genome specified. Use the "g" or '
+                                 '"genome" kwargs, or use the '
+                                 '.set_chromsizes() method')
+
+        # If both specified, rather than make an implicit decision, raise an
+        # exception
+        if 'g' in kwargs and 'genome' in kwargs:
+            raise ValueError('Cannot specify both "g" and "genome"')
+
+        # Something like genome='dm3' was specified
+        if 'g' not in kwargs and 'genome' in kwargs:
+            if isinstance(kwargs['genome'], dict):
+                genome_dict = kwargs['genome']
+            else:
+                genome_dict = pybedtools.chromsizes(kwargs['genome'])
+            genome_file = pybedtools.chromsizes_to_file(genome_dict)
+            kwargs['g'] = genome_file
+            del kwargs['genome']
+
+        # By the time we get here, 'g' is specified.
+
+        # If a dict was provided, convert to tempfile here
+        if isinstance(kwargs['g'], dict):
+            kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
+
+        if not os.path.exists(kwargs['g']):
+            raise ValueError('Genome file "%s" does not exist')
+
+        return kwargs
+
     @_log_to_history
     def remove_invalid(self):
         """
@@ -904,50 +948,6 @@ class BedTool(object):
 
             >>> os.unlink('hg19.genome')
         """
-
-    def check_genome(self, **kwargs):
-        """
-        Handles the different ways of specifying a genome in kwargs:
-
-        g='genome.file' specifies a file directly
-        genome='dm3' gets the file from genome registry
-        self.chromsizes could be a dict.\
-        """
-
-        # If both g and genome are missing, assume self.chromsizes
-        if ('g' not in kwargs) and ('genome' not in kwargs):
-            if hasattr(self, 'chromsizes'):
-                kwargs['g'] = self.chromsizes
-            else:
-                raise ValueError('No genome specified. Use the "g" or '
-                                 '"genome" kwargs, or use the '
-                                 '.set_chromsizes() method')
-
-        # If both specified, rather than make an implicit decision, raise an
-        # exception
-        if 'g' in kwargs and 'genome' in kwargs:
-            raise ValueError('Cannot specify both "g" and "genome"')
-
-        # Something like genome='dm3' was specified
-        if 'g' not in kwargs and 'genome' in kwargs:
-            if isinstance(kwargs['genome'], dict):
-                genome_dict = kwargs['genome']
-            else:
-                genome_dict = pybedtools.chromsizes(kwargs['genome'])
-            genome_file = pybedtools.chromsizes_to_file(genome_dict)
-            kwargs['g'] = genome_file
-            del kwargs['genome']
-
-        # By the time we get here, 'g' is specified.
-
-        # If a dict was provided, convert to tempfile here
-        if isinstance(kwargs['g'], dict):
-            kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
-
-        if not os.path.exists(kwargs['g']):
-            raise ValueError('Genome file "%s" does not exist')
-
-        return kwargs
 
     @_wraps(prog='mergeBed', implicit='i', other=None, alt=None)
     def merge(self, **kwargs):
