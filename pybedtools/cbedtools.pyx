@@ -423,11 +423,20 @@ cdef class IntervalFile:
     cdef BedFile *intervalFile_ptr
     cdef bint _loaded
     cdef bint _open
+    cdef str fn
 
     def __init__(self, intervalFile):
+        """
+        An IntervalFile provides low-level access to the BEDTools API.
+
+        >>> fn = pybedtools.example_filename('a.bed')
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        """
         self.intervalFile_ptr = new BedFile(string(intervalFile))
         self._loaded = 0
         self._open = 0
+        self.fn = intervalFile
 
     def __dealloc__(self):
         del self.intervalFile_ptr
@@ -456,6 +465,9 @@ cdef class IntervalFile:
         return self.intervalFile_ptr.file_type.c_str()
 
     def loadIntoMap(self):
+        """
+        Prepares file for checking intersections.  Used by other methods like all_hits()
+        """
         if self._loaded:
             return
         self.intervalFile_ptr.loadBedFileIntoMap()
@@ -463,7 +475,28 @@ cdef class IntervalFile:
 
     def all_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the "bed" feature in this file and ***return all overlaps***
+        Search for the Interval *interval* this file and return **all**
+        overlaps as a list.
+
+        *same_strand*, if True, will only consider hits on the same strand as *interval*.
+
+        *overlap* can be used to specify the fraction of overlap between
+        *interval* and each feature in the IntervalFile.
+
+        Example usage:
+
+        >>> fn = pybedtools.example_filename('a.bed')
+
+        >>> # create an Interval to query with
+        >>> i = pybedtools.Interval('chr1', 1, 10000, strand='+')
+
+        >>> # Create an IntervalFile out of a.bed
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        >>> # get stranded hits
+        >>> intervalfile.all_hits(i, same_strand=True)
+        [Interval(chr1:1-100), Interval(chr1:100-200), Interval(chr1:900-950)]
+
         """
         cdef vector[BED] vec_b
         self.loadIntoMap()
@@ -486,8 +519,27 @@ cdef class IntervalFile:
 
     def any_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the "bed" feature in this file and return
-        whether (True/False) >= 1 overlaps are found.
+        Return 1 if the Interval *interval* had >=1 hit in this IntervalFile, 0 otherwise.
+
+        *same_strand*, if True, will only consider hits on the same strand as *interval*.
+
+        *overlap* can be used to specify the fraction of overlap between
+        *interval* and each feature in the IntervalFile.
+
+        Example usage:
+
+        >>> fn = pybedtools.example_filename('a.bed')
+
+        >>> # create an Interval to query with
+        >>> i = pybedtools.Interval('chr1', 1, 10000, strand='+')
+
+        >>> # Create an IntervalFile out of a.bed
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        >>> # any stranded hits?
+        >>> intervalfile.any_hits(i, same_strand=True)
+        1
+
         """
         found = 0
         self.loadIntoMap()
@@ -501,7 +553,29 @@ cdef class IntervalFile:
 
     def count_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the "bed" feature in this file and return the *** count of hits found ***
+        Return the number of overlaps of the Interval *interval* had with this
+        IntervalFile.
+
+        *same_strand*, if True, will only consider hits on the same strand as
+        *interval*.
+
+        *overlap* can be used to specify the fraction of overlap between
+        *interval* and each feature in the IntervalFile.
+
+        Example usage:
+
+        >>> fn = pybedtools.example_filename('a.bed')
+
+        >>> # create an Interval to query with
+        >>> i = pybedtools.Interval('chr1', 1, 10000, strand='+')
+
+        >>> # Create an IntervalFile out of a.bed
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        >>> # get number of stranded hits
+        >>> intervalfile.count_hits(i, same_strand=True)
+        3
+
         """
         self.loadIntoMap()
 

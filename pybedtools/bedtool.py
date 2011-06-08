@@ -1527,3 +1527,14 @@ class BedTool(object):
         for key, value in kwargs.items():
             setattr(self, key, value)
         return self
+
+    def as_intervalfile(self):
+        """
+        Returns an IntervalFile of this BedTool, which provides a low-level
+        interface
+        """
+        if not isinstance(self.fn, basestring):
+            fn = self._collapse(self.fn)
+        else:
+            fn = self.fn
+        return IntervalFile(fn)
