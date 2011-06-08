@@ -567,7 +567,7 @@ class BedTool(object):
         if isinstance(key, slice):
             return islice(self, key.start, key.stop, key.step)
         elif isinstance(key, int):
-            return islice(self, key, key + 1)
+            return list(islice(self, key, key + 1))[0]
         else:
             raise ValueError('Only slices or integers allowed for indexing '
                              'into a BedTool')

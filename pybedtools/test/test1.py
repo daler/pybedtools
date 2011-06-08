@@ -223,7 +223,7 @@ def test_indexing():
     assert results[0] == interval
 
     # test single-integer indexing
-    assert list(a[0])[0] == interval
+    assert a[0] == interval
 
     # only slices and integers allowed....
     assert_raises(ValueError, a.__getitem__, 'key')
