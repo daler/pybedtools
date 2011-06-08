@@ -368,19 +368,6 @@ class BedTool(object):
         """
         return BedTool((func(f, *args, **kwargs) for f in self))
 
-    @_wraps(prog='bed12ToBed6', implicit='i', alt=None, other=None)
-    def bed6(self, **kwargs):
-        """
-        convert a BED12 to a BED6 file
-        """
-        pass
-
-    @_wraps(prog='bamToBed', implicit='i', other=None, alt=None)
-    def bam_to_bed(self, **kwargs):
-        """
-        Convert BAM to BED.
-        """
-
     def introns(self, gene="gene", exon="exon"):
         """
         Given a BED12 or a GFF with exons, create a new `BedTool` with
@@ -828,6 +815,19 @@ class BedTool(object):
                 except StopIteration:
                     break
         return BedTool(_generator())
+
+    @_wraps(prog='bed12ToBed6', implicit='i', alt=None, other=None)
+    def bed6(self, **kwargs):
+        """
+        convert a BED12 to a BED6 file
+        """
+        pass
+
+    @_wraps(prog='bamToBed', implicit='i', other=None, alt=None)
+    def bam_to_bed(self, **kwargs):
+        """
+        Convert BAM to BED.
+        """
 
     @_wraps(prog='intersectBed', implicit='a', other='b', alt='abam')
     def intersect(self, b=None, **kwargs):
