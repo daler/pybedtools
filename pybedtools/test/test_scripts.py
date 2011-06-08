@@ -2,11 +2,16 @@ import pybedtools
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises
 import os
+import sys
 
 
 def test_annotate_main():
     # exits after printing help when sys.argv is not as it should be.
+    orig_stderr = sys.stderr
+    sys.stderr = open('tmp','w')
     assert_raises(SystemExit, annotate.main)
+    sys.stderr = orig_stderr
+    os.unlink('tmp')
 
 def test_annotate_closest():
     a = pybedtools.example_bedtool('m1.bed')
@@ -101,10 +106,18 @@ def test_venn_gchart():
     os.unlink(outfn)
 
 def test_venn_mpl_main():
+    orig_stderr = sys.stderr
+    sys.stderr = open('tmp','w')
     assert_raises(SystemExit, venn_mpl.main)
+    sys.stderr = orig_stderr
+    os.unlink('tmp')
 
 def test_venn_gchart_main():
+    orig_stderr = sys.stderr
+    sys.stderr = open('tmp','w')
     assert_raises(SystemExit, venn_gchart.main)
+    sys.stderr = orig_stderr
+    os.unlink('tmp')
 
 def teardown():
     pybedtools.cleanup()

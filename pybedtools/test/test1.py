@@ -1,5 +1,5 @@
 import pybedtools
-import os, difflib
+import os, difflib, sys
 from nose.tools import assert_raises
 
 testdir = os.path.dirname(__file__)
@@ -327,7 +327,16 @@ def test_sequence():
         fout.write(line.lstrip())
     fout.close()
 
+    # redirect stderr for the call to .sequence(), which reports the creation
+    # of an index file
+    tmp = open(a._tmp(),'w')
+    orig_stderr = sys.stderr
+    sys.stderr = tmp
+
     f = a.sequence(fi=fi)
+
+    sys.stderr = orig_stderr
+
     assert f.fn == f.fn
     seqs = open(f.seqfn).read()
     print seqs
@@ -585,6 +594,12 @@ def test_history_step():
     b = pybedtools.example_bedtool('b.bed')
     c = a.intersect(b)
     d = c.subtract(a)
+
+    tag = c.history[0].result_tag
+    assert pybedtools.find_tagged(tag) == c
+
+    assert_raises(ValueError, pybedtools.find_tagged, 'nonexistent')
+
 
     print d.history
     d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'n')

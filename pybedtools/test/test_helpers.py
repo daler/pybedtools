@@ -1,4 +1,5 @@
 import pybedtools
+import sys
 import os, difflib
 from nose.tools import assert_raises
 
@@ -52,7 +53,6 @@ def test_cleanup():
     assert os.path.exists(a.fn)
     assert os.path.exists(b.fn)
 
-
 def test_bedtools_check():
     # this should run fine (especially since we've already imported pybedtools)
     pybedtools.check_for_bedtools()
@@ -65,11 +65,21 @@ def test_call():
     from pybedtools.helpers import call_bedtools, BEDToolsError
     assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
 
+    a = pybedtools.example_bedtool('a.bed')
+
+    # momentarily redirect stderr to file so the error message doesn't spew all
+    # over the place when testing
+    orig_stderr = sys.stderr
+    sys.stderr = open(a._tmp(), 'w')
+    assert_raises(BEDToolsError, a.intersect, a=a.fn, b=a.fn, z=True)
+    sys.stderr = orig_stderr
+
     pybedtools.set_bedtools_path('nonexistent')
     a = pybedtools.example_bedtool('a.bed')
     assert_raises(OSError, a.intersect, a)
     pybedtools.set_bedtools_path()
     assert a.intersect(a,u=True) == a
+
 
 def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')
