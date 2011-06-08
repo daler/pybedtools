@@ -52,20 +52,6 @@ def test_cleanup():
     assert os.path.exists(a.fn)
     assert os.path.exists(b.fn)
 
-def test_decorators():
-    from pybedtools.helpers import _returns_bedtool, _help
-
-    @_returns_bedtool()
-    def dummy():
-        pass
-    assert "returns a new bedtool instance" in dummy.__doc__
-
-    @_help('intersectBed')
-    def dummy2():
-        pass
-
-    # "-a" ought to be in the help string for intersectBed somewhere....
-    assert '-a' in dummy2.__doc__
 
 def test_bedtools_check():
     # this should run fine (especially since we've already imported pybedtools)
@@ -144,20 +130,6 @@ def test_getting_example_beds():
     assert_raises(ValueError, pybedtools.example_bedtool, 'nonexistent')
     assert_raises(ValueError, pybedtools.set_tempdir, 'nonexistent')
 
-def test_help():
-    from pybedtools.helpers import _help
-
-    # test support for uninstalled programs
-    @_help('nonexistent')
-    def dummyfunc():
-        return 100
-    assert_raises(NotImplementedError, dummyfunc)
-
-    # test invariant return value
-    @_help('intersectBed')
-    def dummyfunc():
-        return 100
-    assert dummyfunc() == 100
 
 def teardown():
     # always run this!
