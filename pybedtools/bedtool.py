@@ -151,6 +151,11 @@ def _wraps(prog=None, implicit=None, alt=None, other=None, uses_genome=False,
         else:
             orig = func.__doc__
         wrapped.__doc__ = orig + help_str
+
+        # add the original method's name to a new attribute so we can access it
+        # when logging history
+        wrapped._name = func.__name__
+
         return wrapped
 
     return decorator
@@ -816,6 +821,7 @@ class BedTool(object):
                     break
         return BedTool(_generator())
 
+    @_log_to_history
     @_wraps(prog='bed12ToBed6', implicit='i', alt=None, other=None)
     def bed6(self, **kwargs):
         """
@@ -823,12 +829,14 @@ class BedTool(object):
         """
         pass
 
+    @_log_to_history
     @_wraps(prog='bamToBed', implicit='i', other=None, alt=None)
     def bam_to_bed(self, **kwargs):
         """
         Convert BAM to BED.
         """
 
+    @_log_to_history
     @_wraps(prog='intersectBed', implicit='a', other='b', alt='abam')
     def intersect(self, b=None, **kwargs):
         """
@@ -851,6 +859,7 @@ class BedTool(object):
             >>> unique_to_a = a.intersect(b, v=True)
         """
 
+    @_log_to_history
     @_wraps(prog='fastaFromBed', implicit='bed', alt=None, other='fi',
             make_tempfile_for='fo', check_stderr=_check_sequence_stderr,
             add_to_bedtool={'fo': 'seqfn'})
@@ -879,6 +888,7 @@ class BedTool(object):
 
         '''
 
+    @_log_to_history
     @_wraps(prog='subtractBed', implicit='a', other='b', alt=None)
     def subtract(self, b=None, **kwargs):
         """
@@ -906,6 +916,7 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
+    @_log_to_history
     @_wraps(prog='slopBed', implicit='i', other=None, alt=None,
             uses_genome=True)
     def slop(self, **kwargs):
@@ -949,6 +960,7 @@ class BedTool(object):
             >>> os.unlink('hg19.genome')
         """
 
+    @_log_to_history
     @_wraps(prog='mergeBed', implicit='i', other=None, alt=None)
     def merge(self, **kwargs):
         """
@@ -976,6 +988,7 @@ class BedTool(object):
 
         """
 
+    @_log_to_history
     @_wraps(prog='closestBed', implicit='a', other='b', alt=None)
     def closest(self, b=None, **kwargs):
         """
@@ -992,6 +1005,7 @@ class BedTool(object):
 
         """
 
+    @_log_to_history
     @_wraps(prog='windowBed', implicit='a', other='b', alt=None)
     def window(self, b=None, **kwargs):
         """
@@ -1013,6 +1027,7 @@ class BedTool(object):
             <BLANKLINE>
         """
 
+    @_log_to_history
     @_wraps(prog='shuffleBed', implicit='i', other=None, alt=None,
             uses_genome=True)
     def shuffle(self, **kwargs):
@@ -1032,6 +1047,7 @@ class BedTool(object):
         <BLANKLINE>
         """
 
+    @_log_to_history
     @_wraps(prog='sortBed', implicit='i')
     def sort(self, **kwargs):
         """
@@ -1056,6 +1072,7 @@ class BedTool(object):
         <BLANKLINE>
         """
 
+    @_log_to_history
     @_wraps(prog='annotateBed', implicit='i')
     def annotate(self, **kwargs):
         """
@@ -1072,6 +1089,7 @@ class BedTool(object):
         <BLANKLINE>
         """
 
+    @_log_to_history
     @_wraps(prog='flankBed', implicit='i', uses_genome=True)
     def flank(self, **kwargs):
         """
@@ -1101,6 +1119,7 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
+    @_log_to_history
     @_wraps(prog='genomeCoverageBed', implicit='i', uses_genome=True)
     def genome_coverage(self, **kwargs):
         """
@@ -1119,6 +1138,7 @@ class BedTool(object):
         chr2L	10255	10291	1
         """
 
+    @_log_to_history
     @_wraps(prog='coverageBed', implicit='a', other='b', alt='abam')
     def coverage(self, b=None, **kwargs):
         """
@@ -1130,6 +1150,7 @@ class BedTool(object):
         chr1	800	901	feature6	0	+	1	1	101	0.0099010
         """
 
+    @_log_to_history
     @_wraps(prog='maskFastaFromBed', implicit='bed', other='fi',
             make_tempfile_for='fo', add_to_bedtool={'fo': 'seqfn'},
             check_stderr=_check_sequence_stderr)
@@ -1360,6 +1381,7 @@ class BedTool(object):
             del(tmp)
             del(tmp2)
 
+    @_log_to_history
     def cat(self, other, postmerge=True, **kwargs):
         """
         Concatenates two BedTool objects (or an object and a file) and does an
@@ -1402,6 +1424,7 @@ class BedTool(object):
         else:
             return c
 
+    @_log_to_history
     def saveas(self, fn=None, trackline=None):
         """
         Save BED file as a new file, adding the optional *trackline* to the
@@ -1431,6 +1454,7 @@ class BedTool(object):
         fn = self._collapse(self, fn=fn, trackline=trackline)
         return BedTool(fn)
 
+    @_log_to_history
     def random_subset(self, n):
         '''
         Returns a new bedtools object containing a random subset of the
@@ -1481,6 +1505,7 @@ class BedTool(object):
             total_bp += len(feature)
         return total_bp
 
+    @_log_to_history
     def with_attrs(self, **kwargs):
         """
         Given arbitrary keyword arguments, turns the keys and values into

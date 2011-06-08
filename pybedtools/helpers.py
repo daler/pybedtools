@@ -76,7 +76,10 @@ class HistoryStep(object):
         Mostly used for its __repr__ method, to try and exactly replicate code
         that can be pasted to re-do history steps
         """
-        self.method = method.func_name
+        try:
+            self.method = method._name
+        except AttributeError:
+            self.method = method.func_name
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
