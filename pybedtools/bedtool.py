@@ -10,8 +10,8 @@ from itertools import groupby, islice
 
 from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
     _returns_bedtool, get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator
-
+    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator, \
+    _check_sequence_stderr
 from cbedtools import IntervalFile
 import pybedtools
 
@@ -21,21 +21,11 @@ tempfile_suffix = '.tmp'
 
 _implicit_registry = {}
 _other_registry = {}
+_alt_registry = {}
 
-def _implicit_register(options):
-    def deco(func):
-        _implicit_registry[func.__name__] = options
-        # TODO: edit docstring here
-        return func
-    return deco
 
-def _other_register(option):
-    def deco(func):
-        _other_registry[func.__name__] = option
-        return func
-    return deco
-
-def _wraps(prog=None, implicit=None, alt=None, other=None):
+def _wraps(prog=None, implicit=None, alt=None, other=None, uses_genome=False,
+           make_tempfile_for=None, check_stderr=None, add_to_bedtool=None):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -50,7 +40,26 @@ def _wraps(prog=None, implicit=None, alt=None, other=None):
 
     *other* is the BEDTools program arg that is passed in as the second input,
     if supported.  Within the semantics of BEDTools, the typical case will be
-    that if implicit='a' then other='b'; if implicit='i' then other=None 
+    that if implicit='a' then other='b'; if implicit='i' then other=None.
+
+    *uses_genome*, if True, will check for 'g' and/or 'genome' args and
+    retrieve the corresponding genome files as needed.
+
+    *make_tempfile_for* is used for the sequence methods and indicates which
+    kwarg should have a tempfile made for it if it's not provided ('fo' for the
+    sequence methods)
+
+    *check_stderr*, if not None, is a function that accepts a string (which
+    will be anything written to stdout when calling the wrapped program).  This
+    function should return True if the string is OK, and False if it should
+    truly be considered an error.  This is needed for wrapping fastaFromBed,
+    which will report to stderr that it's creating an index file.
+
+    *add_to_bedtool* is used for sequence methods.  It is a dictionary mapping
+    kwargs to attributes to be created in the resulting BedTool.  Typically it
+    is {'fo':'seqfn'} which will add the resulting sequence name to the
+    BedTool's .seqfn attribute. If *add_to_bedtool* is not None, then the
+    returned BedTool will be *self* with the added attribute.
     """
     not_implemented = False
 
@@ -85,11 +94,11 @@ def _wraps(prog=None, implicit=None, alt=None, other=None):
 
         # Register the implicit (as well as alt and other) args in the global
         # registry.  The registry is keyed by the method name.
-        _implicit_registry[func.__name__] = implicit
+        _implicit_registry[prog] = implicit
         if other is not None:
-            _other_registry[func.__name__] = other
+            _other_registry[prog] = other
         if alt is not None:
-            _alt_registry[func.__name__] = alt
+            _alt_registry[prog] = alt
 
         # Here's where we replace an unable-to-be-found program's method
         if not_implemented:
@@ -98,19 +107,53 @@ def _wraps(prog=None, implicit=None, alt=None, other=None):
             return not_implemented_func
 
         def wrapped(self, *args, **kwargs):
+            # Only support one non-keyword argument; this is then assumed to be
+            # "other"
+            if len(args) > 0:
+                assert len(args) == 1
+                kwargs[other] = args[0]
+
+            # Get genome file if needed
+            if uses_genome:
+                kwargs = self.check_genome(**kwargs)
+
+            # Add the implicit values to kwargs
             if (implicit not in kwargs) and (alt not in kwargs):
                 kwargs[implicit] = self.fn
-            cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
-            stream = call_bedtools(cmds, tmp, stdin=stdin)
-            return BedTool(stream)
 
-        # Now add the edited docstring to the new method
+            # For sequence methods, we may need to make a tempfile that will
+            # hold the resulting sequence
+            if make_tempfile_for is not None:
+                if make_tempfile_for not in kwargs:
+                    kwargs[make_tempfile_for] = self._tmp()
+
+            # Parse the kwargs, convert streams to tempfiles if needed, and
+            # return all the goodies
+            cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
+
+            # Do the actual call
+            stream = call_bedtools(cmds, tmp, stdin=stdin,
+                                   check_stderr=check_stderr)
+            result = BedTool(stream)
+
+            # Post-hoc editing of the BedTool -- this is used for the sequence
+            # methods.
+            if add_to_bedtool is not None:
+                for kw, attr in add_to_bedtool.items():
+                    value = kwargs[kw]
+                    setattr(self, attr, value)
+                    result = self
+            return result
+
+        # Now add the edited docstring (Python doctring plus BEDTools help) to
+        # the newly created method
         if func.__doc__ is None:
             orig = ''
         else:
             orig = func.__doc__
         wrapped.__doc__ = orig + help_str
         return wrapped
+
     return decorator
 
 
@@ -340,21 +383,11 @@ class BedTool(object):
         """
         pass
 
-    @_help('bamToBed')
-    @_file_or_bedtool()
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='bamToBed', implicit='i', other=None, alt=None)
     def bam_to_bed(self, **kwargs):
         """
         Convert BAM to BED.
         """
-        if not 'i' in kwargs:
-            kwargs['i'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='bamToBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
 
     def introns(self, gene="gene", exon="exon"):
         """
@@ -550,9 +583,10 @@ class BedTool(object):
         if isinstance(key, slice):
             return islice(self, key.start, key.stop, key.step)
         elif isinstance(key, int):
-            return islice(self, key, key+1)
+            return islice(self, key, key + 1)
         else:
-            raise ValueError('Only slices or integers allowed for indexing into a BedTool')
+            raise ValueError('Only slices or integers allowed for indexing '
+                             'into a BedTool')
 
     @_file_or_bedtool()
     def __add__(self, other):
@@ -632,28 +666,10 @@ class BedTool(object):
         the `-` argument, or a filename with the `-a` argument.
         """
         # Dict of programs and which arguments *self.fn* can be used as
-        implicit_instream1 = {'intersectBed': 'a',
-                               'subtractBed': 'a',
-                                'closestBed': 'a',
-                                 'windowBed': 'a',
-                                   'slopBed': 'i',
-                                  'mergeBed': 'i',
-                                   'sortBed': 'i',
-                                  'bamToBed': 'i',
-                                'shuffleBed': 'i',
-                               'annotateBed': 'i',
-                                  'flankBed': 'i',
-                         'genomeCoverageBed': 'i',
-                              'fastaFromBed': 'bed',
-                          'maskFastaFromBed': 'bed',
-                               'coverageBed': 'a'}
+        implicit_instream1 = _implicit_registry
 
         # Which arguments *other.fn* can be used as
-        implicit_instream2 = {'intersectBed': 'b',
-                               'subtractBed': 'b',
-                                'closestBed': 'b',
-                                 'windowBed': 'b',
-                               'coverageBed': 'b'}
+        implicit_instream2 = _other_registry
 
         # If you pass in a list, how should it be converted to a BedTools arg?
         default_list_delimiter = ' '
@@ -667,7 +683,7 @@ class BedTool(object):
         #
         try:
             # e.g., 'a' for intersectBed
-            inarg1 = implicit_instream1[prog]
+            inarg1 = implicit_instream1[prog] or _implicit_registry[prog]
 
             # e.g., self.fn or 'a.bed' or an iterator...
             instream1 = kwargs[inarg1]
@@ -781,11 +797,7 @@ class BedTool(object):
                     break
         return BedTool(_generator())
 
-    @_help('intersectBed')
-    @_file_or_bedtool()
-    @_implicit('-a')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='intersectBed', implicit='a', other='b', alt='abam')
     def intersect(self, b=None, **kwargs):
         """
         Intersect with another BED file. If you want to use BAM as input, you
@@ -806,19 +818,11 @@ class BedTool(object):
 
             >>> unique_to_a = a.intersect(b, v=True)
         """
-        kwargs['b'] = b
 
-        if ('abam' not in kwargs) and ('a' not in kwargs):
-            kwargs['a'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='intersectBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('fastaFromBed')
-    @_implicit('-bed')
-    @_returns_bedtool()
-    def sequence(self, fi, **kwargs):
+    @_wraps(prog='fastaFromBed', implicit='bed', alt=None, other='fi',
+            make_tempfile_for='fo', check_stderr=_check_sequence_stderr,
+            add_to_bedtool={'fo': 'seqfn'})
+    def sequence(self, **kwargs):
         '''
         Wraps ``fastaFromBed``.  *fi* is passed in by the user; *bed* is
         automatically passed in as the bedfile of this object; *fo* by default
@@ -842,30 +846,8 @@ class BedTool(object):
         <BLANKLINE>
 
         '''
-        kwargs['fi'] = fi
 
-        if 'bed' not in kwargs:
-            kwargs['bed'] = self.fn
-
-        if 'fo' not in kwargs:
-            tmp = self._tmp()
-            kwargs['fo'] = tmp
-
-        def check_sequence_stderr(x):
-            if x.startswith('index file'):
-                return True
-            return False
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='fastaFromBed', **kwargs)
-        _ = call_bedtools(cmds, tmp, stdin=stdin, \
-                          check_stderr=check_sequence_stderr)
-        self.seqfn = kwargs['fo']
-        return self
-
-    @_help('subtractBed')
-    @_file_or_bedtool()
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='subtractBed', implicit='a', other='b', alt=None)
     def subtract(self, b=None, **kwargs):
         """
         Subtracts from another BED file and returns a new BedTool object.
@@ -892,10 +874,8 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
-    @_help('slopBed')
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='slopBed', implicit='i', other=None, alt=None,
+            uses_genome=True)
     def slop(self, **kwargs):
         """
         Wraps slopBed, which adds bp to each feature.  Returns a new BedTool
@@ -935,16 +915,7 @@ class BedTool(object):
             Clean up afterwards:
 
             >>> os.unlink('hg19.genome')
-
         """
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
-
-        kwargs = self.check_genome(**kwargs)
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='slopBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
 
     def check_genome(self, **kwargs):
         """
@@ -990,10 +961,7 @@ class BedTool(object):
 
         return kwargs
 
-    @_help('mergeBed')
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='mergeBed', implicit='i', other=None, alt=None)
     def merge(self, **kwargs):
         """
         Merge overlapping features together. Returns a new BedTool object.
@@ -1019,18 +987,8 @@ class BedTool(object):
             >>> c = a.merge(nms=True)
 
         """
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='mergeBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('closestBed')
-    @_file_or_bedtool()
-    @_implicit('-a')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='closestBed', implicit='a', other='b', alt=None)
     def closest(self, b=None, **kwargs):
         """
         Return a new BedTool object containing closest features in *b*.  Note
@@ -1045,20 +1003,8 @@ class BedTool(object):
             b = a.closest('other.bed', s=True)
 
         """
-        kwargs['b'] = b
 
-        if ('abam' not in kwargs) and ('a' not in kwargs):
-            kwargs['a'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='closestBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('windowBed')
-    @_file_or_bedtool()
-    @_implicit('-a')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='windowBed', implicit='a', other='b', alt=None)
     def window(self, b=None, **kwargs):
         """
         Intersect with a window.
@@ -1078,18 +1024,9 @@ class BedTool(object):
             chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
             <BLANKLINE>
         """
-        kwargs['b'] = b
 
-        if ('abam' not in kwargs) and ('a' not in kwargs):
-            kwargs['a'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='windowBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('shuffleBed')
-    @_implicit('-i')
-    @_log_to_history
+    @_wraps(prog='shuffleBed', implicit='i', other=None, alt=None,
+            uses_genome=True)
     def shuffle(self, **kwargs):
         """
         Shuffle coordinates.
@@ -1105,21 +1042,9 @@ class BedTool(object):
         chr1	186189051	186189401	feature3	0	-
         chr1	219133189	219133239	feature4	0	+
         <BLANKLINE>
-
         """
-        kwargs = self.check_genome(**kwargs)
 
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='shuffleBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('sortBed')
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='sortBed', implicit='i')
     def sort(self, **kwargs):
         """
         Note that chromosomes are sorted lexograpically, so chr12 will come
@@ -1141,19 +1066,9 @@ class BedTool(object):
         chr9	300	400
         chr9	500	600
         <BLANKLINE>
-
         """
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='sortBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('annotateBed')
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='annotateBed', implicit='i')
     def annotate(self, **kwargs):
         """
         Annotate this BedTool with a list of other files.
@@ -1168,17 +1083,8 @@ class BedTool(object):
         chr1	900	950	feature4	0	+	0.020000
         <BLANKLINE>
         """
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='annotateBed', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('flankBed')
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='flankBed', implicit='i', uses_genome=True)
     def flank(self, **kwargs):
         """
         Create flanking intervals on either side of input BED.
@@ -1207,10 +1113,7 @@ class BedTool(object):
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
-    @_help('genomeCoverageBed')
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='genomeCoverageBed', implicit='i', uses_genome=True)
     def genome_coverage(self, **kwargs):
         """
         Calculates coverage at each position in the genome.
@@ -1226,22 +1129,9 @@ class BedTool(object):
         chr2L	9329	9365	1
         chr2L	10212	10248	1
         chr2L	10255	10291	1
-
         """
-        kwargs = self.check_genome(**kwargs)
 
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='genomeCoverageBed',
-                                              **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('coverageBed')
-    @_implicit('-a')
-    @_returns_bedtool()
-    @_log_to_history
+    @_wraps(prog='coverageBed', implicit='a', other='b', alt='abam')
     def coverage(self, b=None, **kwargs):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
@@ -1251,47 +1141,28 @@ class BedTool(object):
         chr1	155	200	feature5	0	-	2	45	45	1.0000000
         chr1	800	901	feature6	0	+	1	1	101	0.0099010
         """
-        if ('abam' not in kwargs) and ('a' not in kwargs):
-            kwargs['a'] = self.fn
 
-        kwargs['b'] = b
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='coverageBed',
-                                              **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
-
-    @_help('maskFastaFromBed')
-    @_implicit('-bed')
-    @_log_to_history
-    @_returns_bedtool()
+    @_wraps(prog='maskFastaFromBed', implicit='bed', other='fi',
+            make_tempfile_for='fo', add_to_bedtool={'fo': 'seqfn'},
+            check_stderr=_check_sequence_stderr)
     def mask_fasta(self, **kwargs):
         """
         Masks a fasta file at the positions in a BED file and saves result as
-        *out*. This method returns None, and sets self.seqfn to *out*.
+        'out' and stores the filename in seqfn.
 
         >>> a = pybedtools.BedTool('chr1 100 110', from_string=True)
         >>> fasta_fn = pybedtools.example_filename('test.fa')
         >>> a = a.mask_fasta(fi=fasta_fn, fo='masked.fa.example')
         >>> b = a.slop(b=2, genome='hg19')
-        >>> b = b.sequence(a.seqfn)
-        >>> print b.print_sequence()
+        >>> b = b.sequence(fi=a.seqfn)
+        >>> print open(b.seqfn).read()
         >chr1:98-112
         TTNNNNNNNNNNAT
         <BLANKLINE>
         >>> os.unlink('masked.fa.example')
         >>> if os.path.exists('masked.fa.example.fai'):
         ...     os.unlink('masked.fa.example.fai')
-
         """
-        if 'bed' not in kwargs:
-            kwargs['bed'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='maskFastaFromBed',
-                                              **kwargs)
-        _ = call_bedtools(cmds, tmp, stdin=stdin)
-        self.seqfn = kwargs['fo']
-        return self
 
     def features(self):
         """
@@ -1473,7 +1344,8 @@ class BedTool(object):
         Example usage:
 
             >>> chromsizes = {'chr1':(0, 1000)}
-            >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> a = a.set_chromsizes(chromsizes)
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> results = a.randomintersection(b, 10, debug=True)
             >>> print list(results)
