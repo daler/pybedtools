@@ -8,8 +8,7 @@ import random
 import string
 from itertools import groupby, islice
 
-from pybedtools.helpers import _file_or_bedtool, _help, _implicit,\
-    _returns_bedtool, get_tempdir, _tags,\
+from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator, \
     _check_sequence_stderr
 from cbedtools import IntervalFile
