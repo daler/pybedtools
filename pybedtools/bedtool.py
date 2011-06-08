@@ -369,13 +369,6 @@ class BedTool(object):
         """
         return BedTool((func(f, *args, **kwargs) for f in self))
 
-    def add_implicit(self, kwargs):
-        print inspect.stack()
-        implicit = _implicit_registry[inspect.stack()[1][3]]
-        if implicit not in kwargs:
-            kwargs[implicit] = self.fn
-        return kwargs
-
     @_wraps(prog='bed12ToBed6', implicit='i', alt=None, other=None)
     def bed6(self, **kwargs):
         """
