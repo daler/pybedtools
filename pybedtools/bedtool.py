@@ -1,4 +1,5 @@
 import tempfile
+import subprocess
 import inspect
 from math import floor, ceil
 import os
@@ -33,6 +34,84 @@ def _other_register(option):
         _other_registry[func.__name__] = option
         return func
     return deco
+
+def _wraps(prog=None, implicit=None, alt=None, other=None):
+    """
+    Do-it-all wrapper, to be used as a decorator.
+
+    *prog* is the name of the BEDTools program that will be called.  The help
+    for this program will also be added to the decorated method's docstring.
+
+    *implicit* is the BEDTools program arg that should be filled in
+    automatically.
+
+    *alt* will disable the implicit substitution if *alt* is in the kwargs.
+    This is typically 'abam' or 'ibam' if the program accepts BAM input.
+
+    *other* is the BEDTools program arg that is passed in as the second input,
+    if supported.  Within the semantics of BEDTools, the typical case will be
+    that if implicit='a' then other='b'; if implicit='i' then other=None 
+    """
+    not_implemented = False
+
+    # Call the program with -h to get help, which prints to stderr.
+    try:
+        p = subprocess.Popen([prog, '-h'],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        help_str = p.communicate()[1]
+
+        # underscores throw of ReStructuredText syntax of docstrings, so
+        # replace 'em
+        help_str = help_str.replace('_', '**')
+
+        # indent
+        help_str = help_str.split('\n')
+        help_str = ['\t' + i for i in help_str]
+        help_str = '\n'.join(help_str)
+
+    # If the program can't be found, then we'll eventually replace the method
+    # with a version that does nothing raise a NotImplementedError (plus a
+    # helpful message).
+    except OSError:
+        help_str = '"%s" does not appear to be installed '\
+                       'or on the path, so this method is '\
+                       'disabled.  Please install a more recent '\
+                       'version of BEDTools and re-import to '\
+                       'use this method.' % command
+        not_implemented = True
+
+    def decorator(func):
+
+        # Register the implicit (as well as alt and other) args in the global
+        # registry.  The registry is keyed by the method name.
+        _implicit_registry[func.__name__] = implicit
+        if other is not None:
+            _other_registry[func.__name__] = other
+        if alt is not None:
+            _alt_registry[func.__name__] = alt
+
+        # Here's where we replace an unable-to-be-found program's method
+        if not_implemented:
+            def not_implemented_func(*args, **kwargs):
+                raise NotImplementedError(help_str)
+            return not_implemented_func
+
+        def wrapped(self, *args, **kwargs):
+            if (implicit not in kwargs) and (alt not in kwargs):
+                kwargs[implicit] = self.fn
+            cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
+            stream = call_bedtools(cmds, tmp, stdin=stdin)
+            return BedTool(stream)
+
+        # Now add the edited docstring to the new method
+        if func.__doc__ is None:
+            orig = ''
+        else:
+            orig = func.__doc__
+        wrapped.__doc__ = orig + help_str
+        return wrapped
+    return decorator
 
 
 class BedTool(object):
@@ -248,29 +327,18 @@ class BedTool(object):
         return BedTool((func(f, *args, **kwargs) for f in self))
 
     def add_implicit(self, kwargs):
+        print inspect.stack()
         implicit = _implicit_registry[inspect.stack()[1][3]]
         if implicit not in kwargs:
             kwargs[implicit] = self.fn
         return kwargs
 
-    @_help('bed12ToBed6')
-    @_file_or_bedtool()
-    @_implicit('-i')
-    @_returns_bedtool()
-    @_log_to_history
-    @_implicit_register('i')
+    @_wraps(prog='bed12ToBed6', implicit='i', alt=None, other=None)
     def bed6(self, **kwargs):
         """
         convert a BED12 to a BED6 file
         """
-        kwargs = self.add_implicit(kwargs)
-
-        #if not 'i' in kwargs:
-        #    kwargs['i'] = self.fn
-
-        cmds, tmp, stdin = self.handle_kwargs(prog='bed12ToBed6', **kwargs)
-        stream = call_bedtools(cmds, tmp, stdin=stdin)
-        return BedTool(stream)
+        pass
 
     @_help('bamToBed')
     @_file_or_bedtool()
