@@ -838,7 +838,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='intersectBed', implicit='a', other='b', alt='abam')
-    def intersect(self, b=None, **kwargs):
+    def intersect(self):
         """
         Intersect with another BED file. If you want to use BAM as input, you
         need to specify *abam='filename.bam'*.  Returns a new BedTool object.
@@ -863,7 +863,7 @@ class BedTool(object):
     @_wraps(prog='fastaFromBed', implicit='bed', alt=None, other='fi',
             make_tempfile_for='fo', check_stderr=_check_sequence_stderr,
             add_to_bedtool={'fo': 'seqfn'})
-    def sequence(self, **kwargs):
+    def sequence(self):
         '''
         Wraps ``fastaFromBed``.  *fi* is passed in by the user; *bed* is
         automatically passed in as the bedfile of this object; *fo* by default
@@ -890,7 +890,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='subtractBed', implicit='a', other='b', alt=None)
-    def subtract(self, b=None, **kwargs):
+    def subtract(self):
         """
         Subtracts from another BED file and returns a new BedTool object.
 
@@ -919,7 +919,7 @@ class BedTool(object):
     @_log_to_history
     @_wraps(prog='slopBed', implicit='i', other=None, alt=None,
             uses_genome=True)
-    def slop(self, **kwargs):
+    def slop(self):
         """
         Wraps slopBed, which adds bp to each feature.  Returns a new BedTool
         object.
@@ -962,7 +962,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='mergeBed', implicit='i', other=None, alt=None)
-    def merge(self, **kwargs):
+    def merge(self):
         """
         Merge overlapping features together. Returns a new BedTool object.
 
@@ -990,7 +990,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='closestBed', implicit='a', other='b', alt=None)
-    def closest(self, b=None, **kwargs):
+    def closest(self):
         """
         Return a new BedTool object containing closest features in *b*.  Note
         that the resulting file is no longer a valid BED format; use the
@@ -1007,7 +1007,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='windowBed', implicit='a', other='b', alt=None)
-    def window(self, b=None, **kwargs):
+    def window(self):
         """
         Intersect with a window.
 
@@ -1030,7 +1030,7 @@ class BedTool(object):
     @_log_to_history
     @_wraps(prog='shuffleBed', implicit='i', other=None, alt=None,
             uses_genome=True)
-    def shuffle(self, **kwargs):
+    def shuffle(self):
         """
         Shuffle coordinates.
 
@@ -1049,7 +1049,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='sortBed', implicit='i')
-    def sort(self, **kwargs):
+    def sort(self):
         """
         Note that chromosomes are sorted lexograpically, so chr12 will come
         before chr9.
@@ -1074,7 +1074,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='annotateBed', implicit='i')
-    def annotate(self, **kwargs):
+    def annotate(self):
         """
         Annotate this BedTool with a list of other files.
         Example usage:
@@ -1091,7 +1091,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='flankBed', implicit='i', uses_genome=True)
-    def flank(self, **kwargs):
+    def flank(self):
         """
         Create flanking intervals on either side of input BED.
 
@@ -1121,7 +1121,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='genomeCoverageBed', implicit='i', uses_genome=True)
-    def genome_coverage(self, **kwargs):
+    def genome_coverage(self):
         """
         Calculates coverage at each position in the genome.
 
@@ -1140,7 +1140,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='coverageBed', implicit='a', other='b', alt='abam')
-    def coverage(self, b=None, **kwargs):
+    def coverage(self):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
@@ -1154,7 +1154,7 @@ class BedTool(object):
     @_wraps(prog='maskFastaFromBed', implicit='bed', other='fi',
             make_tempfile_for='fo', add_to_bedtool={'fo': 'seqfn'},
             check_stderr=_check_sequence_stderr)
-    def mask_fasta(self, **kwargs):
+    def mask_fasta(self):
         """
         Masks a fasta file at the positions in a BED file and saves result as
         'out' and stores the filename in seqfn.
