@@ -654,7 +654,8 @@ class BedTool(object):
 
         # If you pass in a list, how should it be converted to a BedTools arg?
         default_list_delimiter = ' '
-        list_delimiters = {'annotateBed': ' '}
+        list_delimiters = {'annotateBed': ' ',
+                               'overlap': ','}
 
         stdin = None
 
@@ -733,6 +734,7 @@ class BedTool(object):
                 else:
                     continue
             elif isinstance(value, list) or isinstance(value, tuple):
+                value = map(str, value)
                 try:
                     delim = list_delimiters[prog]
                 except KeyError:
@@ -744,7 +746,8 @@ class BedTool(object):
 
                 # make comma-separated list if that's what's needed
                 else:
-                    cmds.append('-' + key + ' ' + delim.join(map(str, value)))
+                    cmds.append( '-' + key)
+                    cmds.append(delim.join(value))
 
             else:
                 cmds.append('-' + key)
@@ -1178,12 +1181,25 @@ class BedTool(object):
     def complement(self):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> a.complement(genome='hg19').head(5) #doctest:+NORMALIZE_WHITESPACE
+        >>> a.complement(genome='hg19').head(5) #doctest: +NORMALIZE_WHITESPACE
         chr1	0	1
         chr1	500	900
         chr1	950	249250621
         chr10	0	135534747
         chr11	0	135006516
+        """
+
+    @_log_to_history
+    @_wraps(prog='overlap', implicit='i')
+    def overlap(self):
+        """
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> print a.window(b, w=10).overlap(cols=[2,3,8,9]) #doctest: +NORMALIZE_WHITESPACE
+        chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-	45
+        chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-	45
+        chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+	1
+        <BLANKLINE>
         """
 
     def features(self):
