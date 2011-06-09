@@ -1173,6 +1173,19 @@ class BedTool(object):
         ...     os.unlink('masked.fa.example.fai')
         """
 
+    @_log_to_history
+    @_wraps(prog='complementBed', implicit='i', uses_genome=True)
+    def complement(self):
+        """
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> a.complement(genome='hg19').head(5) #doctest:+NORMALIZE_WHITESPACE
+        chr1	0	1
+        chr1	500	900
+        chr1	950	249250621
+        chr10	0	135534747
+        chr11	0	135006516
+        """
+
     def features(self):
         """
         Returns an iterator of :class:`feature` objects.
