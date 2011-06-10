@@ -5,6 +5,7 @@ import subprocess
 import random
 import string
 import glob
+import struct
 import pybedtools
 
 # Check calls against these names to only allow calls to known BEDTools
@@ -25,6 +26,23 @@ class Error(Exception):
 
 class BEDToolsError(Error):
     pass
+
+
+def isBAM(fn):
+    """
+    Reads a filename to see if it's a BAM file or not.
+    """
+    header_str = open(fn).read(15)
+    if len(header_str) < 15:
+        return False
+
+    header = struct.unpack_from('BBBBiBBHBBB', header_str)
+
+    id1, id2, cm, flg, mtime, xfl, os_, xlen, si1, si2, slen = header
+    if (id1 == 31) and (id2 == 139) and (cm == 8) and (flg == 4) and \
+       (si1 == 66) and (si2 == 67) and (slen == 2):
+        return True
+    return False
 
 
 def find_tagged(tag):

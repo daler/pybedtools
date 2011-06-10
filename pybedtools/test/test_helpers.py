@@ -23,6 +23,16 @@ def fix(x):
         s += i
     return s
 
+
+def test_isBAM():
+    bam = pybedtools.example_filename('x.bam')
+    notabam = pybedtools.example_filename('a.bed')
+    open('tiny.txt', 'w').close()
+    assert pybedtools.helpers.isBAM(bam)
+    assert not pybedtools.helpers.isBAM(notabam)
+    assert not pybedtools.helpers.isBAM('tiny.txt')
+    os.unlink('tiny.txt')
+
 def test_cleanup():
     """
     make sure the tempdir and cleanup work
