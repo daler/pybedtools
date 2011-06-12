@@ -20,10 +20,10 @@ tempfile_suffix = '.tmp'
 
 _implicit_registry = {}
 _other_registry = {}
-_alt_registry = {}
+_bam_registry = {}
 
 
-def _wraps(prog=None, implicit=None, alt=None, other=None, uses_genome=False,
+def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None):
     """
     Do-it-all wrapper, to be used as a decorator.
@@ -34,7 +34,7 @@ def _wraps(prog=None, implicit=None, alt=None, other=None, uses_genome=False,
     *implicit* is the BEDTools program arg that should be filled in
     automatically.
 
-    *alt* will disable the implicit substitution if *alt* is in the kwargs.
+    *bamt* will disable the implicit substitution if *bam* is in the kwargs.
     This is typically 'abam' or 'ibam' if the program accepts BAM input.
 
     *other* is the BEDTools program arg that is passed in as the second input,
@@ -91,13 +91,13 @@ def _wraps(prog=None, implicit=None, alt=None, other=None, uses_genome=False,
 
     def decorator(func):
 
-        # Register the implicit (as well as alt and other) args in the global
+        # Register the implicit (as well as bam and other) args in the global
         # registry.  The registry is keyed by the method name.
         _implicit_registry[prog] = implicit
         if other is not None:
             _other_registry[prog] = other
-        if alt is not None:
-            _alt_registry[prog] = alt
+        if bam is not None:
+            _bam_registry[prog] = bam
 
         # Here's where we replace an unable-to-be-found program's method
         if not_implemented:
@@ -117,8 +117,12 @@ def _wraps(prog=None, implicit=None, alt=None, other=None, uses_genome=False,
                 kwargs = self.check_genome(**kwargs)
 
             # Add the implicit values to kwargs
-            if (implicit not in kwargs) and (alt not in kwargs):
-                kwargs[implicit] = self.fn
+            if (implicit not in kwargs) and (bam not in kwargs):
+                if not self._isbam:
+                    kwargs[implicit] = self.fn
+                else:
+                    kwargs[bam] = self.fn
+
 
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence
@@ -506,7 +510,10 @@ class BedTool(object):
         """
         # Plain ol' filename
         if isinstance(self.fn, basestring):
-            return IntervalFile(self.fn)
+            if self._isbam:
+                return IntervalIterator(BAM(self.fn))
+            else:
+                return IntervalFile(self.fn)
 
         # Open file, like subprocess.PIPE.
         if isinstance(self.fn, file):
@@ -537,15 +544,7 @@ class BedTool(object):
         was created.  If self.fn is anything but a basestring, the iterable
         will be consumed.
         """
-        if isinstance(self.fn, basestring):
-            f = open(self.fn)
-            s = f.read()
-            f.close()
-            return s
-        elif isinstance(self.fn, file):
-            return self.fn.read()
-        else:
-            return '\n'.join(str(i) for i in iter(self)) + '\n'
+        return '\n'.join(str(i) for i in iter(self)) + '\n'
 
     def __len__(self):
         return self.count()
@@ -558,8 +557,7 @@ class BedTool(object):
                             isinstance(other.fn, basestring):
                 raise NotImplementedError('Testing equality only supported for'
                                           ' BedTools that point to files')
-            other_str = open(other.fn).read()
-        if open(self.fn).read() == other_str:
+        if str(self) == str(other):
             return True
         return False
 
@@ -668,7 +666,7 @@ class BedTool(object):
         #
         try:
             # e.g., 'a' for intersectBed
-            inarg1 = implicit_instream1[prog] or _implicit_registry[prog]
+            inarg1 = _implicit_registry[prog]
 
             # e.g., self.fn or 'a.bed' or an iterator...
             instream1 = kwargs[inarg1]
@@ -828,7 +826,7 @@ class BedTool(object):
         return BedTool(_generator())
 
     @_log_to_history
-    @_wraps(prog='bed12ToBed6', implicit='i', alt=None, other=None)
+    @_wraps(prog='bed12ToBed6', implicit='i', bam=None, other=None)
     def bed6(self, **kwargs):
         """
         convert a BED12 to a BED6 file
@@ -836,14 +834,14 @@ class BedTool(object):
         pass
 
     @_log_to_history
-    @_wraps(prog='bamToBed', implicit='i', other=None, alt=None)
+    @_wraps(prog='bamToBed', implicit='i', other=None, bam=None)
     def bam_to_bed(self, **kwargs):
         """
         Convert BAM to BED.
         """
 
     @_log_to_history
-    @_wraps(prog='intersectBed', implicit='a', other='b', alt='abam')
+    @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam')
     def intersect(self):
         """
         Intersect with another BED file. If you want to use BAM as input, you
@@ -866,7 +864,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='fastaFromBed', implicit='bed', alt=None, other='fi',
+    @_wraps(prog='fastaFromBed', implicit='bed', bam=None, other='fi',
             make_tempfile_for='fo', check_stderr=_check_sequence_stderr,
             add_to_bedtool={'fo': 'seqfn'})
     def sequence(self):
@@ -895,7 +893,7 @@ class BedTool(object):
         '''
 
     @_log_to_history
-    @_wraps(prog='subtractBed', implicit='a', other='b', alt=None)
+    @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
     def subtract(self):
         """
         Subtracts from another BED file and returns a new BedTool object.
@@ -923,7 +921,7 @@ class BedTool(object):
         return BedTool(stream)
 
     @_log_to_history
-    @_wraps(prog='slopBed', implicit='i', other=None, alt=None,
+    @_wraps(prog='slopBed', implicit='i', other=None, bam=None,
             uses_genome=True)
     def slop(self):
         """
@@ -967,7 +965,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='mergeBed', implicit='i', other=None, alt=None)
+    @_wraps(prog='mergeBed', implicit='i', other=None, bam=None)
     def merge(self):
         """
         Merge overlapping features together. Returns a new BedTool object.
@@ -995,7 +993,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='closestBed', implicit='a', other='b', alt=None)
+    @_wraps(prog='closestBed', implicit='a', other='b', bam=None)
     def closest(self):
         """
         Return a new BedTool object containing closest features in *b*.  Note
@@ -1012,7 +1010,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowBed', implicit='a', other='b', alt=None)
+    @_wraps(prog='windowBed', implicit='a', other='b', bam=None)
     def window(self):
         """
         Intersect with a window.
@@ -1034,7 +1032,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='shuffleBed', implicit='i', other=None, alt=None,
+    @_wraps(prog='shuffleBed', implicit='i', other=None, bam=None,
             uses_genome=True)
     def shuffle(self):
         """
@@ -1145,7 +1143,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='coverageBed', implicit='a', other='b', alt='abam')
+    @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam')
     def coverage(self):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
@@ -1570,4 +1568,23 @@ class BedTool(object):
         else:
             fn = self.fn
         return IntervalFile(fn)
+
+
+class BAM(object):
+    def __init__(self, fn):
+        """
+        Wraps samtools to iterate over a BAM, yielding lines
+        """
+        self.fn = fn
+        self.cmds = ['samtools', 'view', fn]
+
+    def __iter__(self):
+        self.p = subprocess.Popen(self.cmds,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE,
+                                  bufsize=1)
+        return self
+
+    def next(self):
+        return self.p.stdout.next()
 

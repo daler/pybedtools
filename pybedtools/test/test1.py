@@ -640,6 +640,27 @@ def test_bam_bedtool_creation():
     assert x._isbam
     assert not a._isbam
 
+def test_print_abam():
+    x = pybedtools.example_bedtool('gdc.bam')
+    expected = fix("""
+    None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	71	255	5M	*	0	0	TTCTC	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	141	255	5M	*	0	0	CACCA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	151	255	5M	*	0	0	GTTCA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")
+    print x
+    print expected
+    assert x == expected
+
+def test_bam_iter():
+    x = pybedtools.example_bedtool('gdc.bam')
+    s = 'None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1'
+    assert str(x[0]) == str(iter(x).next()) == s
+
+
 
 def teardown():
     # always run this!
