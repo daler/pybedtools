@@ -10,7 +10,7 @@ from itertools import groupby, islice
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator, \
-    _check_sequence_stderr
+    _check_sequence_stderr, isBAM
 from cbedtools import IntervalFile
 import pybedtools
 
@@ -203,12 +203,15 @@ class BedTool(object):
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """
+        self._isbam = False
+
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
             elif isinstance(fn, basestring):
                 if not os.path.exists(fn):
                     raise ValueError('File "%s" does not exist' % fn)
+                self._isbam = isBAM(fn)
             else:
                 fn = fn
         else:
@@ -1567,3 +1570,4 @@ class BedTool(object):
         else:
             fn = self.fn
         return IntervalFile(fn)
+

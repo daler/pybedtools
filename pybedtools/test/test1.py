@@ -630,6 +630,17 @@ def test_kwargs():
     c = a.intersect(a)
     assert str(b) == str(c)
 
+
+# ----------------------------------------------------------------------------
+# BAM support tests
+# ----------------------------------------------------------------------------
+def test_bam_bedtool_creation():
+    x = pybedtools.example_bedtool('x.bam')
+    a = pybedtools.example_bedtool('a.bed')
+    assert x._isbam
+    assert not a._isbam
+
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

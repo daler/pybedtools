@@ -11,6 +11,7 @@
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
 import sys
+import subprocess
 
 
 class MalformedBedLineError(Exception):
@@ -583,3 +584,34 @@ cdef class IntervalFile:
             return self.intervalFile_ptr.CountOverlapsPerBin(deref(interval._bed), overlap)
         else:
             return self.intervalFile_ptr.CountOverlapsPerBin(deref(interval._bed), same_strand, overlap)
+
+cdef class BAM(object):
+    cdef public str fn
+    cdef object cmds
+    cdef bool as_interval
+
+    def __init__(self, fn, as_interval=False):
+        """
+        Wraps samtools to iterate over a BAM.  Yields lines by default, but if
+        *as_interval* is True, then will yield Interval objects instead.
+        """
+        self.fn = fn
+        self.cmds = ['samtools', 'view', fn]
+        self.as_interval = as_interval
+
+    def __iter__(self):
+        self.p = subprocess.Popen(self.cmds,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE,
+                                  bufsize=1)
+        return self
+
+    def next(self):
+        try:
+            if self.as_interval:
+                line = self.p.stdout.next()
+                return create_interval_from_list(line.strip().split('\t'))
+            return self.p.stdout.next()
+        except StopIteration:
+            del self.p
+            raise
