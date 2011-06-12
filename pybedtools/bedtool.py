@@ -24,7 +24,8 @@ _bam_registry = {}
 
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
-           make_tempfile_for=None, check_stderr=None, add_to_bedtool=None):
+           make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
+           nonbam=None):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -34,7 +35,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     *implicit* is the BEDTools program arg that should be filled in
     automatically.
 
-    *bamt* will disable the implicit substitution if *bam* is in the kwargs.
+    *bam* will disable the implicit substitution if *bam* is in the kwargs.
     This is typically 'abam' or 'ibam' if the program accepts BAM input.
 
     *other* is the BEDTools program arg that is passed in as the second input,
@@ -59,6 +60,10 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     is {'fo':'seqfn'} which will add the resulting sequence name to the
     BedTool's .seqfn attribute. If *add_to_bedtool* is not None, then the
     returned BedTool will be *self* with the added attribute.
+
+    *nonbam* is a kwarg that even if the input file was a BAM, the output will
+    *not* be BAM format.  For example, the `-bed` arg for intersectBed will
+    cause the output to be in BED format, not BAM.
     """
     not_implemented = False
 
@@ -146,6 +151,10 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     value = kwargs[kw]
                     setattr(self, attr, value)
                     result = self
+
+            # Decide whether the output is BAM format or not
+            if self._isbam and nonbam not in kwargs:
+                result._isbam = True
             return result
 
         # Now add the edited docstring (Python doctring plus BEDTools help) to
@@ -583,10 +592,12 @@ class BedTool(object):
         """
         Prints the first *n* lines
         """
-        for i, line in enumerate(open(self.fn)):
+        if not isinstance(self.fn, basestring):
+            raise NotImplementedError('head() not supported for non file-based BedTools')
+        for i, line in enumerate(iter(self)):
             if i == (n):
                 break
-            print line,
+            print line
 
     def set_chromsizes(self, chromsizes):
         """
@@ -841,7 +852,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam')
+    @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam', nonbam='bed')
     def intersect(self):
         """
         Intersect with another BED file. If you want to use BAM as input, you
