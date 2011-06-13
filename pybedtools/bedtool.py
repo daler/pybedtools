@@ -1073,7 +1073,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowBed', implicit='a', other='b', bam=None)
+    @_wraps(prog='windowBed', implicit='a', other='b', bam='abam', nonbam='bed')
     def window(self):
         """
         Intersect with a window.
