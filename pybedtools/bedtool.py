@@ -1206,7 +1206,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam')
+    @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam', nonbam='ALL')
     def coverage(self):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
