@@ -1667,13 +1667,16 @@ class BAM(object):
         self.stream = stream
 
         if isinstance(self.stream, basestring):
-            self.cmds = ['samtools', 'view', stream]
+            self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
+                         'view',
+                         stream]
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
                                       bufsize=1)
         else:
-            self.cmds = ['samtools', 'view', '-']
+            self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
+                         'view', '-']
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
