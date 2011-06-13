@@ -25,7 +25,7 @@ _bam_registry = {}
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
-           nonbam=None):
+           nonbam=None, force_bam=False):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -66,6 +66,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     cause the output to be in BED format, not BAM.  If not None, this can be a
     string, a list of strings, or the special string "ALL", which means that
     the wrapped program will never return BAM output.
+
+    *force_bam*, if True, will force the output to be BAM.  This is used for
+    bedToBam.
     """
     not_implemented = False
 
@@ -198,6 +201,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     if i in kwargs:
                         result_is_bam = False
                         break
+
+            if force_bam:
+                result_is_bam = True
 
             result._isbam = result_is_bam
             return result
