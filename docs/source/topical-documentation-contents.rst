@@ -13,6 +13,7 @@ This section contains additional documentation not covered in the tutorial.
     topical-create-a-bedtool
     topical-iterators
     topical-bam
+    topical-bam-semantics
     topical-genome
     topical-random
     topical-wrapping

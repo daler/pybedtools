@@ -1297,21 +1297,25 @@ class BedTool(object):
         Example usage:
 
         Make chromsizes a very small genome for this example:
+
         >>> chromsizes = {'chr1':(1,1000)}
         >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
         >>> b = pybedtools.example_bedtool('b.bed')
         >>> results = a.randomstats(b, 100, debug=True)
 
         *results* is a dictionary that you can inspect.  The actual overlap:
+
         >>> print results['actual']
         3
 
         The median of all randomized overlaps:
+
         >>> print results['median randomized']
         2.0
 
         The percentile of the actual overlap in the distribution of randomized
         overlaps, which can be used to get an empirical p-value:
+
         >>> print results['percentile']
         90.0
         """

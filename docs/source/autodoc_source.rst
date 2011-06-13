@@ -10,6 +10,8 @@
 
 .. _autodoc:
 
+.. contents::
+
 :mod:`pybedtools` Reference
 +++++++++++++++++++++++++++
 
@@ -17,7 +19,6 @@ This section is the module reference documentation, and includes the full
 docstrings for methods and functions in :mod:`pybedtools`.  It is separated
 into :ref:`module-level`, :ref:`wrappers`, and :ref:`pbt-unique`.
 
-.. contents::
 
 
 .. _module-level:
