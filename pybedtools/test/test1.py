@@ -660,6 +660,51 @@ def test_bam_iter():
     s = 'None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1'
     assert str(x[0]) == str(iter(x).next()) == s
 
+def test_bam_stream_bed():
+    x = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = x.intersect(b, u=True, bed=True, stream=True)
+    expected = fix("""
+    chr2L	70	75	None	255	-
+    chr2L	140	145	None	255	-
+    chr2L	150	155	None	255	-
+    chr2L	210	215	None	255	+
+    chr2L	70	75	None	255	+
+    chr2L	140	145	None	255	+
+    chr2L	160	165	None	255	+
+    """)
+    assert c == expected
+
+def test_bam_stream_bam():
+    x = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = x.intersect(b, u=True, stream=True)
+    expected = fix("""
+    None	16	chr2L	71	255	5M	*	0	0	TTCTC	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	141	255	5M	*	0	0	CACCA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	151	255	5M	*	0	0	GTTCA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")
+    assert str(c) == expected
+
+# TODO: stream-of-stream doesn't work yet for BAMs
+def test_bam_stream_bam_stream():
+    return
+    x = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = x.intersect(b, u=True, stream=True)
+    expected = fix("""
+    None	16	chr2L	71	255	5M	*	0	0	TTCTC	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	141	255	5M	*	0	0	CACCA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	151	255	5M	*	0	0	GTTCA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")   
+    d = c.intersect(b)
+    assert str(d) == expected
 
 
 def teardown():

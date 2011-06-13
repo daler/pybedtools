@@ -526,7 +526,10 @@ class BedTool(object):
 
         # Open file, like subprocess.PIPE.
         if isinstance(self.fn, file):
-            return IntervalIterator(self.fn)
+            if self._isbam:
+                return IntervalIterator(BAM(self.fn))
+            else:
+                return IntervalIterator(self.fn)
 
         # Otherwise assume fn is already an iterable
         else:
@@ -1582,18 +1585,27 @@ class BedTool(object):
 
 
 class BAM(object):
-    def __init__(self, fn):
+    def __init__(self, stream):
         """
         Wraps samtools to iterate over a BAM, yielding lines
         """
-        self.fn = fn
-        self.cmds = ['samtools', 'view', fn]
+        self.stream = stream
+
+        if isinstance(self.stream, basestring):
+            self.cmds = ['samtools', 'view', stream]
+            self.p = subprocess.Popen(self.cmds,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
+                                      bufsize=1)
+        else:
+            self.cmds = ['samtools', 'view', '-']
+            self.p = subprocess.Popen(self.cmds,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
+                                      stdin=self.stream,
+                                      bufsize=1)
 
     def __iter__(self):
-        self.p = subprocess.Popen(self.cmds,
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE,
-                                  bufsize=1)
         return self
 
     def next(self):
