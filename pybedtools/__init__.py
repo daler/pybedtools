@@ -16,6 +16,8 @@ import genome_registry
 from __main__ import main
 from version import __version__
 _path = ""
+_samtools_path = ""
+_filo_path = ""
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 

@@ -307,6 +307,26 @@ def set_bedtools_path(path=""):
     pybedtools._path = path
 
 
+def set_samtools_path(path=""):
+    """
+    If samtools is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    pybedtools._samtools_path = path
+
+
+def set_filo_path(path=""):
+    """
+    If filo is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    pybedtools._filo_path = path
+
+
 def _check_sequence_stderr(x):
     """
     If stderr created by fastaFromBed starst with 'index file', then don't
