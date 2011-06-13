@@ -394,7 +394,7 @@ cpdef Interval create_interval_from_list(list fields):
         pyb.file_type = 'gff'
     elif ( len(fields) == 13) and (fields[1] + fields[3]).isdigit():
         strand = '+'
-        if int(fields[1]) & 0x0004:
+        if int(fields[1]) & 0x10:
             strand = '-'
         pyb._bed = new BED(string(fields[2]), int(fields[3])-1, int(fields[3]) + len(fields[9]),
                            string(strand), string(fields[0]), string(fields[1]), list_to_vector(fields))
