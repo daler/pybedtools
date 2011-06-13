@@ -706,6 +706,21 @@ def test_bam_stream_bam_stream():
     d = c.intersect(b)
     assert str(d) == expected
 
+def test_bam_interval():
+    x = pybedtools.example_bedtool('x.bam')
+    assert x[0].chrom == 'chr2L'
+    assert x[0].start == 9329L
+    assert x[0][3] == '9330'
+    assert x[0].stop == 9365L
+    assert len(x[0][9]) == len(x[0]) == 36
+
+def test_bam_regression():
+    # Regression test:  with extra fields, the first item in x.bam was being
+    # parsed as gff (cause not ==13 fields).  This does a check to prevent that
+    # from happening again.
+    x = pybedtools.example_bedtool('x.bam')
+    assert x[0].file_type == 'sam'
+    assert x[0].chrom == 'chr2L'
 
 def teardown():
     # always run this!
