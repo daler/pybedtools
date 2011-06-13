@@ -63,7 +63,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
     *nonbam* is a kwarg that even if the input file was a BAM, the output will
     *not* be BAM format.  For example, the `-bed` arg for intersectBed will
-    cause the output to be in BED format, not BAM.
+    cause the output to be in BED format, not BAM.  If not None, this can be a
+    string, a list of strings, or the special string "ALL", which means that
+    the wrapped program will never return BAM output.
     """
     not_implemented = False
 
@@ -95,48 +97,65 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         not_implemented = True
 
     def decorator(func):
-
+        """
+        Accepts a function to be wrapped; discards the original and returns a
+        new, rebuilt-from-scratch function based on the kwargs passed to
+        _wraps().
+        """
         # Register the implicit (as well as bam and other) args in the global
-        # registry.  The registry is keyed by the method name.
+        # registry.  BedTool.handle_kwargs() will access these at runtime.  The
+        # registry is keyed by program name (like intersectBed).
         _implicit_registry[prog] = implicit
         if other is not None:
             _other_registry[prog] = other
         if bam is not None:
             _bam_registry[prog] = bam
 
-        # Here's where we replace an unable-to-be-found program's method
+        # Here's where we replace an unable-to-be-found program's method with
+        # one that only returns a NotImplementedError
         if not_implemented:
             def not_implemented_func(*args, **kwargs):
                 raise NotImplementedError(help_str)
             return not_implemented_func
 
         def wrapped(self, *args, **kwargs):
-            # Only support one non-keyword argument; this is then assumed to be
-            # "other"
+            """
+            A newly created function that will be returned by the _wraps()
+            decorator
+            """
+            # Only one non-keyword argument is supported; this is then assumed
+            # to be "other" (e.g., `-b` for intersectBed)
             if len(args) > 0:
                 assert len(args) == 1
                 kwargs[other] = args[0]
 
-            # Get genome file if needed
+            # Should this function handle genome files?
             if uses_genome:
                 kwargs = self.check_genome(**kwargs)
 
-            # Add the implicit values to kwargs
+            # Add the implicit values to kwargs.  If the current BedTool is
+            # BAM, it will automatically be passed to the appropriate
+            # BAM-support arg (like `-abam`).  But this also allows the user to
+            # explicitly specify the abam kwarg, which will override the
+            # auto-substitution.
+            # Note: here, `implicit` is something like "a"; `bam` is something
+            # like "abam"
             if (implicit not in kwargs) and (bam not in kwargs):
                 if not self._isbam:
                     kwargs[implicit] = self.fn
                 else:
                     kwargs[bam] = self.fn
 
-
             # For sequence methods, we may need to make a tempfile that will
-            # hold the resulting sequence
+            # hold the resulting sequence.  For example, fastaFromBed needs to
+            # make a tempfile for 'fo' if no 'fo' was explicitly specified by
+            # the user.
             if make_tempfile_for is not None:
                 if make_tempfile_for not in kwargs:
                     kwargs[make_tempfile_for] = self._tmp()
 
-            # Parse the kwargs, convert streams to tempfiles if needed, and
-            # return all the goodies
+            # At runtime, this will parse the kwargs, convert streams to
+            # tempfiles if needed, and return all the goodies
             cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
 
             # Do the actual call
@@ -144,28 +163,54 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                                    check_stderr=check_stderr)
             result = BedTool(stream)
 
-            # Post-hoc editing of the BedTool -- this is used for the sequence
-            # methods.
+            # Post-hoc editing of the BedTool -- for example, this is used for
+            # the sequence methods to add a `seqfn` attribute to the resulting
+            # BedTool.
             if add_to_bedtool is not None:
                 for kw, attr in add_to_bedtool.items():
                     value = kwargs[kw]
                     setattr(self, attr, value)
                     result = self
 
-            # Decide whether the output is BAM format or not
-            if self._isbam and (nonbam not in kwargs) and (nonbam != 'ALL'):
-                result._isbam = True
+            # Decide whether the output is BAM format or not.
+            result_is_bam = False
+
+            # By default, if the current BedTool is BAM, then the result should
+            # be, too.
+            if self._isbam:
+                result_is_bam = True
+
+            # If nonbam is "ALL", then this method will never return BAM
+            # output.
+            if nonbam == 'ALL':
+                result_is_bam = False
+
+            # If any of the `nonbam` args are found in kwargs, then result is
+            # not a BAM.  Side note: the _nonbam name mangling is necessary to
+            # keep the nonbam arg passed into the original _wraps() decorator
+            # in scope.
+            if nonbam is not None and nonbam != 'ALL':
+                if isinstance(nonbam, basestring):
+                    _nonbam = [nonbam]
+                else:
+                    _nonbam = nonbam
+                for i in _nonbam:
+                    if i in kwargs:
+                        result_is_bam = False
+                        break
+
+            result._isbam = result_is_bam
             return result
 
-        # Now add the edited docstring (Python doctring plus BEDTools help) to
-        # the newly created method
+        # Now add the edited docstring (original Python doctring plus BEDTools help) to
+        # the newly created method above
         if func.__doc__ is None:
             orig = ''
         else:
             orig = func.__doc__
         wrapped.__doc__ = orig + help_str
 
-        # add the original method's name to a new attribute so we can access it
+        # Add the original method's name to a new attribute so we can access it
         # when logging history
         wrapped._name = func.__name__
 
