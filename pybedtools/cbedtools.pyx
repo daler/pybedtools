@@ -387,18 +387,18 @@ cpdef Interval create_interval_from_list(list fields):
         pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
                 string(fields[4]), string(fields[5]), list_to_vector(other_fields))
         pyb.file_type = 'bed'
+    elif ( len(fields) >= 13) and (fields[1] + fields[3]).isdigit():
+        strand = '+'
+        if int(fields[1]) & 0x10:
+            strand = '-'
+        pyb._bed = new BED(string(fields[2]), int(fields[3])-1, int(fields[3]) + len(fields[9]) - 1,
+                           string(strand), string(fields[0]), string(fields[1]), list_to_vector(fields))
+        pyb.file_type = 'sam'
     # GFF
     elif len(fields) >= 9 and (fields[3] + fields[4]).isdigit():
         pyb._bed = new BED(string(fields[0]), int(fields[3])-1, int(fields[4]), string(fields[2]),
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
         pyb.file_type = 'gff'
-    elif ( len(fields) == 13) and (fields[1] + fields[3]).isdigit():
-        strand = '+'
-        if int(fields[1]) & 0x10:
-            strand = '-'
-        pyb._bed = new BED(string(fields[2]), int(fields[3])-1, int(fields[3]) + len(fields[9]),
-                           string(strand), string(fields[0]), string(fields[1]), list_to_vector(fields))
-        pyb.file_type = 'sam'
     pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 
