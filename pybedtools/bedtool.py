@@ -721,7 +721,8 @@ class BedTool(object):
         # If you pass in a list, how should it be converted to a BedTools arg?
         default_list_delimiter = ' '
         list_delimiters = {'annotateBed': ' ',
-                               'overlap': ','}
+                               'overlap': ',',
+                               'groupBy': ','}
 
         stdin = None
 
@@ -1291,6 +1292,29 @@ class BedTool(object):
     @_wraps(prog='pairToPair', implicit='a', other='b')
     def pair_to_pair(self):
         """
+        """
+
+    @_log_to_history
+    @_wraps(prog='groupBy', implicit='i')
+    def groupby(self):
+        """
+        >>> a = pybedtools.example_bedtool('gdc.gff')
+        >>> b = pybedtools.example_bedtool('gdc.bed')
+        >>> c = a.intersect(b, c=True)
+        >>> d = c.groupby(g=[1, 4, 5], c=10, ops=['sum'])
+        >>> print d #doctest: +NORMALIZE_WHITESPACE
+        chr2L	41	70	0
+        chr2L	71	130	2
+        chr2L	131	170	4
+        chr2L	171	200	0
+        chr2L	201	220	1
+        chr2L	41	130	2
+        chr2L	171	220	1
+        chr2L	41	220	7
+        chr2L	161	230	6
+        chr2L	41	220	7
+        <BLANKLINE>
+
         """
 
     def features(self):
