@@ -388,7 +388,7 @@ cpdef Interval create_interval_from_list(list fields):
                 string(fields[4]), string(fields[5]), list_to_vector(other_fields))
         pyb.file_type = 'bed'
     # GFF
-    elif len(fields) == 9 and (fields[3] + fields[4]).isdigit():
+    elif len(fields) >= 9 and (fields[3] + fields[4]).isdigit():
         pyb._bed = new BED(string(fields[0]), int(fields[3])-1, int(fields[4]), string(fields[2]),
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
         pyb.file_type = 'gff'
