@@ -208,8 +208,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             result._isbam = result_is_bam
             return result
 
-        # Now add the edited docstring (original Python doctring plus BEDTools help) to
-        # the newly created method above
+        # Now add the edited docstring (original Python doctring plus BEDTools
+        # help) to the newly created method above
         if func.__doc__ is None:
             orig = ''
         else:
@@ -647,7 +647,8 @@ class BedTool(object):
         Prints the first *n* lines
         """
         if not isinstance(self.fn, basestring):
-            raise NotImplementedError('head() not supported for non file-based BedTools')
+            raise NotImplementedError('head() not supported for non file-based'
+                    'BedTools')
         for i, line in enumerate(iter(self)):
             if i == (n):
                 break
@@ -811,7 +812,7 @@ class BedTool(object):
 
                 # make comma-separated list if that's what's needed
                 else:
-                    cmds.append( '-' + key)
+                    cmds.append('-' + key)
                     cmds.append(delim.join(value))
 
             else:
@@ -910,7 +911,8 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam', nonbam='bed')
+    @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam',
+            nonbam='bed')
     def intersect(self):
         """
         Intersect with another BED file. If you want to use BAM as input, you
@@ -1079,7 +1081,8 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowBed', implicit='a', other='b', bam='abam', nonbam='bed')
+    @_wraps(prog='windowBed', implicit='a', other='b', bam='abam',
+            nonbam='bed')
     def window(self):
         """
         Intersect with a window.
@@ -1193,7 +1196,8 @@ class BedTool(object):
         return BedTool(stream)
 
     @_log_to_history
-    @_wraps(prog='genomeCoverageBed', implicit='i', bam='ibam', uses_genome=True, nonbam='ALL')
+    @_wraps(prog='genomeCoverageBed', implicit='i', bam='ibam',
+            uses_genome=True, nonbam='ALL')
     def genome_coverage(self):
         """
         Calculates coverage at each position in the genome.
@@ -1212,7 +1216,8 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam', nonbam='ALL')
+    @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam',
+            nonbam='ALL')
     def coverage(self):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
@@ -1265,7 +1270,8 @@ class BedTool(object):
         """
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
-        >>> print a.window(b, w=10).overlap(cols=[2,3,8,9]) #doctest: +NORMALIZE_WHITESPACE
+        >>> c = a.window(b, w=10).overlap(cols=[2,3,8,9])
+        >>> print c #doctest: +NORMALIZE_WHITESPACE
         chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-	45
         chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-	45
         chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+	1
@@ -1274,7 +1280,8 @@ class BedTool(object):
 
     # TODO: needs test files and doctests written
     @_log_to_history
-    @_wraps(prog='pairToBed', implicit='a', other='b', bam='abam', nonbam='bedpe')
+    @_wraps(prog='pairToBed', implicit='a', other='b', bam='abam',
+            nonbam='bedpe')
     def pair_to_bed(self):
         """
         """
@@ -1688,4 +1695,3 @@ class BAM(object):
 
     def next(self):
         return self.p.stdout.next()
-
