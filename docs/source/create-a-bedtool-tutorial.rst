@@ -5,9 +5,7 @@ Create a :class:`BedTool`
 First, follow the :ref:`installation` instructions if you haven't already
 done so to install both BEDTools_ and :mod:`pybedtools`.
 
-Then import the :mod:`pybedtools` module and make a new :class:`BedTool`:
-
-.. doctest::
+Then import the :mod:`pybedtools` module and make a new :class:`BedTool`::
 
     >>> import pybedtools
 

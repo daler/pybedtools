@@ -1,3 +1,5 @@
+.. currentmodule:: pybedtools
+
 .. _intervals:
 
 Intervals

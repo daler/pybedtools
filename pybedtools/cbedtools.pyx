@@ -432,15 +432,14 @@ cdef class IntervalFile:
     cdef bint _loaded
     cdef bint _open
     cdef str fn
+    """
+    An IntervalFile provides low-level access to the BEDTools API.
 
+    >>> fn = pybedtools.example_filename('a.bed')
+    >>> intervalfile = pybedtools.IntervalFile(fn)
+
+    """
     def __init__(self, intervalFile):
-        """
-        An IntervalFile provides low-level access to the BEDTools API.
-
-        >>> fn = pybedtools.example_filename('a.bed')
-        >>> intervalfile = pybedtools.IntervalFile(fn)
-
-        """
         self.intervalFile_ptr = new BedFile(string(intervalFile))
         self._loaded = 0
         self._open = 0
@@ -483,13 +482,15 @@ cdef class IntervalFile:
 
     def all_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the Interval *interval* this file and return **all**
+        :Signature: `IntervalFile.all_hits(interval, same_strand=False, overlap=0.0)`
+
+        Search for the Interval `interval` this file and return **all**
         overlaps as a list.
 
-        *same_strand*, if True, will only consider hits on the same strand as *interval*.
+        `same_strand`, if True, will only consider hits on the same strand as `interval`.
 
-        *overlap* can be used to specify the fraction of overlap between
-        *interval* and each feature in the IntervalFile.
+        `overlap` can be used to specify the fraction of overlap between
+        `interval` and each feature in the IntervalFile.
 
         Example usage:
 
@@ -527,12 +528,14 @@ cdef class IntervalFile:
 
     def any_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Return 1 if the Interval *interval* had >=1 hit in this IntervalFile, 0 otherwise.
+        :Signature: `IntervalFile.any_hits(interval, same_strand=False, overlap=0.0)`
 
-        *same_strand*, if True, will only consider hits on the same strand as *interval*.
+        Return 1 if the Interval `interval` had >=1 hit in this IntervalFile, 0 otherwise.
 
-        *overlap* can be used to specify the fraction of overlap between
-        *interval* and each feature in the IntervalFile.
+        `same_strand`, if True, will only consider hits on the same strand as `interval`.
+
+        `overlap` can be used to specify the fraction of overlap between
+        `interval` and each feature in the IntervalFile.
 
         Example usage:
 
@@ -561,14 +564,16 @@ cdef class IntervalFile:
 
     def count_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Return the number of overlaps of the Interval *interval* had with this
+        :Signature: `IntervalFile.count_hits(interval, same_strand=False, overlap=0.0)`
+
+        Return the number of overlaps of the Interval `interval` had with this
         IntervalFile.
 
-        *same_strand*, if True, will only consider hits on the same strand as
-        *interval*.
+        `same_strand`, if True, will only consider hits on the same strand as
+        `interval`.
 
-        *overlap* can be used to specify the fraction of overlap between
-        *interval* and each feature in the IntervalFile.
+        `overlap` can be used to specify the fraction of overlap between
+        `interval` and each feature in the IntervalFile.
 
         Example usage:
 

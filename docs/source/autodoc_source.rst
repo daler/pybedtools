@@ -1,16 +1,7 @@
-.. include:: includeme.rst
-
-.. testsetup:: *
-    :options: +NORMALIZE_WHITESPACE
-
-    import pybedtools
-    from pybedtools import chromsizes
-
-.. module:: pybedtools
+.. currentmodule:: pybedtools
+.. contents::
 
 .. _autodoc:
-
-.. contents::
 
 :mod:`pybedtools` Reference
 +++++++++++++++++++++++++++
@@ -21,38 +12,46 @@ into :ref:`module-level`, :ref:`wrappers`, and :ref:`pbt-unique`.
 
 
 
-.. _module-level:
 
+.. autoclass:: pybedtools.BedTool
+    :members: __init__
+
+.. _module-level:
 :mod:`pybedtools` module-level functions
 ========================================
 
 Functions for working with example files
 ----------------------------------------
 
-.. automodule:: pybedtools
-    :members: example_bedtool, example_filename, list_example_files,
-              data_dir
+.. autofunction:: pybedtools.example_bedtool
+.. autofunction:: pybedtools.example_filename
+.. autofunction:: pybedtools.list_example_files
+.. autofunction:: pybedtools.data_dir
 
 Functions for specifying genome assemblies
 ------------------------------------------
 
-.. automodule:: pybedtools
-    :members: chromsizes, chromsizes_to_file, get_chromsizes_from_ucsc
+.. autofunction:: pybedtools.chromsizes
+.. autofunction:: pybedtools.chromsizes_to_file
+.. autofunction:: pybedtools.get_chromsizes_from_ucsc
 
 Setup
 -----
-.. automodule:: pybedtools
-    :members: set_tempdir, get_tempdir, set_bedtools_path
+
+.. autofunction:: pybedtools.set_tempdir
+.. autofunction:: pybedtools.get_tempdir
+.. autofunction:: pybedtools.set_bedtools_path
 
 Utilities
 ---------
-.. automodule:: pybedtools
-    :members: cleanup, IntervalIterator, find_tagged
+.. autofunction:: pybedtools.cleanup
+.. autofunction:: pybedtools.IntervalIterator
+.. autofunction:: pybedtools.find_tagged
 
 Wrapping
 --------
-.. automodule:: pybedtools.bedtool
-    :members: _wrap
+.. autofunction:: pybedtools.bedtool._wraps
+
 
 .. _wrappers:
 
@@ -90,9 +89,13 @@ Wrapping
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.slop
 
+:meth:`complementBed` (wraps "complementBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.complement
+
 :meth:`flank` (wraps "flankBed")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: Bedtool.flank
+.. automethod:: BedTool.flank
 
 :meth:`shuffle` (wraps "shuffleBed")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,6 +113,21 @@ Wrapping
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.genome_coverage
 
+:meth:`overlap` (wraps "overlap")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.overlap
+
+:meth:`groupby` (wraps "groupBy")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.groupby
+
+:meth:`pair_to_bed` (wraps "pairToBed")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.pair_to_bed
+
+:meth:`pair_to_pair` (wraps "pairToPair")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.pair_to_pair
 
 
 
@@ -119,6 +137,9 @@ Methods for converting between formats
 :meth:`bed6` (wraps "Bed12To6")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.bed6
+
+
+
 
 Methods for working with sequences
 ----------------------------------
@@ -130,6 +151,8 @@ Methods for working with sequences
 :meth:`mask_fasta` (wraps "maskFastaFromBed")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.mask_fasta
+
+
 
 
 .. _pbt-unique:
@@ -154,8 +177,8 @@ Introspection
 ~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.field_count
 
-:meth:`BedTool.head`
-~~~~~~~~~~~~~~~~~~~~
+:meth:`head`
+~~~~~~~~~~~~
 .. automethod:: BedTool.head
 
 
@@ -194,6 +217,10 @@ Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automethod:: BedTool.delete_temporary_history
 
+:meth:`as_intervalfile`
+~~~~~~~~~~~~~~~~~~~~~~~
+.. automethod:: BedTool.as_intervalfile
+
 
 
 
@@ -230,4 +257,12 @@ Randomization helpers
 .. automethod:: BedTool.randomstats
 
 
+:class:`Interval` class
+~~~~~~~~~~~~~~~~~~~~~~~
+.. autoclass:: pybedtools.Interval
+    :members:
 
+:class:`IntervalFile` class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autoclass:: pybedtools.IntervalFile
+    :members:

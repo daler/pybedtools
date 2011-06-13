@@ -401,6 +401,10 @@ class BedTool(object):
         """
         Return the number of fields in the features this file contains.  Checks
         the first *n* features.
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> a.field_count()
+        6
         """
         i = 0
         fields = set([])
@@ -645,6 +649,13 @@ class BedTool(object):
     def head(self, n=10):
         """
         Prints the first *n* lines
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> a.head(2) #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	100	feature1	0	+
+        chr1	100	200	feature2	0	+
+        <BLANKLINE>
+
         """
         if not isinstance(self.fn, basestring):
             raise NotImplementedError('head() not supported for non file-based'
@@ -1331,10 +1342,11 @@ class BedTool(object):
         Only counts the actual features.  Ignores any track lines, browser
         lines, lines starting with a "#", or blank lines.
 
-        Example usage::
+        Example usage:
 
-            a = BedTool('in.bed')
-            a.count()
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> a.count()
+        4
         """
         return sum(1 for _ in self)
 
@@ -1361,17 +1373,23 @@ class BedTool(object):
 
         A new BedTool object is returned which references the newly saved file.
 
-        Example usage::
+        Example usage:
 
-            a = BedTool('in.bed')
-
-            # specify the filename of the genome in fasta format
-            a.sequence('data/genomes/genome.fa')
-
-            # use this method to save the seqs that correspond to the features
-            # in "a"
-            a.save_seqs('seqs.fa')
+        >>> a = pybedtools.BedTool('''
+        ... chr1 1 10
+        ... chr1 50 55''', from_string=True)
+        >>> fasta = pybedtools.example_filename('test.fa')
+        >>> a = a.sequence(fi=fasta)
+        >>> print open(a.seqfn).read()
+        >chr1:1-10
+        GATGAGTCT
+        >chr1:50-55
+        CCATC
+        <BLANKLINE>
+        >>> b = a.save_seqs('example.fa')
+        >>> assert open(b.fn).read() == open(a.fn).read()
         """
+
         if not hasattr(self, 'seqfn'):
             raise ValueError('Use .sequence(fasta) to get the sequence first')
         fout = open(fn, 'w')
