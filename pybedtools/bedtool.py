@@ -743,7 +743,10 @@ class BedTool(object):
         #
         try:
             # e.g., 'a' for intersectBed
-            inarg1 = _implicit_registry[prog]
+            if self._isbam:
+                inarg1 = _bam_registry[prog]
+            else:
+                inarg1 = _implicit_registry[prog]
 
             # e.g., self.fn or 'a.bed' or an iterator...
             instream1 = kwargs[inarg1]

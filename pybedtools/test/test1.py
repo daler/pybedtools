@@ -691,7 +691,6 @@ def test_bam_stream_bam():
 
 # TODO: stream-of-stream doesn't work yet for BAMs
 def test_bam_stream_bam_stream():
-    return
     x = pybedtools.example_bedtool('gdc.bam')
     b = pybedtools.example_bedtool('gdc.gff')
     c = x.intersect(b, u=True, stream=True)
@@ -704,6 +703,7 @@ def test_bam_stream_bam_stream():
     None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
     None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")   
     d = c.intersect(b)
+    print d
     assert str(d) == expected
 
 def test_bam_interval():
