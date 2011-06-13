@@ -2,23 +2,29 @@
 
 Working with BAM files
 ======================
-Some BEDTools programs support BAM files as input; for example
-`intersectBed`, `windowBed`, and others accept a `-abam` argument instead
-of `-a` for the first input file.
-
-If you create a :class:`BamTool` out of a BAM file, like:
+Some BEDTools programs, like `intersecteBed`, support BAM files as input.
+From the command line, you would need to specify the `-abam`
+argument to do so.  However, :mod:`pybedtools` auto-detects BAM files and
+passes the `abam` argument automatically for you.  That means if you create
+a :class:`BamTool` out of a BAM file, like this:
 
 .. doctest::
 
-    x = pybedtools.example_bedtool('x.bam')
+    x = pybedtools.example_bedtool('gdc.bam')
 
-then any methods that support BAM as input via the `-abam` or `-ibam`
-arguments will automatically use those, just as `-a` or `-i` arguments will
-automatically be used for BED or GFF files.
+you can intersect it with a BED file without doing anything special:
 
-The output follows the semantics of BEDTools.  That is, for programs like
-`intersectBed`, if `abam` is used then the output will be BAM format as
-well.  But if the `-bed` argument is passed, then the output will be BED
+.. doctest::
+
+    b = pybedtools.example_bedtool('gdc.gff')
+    y = x.intersect(b)
+
+The output of this operation follows the semantics of BEDTools.  That is,
+for programs like `intersectBed`, if `abam` is used then the output will be
+BAM format as well.  But if the `-bed` argument is passed, then the output
+will be BED format. Similarly, in :mod:`pybedtools`, if a BAM file is used
+to create the :class:`BedTool` then the results will also be in BAM
+format.  If the `bed=True` kwarg is passed, then the results be in BED
 format.
 
 As an example, let's intersect a BAM file of reads with annotations using
@@ -30,11 +36,13 @@ files that ship with :mod:`pybedtools`.  First, we create the
     >>> a = pybedtools.example_bedtool('x.bam')
     >>> b = pybedtools.example_bedtool('dm3-chr2L-5M.gff.gz')
 
-The following will return BAM results:
+The first call below will return BAM results, and the second will return
+BED results.
 
 .. doctest::
 
-    >>> c = a.intersect(b)
+    >>> bam_results = a.intersect(b)
+    >>> bed_results = a.intersect(b, bed=True)
 
 We can iterate over BAM files to get :class:`Interval` objects just like
 iterating over BED or GFF files.  Indexing works, too:
@@ -42,15 +50,15 @@ iterating over BED or GFF files.  Indexing works, too:
 .. doctest::
     :options: +ELLIPSIS +NORMALIZE_WHITESPACE
 
-    >>> for i in c[:2]:
+    >>> for i in bam_results[:2]:
     ...     print i
     HWUSI-NAME:2:69:512:1017#0	16	chr2L	9330	3	36M	*	0	0	TACAAATCTTACGTAAACACTCCAAGCATGAATTCG	Y`V_a_TM[\_V`abb`^^Q]QZaaaaa_aaaaaaa	NM:i:0	NH:i:2	CC:Z:chrX	CP:i:19096815
     HWUSI-NAME:2:91:1201:1113#0	16	chr2L	10213	255	36M	*	0	0	TGTAGAATGCAAAAATTACATTTGTGAGTATCATCA	UV[aY`]\VZ`baaaZa`_aab_`_`a`ab``b`aa	NM:i:0	NH:i:1
 
-    >>> c[0]
+    >>> bam_results[0]
     Interval(chr2L:9329-9365)
 
-    >>> c[:10]
+    >>> bam_results[:10]
     <itertools.islice object at ...>
 
     >>> cigar_string = i[5]
@@ -72,11 +80,12 @@ Currently, the stop coordinate is defined as the start coord plus the
 length of the sequence; eventually a more sophisticated, CIGAR-aware
 approach may be used.  Similarly, the length is defined to be `stop -
 start`, again, not CIGAR-aware at the moment.  For more sophisticated
-low-level manipulation of BAM features, you might want to consider HTSeq_.
+low-level manipulation of BAM features, you might want to consider using
+HTSeq_.
 
-Alternatively, we can specify the `bed=True` kwarg to convert the
-intersected BAM results to BED format, and use those like a normal BED
-file:
+When we specified the `bed=True` kwarg above, the intersected BAM results
+are converted to BED format.  We can use those like a normal BED file.
+Note that since we are viewing BED output, *the start and stops are 0-based*:
 
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
@@ -87,5 +96,19 @@ file:
     chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-
     chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-
 
+Consistent with BEDTools programs, BAM files are **not** supported as the
+second input argument.  In other words, `intersectBed` does not have both
+`-abam` and `-bbam` arguments, so :mod:`pybedtools` will not not allow this
+either.
+
+However, :mod:`pybedtools` does allow streaming BAM files to be the input of
+methods that allow BAM input as the first input. In this [trivial] example, we
+can stream the first intersection to save disk space, and then send that
+streaming BAM to the next :meth:`BedTool.intersect` call. Since it's not
+streamed, the second intersection will be saved as a temp BAM file on disk:
+
+.. doctest::
+
+    >>> a.intersect(b, stream=True).intersect(b)
 
 .. _HTSeq: http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html
