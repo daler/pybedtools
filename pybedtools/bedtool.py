@@ -711,12 +711,6 @@ class BedTool(object):
         if debug:
             sys.stderr.write('kwargs: ' + str(kwargs) + '\n')
 
-        # Dict of programs and which arguments *self.fn* can be used as
-        implicit_instream1 = _implicit_registry
-
-        # Which arguments *other.fn* can be used as
-        implicit_instream2 = _other_registry
-
         # If you pass in a list, how should it be converted to a BedTools arg?
         default_list_delimiter = ' '
         list_delimiters = {'annotateBed': ' ',
@@ -760,10 +754,10 @@ class BedTool(object):
         # Decide how to send instream2 to BEDTools.
         try:
             # e.g., 'b' for intersectBed
-            inarg2 = implicit_instream2[prog]
+            inarg2 = _other_registry[prog]
 
             # e.g., another BedTool
-            instream2 = kwargs[implicit_instream2[prog]]
+            instream2 = kwargs[inarg2]
 
             # Get stream if BedTool
             if isinstance(instream2, BedTool):
