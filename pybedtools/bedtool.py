@@ -153,7 +153,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     result = self
 
             # Decide whether the output is BAM format or not
-            if self._isbam and nonbam not in kwargs:
+            if self._isbam and (nonbam not in kwargs) and (nonbam != 'ALL'):
                 result._isbam = True
             return result
 
@@ -1148,7 +1148,7 @@ class BedTool(object):
         return BedTool(stream)
 
     @_log_to_history
-    @_wraps(prog='genomeCoverageBed', implicit='i', uses_genome=True)
+    @_wraps(prog='genomeCoverageBed', implicit='i', bam='ibam', uses_genome=True, nonbam='ALL')
     def genome_coverage(self):
         """
         Calculates coverage at each position in the genome.
@@ -1159,7 +1159,7 @@ class BedTool(object):
         Example usage:
 
         >>> a = pybedtools.example_bedtool('x.bam')
-        >>> b = a.genome_coverage(ibam=a.fn, genome='dm3', bg=True)
+        >>> b = a.genome_coverage(genome='dm3', bg=True)
         >>> b.head(3) #doctest: +NORMALIZE_WHITESPACE
         chr2L	9329	9365	1
         chr2L	10212	10248	1
