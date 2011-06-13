@@ -204,8 +204,12 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
 
-    # use specifed path, "" by default.
-    cmds[0] = os.path.join(pybedtools._path, cmds[0])
+    # use specifed path, "" by default. Special-case groupBy.
+    if cmds[0] == 'groupBy':
+        cmds[0] = os.path.join(pybedtools._filo_path, cmds[0])
+    else:
+        cmds[0] = os.path.join(pybedtools._path, cmds[0])
+
 
     try:
         # coming from an iterator, sending as iterator
