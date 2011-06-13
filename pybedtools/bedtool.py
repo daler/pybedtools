@@ -1272,6 +1272,20 @@ class BedTool(object):
         <BLANKLINE>
         """
 
+    # TODO: needs test files and doctests written
+    @_log_to_history
+    @_wraps(prog='pairToBed', implicit='a', other='b', bam='abam', nonbam='bedpe')
+    def pair_to_bed(self):
+        """
+        """
+
+    # TODO: needs test files and doctests written
+    @_log_to_history
+    @_wraps(prog='pairToPair', implicit='a', other='b')
+    def pair_to_pair(self):
+        """
+        """
+
     def features(self):
         """
         Returns an iterator of :class:`feature` objects.
