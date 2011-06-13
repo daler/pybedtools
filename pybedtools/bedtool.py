@@ -1513,7 +1513,7 @@ class BedTool(object):
         return BedTool(fn)
 
     @_log_to_history
-    def random_subset(self, n):
+    def random_subset(self, n, seed=None):
         '''
         Returns a new bedtools object containing a random subset of the
         features in this subset.
@@ -1526,6 +1526,8 @@ class BedTool(object):
         2
         '''
         idxs = range(len(self))
+        if seed is not None:
+            random.seed(seed)
         random.shuffle(idxs)
         idxs = idxs[:n]
 
