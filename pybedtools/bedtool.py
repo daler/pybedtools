@@ -647,12 +647,14 @@ class BedTool(object):
         fout.close()
         return fn
 
-    def handle_kwargs(self, prog, **kwargs):
+    def handle_kwargs(self, prog, debug=False, **kwargs):
         """
         Handle most cases of BEDTool program calls, but leave the specifics
         up to individual methods.
 
         *prog* is a BEDTools program name, e.g., 'intersectBed'.
+
+        If *debug*, prints kwargs recieved and cmds returned to stderr.
 
         *kwargs* are passed directly from the calling method (like
         self.intersect).
@@ -661,6 +663,9 @@ class BedTool(object):
         to send to BEDTools programs -- for example, an open file to stdin with
         the `-` argument, or a filename with the `-a` argument.
         """
+        if debug:
+            sys.stderr.write('kwargs: ' + str(kwargs) + '\n')
+
         # Dict of programs and which arguments *self.fn* can be used as
         implicit_instream1 = _implicit_registry
 
@@ -767,6 +772,11 @@ class BedTool(object):
             else:
                 cmds.append('-' + key)
                 cmds.append(str(value))
+
+        if debug:
+            sys.stderr.write('cmds: ' + str(cmds) + '\n')
+            sys.stderr.write('tmp: ' + repr(tmp) + '\n')
+            sys.stderr.write('stdin: ' + repr(stdin) + '\n')
         return cmds, tmp, stdin
 
     def check_genome(self, **kwargs):
