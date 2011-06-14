@@ -6,7 +6,6 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 from version import get_git_version
-
 git_version = get_git_version()
 
 # write the version to file so that pybedtools can import it
@@ -36,9 +35,14 @@ long_description = """
 ``pybedtools`` allows you to intuitively call BEDtools programs from within
 Python without writing awkward system calls.
 
-Development version, as well as documentation, can be found on github:
+Development version can be found on github:
 
     http://github.com/daler/pybedtools
+
+and see full documentation and tutorial at:
+
+    http://pybedtools.genomicnorth.com
+
 
 """
 
