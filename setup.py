@@ -18,18 +18,15 @@ try:
 except ImportError:
     sys.stderr.write('''
 -------------------------------------------------------------------------------
-Please install Cython (http://docs.cython.org) before running setup.py. You can
-use:
+Please install Cython 0.14.1 or greater (http://docs.cython.org) before running
+setup.py. You can use:
 
     $ easy_install cython
-
-or:
-
-    $ pip install cython
 
 -------------------------------------------------------------------------------
 ''')
     sys.exit(1)
+
 # Strangely, this needs to come AFTER the Cython import
 from setuptools import setup
 from setuptools.extension import Extension
