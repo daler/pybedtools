@@ -35,9 +35,7 @@ version = open('RELEASE-VERSION').read().strip()
 
 # write the version to file so that pybedtools can import it
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
-fout = open(version_py,'w')
-fout.write('__version__="%s"' % version)
-fout.close()
+version = open(version_py).read().split('=')[-1].replace('"','')
 
 exts = [ Extension("pybedtools.cbedtools",
               sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi"] \
