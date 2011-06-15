@@ -96,7 +96,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                        'or on the path, so this method is '\
                        'disabled.  Please install a more recent '\
                        'version of BEDTools and re-import to '\
-                       'use this method.' % command
+                       'use this method.' % prog
         not_implemented = True
 
     def decorator(func):
