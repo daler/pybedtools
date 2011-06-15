@@ -69,10 +69,10 @@ text format are considered SAM features, so these SAM features are
 
 .. doctest::
 
-    >>> c[0].start
+    >>> bam_results[0].start
     9329L
 
-    >>> c[0][3]
+    >>> bam_results[0][3]
     '9330'
 
 

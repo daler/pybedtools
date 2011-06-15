@@ -7,6 +7,8 @@
 
 .. _argparse: http://code.google.com/p/argparse/
 
+.. _Python: http://www.python.org/
+
 .. include:: includeme.rst
 
 .. _installation:
@@ -14,17 +16,23 @@
 Installation
 ------------
 
-Python requirements
-~~~~~~~~~~~~~~~~~~~
-* Python 2.5 or greater; Python 3 support coming soon
-* argparse_ if you are running Python < 2.7 (Python 2.7 comes with
-  `argparse` already)
-* Cython_ - part of :mod:`pybedtools` is written in Cython_ for speed
+Requirements
+~~~~~~~~~~~~
+First, make sure you have the required packages for installing :mod:`pybedtools`:
+
+#. BEDTools_. The version is not important, but later versions will have more
+   features so it's a good idea to get the latest.  Follow the instructions at
+   https://github.com/arq5x/bedtools to install, and make sure the programs are
+   on your path. That is, you should be able to call `intersectBed` from any
+   directory
+#. Python_ 2.5 or greater (Python 3 support is coming soon)
+#. Cython_, version 0.14.1 or greater
+#. argparse_ if you are running Python < 2.7 (Python 2.7 comes with
+   `argparse` already)
 
 Both argparse and Cython can be installed with pip_::
 
     pip install cython argparse
-
 
 or `easy_install`::
 
@@ -33,45 +41,35 @@ or `easy_install`::
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For the latest stable version,
 
-To install the latest version of :mod:`pybedtools` you have 2 options:
+#. download the :mod:`pybedtools` source from
+   http://pypi.python.org/pypi/pybedtools
 
-**Option 1:** install from source
+#. Unzip the tarball
 
-    * go to http://github.com/daler/pybedtools 
-    * click the Downloads link (|dl|)
-    * choose either a ``.tar.gz`` or a ``.zip`` file, whatever you're 
-      comfortable with
-    * unzip into a temporary directory
-    * from the command line, run::
+#. In the newly created directory, run::
 
-            python setup.py install
+        python setup.py install
 
-      (you may need admin rights to do this)
+   (you may need root privleges to do so)
 
-**Option 2:** use pip_ to automatically download the latest stable version
-from the `Python Package Index`_::
+.. note::
 
-        sudo pip install --upgrade pybedtools
+    Due to poor support of Cython and C++ (which is what :mod:`pybedtools`
+    uses), it is not currently possible to "`easy_install`" :mod:`pybedtools`
+    all in one shot from the command line.  As a result, users must download
+    the source and install using the method above.
 
-.. warning:: 
 
-    These docs are written for the latest version on git.  For docs
-    specific to the version you have installed, please see the docs
-    included with that version
-
-Installing BEDTools_
-~~~~~~~~~~~~~~~~~~~~
-:mod:`pybedtools` relies heavily on BEDTools_.  To install BEDTools_,
-
-    * follow the instructions at https://github.com/arq5x/bedtools to
-      install
-
-    * make sure all its programs are on your path
+For the bleeding-edge development version, use the Git repository at
+http://github.com/daler/pybedtools.
 
 
 Testing your installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+Quick test
+``````````
 A quick functional test is to create a new script with the following
 contents::
 
@@ -87,18 +85,22 @@ should print out::
     chr1	155	200	feature3	0	-
     chr1	900	901	feature4	0	+
 
-For more extensive testing:
-
-* If you have `nosetest` installed (e.g., via `pip install nose`) you can
-  run the test suite with::
+Running the test suite
+``````````````````````
+For more extensive testing, you can run the full test suite which requires
+`nose` and `PyYAML` to be installed (both `easy_install`-able).  The test suite
+will re-compile the Cython extensions, run unit tests and doctests.  To run the
+test suite, use::
 
     sh test.sh $VERSION
 
-  where `$VERSION` is the version of Python you'd like to run the tests
-  with, e.g., `2.7`.
+where `$VERSION` is the version of Python you'd like to run the tests with
+(e.g., `2.7`).
 
-* If you have `sphinx` installed (e.g., via `pip install sphinx`), you can
-  run the doctests by going to the `docs` directory and running::
+If you have `sphinx` installed (e.g., via `easy_install sphinx`), you can run
+the doctests in this documentation by going to the `docs` directory and
+running::
 
     make doctest
+
 

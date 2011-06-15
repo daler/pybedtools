@@ -68,7 +68,7 @@ def example_bedtool(fn):
 def list_example_files():
     """
     Returns a list of files in the examples dir.  Choose one and pass it to
-    :func:`example_file_fnl` to get the full path to an examplefile.
+    :func:`example_filename` to get the full path to an example file.
 
     Example usage:
 
