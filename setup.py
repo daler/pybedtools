@@ -1,10 +1,40 @@
+import ez_setup
+ez_setup.use_setuptools()
+
 import glob
 import os
-#from setuptools import setup
-from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
+import sys
 
+try:
+    from Cython.Distutils import build_ext
+
+    # Work around setuptools bug by providing a fake Pyrex, as is done here:
+    #    http://codespeak.net/svn/lxml/trunk/
+    #
+    # This seems to solve errors where the compiler is looking for .c files
+    # (which don't exist for these C++ wrappers!)
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "fake_pyrex"))
+
+except ImportError:
+    sys.stderr.write('''
+-------------------------------------------------------------------------------
+Please install Cython (http://docs.cython.org) before running setup.py. You can
+use:
+
+    $ easy_install cython
+
+or:
+
+    $ pip install cython
+
+-------------------------------------------------------------------------------
+''')
+    sys.exit(1)
+# Strangely, this needs to come AFTER the Cython import
+from setuptools import setup
+from setuptools.extension import Extension
+
+version = open('RELEASE-VERSION').read().strip()
 
 # write the version to file so that pybedtools can import it
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
@@ -48,7 +78,7 @@ setup(
         name="pybedtools",
         version=version,
         ext_modules=exts,
-        requires=['argparse','cython'],
+        install_requires=['argparse','cython'],
         packages=['pybedtools','pybedtools.test', 'pybedtools.scripts', 'pybedtools.test.data'],
         author="Ryan Dale",
         description='Wrapper around BEDTools for bioinformatics work',
@@ -62,4 +92,10 @@ setup(
                    'pybedtools/scripts/intron_exon_reads.py'],
         cmdclass = {'build_ext': build_ext},
         author_email="dalerr@niddk.nih.gov",
+        classifiers=[
+            'Development Status :: 4 - Beta',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: GNU General Public License (GPL)',
+            'Topic :: Scientific/Engineering :: Bio-Informatics']
+
     )
