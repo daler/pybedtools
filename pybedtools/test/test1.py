@@ -182,6 +182,9 @@ def test_create_from_list_long_features():
     b = pybedtools.example_bedtool('c.gff')
     c = a.intersect(b, wao=True, stream=False)
     d = a.intersect(b, wao=True, stream=True)
+
+    print b.closest(a)
+
     for i in d:
         print i
 

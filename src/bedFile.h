@@ -375,7 +375,7 @@ private:
                         return parseVcfLine(bed, lineVector, numFields);
                     }
                     // it's GFF, assuming columns columns 4 and 5 are numeric and we have 9 fields total.
-                    else if ((numFields == 9) && isInteger(lineVector[3]) && isInteger(lineVector[4])) {
+                    else if ((numFields >= 9) && isInteger(lineVector[3]) && isInteger(lineVector[4])) {
                         file_type = "gff";
                         setFileType(GFF_FILETYPE);
                         setBedType(numFields);       // we now expect numFields columns in each line
@@ -524,7 +524,7 @@ private:
     template <typename T>
     inline BedLineStatus parseGffLine (T &bed, const vector<string> &lineVector, unsigned int numFields) {
         if (numFields == this->bedType) { 
-            if (this->bedType == 9 && this->file_type == "gff") {
+            if (this->bedType >= 9 && this->file_type == "gff") {
                 bed.chrom = lineVector[0];
                 // substract 1 to force the start to be BED-style
                 bed.start   = atoi(lineVector[3].c_str()) - 1;
