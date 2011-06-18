@@ -6,6 +6,7 @@ import random
 import string
 import glob
 import struct
+import atexit
 import pybedtools
 
 # Check calls against these names to only allow calls to known BEDTools
@@ -339,3 +340,5 @@ def _check_sequence_stderr(x):
     if x.startswith('index file'):
         return True
     return False
+
+atexit.register(cleanup)
