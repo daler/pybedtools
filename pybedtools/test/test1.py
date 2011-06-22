@@ -724,6 +724,17 @@ def test_bam_regression():
     assert x[0].file_type == 'sam'
     assert x[0].chrom == 'chr2L'
 
+def test_bam_closest():
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    assert_raises(pybedtools.helpers.BEDToolsError, a.closest, b)
+
+def test_sam_filetype():
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.BedTool(i for i in a).saveas()
+    assert b.file_type == 'sam'
+
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

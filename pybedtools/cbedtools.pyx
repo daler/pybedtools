@@ -468,8 +468,20 @@ cdef class IntervalFile:
     @property
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
-            a = iter(self).next()
-        return self.intervalFile_ptr.file_type.c_str()
+            try:
+                a = iter(self).next()
+                return self.intervalFile_ptr.file_type.c_str()
+
+            # TODO: If the BEDTools parser fails on a SAM line, then fall back
+            # to manually reading the file and let the
+            # create_interval_from_list handle the filetype detection
+            #
+            # Perhaps we should *always* be using the logic in
+            # create_interval_from_list to assess file_type?
+            except MalformedBedLineError:
+                interval = create_interval_from_list(open(self.fn).readline().strip().split())
+                return interval.file_type
+
 
     def loadIntoMap(self):
         """
