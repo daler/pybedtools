@@ -730,11 +730,19 @@ def test_bam_closest():
     assert_raises(pybedtools.helpers.BEDToolsError, a.closest, b)
 
 def test_sam_filetype():
+    # file_type was segfaulting cause IntervalFile couldn't parse SAM
     a = pybedtools.example_bedtool('gdc.bam')
     b = pybedtools.BedTool(i for i in a).saveas()
     assert b.file_type == 'sam'
 
 
+def test_bam_filetype():
+    # regression test -- this was segfaulting before because IntervalFile
+    # couldn't parse SAM
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = a.intersect(b)
+    assert c.file_type == 'bam'
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

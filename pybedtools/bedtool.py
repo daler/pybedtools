@@ -540,8 +540,11 @@ class BedTool(object):
                 raise ValueError('Checking file_type not supported for '
                                  'non-file BedTools. Use .saveas() to '
                                  'save as a temp file first.')
-            v = IntervalFile(self.fn)
-            self._file_type = v.file_type
+            if self._isbam:
+                self._file_type = 'bam'
+            else:
+                v = IntervalFile(self.fn)
+                self._file_type = v.file_type
         return self._file_type
 
     def cut(self, indexes):
