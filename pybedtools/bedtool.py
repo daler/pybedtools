@@ -10,7 +10,7 @@ from itertools import groupby, islice
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator, \
-    _check_sequence_stderr, isBAM
+    _check_sequence_stderr, isBAM, BEDToolsError
 from cbedtools import IntervalFile
 import pybedtools
 
@@ -147,7 +147,16 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 if not self._isbam:
                     kwargs[implicit] = self.fn
                 else:
-                    kwargs[bam] = self.fn
+                    # It is a bam file.  If this program supports BAM as the
+                    # first input, then we set it here
+                    if bam is not None:
+                        kwargs[bam] = self.fn
+
+                    # Otherwise, BEDTools can't currently handle it, so raise
+                    # an exception.
+                    else:
+                        raise BEDToolsError('"%s" currently can\'t handle BAM '
+                                'input, please use bam_to_bed() first.' % prog)
 
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
