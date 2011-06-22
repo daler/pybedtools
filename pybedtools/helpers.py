@@ -296,6 +296,8 @@ def IntervalIterator(stream):
     Given an open file handle, yield the Intervals.
     """
     for line in stream:
+        if line[0] == '@':
+            continue
         fields = line.rstrip("\r\n").split("\t")
         yield pybedtools.create_interval_from_list(fields)
 

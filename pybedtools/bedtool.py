@@ -277,6 +277,7 @@ class BedTool(object):
 
         """
         self._isbam = False
+        self._bam_header = ""
 
         if not from_string:
             if isinstance(fn, BedTool):
@@ -305,6 +306,11 @@ class BedTool(object):
         self._hascounts = False
         self._file_type = None
         self.history = History()
+
+        if self._isbam and isinstance(self.fn, basestring):
+            self._bam_header = ''.join(BAM(self.fn, header_only=True))
+        else:
+            self._bam_header = ""
 
     def delete_temporary_history(self, ask=True, raw_input_func=None):
         """
@@ -1723,16 +1729,17 @@ class BedTool(object):
         return IntervalFile(fn)
 
 
+
 class BAM(object):
-    def __init__(self, stream):
+    def __init__(self, stream, header_only=False):
         """
         Wraps samtools to iterate over a BAM, yielding lines
         """
         self.stream = stream
-
+        self.header_only = header_only
         if isinstance(self.stream, basestring):
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
-                         'view',
+                         'view','-h',
                          stream]
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
@@ -1740,7 +1747,7 @@ class BAM(object):
                                       bufsize=1)
         else:
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
-                         'view', '-']
+                         'view', '-h', '-']
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
@@ -1751,4 +1758,8 @@ class BAM(object):
         return self
 
     def next(self):
-        return self.p.stdout.next()
+        line = self.p.stdout.next()
+        if self.header_only:
+            if line[0] != '@':
+                raise StopIteration
+        return line

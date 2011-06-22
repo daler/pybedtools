@@ -654,7 +654,9 @@ def test_print_abam():
     None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
     None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
     None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")
+    print 'x:'
     print x
+    print 'expected:'
     print expected
     assert x == expected
 
@@ -743,6 +745,14 @@ def test_bam_filetype():
     b = pybedtools.example_bedtool('gdc.gff')
     c = a.intersect(b)
     assert c.file_type == 'bam'
+
+def test_bam_header():
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = a.intersect(b)
+    print c._bam_header
+    assert c._bam_header == "@SQ	SN:chr2L	LN:23011544\n"
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
