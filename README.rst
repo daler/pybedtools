@@ -8,7 +8,7 @@ This documentation is written assuming you know how to use BEDTools and
 Python.
 
 See full online documentation, including installation instructions, at
-http://pybedtools.genomicnorth.com.
+http://packages.python.org/pybedtools/.
 
 Created by Ryan Dale 2010
 
