@@ -6,11 +6,10 @@ import urllib2
 import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
                     create_interval_from_list, parse_attributes, \
-                    MalformedBedLineError
+                    MalformedBedLineError, IntervalIterator
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
-                    find_tagged, set_bedtools_path, \
-                    IntervalIterator
+                    find_tagged, set_bedtools_path
 from bedtool import BedTool
 import genome_registry
 from __main__ import main

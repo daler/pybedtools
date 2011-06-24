@@ -291,17 +291,6 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     return output
 
 
-def IntervalIterator(stream):
-    """
-    Given an open file handle, yield the Intervals.
-    """
-    for line in stream:
-        if line[0] == '@':
-            continue
-        fields = line.rstrip("\r\n").split("\t")
-        yield pybedtools.create_interval_from_list(fields)
-
-
 def set_bedtools_path(path=""):
     """
     If BEDTools is not available on your system path, specify the path to the

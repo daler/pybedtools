@@ -431,6 +431,22 @@ cdef list bed_vec2list(vector[BED] bv):
 def overlap(int s1, int s2, int e1, int e2):
     return min(e1, e2) - max(s1, s2)
 
+cdef class IntervalIterator:
+    cdef object stream
+    def __init__(self, stream):
+        self.stream = stream
+    def __iter__(self):
+        return self
+    def __next__(self):
+        while True:
+            line = self.stream.next()
+            if (line[0] == '@') or (line[0] == '#') or \
+                    (line[:5] == 'track') or (line[:7] == 'browser'):
+                continue
+            break
+        fields = line.rstrip('\r\n').split('\t')
+        return create_interval_from_list(fields)
+
 
 cdef class IntervalFile:
     cdef BedFile *intervalFile_ptr

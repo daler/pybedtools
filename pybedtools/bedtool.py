@@ -9,9 +9,9 @@ import string
 from itertools import groupby, islice
 
 from pybedtools.helpers import get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list, IntervalIterator, \
+    History, HistoryStep, call_bedtools, _flatten_list, \
     _check_sequence_stderr, isBAM, BEDToolsError
-from cbedtools import IntervalFile
+from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
 tempfile_prefix = 'pybedtools.'
