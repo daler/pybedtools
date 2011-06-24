@@ -17,7 +17,7 @@ from version import __version__
 _path = ""
 _samtools_path = ""
 _filo_path = ""
-
+KEEP_TEMPFILES = False
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
 

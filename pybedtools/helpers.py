@@ -171,6 +171,8 @@ def cleanup(verbose=False, remove_all=False):
     If *remove_all*, then ALL files matching "pybedtools.*.tmp" in the temp dir
     will be deleted.
     """
+    if pybedtools.KEEP_TEMPFILES:
+        return
     for fn in pybedtools.BedTool.TEMPFILES:
         if verbose:
             print 'removing', fn
