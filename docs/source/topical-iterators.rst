@@ -1,3 +1,5 @@
+.. include:: includeme.rst
+
 .. _`BedTools as iterators`:
 
 Using BedTool objects as iterators/generators

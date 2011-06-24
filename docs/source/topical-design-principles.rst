@@ -15,7 +15,7 @@ Principle 1: Temporary files are created automatically
 Using :class:`BedTool` instances typically has the side effect of creating
 temporary files on disk.  Even when using the iterator protocol of
 :class:`BedTool` objects, temporary files may be created in order to run
-BEDTools programs (see Iterators_ for more on this latter topic).
+BEDTools programs (see :ref:`BedTools as iterators` for more on this latter topic).
 
 Let's illustrate some of the design principles behind :mod:`pybedtools` by
 merging features in :file:`a.bed` that are 100 bp or less apart (`d=100`)

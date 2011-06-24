@@ -5,7 +5,7 @@
 
 Filtering
 ~~~~~~~~~
-The :meth:`filter` method lets you pass in a function that accepts an
+The :meth:`BedTool.filter` method lets you pass in a function that accepts an
 :class:`Interval` as its first argument and returns True for False.  This
 allows you to perform "grep"-like operations on :class:`BedTool` objects.  For
 example, here's how to get a new :class:`BedTool` containing features from `a`

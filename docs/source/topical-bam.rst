@@ -1,3 +1,5 @@
+.. include:: includeme.rst
+
 .. _bam:
 
 Working with BAM files
@@ -6,7 +8,7 @@ Some BEDTools programs, like `intersecteBed`, support BAM files as input.
 From the command line, you would need to specify the `-abam`
 argument to do so.  However, :mod:`pybedtools` auto-detects BAM files and
 passes the `abam` argument automatically for you.  That means if you create
-a :class:`BamTool` out of a BAM file, like this:
+a :class:`BedTool` out of a BAM file, like this:
 
 .. doctest::
 

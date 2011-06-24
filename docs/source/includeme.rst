@@ -17,3 +17,14 @@
 
 .. _BED format: http://genome.ucsc.edu/FAQ/FAQformat#format1
 
+.. _pip: http://pypi.python.org/pypi/pip
+
+.. _Python Package Index: http://pypi.python.org/pypi
+
+.. _Cython: http://cython.org/
+
+.. _argparse: http://code.google.com/p/argparse/
+
+.. _Python: http://www.python.org/
+
+
