@@ -1,6 +1,7 @@
 import pybedtools
 import os, difflib, sys
-from nose.tools import assert_raises
+from nose.tools import assert_raises, raises
+from pybedtools.helpers import BEDToolsError
 
 testdir = os.path.dirname(__file__)
 
@@ -726,10 +727,6 @@ def test_bam_regression():
     assert x[0].file_type == 'sam'
     assert x[0].chrom == 'chr2L'
 
-def test_bam_closest():
-    a = pybedtools.example_bedtool('gdc.bam')
-    b = pybedtools.example_bedtool('gdc.gff')
-    assert_raises(pybedtools.helpers.BEDToolsError, a.closest, b)
 
 def test_sam_filetype():
     # file_type was segfaulting cause IntervalFile couldn't parse SAM
@@ -737,6 +734,19 @@ def test_sam_filetype():
     b = pybedtools.BedTool(i for i in a).saveas()
     assert b.file_type == 'sam'
 
+def test_bam_to_sam_to_bam():
+    a = pybedtools.example_bedtool('gdc.bam')
+    orig = str(a)
+    assert a.file_type == 'bam'
+    b = a.saveas('ex.sam')
+    assert b.file_type == 'sam'
+    assert str(b) == orig
+    c = b.to_bam(genome='dm3')
+    assert c.file_type == 'bam'
+    print 'c:'
+    print c
+    print c.fn
+    assert str(c) == orig
 
 def test_bam_filetype():
     # regression test -- this was segfaulting before because IntervalFile
