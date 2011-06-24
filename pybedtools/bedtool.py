@@ -549,8 +549,10 @@ class BedTool(object):
             if self._isbam:
                 self._file_type = 'bam'
             else:
-                v = IntervalFile(self.fn)
-                self._file_type = v.file_type
+                try:
+                    self._file_type = IntervalIterator(open(self.fn)).next().file_type
+                except StopIteration:
+                    self._file_type = 'empty'
         return self._file_type
 
     def cut(self, indexes):
