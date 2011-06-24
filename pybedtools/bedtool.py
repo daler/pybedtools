@@ -1729,37 +1729,46 @@ class BedTool(object):
         return IntervalFile(fn)
 
 
-
 class BAM(object):
     def __init__(self, stream, header_only=False):
         """
-        Wraps samtools to iterate over a BAM, yielding lines
+        Wraps samtools to iterate over a BAM, yielding lines.
         """
         self.stream = stream
         self.header_only = header_only
+
         if isinstance(self.stream, basestring):
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
-                         'view','-h',
-                         stream]
+                         'view', stream]
+            if header_only:
+                self.cmds.append('-h')
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE,
                                       bufsize=1)
         else:
+            # Streaming . . .
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
-                         'view', '-h', '-']
+                         'view', '-']
+            if header_only:
+                self.cmds.append('-h')
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE,
-                                      stdin=self.stream,
-                                      bufsize=1)
+                                      stdin=subprocess.PIPE,
+                                      bufsize=0)
+            # Can't iterate (for i in stream) cause we're dealing with a binary
+            # BAM file here.  So read the whole thing in at once.
+            self.p.stdin.write(stream.read())
 
     def __iter__(self):
         return self
 
     def next(self):
         line = self.p.stdout.next()
+
+        # If we only want the header, then short-circuit once we're out of
+        # header lines
         if self.header_only:
             if line[0] != '@':
                 raise StopIteration
+
         return line
