@@ -493,15 +493,15 @@ cdef class IntervalFile:
                 a = iter(self).next()
                 return self.intervalFile_ptr.file_type.c_str()
 
-            # TODO: If the BEDTools parser fails on a SAM line, then fall back
-            # to manually reading the file and let the
-            # create_interval_from_list handle the filetype detection
-            #
-            # Perhaps we should *always* be using the logic in
-            # create_interval_from_list to assess file_type?
             except MalformedBedLineError:
+                # If it's a SAM, raise a meaningful exception.  If not, fail.
                 interval = create_interval_from_list(open(self.fn).readline().strip().split())
-                return interval.file_type
+                if interval.file_type == 'sam':
+                    raise ValueError('IntervalFile objects do not yet natively support SAM. '
+                                     'Please convert to BED/GFF/VCF first if you want to '
+                                     'use the low-level API of IntervalFile')
+                else:
+                    raise
 
 
     def loadIntoMap(self):

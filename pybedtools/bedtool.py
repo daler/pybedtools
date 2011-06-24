@@ -595,7 +595,16 @@ class BedTool(object):
         # Plain ol' filename
         if isinstance(self.fn, basestring):
             if self._isbam:
+                # Note: BAM class takes filename or stream, so self.fn is OK
+                # here
                 return IntervalIterator(BAM(self.fn))
+
+            # TODO: Sort of a hack, cause we can't use IntervalFile as a SAM
+            # iterator [yet]
+            elif self.file_type == 'sam':
+                return IntervalIterator(open(self.fn))
+
+            # Easy case: BED/GFF/VCF, as a file
             else:
                 return IntervalFile(self.fn)
 
