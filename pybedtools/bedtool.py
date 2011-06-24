@@ -948,11 +948,51 @@ class BedTool(object):
         pass
 
     @_log_to_history
-    @_wraps(prog='bamToBed', implicit='i', other=None, bam=None)
+    @_wraps(prog='bamToBed', implicit='i', other=None, nonbam='ALL', bam='i')
     def bam_to_bed(self, **kwargs):
         """
         Convert BAM to BED.
         """
+
+    @_wraps(prog='bedToBam', implicit='i', uses_genome=True, force_bam=True)
+    def _bed_to_bam(self):
+        """
+        Wraps bedToBam and is called internally for BED/GFF/VCF files by
+        self.to_bam (which needs to do something different for SAM files...)
+        """
+
+    @_log_to_history
+    def to_bam(self, **kwargs):
+        """
+        If self.fn is in BED/VCF/GFF format, call BEDTools' bedToBam.  If
+        self.fn is in SAM format, then create a header out of the genome file
+        and then convert using `samtools`.
+        """
+        if self.file_type in ('bed', 'gff', 'vcf'):
+            return self._bed_to_bam(**kwargs)
+        if self.file_type == 'sam':
+
+            # construct a genome out of whatever kwargs were passed in
+            kwargs = self.check_genome(**kwargs)
+
+            cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
+                    'view',
+                    '-S',
+                    '-b',
+                    '-t', kwargs['g'],
+                    '-']
+            tmp = self._tmp()
+            p = subprocess.Popen(cmds,
+                                 stdout=open(tmp, 'w'),
+                                 stderr=subprocess.PIPE,
+                                 stdin=subprocess.PIPE,
+                                 bufsize=1)
+            for line in self:
+                p.stdin.write(str(line) + '\n')
+            stdout, stderr = p.communicate()
+            new_bedtool = BedTool(tmp)
+            new_bedtool._isbam = True
+            return new_bedtool
 
     @_log_to_history
     @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam',
