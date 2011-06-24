@@ -213,7 +213,6 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     else:
         cmds[0] = os.path.join(pybedtools._path, cmds[0])
 
-
     try:
         # coming from an iterator, sending as iterator
         if instream and outstream:
@@ -260,7 +259,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             stdout, stderr = p.communicate()
             output = tmpfn
 
-        # Check if it's OK using a provided function to check stder. If it's
+        # Check if it's OK using a provided function to check stderr. If it's
         # OK, dump it to sys.stderr so it's printed, and reset it to None so we
         # don't raise an exception
         if check_stderr is not None:

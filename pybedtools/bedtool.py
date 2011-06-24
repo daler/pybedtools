@@ -535,7 +535,8 @@ class BedTool(object):
     @property
     def file_type(self):
         """
-        Return the type of the current file.  One of ('bed','vcf','gff').
+        Return the type of the current file.  One of ('bed','vcf','gff', 'bam',
+        'sam', 'empty').
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> a.file_type
@@ -613,6 +614,8 @@ class BedTool(object):
             if self._isbam:
                 return IntervalIterator(BAM(self.fn))
             else:
+                # Note: even if this is a SAM, the filetype handling eventually
+                # gets passed to create_interval_from_fields.
                 return IntervalIterator(self.fn)
 
         # Otherwise assume fn is already an iterable
@@ -1613,6 +1616,7 @@ class BedTool(object):
                 shuffle_kwargs['seed'] = i
             tmp = self.shuffle(**shuffle_kwargs)
             tmp2 = tmp.intersect(other, **intersect_kwargs)
+
             yield len(tmp2)
             os.unlink(tmp.fn)
             os.unlink(tmp2.fn)

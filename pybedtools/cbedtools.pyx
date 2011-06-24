@@ -77,13 +77,43 @@ cdef class Attributes:
 
 cdef class Interval:
     """
-    >>> from pybedtools import Interval
-    >>> i = Interval("chr1", 22, 44, strand='-')
-    >>> i
-    Interval(chr1:22-44)
+    Constructor:
 
-    >>> i.start, i.end, i.strand, i.length
-    (22L, 44L, '-', 22L)
+        Interval(chrom, start, end, name=".", score=".", strand=".", otherfields=None)
+
+    Class to represent a genomic interval of any format.  Requires at least 3
+    args: chrom (string), start (int), end (int).
+
+    `start` is *always* the 0-based start coordinate.  If this Interval is to
+    represent a GFF object (which uses a 1-based coordinate system), then
+    subtract 1 from the 4th item in the line to get the start position in
+    0-based coords for this Interval.  The 1-based GFF coord will still be
+    available, albeit as a string, in fields[3].
+
+    `otherfields` is a list of fields that don't fit into the other kwargs, and
+    will be stored in the `fields` attribute of the Interval.
+
+    All the items in `otherfields` must be strings for proper conversion to
+    C++.
+
+    By convention, for BED files, `otherfields` is everything past the first 6
+    items in the line.  This allows an Interval to represent composite features
+    (e.g., a GFF line concatenated to the end of a BED line)
+
+    But for other formats (VCF, GFF, SAM), the entire line should be passed in
+    as a list for `otherfields` so that we can always check the
+    Interval.file_type and extract the fields we want, knowing that they'll be
+    in the right order as passed in with `otherfields`.
+
+    Example usage:
+
+        >>> from pybedtools import Interval
+        >>> i = Interval("chr1", 22, 44, strand='-')
+        >>> i
+        Interval(chr1:22-44)
+
+        >>> i.start, i.end, i.strand, i.length
+        (22L, 44L, '-', 22L)
 
     """
     cdef BED *_bed
@@ -129,7 +159,7 @@ cdef class Interval:
         return not v
 
     property start:
-        """ the 0-based start of the feature"""
+        """The 0-based start of the feature."""
         def __get__(self):
             return self._bed.start
 
@@ -145,7 +175,7 @@ cdef class Interval:
             self._bed.fields[idx] = string(s)
 
     property end:
-        """ the end of the feature"""
+        """The end of the feature"""
         def __get__(self):
             return self._bed.end
 
@@ -364,18 +394,20 @@ cdef Interval create_interval(BED b):
 
 cpdef Interval create_interval_from_list(list fields):
     """
-    *fields* is a list with an arbitrary number of items (it can be quite long,
-    say after a -wao intersection of a BED12 and a GFF).
+    Constructor:
 
-    We need to inspect *fields* to make sure that BED class gets the right
-    thing.  This means detecting BED or GFF, and looking at how many fields
-    there are.  BED constructor gets the first 6 fields; the rest should be a
-    list (converted to a vector)
+        create_interval_from_list(fields)
+
+    Given the list `fields`, automatically detects the format (BED, GFF, VCF,
+    SAM) and creates a new Interval object.
+
+    `fields` is a list with an arbitrary number of items (it can be quite long,
+    say after a -wao intersection of a BED12 and a GFF).
     """
     cdef Interval pyb = Interval.__new__(Interval)
     orig_fields = fields[:]
-
-    # BED
+    # BED -- though a VCF will be detected as BED if its 2nd field, id, is a
+    # digit
     if (fields[1] + fields[2]).isdigit():
         # if it's too short, just add some empty fields.
         if len(fields) < 7:
