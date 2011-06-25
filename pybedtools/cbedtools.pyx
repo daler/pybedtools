@@ -482,8 +482,7 @@ cdef class IntervalIterator:
     def __next__(self):
         while True:
             line = self.stream.next()
-            if (line[0] == '@') or (line[0] == '#') or \
-                    (line[:5] == 'track') or (line[:7] == 'browser'):
+            if line.startswith(('@', '#', 'track', 'browser')):
                 continue
             break
         fields = line.rstrip('\r\n').split('\t')
