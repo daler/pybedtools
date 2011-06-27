@@ -12,7 +12,9 @@ This section contains additional documentation not covered in the tutorial.
     topical-design-principles
     topical-create-a-bedtool
     topical-iterators
+    topical-low-level-ops
     topical-bam
+    topical-bam-semantics
     topical-genome
     topical-random
     topical-wrapping

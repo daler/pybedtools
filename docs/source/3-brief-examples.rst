@@ -46,7 +46,8 @@ Charts API respectively.
 
 Example 3: Count reads in introns and exons, in parallel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This example is somewhat more involved, but illustrates several additional
+This example shows how to count the number of reads in introns and exons in
+parallel. It is somewhat more involved, but illustrates several additional
 features of :mod:`pybedtools` such as:
 
 * BAM file support (for more, see :ref:`bam`)
@@ -63,3 +64,6 @@ the same code with no comments to give more of a feel for :mod:`pybedtools`.
 Here's the same code but with no comments:
 
 .. literalinclude:: example_3_no_comments
+
+For more on using :mod:`pybedtools`, continue on to the :ref:`tutorial` . .
+.

@@ -5,6 +5,8 @@ import subprocess
 import random
 import string
 import glob
+import struct
+import atexit
 import pybedtools
 
 # Check calls against these names to only allow calls to known BEDTools
@@ -13,7 +15,7 @@ _prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
 'linksBed', 'overlap', 'shuffleBed', 'subtractBed', 'bamToBed', 'bedToIgv',
 'coverageBed', 'genomeCoverageBed', 'maskFastaFromBed', 'pairToBed', 'slopBed',
 'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
-'mergeBed', 'pairToPair', 'sortBed', 'windowBed', ]
+'mergeBed', 'pairToPair', 'sortBed', 'windowBed', 'groupBy']
 
 _tags = {}
 
@@ -27,6 +29,23 @@ class BEDToolsError(Error):
     pass
 
 
+def isBAM(fn):
+    """
+    Reads a filename to see if it's a BAM file or not.
+    """
+    header_str = open(fn).read(15)
+    if len(header_str) < 15:
+        return False
+
+    header = struct.unpack_from('BBBBiBBHBBB', header_str)
+
+    id1, id2, cm, flg, mtime, xfl, os_, xlen, si1, si2, slen = header
+    if (id1 == 31) and (id2 == 139) and (cm == 8) and (flg == 4) and \
+       (si1 == 66) and (si2 == 67) and (slen == 2):
+        return True
+    return False
+
+
 def find_tagged(tag):
     """
     Returns the bedtool object with tagged with *tag*.  Useful for tracking
@@ -38,7 +57,7 @@ def find_tagged(tag):
                 return item
         except AttributeError:
             pass
-    return '%s not found' % tag
+    raise ValueError('tag "%s" not found' % tag)
 
 
 def _flatten_list(x):
@@ -76,7 +95,10 @@ class HistoryStep(object):
         Mostly used for its __repr__ method, to try and exactly replicate code
         that can be pasted to re-do history steps
         """
-        self.method = method.func_name
+        try:
+            self.method = method._name
+        except AttributeError:
+            self.method = method.func_name
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
@@ -149,6 +171,8 @@ def cleanup(verbose=False, remove_all=False):
     If *remove_all*, then ALL files matching "pybedtools.*.tmp" in the temp dir
     will be deleted.
     """
+    if pybedtools.KEEP_TEMPFILES:
+        return
     for fn in pybedtools.BedTool.TEMPFILES:
         if verbose:
             print 'removing', fn
@@ -158,136 +182,6 @@ def cleanup(verbose=False, remove_all=False):
         fns = glob.glob(os.path.join(get_tempdir(), 'pybedtools.*.tmp'))
         for fn in fns:
             os.unlink(fn)
-
-
-def _file_or_bedtool():
-    '''
-    Decorator that adds a line to the docstring indicating
-    that a bedtool object is returned.
-    '''
-    extra_help = """
-    .. note::
-
-        This method accepts either a bedtool or a file name as the first
-        unnamed argument
-
-    """
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ += extra_help
-        return func
-
-    return decorator
-
-
-def _returns_bedtool():
-    '''
-    Decorator that adds a line to the docstring indicating
-    that a bedtool object is returned.
-    '''
-    extra_help = """
-    .. note::
-
-        This method returns a new bedtool instance
-    """
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ += extra_help
-        return func
-
-    return decorator
-
-
-def _implicit(option):
-    '''
-    Decorator that adds a line to the docstring indicating
-    that a particular option is implied to be the default
-    '''
-    extra_help = """
-    .. note::
-
-        For convenience, the file this bedtool object points to is
-        passed as "%s"
-    """ % option
-
-    def decorator(func):
-        """
-        Adds the help to the function's __doc__
-        """
-        if func.__doc__ is None:
-            func.__doc__ = ''
-        orig = func.__doc__
-        func.__doc__ += extra_help
-        return func
-
-    return decorator
-
-
-def _help(command):
-    '''Decorator that adds help from each of the BEDtools programs to the
-    docstring of the method that calls the program.
-
-    If the program can't be found, then the function will return a "dummy"
-    version of the method that will always return NotImplementedError.
-
-    This is will happen, for example, when a user has an old version of
-    BEDTools installed (e.g., only later versions of BEDTools have flankBed, so
-    the BedTool.flank() method will return NotImplementedError if this is not
-    available.
-    '''
-
-    try:
-        p = subprocess.Popen([command, '-h'],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        help_str = p.communicate()[1]
-        help_str = help_str.replace('_', '**')
-
-        # insert tabs into the help
-        help_str = help_str.split('\n')
-        help_str = ['\t' + i for i in help_str]
-        help_str = '\n'.join(help_str)
-
-        def decorator(func):
-            """
-            Adds the help to the function's __doc__
-            """
-            if func.__doc__ is None:
-                func.__doc__ = ''
-            orig = func.__doc__
-            func.__doc__ = '*pybedtools help:*\n'
-            func.__doc__ += orig
-            func.__doc__ += '\n\n*Original BEDtools program help:*\n'
-            func.__doc__ += help_str
-            return func
-
-        return decorator
-    except OSError:
-        def decorator(func):
-            help_str = '"%s" does not appear to be installed '\
-                       'or on the path, so this method is '\
-                       'disabled.  Please install a more recent '\
-                       'version of BEDTools and re-import to '\
-                       'use this method.' % command
-
-            def not_implemented_func(*args, **kwargs):
-                raise NotImplementedError(help_str)
-
-            not_implemented_func.__doc__ = help_str
-            return not_implemented_func
-        return decorator
 
 
 def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
@@ -313,8 +207,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
 
-    # use specifed path, "" by default.
-    cmds[0] = os.path.join(pybedtools._path, cmds[0])
+    # use specifed path, "" by default. Special-case groupBy.
+    if cmds[0] == 'groupBy':
+        cmds[0] = os.path.join(pybedtools._filo_path, cmds[0])
+    else:
+        cmds[0] = os.path.join(pybedtools._path, cmds[0])
 
     try:
         # coming from an iterator, sending as iterator
@@ -362,7 +259,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             stdout, stderr = p.communicate()
             output = tmpfn
 
-        # Check if it's OK using a provided function to check stder. If it's
+        # Check if it's OK using a provided function to check stderr. If it's
         # OK, dump it to sys.stderr so it's printed, and reset it to None so we
         # don't raise an exception
         if check_stderr is not None:
@@ -371,11 +268,12 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 stderr = None
 
         if stderr:
-            print 'Command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
-            print 'Error message was:\n'
-            print stderr
-            raise BEDToolsError('See above for commands and error message',
-                                stderr)
+            sys.stderr.write('\nCommand was:\n\n\t%s\n' % \
+                             subprocess.list2cmdline(cmds))
+            sys.stderr.write('\nError message was:\n')
+            sys.stderr.write(stderr)
+            raise BEDToolsError('Error message from BEDTools written to '
+                                'stderr, above', stderr)
 
     except (OSError, IOError) as err:
         print '%s: %s' % (type(err), os.strerror(err.errno))
@@ -394,15 +292,6 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     return output
 
 
-def IntervalIterator(stream):
-    """
-    Given an open file handle, yield the Intervals.
-    """
-    for line in stream:
-        fields = line.rstrip("\r\n").split("\t")
-        yield pybedtools.create_interval_from_list(fields)
-
-
 def set_bedtools_path(path=""):
     """
     If BEDTools is not available on your system path, specify the path to the
@@ -413,3 +302,35 @@ def set_bedtools_path(path=""):
     arguments or use path="".
     """
     pybedtools._path = path
+
+
+def set_samtools_path(path=""):
+    """
+    If samtools is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    pybedtools._samtools_path = path
+
+
+def set_filo_path(path=""):
+    """
+    If filo is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    pybedtools._filo_path = path
+
+
+def _check_sequence_stderr(x):
+    """
+    If stderr created by fastaFromBed starst with 'index file', then don't
+    consider it an error.
+    """
+    if x.startswith('index file'):
+        return True
+    return False
+
+atexit.register(cleanup)

@@ -1,6 +1,7 @@
 import pybedtools
-import os, difflib
-from nose.tools import assert_raises
+import os, difflib, sys
+from nose.tools import assert_raises, raises
+from pybedtools.helpers import BEDToolsError
 
 testdir = os.path.dirname(__file__)
 
@@ -182,6 +183,9 @@ def test_create_from_list_long_features():
     b = pybedtools.example_bedtool('c.gff')
     c = a.intersect(b, wao=True, stream=False)
     d = a.intersect(b, wao=True, stream=True)
+
+    print b.closest(a)
+
     for i in d:
         print i
 
@@ -223,7 +227,7 @@ def test_indexing():
     assert results[0] == interval
 
     # test single-integer indexing
-    assert list(a[0])[0] == interval
+    assert a[0] == interval
 
     # only slices and integers allowed....
     assert_raises(ValueError, a.__getitem__, 'key')
@@ -282,31 +286,6 @@ def test_slop():
     # Make sure it complains if no genome is set
     assert_raises(ValueError, a.slop, **dict(l=100, r=1))
 
-def test_merge():
-    a = pybedtools.example_bedtool('a.bed')
-    results = str(a.merge())
-    expected = fix("""
-    chr1	1	500
-    chr1	900	950
-    """)
-    assert results == expected
-
-    results = str(a.merge(s=True))
-    expected = fix("""
-    chr1	1	200	+
-    chr1	900	950	+
-    chr1	150	500	-
-    """)
-    assert results == expected
-
-    b = pybedtools.example_bedtool('b.bed')
-    results = str(b.merge(d=700))
-    expected = fix("""
-    chr1 155 901 
-    """)
-    print results
-    assert results == expected
-
 def test_closest():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
@@ -352,7 +331,16 @@ def test_sequence():
         fout.write(line.lstrip())
     fout.close()
 
+    # redirect stderr for the call to .sequence(), which reports the creation
+    # of an index file
+    tmp = open(a._tmp(),'w')
+    orig_stderr = sys.stderr
+    sys.stderr = tmp
+
     f = a.sequence(fi=fi)
+
+    sys.stderr = orig_stderr
+
     assert f.fn == f.fn
     seqs = open(f.seqfn).read()
     print seqs
@@ -611,6 +599,12 @@ def test_history_step():
     c = a.intersect(b)
     d = c.subtract(a)
 
+    tag = c.history[0].result_tag
+    assert pybedtools.find_tagged(tag) == c
+
+    assert_raises(ValueError, pybedtools.find_tagged, 'nonexistent')
+
+
     print d.history
     d.delete_temporary_history(ask=True, raw_input_func=lambda x: 'n')
     assert os.path.exists(a.fn)
@@ -639,6 +633,135 @@ def test_kwargs():
     b = a.intersect(a, s=False)
     c = a.intersect(a)
     assert str(b) == str(c)
+
+
+# ----------------------------------------------------------------------------
+# BAM support tests
+# ----------------------------------------------------------------------------
+def test_bam_bedtool_creation():
+    x = pybedtools.example_bedtool('x.bam')
+    a = pybedtools.example_bedtool('a.bed')
+    assert x._isbam
+    assert not a._isbam
+
+def test_print_abam():
+    x = pybedtools.example_bedtool('gdc.bam')
+    expected = fix("""
+    None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	71	255	5M	*	0	0	TTCTC	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	141	255	5M	*	0	0	CACCA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	151	255	5M	*	0	0	GTTCA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")
+    print 'x:'
+    print x
+    print 'expected:'
+    print expected
+    assert x == expected
+
+def test_bam_iter():
+    x = pybedtools.example_bedtool('gdc.bam')
+    s = 'None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1'
+    assert str(x[0]) == str(iter(x).next()) == s
+
+def test_bam_stream_bed():
+    x = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = x.intersect(b, u=True, bed=True, stream=True)
+    expected = fix("""
+    chr2L	70	75	None	255	-
+    chr2L	140	145	None	255	-
+    chr2L	150	155	None	255	-
+    chr2L	210	215	None	255	+
+    chr2L	70	75	None	255	+
+    chr2L	140	145	None	255	+
+    chr2L	160	165	None	255	+
+    """)
+    assert c == expected
+
+def test_bam_stream_bam():
+    x = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = x.intersect(b, u=True, stream=True)
+    expected = fix("""
+    None	16	chr2L	71	255	5M	*	0	0	TTCTC	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	141	255	5M	*	0	0	CACCA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	151	255	5M	*	0	0	GTTCA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")
+    assert str(c) == expected
+
+def test_bam_stream_bam_stream():
+    x = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = x.intersect(b, u=True, stream=True)
+    expected = fix("""
+    None	16	chr2L	71	255	5M	*	0	0	TTCTC	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	141	255	5M	*	0	0	CACCA	IIIII	NM:i:0	NH:i:1
+    None	16	chr2L	151	255	5M	*	0	0	GTTCA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")   
+    d = c.intersect(b)
+    print d
+    assert str(d) == expected
+
+def test_bam_interval():
+    x = pybedtools.example_bedtool('x.bam')
+    assert x[0].chrom == 'chr2L'
+    assert x[0].start == 9329L
+    assert x[0][3] == '9330'
+    assert x[0].stop == 9365L
+    assert len(x[0][9]) == len(x[0]) == 36
+
+def test_bam_regression():
+    # Regression test:  with extra fields, the first item in x.bam was being
+    # parsed as gff (cause not ==13 fields).  This does a check to prevent that
+    # from happening again.
+    x = pybedtools.example_bedtool('x.bam')
+    assert x[0].file_type == 'sam'
+    assert x[0].chrom == 'chr2L'
+
+
+def test_sam_filetype():
+    # file_type was segfaulting cause IntervalFile couldn't parse SAM
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.BedTool(i for i in a).saveas()
+    assert b.file_type == 'sam'
+
+def test_bam_to_sam_to_bam():
+    a = pybedtools.example_bedtool('gdc.bam')
+    orig = str(a)
+    assert a.file_type == 'bam'
+    b = a.saveas('ex.sam')
+    assert b.file_type == 'sam'
+    assert str(b) == orig
+    c = b.to_bam(genome='dm3')
+    assert c.file_type == 'bam'
+    print 'c:'
+    print c
+    print c.fn
+    assert str(c) == orig
+
+def test_bam_filetype():
+    # regression test -- this was segfaulting before because IntervalFile
+    # couldn't parse SAM
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = a.intersect(b)
+    assert c.file_type == 'bam'
+
+def test_bam_header():
+    a = pybedtools.example_bedtool('gdc.bam')
+    b = pybedtools.example_bedtool('gdc.gff')
+    c = a.intersect(b)
+    print c._bam_header
+    assert c._bam_header == "@SQ	SN:chr2L	LN:23011544\n"
 
 def teardown():
     # always run this!

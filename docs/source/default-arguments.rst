@@ -1,3 +1,4 @@
+.. currentmodule:: pybedtools
 
 .. doctest::
    :hide:

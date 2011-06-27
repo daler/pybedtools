@@ -22,13 +22,21 @@ opening up the files afterward and manually adding a trackline:
     >>> print c.fn
     intersection-of-a-and-b.bed
 
-    >>> print c
+
+    >>> # opening the underlying file shows the track line
+    >>> print open(c.fn).read()
     track name="a and b"
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-
     chr1	900	901	feature4	0	+
     <BLANKLINE>
 
+    >>> # printing the BedTool object will not show non-feature lines
+    >>> print c
+    chr1	155	200	feature2	0	+
+    chr1	155	200	feature3	0	-
+    chr1	900	901	feature4	0	+
+    <BLANKLINE>
 
 Note that the :meth:`BedTool.saveas` method returns a new :class:`BedTool`
 object which points to the newly created file on disk.  This allows you to

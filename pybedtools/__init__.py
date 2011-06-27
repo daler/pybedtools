@@ -6,17 +6,18 @@ import urllib2
 import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
                     create_interval_from_list, parse_attributes, \
-                    MalformedBedLineError
+                    MalformedBedLineError, IntervalIterator
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
-                    find_tagged, set_bedtools_path, \
-                    IntervalIterator
+                    find_tagged, set_bedtools_path
 from bedtool import BedTool
 import genome_registry
 from __main__ import main
 from version import __version__
 _path = ""
-
+_samtools_path = ""
+_filo_path = ""
+KEEP_TEMPFILES = False
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
 
@@ -66,7 +67,7 @@ def example_bedtool(fn):
 def list_example_files():
     """
     Returns a list of files in the examples dir.  Choose one and pass it to
-    :func:`example_file_fnl` to get the full path to an examplefile.
+    :func:`example_filename` to get the full path to an example file.
 
     Example usage:
 

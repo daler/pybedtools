@@ -301,10 +301,10 @@
         i: a.bed
         files: [b.bed, a.bed]
     expected: |
-        chr1	1	100	feature1	0	+	0.000000	1.000000	
-        chr1	100	200	feature2	0	+	0.450000	1.000000	
-        chr1	150	500	feature3	0	-	0.128571	1.000000	
-        chr1	900	950	feature4	0	+	0.020000	1.000000	
+        chr1	1	100	feature1	0	+	0.000000	1.000000
+        chr1	100	200	feature2	0	+	0.450000	1.000000
+        chr1	150	500	feature3	0	-	0.128571	1.000000
+        chr1	900	950	feature4	0	+	0.020000	1.000000
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
 # flank
@@ -363,3 +363,17 @@
     expected: |
         chr1	155	200	feature5	0	-	2	45	45	1.0000000
         chr1	800	901	feature6	0	+	1	1	101	0.0099010
+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# coverage
+#
+-   method: closest
+    kwargs:
+        a: a.bed
+        b: b.bed
+    expected: |
+        chr1	1	100	feature1	0	+	chr1	155	200	feature5	0	-
+        chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-
+        chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-
+        chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+

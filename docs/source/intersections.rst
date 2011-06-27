@@ -1,10 +1,11 @@
+.. include:: includeme.rst
+
 Intersections
 =============
 One common use of BEDTools_ and :mod:`pybedtools` is to perform
 intersections.
 
-First, create some example :class:`BEDTool` instances if you haven't
-already done so:
+First, let's create some example :class:`BedTool` instances:
 
 .. doctest::
 
@@ -19,7 +20,7 @@ Then do the intersection with the :meth:`BedTool.intersect` method:
 
 `a_and_b` is a new :class:`BedTool` instance.  It now points to a temp file
 on disk, which is stored in the attribute `a_and_b.fn`; this temp file contains
-the intersection of `a` and `b`. 
+the intersection of `a` and `b`.
 
 We can either print the new :class:`BedTool` (which will show ALL features
 -- use with caution if you have huge files!) or use the

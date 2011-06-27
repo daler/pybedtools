@@ -2,11 +2,16 @@ import pybedtools
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises
 import os
+import sys
 
 
 def test_annotate_main():
     # exits after printing help when sys.argv is not as it should be.
+    orig_stderr = sys.stderr
+    sys.stderr = open('tmp','w')
     assert_raises(SystemExit, annotate.main)
+    sys.stderr = orig_stderr
+    os.unlink('tmp')
 
 def test_annotate_closest():
     a = pybedtools.example_bedtool('m1.bed')
@@ -48,9 +53,9 @@ def test_venn_mpl():
     pybedtools.bedtool.random.seed(1)
     a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
     b = a.random_subset(100).shuffle(genome='hg19', seed=1)
-    b = b.cat(a.random_subset(100))
+    b = b.cat(a.random_subset(100, seed=1))
     c = a.random_subset(200).shuffle(genome='hg19', seed=2)
-    c = c.cat(b.random_subset(100))
+    c = c.cat(b.random_subset(100, seed=1))
 
     outfn = 'mplout.png'
     venn_mpl.venn_mpl(a=a.fn, b=b.fn, c=c.fn, colors=['r','b','g'], outfn=outfn, labels=['a','b','c'])
@@ -76,14 +81,18 @@ def test_venn_gchart():
     pybedtools.bedtool.random.seed(1)
     a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
     b = a.random_subset(100).shuffle(genome='hg19', seed=1)
-    b = b.cat(a.random_subset(100))
+    b = b.cat(a.random_subset(100, seed=1))
     c = a.random_subset(200).shuffle(genome='hg19', seed=2)
-    c = c.cat(b.random_subset(100))
+    c = c.cat(b.random_subset(100, seed=1))
     colors='00FF00,FF0000,0000FF'
     outfn = 'out.png'
     labels = 'a,b,c'
 
-    expected_data = {'chco': '00FF00,FF0000,0000FF', 'chd': 't:1.0,0.197,0.297,0.102,0.058,0.1,0.058', 'chs': '300x300', 'cht': 'v', 'chdl': 'a|b|c'}
+    expected_data = {'chco': '00FF00,FF0000,0000FF',
+                     'chd': 't:1.0,0.2,0.3,0.104,0.048,0.1,0.048',
+                     'chs': '300x300',
+                     'cht': 'v',
+                     'chdl': 'a|b|c'}
 
     data = venn_gchart.venn_gchart(a=a.fn,
                             b=b.fn,
@@ -93,7 +102,13 @@ def test_venn_gchart():
                             size='300x300')
 
     print data
-    assert data == expected_data
+    for key in expected_data.keys():
+        e = expected_data[key]
+        o = data[key]
+        print 'key:', key
+        print 'expected:', e
+        print 'observed:', o
+        assert e == o
 
     venn_gchart.gchart(data, outfn)
 
@@ -101,10 +116,18 @@ def test_venn_gchart():
     os.unlink(outfn)
 
 def test_venn_mpl_main():
+    orig_stderr = sys.stderr
+    sys.stderr = open('tmp','w')
     assert_raises(SystemExit, venn_mpl.main)
+    sys.stderr = orig_stderr
+    os.unlink('tmp')
 
 def test_venn_gchart_main():
+    orig_stderr = sys.stderr
+    sys.stderr = open('tmp','w')
     assert_raises(SystemExit, venn_gchart.main)
+    sys.stderr = orig_stderr
+    os.unlink('tmp')
 
 def teardown():
     pybedtools.cleanup()

@@ -1,4 +1,5 @@
 import pybedtools
+import sys
 import os, difflib
 from nose.tools import assert_raises
 
@@ -21,6 +22,16 @@ def fix(x):
         i = '\t'.join(i)+'\n'
         s += i
     return s
+
+
+def test_isBAM():
+    bam = pybedtools.example_filename('x.bam')
+    notabam = pybedtools.example_filename('a.bed')
+    open('tiny.txt', 'w').close()
+    assert pybedtools.helpers.isBAM(bam)
+    assert not pybedtools.helpers.isBAM(notabam)
+    assert not pybedtools.helpers.isBAM('tiny.txt')
+    os.unlink('tiny.txt')
 
 def test_cleanup():
     """
@@ -52,21 +63,6 @@ def test_cleanup():
     assert os.path.exists(a.fn)
     assert os.path.exists(b.fn)
 
-def test_decorators():
-    from pybedtools.helpers import _returns_bedtool, _help
-
-    @_returns_bedtool()
-    def dummy():
-        pass
-    assert "returns a new bedtool instance" in dummy.__doc__
-
-    @_help('intersectBed')
-    def dummy2():
-        pass
-
-    # "-a" ought to be in the help string for intersectBed somewhere....
-    assert '-a' in dummy2.__doc__
-
 def test_bedtools_check():
     # this should run fine (especially since we've already imported pybedtools)
     pybedtools.check_for_bedtools()
@@ -79,11 +75,21 @@ def test_call():
     from pybedtools.helpers import call_bedtools, BEDToolsError
     assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
 
+    a = pybedtools.example_bedtool('a.bed')
+
+    # momentarily redirect stderr to file so the error message doesn't spew all
+    # over the place when testing
+    orig_stderr = sys.stderr
+    sys.stderr = open(a._tmp(), 'w')
+    #assert_raises(BEDToolsError, a.intersect, a=a.fn, b=a.fn, z=True)
+    sys.stderr = orig_stderr
+
     pybedtools.set_bedtools_path('nonexistent')
     a = pybedtools.example_bedtool('a.bed')
     assert_raises(OSError, a.intersect, a)
     pybedtools.set_bedtools_path()
     assert a.intersect(a,u=True) == a
+
 
 def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')
@@ -144,20 +150,6 @@ def test_getting_example_beds():
     assert_raises(ValueError, pybedtools.example_bedtool, 'nonexistent')
     assert_raises(ValueError, pybedtools.set_tempdir, 'nonexistent')
 
-def test_help():
-    from pybedtools.helpers import _help
-
-    # test support for uninstalled programs
-    @_help('nonexistent')
-    def dummyfunc():
-        return 100
-    assert_raises(NotImplementedError, dummyfunc)
-
-    # test invariant return value
-    @_help('intersectBed')
-    def dummyfunc():
-        return 100
-    assert dummyfunc() == 100
 
 def teardown():
     # always run this!

@@ -1,4 +1,3 @@
-RELEASE-VERSION
 *.coverage
 virtual-env/*
 dist/*

@@ -11,6 +11,7 @@
 include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
 import sys
+import subprocess
 
 
 class MalformedBedLineError(Exception):
@@ -76,13 +77,43 @@ cdef class Attributes:
 
 cdef class Interval:
     """
-    >>> from pybedtools import Interval
-    >>> i = Interval("chr1", 22, 44, strand='-')
-    >>> i
-    Interval(chr1:22-44)
+    Constructor:
 
-    >>> i.start, i.end, i.strand, i.length
-    (22L, 44L, '-', 22L)
+        Interval(chrom, start, end, name=".", score=".", strand=".", otherfields=None)
+
+    Class to represent a genomic interval of any format.  Requires at least 3
+    args: chrom (string), start (int), end (int).
+
+    `start` is *always* the 0-based start coordinate.  If this Interval is to
+    represent a GFF object (which uses a 1-based coordinate system), then
+    subtract 1 from the 4th item in the line to get the start position in
+    0-based coords for this Interval.  The 1-based GFF coord will still be
+    available, albeit as a string, in fields[3].
+
+    `otherfields` is a list of fields that don't fit into the other kwargs, and
+    will be stored in the `fields` attribute of the Interval.
+
+    All the items in `otherfields` must be strings for proper conversion to
+    C++.
+
+    By convention, for BED files, `otherfields` is everything past the first 6
+    items in the line.  This allows an Interval to represent composite features
+    (e.g., a GFF line concatenated to the end of a BED line)
+
+    But for other formats (VCF, GFF, SAM), the entire line should be passed in
+    as a list for `otherfields` so that we can always check the
+    Interval.file_type and extract the fields we want, knowing that they'll be
+    in the right order as passed in with `otherfields`.
+
+    Example usage:
+
+        >>> from pybedtools import Interval
+        >>> i = Interval("chr1", 22, 44, strand='-')
+        >>> i
+        Interval(chr1:22-44)
+
+        >>> i.start, i.end, i.strand, i.length
+        (22L, 44L, '-', 22L)
 
     """
     cdef BED *_bed
@@ -128,7 +159,7 @@ cdef class Interval:
         return not v
 
     property start:
-        """ the 0-based start of the feature"""
+        """The 0-based start of the feature."""
         def __get__(self):
             return self._bed.start
 
@@ -144,7 +175,7 @@ cdef class Interval:
             self._bed.fields[idx] = string(s)
 
     property end:
-        """ the end of the feature"""
+        """The end of the feature"""
         def __get__(self):
             return self._bed.end
 
@@ -363,18 +394,20 @@ cdef Interval create_interval(BED b):
 
 cpdef Interval create_interval_from_list(list fields):
     """
-    *fields* is a list with an arbitrary number of items (it can be quite long,
-    say after a -wao intersection of a BED12 and a GFF).
+    Constructor:
 
-    We need to inspect *fields* to make sure that BED class gets the right
-    thing.  This means detecting BED or GFF, and looking at how many fields
-    there are.  BED constructor gets the first 6 fields; the rest should be a
-    list (converted to a vector)
+        create_interval_from_list(fields)
+
+    Given the list `fields`, automatically detects the format (BED, GFF, VCF,
+    SAM) and creates a new Interval object.
+
+    `fields` is a list with an arbitrary number of items (it can be quite long,
+    say after a -wao intersection of a BED12 and a GFF).
     """
     cdef Interval pyb = Interval.__new__(Interval)
     orig_fields = fields[:]
-
-    # BED
+    # BED -- though a VCF will be detected as BED if its 2nd field, id, is a
+    # digit
     if (fields[1] + fields[2]).isdigit():
         # if it's too short, just add some empty fields.
         if len(fields) < 7:
@@ -386,11 +419,33 @@ cpdef Interval create_interval_from_list(list fields):
         pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
                 string(fields[4]), string(fields[5]), list_to_vector(other_fields))
         pyb.file_type = 'bed'
+
+    # VCF
+    elif fields[1].isdigit() and not fields[3].isdigit() and len(fields) >= 8:
+        pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[1]) + 1, 
+                           string(fields[2]), string(fields[5]), string('.'),
+                           list_to_vector(fields))
+        pyb.file_type = 'vcf'
+
+    # SAM
+    elif ( len(fields) >= 13) and (fields[1] + fields[3]).isdigit():
+        strand = '+'
+        if int(fields[1]) & 0x10:
+            strand = '-'
+
+        # TODO: what should the stop position be?  Here, it's just the start
+        # plus the length of the sequence, but perhaps this should eventually
+        # do CIGAR string parsing.
+        pyb._bed = new BED(string(fields[2]), int(fields[3])-1, int(fields[3]) + len(fields[9]) - 1,
+                           string(strand), string(fields[0]), string(fields[1]), list_to_vector(fields))
+        pyb.file_type = 'sam'
     # GFF
-    elif len(fields) == 9 and (fields[3] + fields[4]).isdigit():
+    elif len(fields) >= 9 and (fields[3] + fields[4]).isdigit():
         pyb._bed = new BED(string(fields[0]), int(fields[3])-1, int(fields[4]), string(fields[2]),
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
         pyb.file_type = 'gff'
+    else:
+        raise ValueError('Unable to detect format from %s' % fields)
     pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 
@@ -418,16 +473,39 @@ cdef list bed_vec2list(vector[BED] bv):
 def overlap(int s1, int s2, int e1, int e2):
     return min(e1, e2) - max(s1, s2)
 
+cdef class IntervalIterator:
+    cdef object stream
+    def __init__(self, stream):
+        self.stream = stream
+    def __iter__(self):
+        return self
+    def __next__(self):
+        while True:
+            line = self.stream.next()
+            if line.startswith(('@', '#', 'track', 'browser')):
+                continue
+            break
+        fields = line.rstrip('\r\n').split('\t')
+        return create_interval_from_list(fields)
+
 
 cdef class IntervalFile:
     cdef BedFile *intervalFile_ptr
     cdef bint _loaded
     cdef bint _open
+    cdef str fn
+    """
+    An IntervalFile provides low-level access to the BEDTools API.
 
+    >>> fn = pybedtools.example_filename('a.bed')
+    >>> intervalfile = pybedtools.IntervalFile(fn)
+
+    """
     def __init__(self, intervalFile):
         self.intervalFile_ptr = new BedFile(string(intervalFile))
         self._loaded = 0
         self._open = 0
+        self.fn = intervalFile
 
     def __dealloc__(self):
         del self.intervalFile_ptr
@@ -452,10 +530,25 @@ cdef class IntervalFile:
     @property
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
-            a = iter(self).next()
-        return self.intervalFile_ptr.file_type.c_str()
+            try:
+                a = iter(self).next()
+                return self.intervalFile_ptr.file_type.c_str()
+
+            except MalformedBedLineError:
+                # If it's a SAM, raise a meaningful exception.  If not, fail.
+                interval = create_interval_from_list(open(self.fn).readline().strip().split())
+                if interval.file_type == 'sam':
+                    raise ValueError('IntervalFile objects do not yet natively support SAM. '
+                                     'Please convert to BED/GFF/VCF first if you want to '
+                                     'use the low-level API of IntervalFile')
+                else:
+                    raise
+
 
     def loadIntoMap(self):
+        """
+        Prepares file for checking intersections.  Used by other methods like all_hits()
+        """
         if self._loaded:
             return
         self.intervalFile_ptr.loadBedFileIntoMap()
@@ -463,7 +556,30 @@ cdef class IntervalFile:
 
     def all_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the "bed" feature in this file and ***return all overlaps***
+        :Signature: `IntervalFile.all_hits(interval, same_strand=False, overlap=0.0)`
+
+        Search for the Interval `interval` this file and return **all**
+        overlaps as a list.
+
+        `same_strand`, if True, will only consider hits on the same strand as `interval`.
+
+        `overlap` can be used to specify the fraction of overlap between
+        `interval` and each feature in the IntervalFile.
+
+        Example usage:
+
+        >>> fn = pybedtools.example_filename('a.bed')
+
+        >>> # create an Interval to query with
+        >>> i = pybedtools.Interval('chr1', 1, 10000, strand='+')
+
+        >>> # Create an IntervalFile out of a.bed
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        >>> # get stranded hits
+        >>> intervalfile.all_hits(i, same_strand=True)
+        [Interval(chr1:1-100), Interval(chr1:100-200), Interval(chr1:900-950)]
+
         """
         cdef vector[BED] vec_b
         self.loadIntoMap()
@@ -486,8 +602,29 @@ cdef class IntervalFile:
 
     def any_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the "bed" feature in this file and return
-        whether (True/False) >= 1 overlaps are found.
+        :Signature: `IntervalFile.any_hits(interval, same_strand=False, overlap=0.0)`
+
+        Return 1 if the Interval `interval` had >=1 hit in this IntervalFile, 0 otherwise.
+
+        `same_strand`, if True, will only consider hits on the same strand as `interval`.
+
+        `overlap` can be used to specify the fraction of overlap between
+        `interval` and each feature in the IntervalFile.
+
+        Example usage:
+
+        >>> fn = pybedtools.example_filename('a.bed')
+
+        >>> # create an Interval to query with
+        >>> i = pybedtools.Interval('chr1', 1, 10000, strand='+')
+
+        >>> # Create an IntervalFile out of a.bed
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        >>> # any stranded hits?
+        >>> intervalfile.any_hits(i, same_strand=True)
+        1
+
         """
         found = 0
         self.loadIntoMap()
@@ -501,7 +638,31 @@ cdef class IntervalFile:
 
     def count_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
-        Search for the "bed" feature in this file and return the *** count of hits found ***
+        :Signature: `IntervalFile.count_hits(interval, same_strand=False, overlap=0.0)`
+
+        Return the number of overlaps of the Interval `interval` had with this
+        IntervalFile.
+
+        `same_strand`, if True, will only consider hits on the same strand as
+        `interval`.
+
+        `overlap` can be used to specify the fraction of overlap between
+        `interval` and each feature in the IntervalFile.
+
+        Example usage:
+
+        >>> fn = pybedtools.example_filename('a.bed')
+
+        >>> # create an Interval to query with
+        >>> i = pybedtools.Interval('chr1', 1, 10000, strand='+')
+
+        >>> # Create an IntervalFile out of a.bed
+        >>> intervalfile = pybedtools.IntervalFile(fn)
+
+        >>> # get number of stranded hits
+        >>> intervalfile.count_hits(i, same_strand=True)
+        3
+
         """
         self.loadIntoMap()
 
