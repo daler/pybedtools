@@ -469,13 +469,13 @@ class BedTool(object):
         # iterate over all the features in the gene.
         s = self.sort()
         if self.file_type == "gff":
-            exon_iter = BedTool((f for f in s if f[2] == gene))
-            gene_iter = BedTool((f for f in s if f[2] == exon))
+            exon_iter = BedTool((f for f in s if f[2] == gene)).saveas()
+            gene_iter = BedTool((f for f in s if f[2] == exon)).saveas()
 
         elif self.file_type == "bed":
             if s.field_count() == 12:
-                exon_iter = s.bed6()
-                gene_iter = s
+                exon_iter = s.bed6().saveas()
+                gene_iter = s.saveas()
             else:
                 # TODO: bed6. groupby on name and find smallest start,
                 # largest stop.
@@ -487,48 +487,41 @@ class BedTool(object):
         else:
             raise NotImplementedError('.introns() only'
                             'supported for BED and GFF')
-        from heapq import merge
-        gene_exon_iter = merge(exon_iter, gene_iter)
 
         fh = open(BedTool._tmp(), "w")
 
         # group on the name.
-        for name, gene_features in groupby(gene_exon_iter, lambda f: f.name):
-            features = list(gene_features)
-            if self.file_type == "bed":
-                gene_feature = [f for f in features if len(f.fields) == 12]
-                exons = [f for f in features if len(f.fields) != 12]
-            else:
-                gene_feature = [f for f in features if f[2] == gene]
-                exons = [f for f in features if f[2] == exon]
-            assert len(gene_feature) == 1, (gene_feature, exons, features)
-            gene_feature = gene_feature[0]
+        exon_intervals = exon_iter.intervals
+        for g in gene_iter:
+            # search finds all, but we just want the ones that completely
+            # overlap this gene.
+            exons = [e for e in exon_intervals.search(g, same_strand=True)
+                    if e.start >= g.start and e.end <= g.end]
 
-            gstart, gend = gene_feature.start, gene_feature.end
             for i, exon in enumerate(exons):
                 # 5' utr between gene start and first intron
-                if i == 0 and exon.start > gstart:
-                    utr = {"+": "utr5", "-": "utr3"}[gene_feature.strand]
-                    print >>fh, "%s\t%i\t%i\t%s\t%s\t%s" % (gene_feature.chrom,
-                                                   gene_feature.start,
+                if i == 0 and exon.start > g.start:
+                    utr = {"+": "utr5", "-": "utr3"}[g.strand]
+                    print >>fh, "%s\t%i\t%i\t%s\t%s\t%s" % (g.chrom,
+                                                   g.start,
                                                    exon.start,
-                                                   gene_feature.name,
-                                                   utr, gene_feature.strand)
-                elif i == len(exons) - 1 and exon.end < gend:
-                    utr = {"+": "utr3", "-": "utr5"}[gene_feature.strand]
-                    print >>fh, "%s\t%i\t%i\t%s\t%s\t%s" % (gene_feature.chrom,
+                                                   g.name,
+                                                   utr, g.strand)
+                elif i == len(exons) - 1 and exon.end < g.end:
+                    utr = {"+": "utr3", "-": "utr5"}[g.strand]
+                    print >>fh, "%s\t%i\t%i\t%s\t%s\t%s" % (g.chrom,
                                                    exon.end,
-                                                   gene_feature.end,
-                                                   gene_feature.name,
-                                                   utr, gene_feature.strand)
+                                                   g.end,
+                                                   g.name,
+                                                   utr, g.strand)
                 elif i != len(exons) - 1:
                     istart = exon.end
                     iend = exons[i + 1].start
                     print >>fh, "%s\t%i\t%i\t%s\tintron\t%s" % \
-                                              (gene_feature.chrom,
+                                              (g.chrom,
                                                istart, iend,
-                                               gene_feature.name,
-                                               gene_feature.strand)
+                                               g.name,
+                                               g.strand)
         fh.close()
         return BedTool(fh.name)
 

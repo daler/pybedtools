@@ -83,7 +83,8 @@ def main():
     op.add_argument('-b', help='File to use for the right-most circle')
     op.add_argument('-c', help='File to use for the bottom circle')
     op.add_argument('--colors', help='Optional comma-separated list of hex colors '
-                       'for circles a, b, and c.  E.g., --colors=FF0000,00FF00,0000FF')
+                       'for circles a, b, and c.  E.g. %(default)s',
+                       default='00FF00,FF0000,0000FF')
     op.add_argument('--labels', help='Optional comma-separated list of labels for a, b, and c')
     op.add_argument('--size', default='300x300',
                   help='Optional size of PNG, in pixels.  Default is "%(default)s"')
