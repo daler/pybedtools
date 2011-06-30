@@ -1,3 +1,5 @@
+.. include:: includeme.rst
+
 .. _creating a BedTool:
 
 Creating a :class:`BedTool`

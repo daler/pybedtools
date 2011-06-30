@@ -1,3 +1,5 @@
+.. include:: includeme.rst
+
 .. _genomes:
 
 Specifying genomes
@@ -78,7 +80,7 @@ Make sure that all these different methods return the same results
 
 Converting to a file
 --------------------
-Since BEDTools_ programs operate on files, the fastest choice will be to
+Since BEDTools programs operate on files, the fastest choice will be to
 use an existing file.  While the time to convert a dictionary to a file is
 extremely small, over 1000's of files (e.g., for Monte Carlo simulations),
 the time may add up.  The function :func:`pybedtools.chromsizes_to_file`

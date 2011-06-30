@@ -1,3 +1,5 @@
+.. include:: includeme.rst
+
 Low-level operations
 --------------------
 

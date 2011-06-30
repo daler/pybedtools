@@ -17,6 +17,7 @@ into :ref:`module-level`, :ref:`wrappers`, and :ref:`pbt-unique`.
     :members: __init__
 
 .. _module-level:
+
 :mod:`pybedtools` module-level functions
 ========================================
 
