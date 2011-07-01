@@ -216,13 +216,18 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     try:
         # coming from an iterator, sending as iterator
         if instream and outstream:
+
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
                                  bufsize=1)
             for line in stdin:
-                p.stdin.write(line)
+                p.stdin.write(line + "\n")
+
+            # This is important to prevent deadlocks
+            p.stdin.close()
+
             output = p.stdout
             stderr = None
 

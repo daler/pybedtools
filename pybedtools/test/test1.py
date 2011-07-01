@@ -120,13 +120,16 @@ def test_generator():
     b2 = pybedtools.BedTool((i for i in a)).intersect(a)
     assert str(b1) == str(b2)
 
-#TODO: this hangs -- it's the same as above, but with stream=True on the last
-# intersection . . .  is this a Popen issue?
-def tst_():
+def test_stream_of_generator():
     a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
     b1 = a.intersect(a, stream=True)
     b2 = pybedtools.BedTool((i for i in a)).intersect(a, stream=True)
-    assert str(b1) == str(b2)
+    sb1 = str(b1)
+    sb2 = str(b2)
+    print sb1
+    print sb2
+    assert sb1 == sb2
 
 def test_many_files():
     """regression test to make sure many files can be created
