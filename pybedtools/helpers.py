@@ -228,8 +228,9 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from an iterator, writing to file
         if instream and not outstream:
+            outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
-                                 stdout=open(tmpfn, 'w'),
+                                 stdout=outfile,
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
                                  bufsize=1)
@@ -240,6 +241,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                     p.stdin.write(item + "\n")
                 stdout, stderr = p.communicate()
             output = tmpfn
+            outfile.close()
 
         # coming from a file, sending as iterator
         if not instream and outstream:
@@ -252,12 +254,14 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # file-to-file
         if not instream and not outstream:
+            outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
-                                 stdout=open(tmpfn, 'w'),
+                                 stdout=outfile,
                                  stderr=subprocess.PIPE,
                                  bufsize=1)
             stdout, stderr = p.communicate()
             output = tmpfn
+            outfile.close()
 
         # Check if it's OK using a provided function to check stderr. If it's
         # OK, dump it to sys.stderr so it's printed, and reset it to None so we
@@ -283,6 +287,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                         '* Do you have BEDTools installed and on the path?'),
                     13: ('* Do you have permission to write '
                          'to the output file ("%s")?' % tmpfn,),
+                    24: ('* Too many files open -- are you creating lots of '
+                         'BedTool objects without calling del() on them?',)
                    }
 
         print 'Things to check:'

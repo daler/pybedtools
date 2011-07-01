@@ -521,6 +521,7 @@ cdef class IntervalFile:
         if b.status == BED_VALID:
             return create_interval(b)
         elif b.status == BED_INVALID:
+            self.intervalFile_ptr.Close()
             raise StopIteration
         elif b.status == BED_MALFORMED:
             raise MalformedBedLineError("malformed line: %s" % string_vec2list(b.fields))

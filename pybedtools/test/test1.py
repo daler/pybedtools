@@ -128,6 +128,16 @@ def tst_():
     b2 = pybedtools.BedTool((i for i in a)).intersect(a, stream=True)
     assert str(b1) == str(b2)
 
+def test_many_files():
+    """regression test to make sure many files can be created
+    """
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    # Previously, IntervalFile would leak open files and would cause OSError
+    # (too many open files) at iteration 1010 or so.
+    for i in xrange(1100):
+        c = a.intersect(b)
+
 def test_malformed():
     """
     Malformed BED lines should raise MalformedBedLineError
