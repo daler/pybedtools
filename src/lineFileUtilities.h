@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <string>
-#include <algorithm>
-#include <sstream>
 #include <cstring>
+#include <sstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -20,7 +20,7 @@ std::string ToString(const T & value) {
 
 // tokenize into a list of strings.
 inline
-void Tokenize(const string &str, vector<string> &elems, const string &delimiter = "\t")
+void Tokenize(const string &str, vector<string> &elems, const string &delimiter = "\t") 
 {
     char* tok;
     char cchars [str.size()+1];
