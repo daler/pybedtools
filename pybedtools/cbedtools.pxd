@@ -17,14 +17,6 @@ cdef extern from "<string>" namespace "std":
 
 
 
-cdef dict LOOKUPS = {
-    "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4, "strand": 6},
-    "vcf":  {"chrom": 0, "start": 1},
-    "bed":  {"chrom": 0, "start": 1, "end": 2, "stop": 2, "score": 4, "strand": 5}
-}
-for ktype, kdict in LOOKUPS.items():
-    for k, v in kdict.items():
-        kdict[v] = k
 
 
 """
@@ -96,3 +88,9 @@ cdef extern from "bedFile.h":
         int CountOverlapsPerBin(BED bed, bool forceStrand, float overlapFraction)
         string file_type
         bint _typeIsKnown
+
+
+cdef class Interval:
+    cdef BED *_bed
+    cdef object _attrs
+    cpdef append(Interval self, object value)

@@ -38,14 +38,23 @@ version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
 version = open(version_py).read().split('=')[-1].replace('"','')
 
 exts = [ Extension("pybedtools.cbedtools",
-              sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi"] \
+              sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi", "pybedtools/cbedtools.pxd"] \
                    + glob.glob("src/*.cpp"),
               libraries=["stdc++", 'z'],
               include_dirs=["src/"],
               depends = glob.glob("src/*.h"),
               language="c++"),
 
-         Extension('pybedtools.featurefuncs', sources=['pybedtools/featurefuncs.pyx']),
+         Extension('pybedtools.featurefuncs',
+              sources=["pybedtools/featurefuncs.pyx",
+                       "pybedtools/cbedtools.pyx",
+                       "pybedtools/cbedtools.pxi",
+                       "pybedtools/cbedtools.pxd"] \
+                   + glob.glob("src/*.cpp"),
+              libraries=["stdc++", 'z'],
+              include_dirs=["src/"],
+              depends = glob.glob("src/*.h"),
+              language="c++"),
 
          Extension('pybedtools._Window', 
                     sources=['pybedtools/_Window.pyx'],),
@@ -79,7 +88,7 @@ setup(
         description='Wrapper around BEDTools for bioinformatics work',
         long_description=long_description,
         url="none",
-        package_data = {'pybedtools':['test/data/*', "*.pyx", "*.pxi", "*.cpp"]},
+        package_data = {'pybedtools':['test/data/*', "*.pyx", "*.pxi", "*.pxd", "*.cpp"]},
         package_dir = {"pybedtools": "pybedtools"},
         scripts = ['pybedtools/scripts/venn_gchart.py',
                    'pybedtools/scripts/venn_mpl.py',

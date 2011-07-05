@@ -8,10 +8,18 @@
              [2]
     Email:  aaronquinlan at gmail dot com
 """
-include "cbedtools.pxi"
 from cython.operator cimport dereference as deref
 import sys
 import subprocess
+
+cdef dict LOOKUPS = {
+    "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4, "strand": 6},
+    "vcf":  {"chrom": 0, "start": 1},
+    "bed":  {"chrom": 0, "start": 1, "end": 2, "stop": 2, "score": 4, "strand": 5}
+}
+for ktype, kdict in LOOKUPS.items():
+    for k, v in kdict.items():
+        kdict[v] = k
 
 
 class MalformedBedLineError(Exception):
@@ -116,9 +124,6 @@ cdef class Interval:
         (22L, 44L, '-', 22L)
 
     """
-    cdef BED *_bed
-    cdef object _attrs
-
     def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
         if otherfields is None:
             otherfields = []

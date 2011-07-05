@@ -1,6 +1,8 @@
-from cbedtools import Interval
+# cython: profile=True
+#
+from cbedtools cimport Interval
 
-cpdef center(object feature, int width=100):
+cpdef center(Interval feature, int width=100):
     """
     Return the *width* bp from the center of a feature.  If a feature is
     smaller than *width*, then return the entire feature.
@@ -20,21 +22,21 @@ cpdef center(object feature, int width=100):
     return feature
 
 
-cpdef greater_than(object feature, int size=100):
+cpdef greater_than(Interval feature, int size=100):
     """
     Return True if feature length > *size*
     """
     return len(feature) > size
 
 
-cpdef less_than(object feature, int size=100):
+cpdef less_than(Interval feature, int size=100):
     """
     Return True if feature length < *size*
     """
     return len(feature) < size
 
 
-cpdef normalized_to_length(object feature, int idx=4, float scalar=0.001):
+cpdef normalized_to_length(Interval feature, int idx=4, float scalar=0.001):
     """
     Normalizes the value at feature[idx] to the feature's length, in kb.
 
@@ -52,10 +54,15 @@ cpdef normalized_to_length(object feature, int idx=4, float scalar=0.001):
     return feature
 
 
-cpdef rename(object feature, str name):
+cpdef rename(Interval feature, str name):
     """
     Forces a rename of all features, e.g., for renaming everything in a file
     'exon'
     """
     feature.name = name
     return feature
+
+cpdef bedgraph_scale(Interval feature, float scalar):
+    feature[3] = str(float(feature[3]) * scalar)
+    return feature
+
