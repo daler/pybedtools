@@ -1,4 +1,5 @@
 import tempfile
+import shutil
 import subprocess
 import inspect
 from math import floor, ceil
@@ -1687,6 +1688,30 @@ class BedTool(object):
             fn = self._tmp()
 
         fn = self._collapse(self, fn=fn, trackline=trackline)
+        return BedTool(fn)
+
+    @_log_to_history
+    def moveto(self, fn=None):
+        """
+        Move BED file to new filename, `fn`.
+
+        Returns a new BedTool for the new file.
+
+        Example usage:
+
+        >>> # make a copy so we don't mess up the example file
+        >>> a = pybedtools.example_bedtool('a.bed').saveas()
+        >>> a_contents = str(a)
+        >>> b = a.moveto('other.bed')
+        >>> b.fn
+        'other.bed'
+        >>> b == a_contents
+        True
+        """
+        if not isinstance(self.fn, basestring):
+            fn = self._collapse(self, fn=fn)
+        else:
+            shutil.move(self.fn, fn)
         return BedTool(fn)
 
     @_log_to_history
