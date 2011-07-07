@@ -1,0 +1,2 @@
+chr1	.	exon	101	550	0	+	.	ID=mRNA:xs2:exon:101-550;Parent=mRNA:xs2;
+chr1	.	exon	851	1525	0	+	.	ID=mRNA:xs2:exon:851-1525;Parent=mRNA:xs2;
