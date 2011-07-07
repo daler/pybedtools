@@ -31,11 +31,9 @@ setup.py. You can use:
 from setuptools import setup
 from setuptools.extension import Extension
 
-version = open('RELEASE-VERSION').read().strip()
-
 # write the version to file so that pybedtools can import it
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
-version = open(version_py).read().split('=')[-1].replace('"','')
+version = open(version_py).read().strip().split('=')[-1].replace('"','')
 
 exts = [ Extension("pybedtools.cbedtools",
               sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi", "pybedtools/cbedtools.pxd"] \
