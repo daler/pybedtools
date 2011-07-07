@@ -1,6 +1,7 @@
 import itertools
 import yaml
 import os
+import gzip
 import pybedtools
 # The functools.partial trick to get descriptions to be valid is from:
 #
@@ -10,6 +11,18 @@ from functools import partial
 this_dir = os.path.dirname(__file__)
 config_fn = os.path.join(this_dir, 'test_cases.yaml')
 
+def gz(x):
+    """
+    Gzips a file to a tempfile, and returns a new BedTool using the gzipped
+    version.
+    """
+    fin = open(x.fn)
+    gzfn = pybedtools.BedTool._tmp()
+    fout = gzip.open(gzfn, 'wb')
+    fout.writelines(fin)
+    fout.close()
+    fin.close()
+    return pybedtools.BedTool(gzfn)
 
 def fix(x):
     """
@@ -68,6 +81,12 @@ bam_methods = ('bam_to_bed',)
 # file-based.
 supported_bam = ('filename',)
 
+converter = {'filename': lambda x: pybedtools.BedTool(x.fn),
+             'generator': lambda x: pybedtools.BedTool(i for i in x),
+             'stream': lambda x: pybedtools.BedTool(open(x.fn)),
+             'gzip': gz,
+            }
+
 def test_a_b_methods():
     """
     Generator that yields tests, inserting different versions of `a` and `b` as
@@ -89,12 +108,8 @@ def test_a_b_methods():
         del send_kwargs['a']
         del send_kwargs['b']
 
-        converter = {'filename': lambda x: pybedtools.BedTool(x.fn),
-                     'generator': lambda x: pybedtools.BedTool(i for i in x),
-                     'stream': lambda x: pybedtools.BedTool(open(x.fn))
-                    }
 
-        for kind_a, kind_b in itertools.permutations(('filename', 'generator', 'stream'), 2):
+        for kind_a, kind_b in itertools.permutations(('filename', 'generator', 'stream', 'gzip'), 2):
 
             # BAM only works as a filename; add other kinds here as they are
             # supported
@@ -139,12 +154,8 @@ def test_i_methods():
 
         del send_kwargs['i']
 
-        converter = {'file': lambda x: pybedtools.BedTool(x.fn),
-                     'generator': lambda x: pybedtools.BedTool(i for i in x),
-                     'stream': lambda x: pybedtools.BedTool(open(x.fn))
-                    }
         done = []
-        for kind_i in ('file', 'generator', 'stream'):
+        for kind_i in ('filename', 'generator', 'stream', 'gzip'):
 
             # BAM only works as a filename; add other kinds here as they are
             # supported
