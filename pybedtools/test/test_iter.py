@@ -79,7 +79,7 @@ bam_methods = ('bam_to_bed',)
 
 # List of supported BedTool construction from BAM files.  Currently only
 # file-based.
-supported_bam = ('filename',)
+supported_bam = ('filename', )
 
 converter = {'filename': lambda x: pybedtools.BedTool(x.fn),
              'generator': lambda x: pybedtools.BedTool(i for i in x),
@@ -93,10 +93,13 @@ def test_a_b_methods():
     needed
     """
     for method, send_kwargs, expected in parse_yaml(config_fn):
+        a_isbam = False
+        b_isbam = False
 
         if 'abam' in send_kwargs:
             send_kwargs['abam'] = pybedtools.example_filename(send_kwargs['abam'])
             send_kwargs['a'] = send_kwargs['abam']
+            a_isbam = True
 
         if not (('a' in send_kwargs) and ('b' in send_kwargs)):
             continue
@@ -108,20 +111,24 @@ def test_a_b_methods():
         del send_kwargs['a']
         del send_kwargs['b']
 
+        if orig_a._isbam:
+            a_isbam = True
+        if orig_b._isbam:
+            b_isbam = True
 
         for kind_a, kind_b in itertools.permutations(('filename', 'generator', 'stream', 'gzip'), 2):
 
-            # BAM only works as a filename; add other kinds here as they are
-            # supported
-            if ('abam' in send_kwargs) or (method in bam_methods):
-                if (kind_a not in supported_bam):
-                    continue
+            if a_isbam and (kind_a not in supported_bam):
+                continue
+
+            if b_isbam and (kind_b not in supported_bam):
+                continue
 
             # Convert to file/generator/stream
             bedtool = converter[kind_a](orig_a)
             b = converter[kind_b](orig_b)
 
-            kind = 'a=%(kind_a)s, b=%(kind_b)s' % locals()
+            kind = 'a=%(kind_a)s, b=%(kind_b)s abam=%(a_isbam)s bbam=%(b_isbam)s' % locals()
 
             send_kwargs['b'] = b
 
@@ -136,8 +143,9 @@ def test_i_methods():
     Generator that yields tests, inserting different versions of `i` as needed
     """
     for method, send_kwargs, expected in parse_yaml(config_fn):
-
+        i_isbam = False
         if 'ibam' in send_kwargs:
+            i_isbam = True
             send_kwargs['ibam'] = pybedtools.example_filename(send_kwargs['ibam'])
             send_kwargs['i'] = send_kwargs['ibam']
 
@@ -151,20 +159,18 @@ def test_i_methods():
             send_kwargs['files'] = [pybedtools.example_filename(i) for i in send_kwargs['files']]
 
         orig_i = pybedtools.example_bedtool(send_kwargs['i'])
+        if orig_i._isbam:
+            i_isbam = True
 
         del send_kwargs['i']
 
         done = []
         for kind_i in ('filename', 'generator', 'stream', 'gzip'):
-
-            # BAM only works as a filename; add other kinds here as they are
-            # supported
-            if ('ibam' in send_kwargs) or (method in bam_methods):
+            if i_isbam:
                 if (kind_i not in supported_bam):
                     continue
-
             i = converter[kind_i](orig_i)
-            kind = 'i=%(kind_i)s' % locals()
+            kind = 'i=%(kind_i)s ibam=%(i_isbam)s' % locals()
             f = partial(run, method, i, expected, **send_kwargs)
             f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
             yield (f, )
