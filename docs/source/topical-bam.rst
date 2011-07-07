@@ -65,8 +65,10 @@ iterating over BED or GFF files.  Indexing works, too:
 
     >>> cigar_string = i[5]
 
-Note that :mod:`pybedtools` uses the convention that BAM features in plain
-text format are considered SAM features, so these SAM features are
+There are several things to watch out for here.
+
+First, note that :mod:`pybedtools` uses the convention that BAM features in
+plain text format are considered SAM features, so these SAM features are
 **one-based and include the stop coordinate** as illustrated below:
 
 .. doctest::
@@ -78,12 +80,30 @@ text format are considered SAM features, so these SAM features are
     '9330'
 
 
-Currently, the stop coordinate is defined as the start coord plus the
-length of the sequence; eventually a more sophisticated, CIGAR-aware
+Second, the stop coordinate is defined as the *start coord plus the
+length of the sequence*; eventually a more sophisticated, CIGAR-aware
 approach may be used.  Similarly, the length is defined to be `stop -
-start`, again, not CIGAR-aware at the moment.  For more sophisticated
+start` -- again, not CIGAR-aware at the moment.  For more sophisticated
 low-level manipulation of BAM features, you might want to consider using
 HTSeq_.
+
+Third, while we can iterate over a BAM file and manipulate the features as
+shown above, *calling BEDTools programs on a BAM-based generator is not
+well-supported*.
+
+Specifically::
+
+    >>> a = pybedtools.example_bed('gdc.bam')
+    >>> b = pybedtools.example_bed('b.bed')
+
+    >>> # works, gets BAM results
+    >>> results = a.intersect(b)
+
+    >>> # make a generator of features in `a`
+    >>> a2 = pybedtools.BedTool(i for i in a)
+
+    >>> # this does NOT work
+    >>> a2.intersect(b)
 
 When we specified the `bed=True` kwarg above, the intersected BAM results
 are converted to BED format.  We can use those like a normal BED file.
@@ -107,9 +127,8 @@ However, :mod:`pybedtools` does allow streaming BAM files to be the input of
 methods that allow BAM input as the first input. In this [trivial] example, we
 can stream the first intersection to save disk space, and then send that
 streaming BAM to the next :meth:`BedTool.intersect` call. Since it's not
-streamed, the second intersection will be saved as a temp BAM file on disk:
+streamed, the second intersection will be saved as a temp BAM file on disk::
 
-.. doctest::
 
     >>> a.intersect(b, stream=True).intersect(b)
 
