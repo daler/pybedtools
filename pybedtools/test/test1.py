@@ -575,6 +575,21 @@ def test_cat():
     c = a.cat(b, postmerge=False)
     assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
 
+def test_randomstats():
+    chromsizes = {'chr1':(1,1000)}
+    a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
+    b = pybedtools.example_bedtool('b.bed')
+    try:
+        results = a.randomstats(b, 100, debug=True)
+        assert results['actual'] == 3
+        assert results['median randomized'] == 2.0
+        assert results['percentile'] == 90.0
+
+    except ImportError:
+        # allow doctests to pass if SciPy not installed
+        sys.stderr.write('SciPy not installed, so not testing '
+                         'BedTool.randomstats().')
+
 
 # ----------------------------------------------------------------------------
 # Interval tests

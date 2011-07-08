@@ -1490,23 +1490,32 @@ class BedTool(object):
         >>> chromsizes = {'chr1':(1,1000)}
         >>> a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
         >>> b = pybedtools.example_bedtool('b.bed')
-        >>> results = a.randomstats(b, 100, debug=True)
+        >>> try:
+        ...     results = a.randomstats(b, 100, debug=True)
+        ... except ImportError:
+        ...     # allow doctests to pass if SciPy not installed
+        ...     pass
 
-        *results* is a dictionary that you can inspect.  The actual overlap:
+        *results* is a dictionary that you can inspect.
 
-        >>> print results['actual']
-        3
+        (Note that the following examples are not run as part of the doctests to
+        avoid forcing users to install SciPy just to pass tests)
 
-        The median of all randomized overlaps:
+        The actual overlap::
 
-        >>> print results['median randomized']
-        2.0
+            print results['actual']
+            3
+
+        The median of all randomized overlaps::
+
+            print results['median randomized']
+            2.0
 
         The percentile of the actual overlap in the distribution of randomized
-        overlaps, which can be used to get an empirical p-value:
+        overlaps, which can be used to get an empirical p-value::
 
-        >>> print results['percentile']
-        90.0
+            print results['percentile']
+            90.0
         """
         if 'intersect_kwargs' not in kwargs:
             kwargs['intersect_kwargs'] = {'u': True}
