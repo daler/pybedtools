@@ -5,7 +5,7 @@
 
 .. include:: includeme.rst
 
-.. _here: ../html/pybedtools_manual.pdf
+.. _here: pybedtools_manual.pdf
 
 Welcome to pybedtools's documentation!
 ======================================
