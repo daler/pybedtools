@@ -105,10 +105,12 @@ A more flexible way to install :mod:`pybedtools` is as follows:
         cd docs && make doctests
 
 #. *[optional]* Compile the HTML documentation (also needs `sphinx`_), then point your browser to
-   `docs/build/html.index.html`::
+   `docs/build/html/index.html`::
 
         cd docs && make html
 
-#. *[optional]* Compile the PDF documentation (needs `sphinx_`), then view `manual.pdf`::
+#. *[optional]* Compile the PDF version of the documentation (needs `sphinx_`
+   and LaTeX installed), then view `docs/build/latex/pybedtools.pdf` (or the
+   copy at `docs/build/html/pybedtools_manual.pdf`)::
 
         cd docs && make latexpdf

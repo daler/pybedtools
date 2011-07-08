@@ -7,7 +7,7 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 #BUILDDIR      = ../../pybedtools-docs
 BUILDDIR      = build
-PDF           = ../manual.pdf
+PDF           = build/html/pybedtools_manual.pdf
 PDFBUILDDIR   = /tmp/doc-pybedtools
 
 PYTHONPATH=$PYTHONPATH:..
