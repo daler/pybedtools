@@ -90,6 +90,11 @@ A more flexible way to install :mod:`pybedtools` is as follows:
 
         python setup.py nosetests
 
+        # or to test with a specific version of Python:
+        python2.5 setup.py nosetests
+        python2.6 setup.py nosetests
+
+
 #. **Install** :mod:`pybedtools`::
 
         python setup.py install
