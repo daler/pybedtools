@@ -1,4 +1,3 @@
-include RELEASE-VERSION
 include src/*
 include README.rst
 include LICENSE.txt

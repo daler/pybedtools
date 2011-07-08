@@ -31,39 +31,41 @@ setup.py. You can use:
 from setuptools import setup
 from setuptools.extension import Extension
 
-# write the version to file so that pybedtools can import it
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','')
 
 exts = [ Extension("pybedtools.cbedtools",
-              sources=["pybedtools/cbedtools.pyx", "pybedtools/cbedtools.pxi", "pybedtools/cbedtools.pxd"] \
-                   + glob.glob("src/*.cpp"),
-              libraries=["stdc++", 'z'],
-              include_dirs=["src/"],
-              depends = glob.glob("src/*.h"),
-              language="c++"),
+                   sources=["pybedtools/cbedtools.pyx",
+                            "pybedtools/cbedtools.pxi",
+                            "pybedtools/cbedtools.pxd"] \
+                            + glob.glob("src/*.cpp"),
+                   libraries=["stdc++", 'z'],
+                   include_dirs=["src/"],
+                   depends = glob.glob("src/*.h"),
+                   language="c++"),
 
          Extension('pybedtools.featurefuncs',
-              sources=["pybedtools/featurefuncs.pyx",
-                       "pybedtools/cbedtools.pyx",
-                       "pybedtools/cbedtools.pxi",
-                       "pybedtools/cbedtools.pxd"] \
-                   + glob.glob("src/*.cpp"),
-              libraries=["stdc++", 'z'],
-              include_dirs=["src/"],
-              depends = glob.glob("src/*.h"),
-              language="c++"),
+                   sources=["pybedtools/featurefuncs.pyx",
+                            "pybedtools/cbedtools.pyx",
+                            "pybedtools/cbedtools.pxi",
+                            "pybedtools/cbedtools.pxd"] \
+                            + glob.glob("src/*.cpp"),
+                   libraries=["stdc++", 'z'],
+                   include_dirs=["src/"],
+                   depends = glob.glob("src/*.h"),
+                   language="c++"),
 
-         Extension('pybedtools._Window', 
+         Extension('pybedtools._Window',
                     sources=['pybedtools/_Window.pyx'],),
         ]
 
 long_description = """
-``pybedtools`` is a wrapper around Aaron Quinlan's BEDtools suite
+``pybedtools`` is a Python extension of Aaron Quinlan's BEDtools suite
 (http://code.google.com/p/bedtools/), used for comparing genomic features.
 
 ``pybedtools`` allows you to intuitively call BEDtools programs from within
-Python without writing awkward system calls.
+Python without writing awkward system calls, and allows you to manipulate data
+on the file level as well as on the individual feature level.
 
 Development version can be found on github:
 
@@ -71,22 +73,31 @@ Development version can be found on github:
 
 and see full documentation and tutorial at:
 
-    http://pybedtools.genomicnorth.com
-
+    http://packages.python.org/pybedtools
 
 """
-
-setup( 
+tests_require = ['nose']
+setup(
         name="pybedtools",
         version=version,
         ext_modules=exts,
         install_requires=['argparse','cython'],
-        packages=['pybedtools','pybedtools.test', 'pybedtools.scripts', 'pybedtools.test.data'],
+        tests_require=tests_require,
+        extras_require={'test': tests_require},
+        packages=['pybedtools',
+                  'pybedtools.test',
+                  'pybedtools.scripts',
+                  'pybedtools.test.data'],
         author="Ryan Dale",
         description='Wrapper around BEDTools for bioinformatics work',
         long_description=long_description,
         url="none",
-        package_data = {'pybedtools':['test/data/*', "*.pyx", "*.pxi", "*.pxd", "*.cpp"]},
+        package_data = {'pybedtools':["test/data/*",
+                                      "*.pyx",
+                                      "*.pxi",
+                                      "*.pxd",
+                                      "*.cpp"]
+                        },
         package_dir = {"pybedtools": "pybedtools"},
         scripts = ['pybedtools/scripts/venn_gchart.py',
                    'pybedtools/scripts/venn_mpl.py',
