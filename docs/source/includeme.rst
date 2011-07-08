@@ -19,6 +19,8 @@
 
 .. _pip: http://pypi.python.org/pypi/pip
 
+.. _easy_install: http://pypi.python.org/pypi/setuptools
+
 .. _Python Package Index: http://pypi.python.org/pypi
 
 .. _Cython: http://cython.org/
@@ -27,4 +29,8 @@
 
 .. _Python: http://www.python.org/
 
+.. _nosetests: http://somethingaboutorange.com/mrl/projects/nose/
 
+.. _PyYAML: http://pyyaml.org/wiki/PyYAMLDocumentation
+
+.. _Sphinx: http://sphinx.pocoo.org/

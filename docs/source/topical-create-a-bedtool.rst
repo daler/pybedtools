@@ -22,8 +22,7 @@ example files that ship with :mod:`pybedtools` with the
 .. doctest::
 
    >>> # list the example bed files
-   >>> pybedtools.list_example_files()
-   ['a.bed', 'b.bed', 'c.gff', 'd.gff', 'dm3-chr2L-5M-invalid.gff.gz', 'dm3-chr2L-5M.gff.gz', 'dmel-all-r5.33-cleaned.gff', 'hg19-genes.bed.gz', 'rmsk.hg18.chr21.small.bed', 'rmsk.hg18.chr21.small.bed.gz', 'x.bam']
+   >>> files = pybedtools.list_example_files()
 
 Once you decide on a file to use, feed the your choice to the
 :func:`example_filename` function to get the full path:
