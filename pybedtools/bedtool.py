@@ -1820,6 +1820,13 @@ class BAM(object):
         """
         self.stream = stream
         self.header_only = header_only
+        test_cmds = ['samtools', 'view']
+        try:
+            p = subprocess.Popen(test_cmds)
+            stdout, stderr = p.communicate()
+        except OSError:
+            raise OSError('SAMtools (http://samtools.sourceforge.net/) '
+                          'needs to be installed for BAM support')
 
         if isinstance(self.stream, basestring):
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
