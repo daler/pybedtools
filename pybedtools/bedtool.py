@@ -981,11 +981,15 @@ class BedTool(object):
                     '-t', kwargs['g'],
                     '-']
             tmp = self._tmp()
-            p = subprocess.Popen(cmds,
-                                 stdout=open(tmp, 'w'),
-                                 stderr=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 bufsize=1)
+            try:
+                p = subprocess.Popen(cmds,
+                                     stdout=open(tmp, 'w'),
+                                     stderr=subprocess.PIPE,
+                                     stdin=subprocess.PIPE,
+                                     bufsize=1)
+            except OSError:
+                raise OSError('SAMtools (http://samtools.sourceforge.net/) '
+                              'needs to be installed for BAM support')
             for line in self:
                 p.stdin.write(str(line) + '\n')
             stdout, stderr = p.communicate()
