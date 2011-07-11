@@ -1,6 +1,8 @@
 
 .. currentmodule:: pybedtools
 
+.. _samtools: http://samtools.sourceforge.net/
+
 .. _tempdir: http://docs.python.org/library/tempfile.html#tempfile.tempdir
 
 .. _filo: https://github.com/arq5x/filo

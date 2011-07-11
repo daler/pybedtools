@@ -5,8 +5,8 @@
 Installation
 ------------
 
-Requirements
-~~~~~~~~~~~~
+Pre-installation requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 First, make sure you have the following requirements installed before
 attempting to install :mod:`pybedtools`:
 
@@ -15,11 +15,19 @@ attempting to install :mod:`pybedtools`:
    https://github.com/arq5x/bedtools to install, and make sure the programs are
    on your path. That is, you should be able to call `intersectBed` from any
    directory
+#. samtools_.  This is needed for BAM support.  Like BEDTools, the version is
+   not important.  You will get a warning if you try to run :mod:`pybedtools`
+   functions that require `samtools`.  The `samtools` programs must be
+   available on the path, so you should be able to call `samtools view` from
+   any directory.
 #. Python_ 2.5 or greater (Python 3 support is coming soon)
 #. A C/C++ compiler
-    * Windows: http://www.mingw.org/
-    * OSX: Install Xcode from http://developer.apple.com/xcode/
-    * Linux: usually already installed; on Ubuntu, install with `sudo apt-get install
+    * **Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
+      of the 'Devel" group items to be installed.  In addition, ensure the
+      `zlib` items are selected for installation as well (using the search
+      funciton in the Cygwin install program).
+    * **OSX:** Install Xcode from http://developer.apple.com/xcode/
+    * **Linux:** usually already installed; on Ubuntu, install with `sudo apt-get install
       build-essentials`
 
 Installing :mod:`pybedtools`
@@ -48,7 +56,7 @@ Done! You can now run a quick test of your installation:
 Quick test
 ``````````
 A quick functional test is to create a new script with the following
-contents::
+contents, which uses example data shipped with :mod:`pybedtools`::
 
     import pybedtools
     a = pybedtools.example_bedtool('a.bed')
