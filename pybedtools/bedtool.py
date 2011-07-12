@@ -1826,7 +1826,9 @@ class BAM(object):
         self.header_only = header_only
         test_cmds = ['samtools', 'view']
         try:
-            p = subprocess.Popen(test_cmds)
+            p = subprocess.Popen(test_cmds,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
         except OSError:
             raise OSError('SAMtools (http://samtools.sourceforge.net/) '
