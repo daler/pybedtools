@@ -105,7 +105,7 @@ def main():
     op.add_argument('-c', help='File to use for the bottom circle')
     op.add_argument('--labels',
                   help='Optional comma-separated list of '
-                       'labels for a, b, and c')
+                       'labels for a, b, and c', default='a,b,c')
     op.add_argument('--colors', default='r,b,g',
                   help='Comma-separated list of matplotlib-valid colors '
                        'for circles a, b, and c.  E.g., --colors=r,b,k')
