@@ -85,7 +85,8 @@ def main():
     op.add_argument('--colors', help='Optional comma-separated list of hex colors '
                        'for circles a, b, and c.  E.g. %(default)s',
                        default='00FF00,FF0000,0000FF')
-    op.add_argument('--labels', help='Optional comma-separated list of labels for a, b, and c')
+    op.add_argument('--labels', help='Optional comma-separated list of labels for a, b, and c',
+                    default='a,b,c')
     op.add_argument('--size', default='300x300',
                   help='Optional size of PNG, in pixels.  Default is "%(default)s"')
     op.add_argument('-o', default='out.png', 
