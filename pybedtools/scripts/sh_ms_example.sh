@@ -47,8 +47,8 @@ rm $intergenic_snps
 #------------------------------------------------------------------------------
 # Note 1:
 #   pybedtools allows the user to index into the fields of a feature using
-#   Python indexing.  Line 10 in the python example above gets last item in the
-#   line, no matter what the line sizes of the input files.
+#   Python indexing.  The "gene[-1]" in the python example above gets last item
+#   in the line, no matter what the line sizes of the input files.
 #
 #   In bash, we need to explicitly check how many fields the original files
 #   have line will be after the the closestBed operation.  This is because BED
