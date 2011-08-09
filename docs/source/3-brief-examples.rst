@@ -8,7 +8,11 @@ Three brief examples
 --------------------
 Here are three examples to show typical usage of :mod:`pybedtools`.  More
 info can be found in the docstrings of :mod:`pybedtools` methods and in the
-:ref:`tutorial`.
+:ref:`tutorial`. 
+
+You can also check out :ref:`shell_comparison` for a simple
+example of how :mod:`pybedtools` can improve readability of your code with no
+loss of speed compared to bash scripting.
 
 .. note::
 

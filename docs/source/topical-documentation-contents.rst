@@ -18,3 +18,4 @@ This section contains additional documentation not covered in the tutorial.
     topical-genome
     topical-random
     topical-wrapping
+    sh-comparison
