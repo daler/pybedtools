@@ -10,6 +10,23 @@ Here are three examples to show typical usage of :mod:`pybedtools`.  More
 info can be found in the docstrings of :mod:`pybedtools` methods and in the
 :ref:`tutorial`.
 
+.. note::
+
+    Please take the time to read and understand the conventions
+    :mod:`pybedtools` uses to handle files with different coordinate systems
+    (e.g., 0-based BED files vs 1-based GFF files) which are described
+    :ref:`here <zero_based_coords>`.
+
+    In summary,
+
+    * **Integer** values representing start/stop are *always in 0-based
+      coordinates*, regardless of file format.  This means that all
+      :class:`Interval` objects can be treated identically, and greatly
+      simplifies underlying code.
+
+    * **String** values representing start/stop will use coordinates appropriate
+      for the format (1-based for GFF; 0-based for BED).
+
 Example 1: Save a BED file of intersections, with track line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This example saves a new BED file of intersections between `a.bed` and
