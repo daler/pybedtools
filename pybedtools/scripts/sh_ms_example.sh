@@ -51,7 +51,8 @@ rm $intergenic_snps
 #   in the line, no matter what the line sizes of the input files.
 #
 #   In bash, we need to explicitly check how many fields the original files
-#   have line will be after the the closestBed operation.  This is because BED
+#   have so we can know the total field count after the the closestBed
+#   operation.  This will change depending on the input BED file, since BED
 #   files can have 3-6, 9, or 12 columns.  Pre-calculating these numbers saves
 #   a little time by not having to get the number of fields for each line in
 #   the awk script
