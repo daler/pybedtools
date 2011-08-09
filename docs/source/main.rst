@@ -38,7 +38,7 @@ For most users, the latest stable version will be most appropriate.  To
 install, use `pip`_ or `easy_install`_ to automatically download the code from
 the `Python Package Index`_::
 
-    pip pybedtools
+    pip install pybedtools
 
 or::
 
