@@ -23,7 +23,7 @@ attempting to install :mod:`pybedtools`:
 #. Python_ 2.5 or greater (Python 3 support is coming soon)
 #. A C/C++ compiler
     * **Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
-      of the 'Devel" group items to be installed.  In addition, ensure the
+      all of the 'Devel" group items to be installed.  In addition, ensure the
       `zlib` items are selected for installation as well (using the search
       funciton in the Cygwin install program).
     * **OSX:** Install Xcode from http://developer.apple.com/xcode/
@@ -45,7 +45,7 @@ or::
     easy_install pybedtools
 
 You may need to be root in order to install.  If you do not have root
-privleges (for example, installing in your user directory on a cluster), then
+privileges (e.g., if you are installing in your user directory on a cluster), then
 use the `--prefix` argument to `easy_install` to specify a location where you
 have write permission::
 
@@ -112,7 +112,7 @@ A more flexible way to install :mod:`pybedtools` is as follows:
 
         cd docs && make doctests
 
-#. *[optional]* Compile the HTML documentation (also needs `sphinx`_), then point your browser to
+#. *[optional]* Compile the HTML documentation in the `docs` directory of the source tree (this also needs `sphinx`_), then point your browser to
    `docs/build/html/index.html`::
 
         cd docs && make html
