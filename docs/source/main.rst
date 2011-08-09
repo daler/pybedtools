@@ -8,27 +8,77 @@ Installation
 Pre-installation requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 First, make sure you have the following requirements installed before
-attempting to install :mod:`pybedtools`:
+attempting to install :mod:`pybedtools`.
+
+Many of these requirements are used by other genomics and bioinformatics
+software, so you may already have them installed:
 
 #. BEDTools_. The version is not important, but later versions will have more
    features so it's a good idea to get the latest.  Follow the instructions at
    https://github.com/arq5x/bedtools to install, and make sure the programs are
    on your path. That is, you should be able to call `intersectBed` from any
    directory
+
 #. samtools_.  This is needed for BAM support.  Like BEDTools, the version is
    not important.  You will get a warning if you try to run :mod:`pybedtools`
    functions that require `samtools`.  The `samtools` programs must be
    available on the path, so you should be able to call `samtools view` from
    any directory.
+
 #. Python_ 2.5 or greater (Python 3 support is coming soon)
+
+#. Python modules: these are the modules that :mod:`pybedtools` uses.  All but
+   argparse_ are optional.
+
+    * argparse_: installed automatically if using Python <2.7 (it comes with
+      Python 2.7); used for command line scripts like the Venn diagram scripts
+
+    * nose_: optional; used for automated testing, not necessary for working with
+      :mod:`pybedtools`
+
+    * scipy_: optional; used for computing statistics for randomization procedures
+
+    * matplotlib_: optional; used by the `venn_mpl.py` script for making a Venn diagram
+      with annotated counts; you can use `venn_gchart.py` to use the Google
+      Charts API to make a Venn diagram if you don't want to install
+      `matplotlib`.
+
 #. A C/C++ compiler
-    * **Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
+    * **On Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
       all of the 'Devel" group items to be installed.  In addition, ensure the
       `zlib` items are selected for installation as well (using the search
       funciton in the Cygwin install program).
-    * **OSX:** Install Xcode from http://developer.apple.com/xcode/
-    * **Linux:** usually already installed; on Ubuntu, install with `sudo apt-get install
+    * **On OSX:** Install Xcode from http://developer.apple.com/xcode/
+    * **On Linux:** `gcc`, usually already installed; on Ubuntu, install with `sudo apt-get install
       build-essentials`
+
+#. pip_ or easy_install_: these are used for automated installation of Python
+   packages.  If you don't already have these installed,  you can use these
+   commands to get `pip`:
+
+    ::
+
+        $ curl -O http://python-distribute.org/distribute_setup.py
+        $ python distribute_setup.py
+        $ curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+        $ python get-pip.py
+
+Notes on supported systems
+++++++++++++++++++++++++++
+:Windows:
+
+    Windows does not support command line programs easily, so **BEDTools and
+    pybedtools are only supported via Cygwin on Windows**.
+
+:OSX:
+
+    Should run on any system with the above pre-requisites satisfied.
+
+:Linux:
+
+    Routinely tested on Ubuntu 10.04, but should run on any GNU/Linux
+    distribution with the above pre-requisites satisfied.
+
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +86,8 @@ Simple installation
 +++++++++++++++++++
 For most users, the latest stable version will be most appropriate.  To
 install, use `pip`_ or `easy_install`_ to automatically download the code from
-the `Python Package Index`_::
+the `Python Package Index`_.  As long as you have pip_ or easy_install_, the
+following commands should work on Linux, Windows (under Cygwin_), and OSX::
 
     pip install pybedtools
 
@@ -44,7 +95,7 @@ or::
 
     easy_install pybedtools
 
-You may need to be root in order to install.  If you do not have root
+Note that you may need to be root in order to install.  If you do not have root
 privileges (e.g., if you are installing in your user directory on a cluster), then
 use the `--prefix` argument to `easy_install` to specify a location where you
 have write permission::
