@@ -19,15 +19,13 @@
 
 .. _BED format: http://genome.ucsc.edu/FAQ/FAQformat#format1
 
-.. _pip: http://pypi.python.org/pypi/pip
+.. _pip: http://www.pip-installer.org/en/latest/installing.html
 
 .. _easy_install: http://pypi.python.org/pypi/setuptools
 
 .. _Python Package Index: http://pypi.python.org/pypi
 
 .. _Cython: http://cython.org/
-
-.. _argparse: http://code.google.com/p/argparse/
 
 .. _Python: http://www.python.org/
 
@@ -36,3 +34,13 @@
 .. _PyYAML: http://pyyaml.org/wiki/PyYAMLDocumentation
 
 .. _Sphinx: http://sphinx.pocoo.org/
+
+.. _Cygwin: http://www.cygwin.com
+
+.. _argparse: http://pypi.python.org/pypi/argparse
+
+.. _nose: http://pypi.python.org/pypi/nose
+
+.. _scipy: http://www.scipy.org/
+
+.. _matplotlib: http://matplotlib.sourceforge.net/
