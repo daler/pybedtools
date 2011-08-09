@@ -11,7 +11,7 @@ intergenic_snps=/tmp/intergenic_snps
 
 # see note #1 below
 snp_fields=`zcat $snps | head -n1 | awk '{print NF}'`
-gene_fields=`grep -v "#" $genes | head -n1 | awk '{print NF}'`
+gene_fields=9
 distance_field=`echo "$gene_fields + $snp_fields + 1" | bc`
 
 intersectBed -a $snps -b $genes -v > $intergenic_snps
@@ -53,9 +53,9 @@ rm $intergenic_snps
 #   In bash, we need to explicitly check how many fields the original files
 #   have so we can know the total field count after the the closestBed
 #   operation.  This will change depending on the input BED file, since BED
-#   files can have 3-6, 9, or 12 columns.  Pre-calculating these numbers saves
-#   a little time by not having to get the number of fields for each line in
-#   the awk script
+#   files can have 3-6, 9, or 12 columns.  GFF is defined to have 9 fields.
+#   Pre-calculating these numbers saves a little time by not having to get the
+#   number of fields for each line in the awk script
 #------------------------------------------------------------------------------
 # Note 2:
 #   First, we use the distance field calculated previously.  The closestBed
