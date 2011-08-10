@@ -10,9 +10,9 @@ genes=../test/data/hg19.gff
 intergenic_snps=/tmp/intergenic_snps
 
 # see note #1 below
-snp_fields=`zcat $snps | head -n1 | awk '{print NF}'`
+snp_fields=`zcat $snps | awk '(NR == 2){print NF; exit;}'`
 gene_fields=9
-distance_field=`echo "$gene_fields + $snp_fields + 1" | bc`
+distance_field=$(($gene_fields + $snp_fields + 1))
 
 intersectBed -a $snps -b $genes -v > $intergenic_snps
 
