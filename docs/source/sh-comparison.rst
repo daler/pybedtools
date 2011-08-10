@@ -11,7 +11,9 @@ scripts are written so they can be run without modification from the
 
 Both scripts print the genes that are <5000 bp from intergenic SNPs.  These
 scripts show how the same analysis can be performed with :mod:`pybedtools` in
-a much clearer and reusable fashion without losing any speed.
+a much clearer and reusable fashion without losing any speed. Furthermore, note
+that the bash script requires knowledge in three languages (Perl, bash, and
+awk) to accomplish the same thing as the Python script.
 
 The `bash` script contains comparative notes as well as timing comparisons
 between the two scripts.
