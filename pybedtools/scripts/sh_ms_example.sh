@@ -18,7 +18,7 @@ intersectBed -a $snps -b $genes -v > $intergenic_snps
 
 # see note #2 below
 closestBed -a $genes -b $intergenic_snps -d \
-| awk '($"$dist_field" < 5000){print $9;}' \
+| awk '($'$distance_field' < 5000){print $9;}' \
 | perl -ne 'm/[ID|Name|gene_id]=(.*?);/; print "$1\n"'
 
 # see note #3 below
