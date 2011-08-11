@@ -19,3 +19,4 @@ This section contains additional documentation not covered in the tutorial.
     topical-random
     topical-wrapping
     sh-comparison
+    pybedtools-dev-history
