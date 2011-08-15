@@ -428,11 +428,12 @@ def test_eq():
     assert a == b
 
     # BedTool to string
-    assert a == """chr1	1	100	feature1	0	+
+    s= """chr1	1	100	feature1	0	+
 chr1	100	200	feature2	0	+
 chr1	150	500	feature3	0	-
 chr1	900	950	feature4	0	+
 """
+    assert a == s
     # Test not equa on bedtool
     b = pybedtools.example_bedtool('b.bed')
     assert b != a
@@ -453,7 +454,11 @@ chr1	900	950	feature4	0	+
 
     # Make sure that if we force the iterator to be consumed, it is in fact
     # equal
-    assert a == str(e)
+    s = str(e)
+    print str(a).splitlines(True)
+    print s.splitlines(True)
+    assert a == s
+
 
 
 # ----------------------------------------------------------------------------
