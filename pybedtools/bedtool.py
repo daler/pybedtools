@@ -639,6 +639,9 @@ class BedTool(object):
         was created.  If self.fn is anything but a basestring, the iterable
         will be consumed.
         """
+        if isinstance(self.fn, basestring) and not self._isbam:
+            return open(self.fn).read()
+
         return '\n'.join(str(i) for i in iter(self)) + '\n'
 
     def __len__(self):
