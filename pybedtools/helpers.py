@@ -29,25 +29,6 @@ class BEDToolsError(Error):
     pass
 
 
-def prog_exists(prog):
-    try:
-        p = subprocess.Popen([prog],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return True
-    except OSError:
-        return False
-
-def check_for_bedtools(program_to_check='intersectBed'):
-    try:
-        p = subprocess.Popen([program_to_check],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except OSError as err:
-        if err.errno == 2:
-            raise OSError("Please make sure you have installed BEDTools"\
-                          "(https://github.com/arq5x/bedtools) and that "\
-                          "it's on the path.")
-
-
 def isBAM(fn):
     """
     Reads a filename to see if it's a BAM file or not.
