@@ -11,7 +11,7 @@ from itertools import groupby, islice
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, \
-    _check_sequence_stderr, isBAM, BEDToolsError
+    _check_sequence_stderr, isBAM, BEDToolsError, check_for_bedtools, prog_exists
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
@@ -23,6 +23,41 @@ _implicit_registry = {}
 _other_registry = {}
 _bam_registry = {}
 
+
+class _helpwrapper(object):
+    def __init__(self, func, prog):
+        self.func = func
+        self.prog = prog
+
+        self.orig_doc = func.__doc__
+        if self.orig_doc is None:
+            self.orig_doc = ""
+
+        self._name = func.__name__
+
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
+
+    def __repr__(self):
+        return '<wrapped BEDTools program "%s>' % self.prog
+
+    @property
+    def __doc__(self):
+        p = subprocess.Popen([self.prog, '-h'],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        help_str = p.communicate()[1]
+
+        # underscores throw off ReStructuredText syntax of docstrings, so
+        # replace 'em
+        help_str = help_str.replace('_', '**')
+
+        # indent
+        help_str = help_str.split('\n')
+        help_str = ['\t' + i for i in help_str]
+        help_str = '\n'.join(help_str)
+
+        return self.orig_doc + help_str
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
@@ -71,33 +106,10 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     *force_bam*, if True, will force the output to be BAM.  This is used for
     bedToBam.
     """
-    not_implemented = False
-
-    # Call the program with -h to get help, which prints to stderr.
     try:
-        p = subprocess.Popen([prog, '-h'],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        help_str = p.communicate()[1]
-
-        # underscores throw of ReStructuredText syntax of docstrings, so
-        # replace 'em
-        help_str = help_str.replace('_', '**')
-
-        # indent
-        help_str = help_str.split('\n')
-        help_str = ['\t' + i for i in help_str]
-        help_str = '\n'.join(help_str)
-
-    # If the program can't be found, then we'll eventually replace the method
-    # with a version that does nothing raise a NotImplementedError (plus a
-    # helpful message).
+        prog_exists(prog)
+        not_implemented = False
     except OSError:
-        help_str = '"%s" does not appear to be installed '\
-                       'or on the path, so this method is '\
-                       'disabled.  Please install a more recent '\
-                       'version of BEDTools and re-import to '\
-                       'use this method.' % prog
         not_implemented = True
 
     def decorator(func):
@@ -118,8 +130,14 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         # Here's where we replace an unable-to-be-found program's method with
         # one that only returns a NotImplementedError
         if not_implemented:
+            msg = '"%s" does not appear to be installed '\
+                  'or on the path, so this method is '\
+                  'disabled.  Please install a more recent '\
+                  'version of BEDTools and re-import to '\
+                  'use this method.' % prog
+
             def not_implemented_func(*args, **kwargs):
-                raise NotImplementedError(help_str)
+                raise NotImplementedError(msg)
             return not_implemented_func
 
         def wrapped(self, *args, **kwargs):
@@ -218,6 +236,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             result._isbam = result_is_bam
             return result
 
+        return _helpwrapper(wrapped, prog)
+
+        """
         # Now add the edited docstring (original Python doctring plus BEDTools
         # help) to the newly created method above
         if func.__doc__ is None:
@@ -231,6 +252,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         wrapped._name = func.__name__
 
         return wrapped
+        """
 
     return decorator
 
