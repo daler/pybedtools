@@ -323,10 +323,6 @@ cdef class Interval:
     def o_amt(self):
         return self._bed.o_end - self._bed.o_start
 
-    @property
-    def fields(self):
-        return string_vec2list(self._bed.fields)
-
     def __str__(self):
         return "\t".join(self.fields)
 
