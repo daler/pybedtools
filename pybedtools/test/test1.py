@@ -777,7 +777,6 @@ def test_bam_regression():
     assert x[0].file_type == 'sam'
     assert x[0].chrom == 'chr2L'
 
-
 def test_sam_filetype():
     # file_type was segfaulting cause IntervalFile couldn't parse SAM
     a = pybedtools.example_bedtool('gdc.bam')
@@ -812,6 +811,14 @@ def test_bam_header():
     c = a.intersect(b)
     print c._bam_header
     assert c._bam_header == "@SQ	SN:chr2L	LN:23011544\n"
+
+def test_output_kwarg():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.intersect(b)
+    d = a.intersect(b, output='deleteme.bed')
+    assert c == d
+    os.unlink('deleteme.bed')
 
 def teardown():
     # always run this!

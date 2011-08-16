@@ -829,13 +829,14 @@ class BedTool(object):
             pass
 
         # If stream not specified, then a tempfile will be created
-        try:
-            if kwargs.pop('stream'):
+        if kwargs.pop('stream', None):
                 tmp = None
+        else:
+            output = kwargs.pop('output', None)
+            if output:
+                tmp = output
             else:
                 tmp = self._tmp()
-        except KeyError:
-            tmp = self._tmp()
 
         # Parse the kwargs into BEDTools-ready args
         cmds = [prog]
