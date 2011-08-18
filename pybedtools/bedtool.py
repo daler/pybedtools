@@ -938,6 +938,9 @@ class BedTool(object):
                     yield i.next()
                 except pybedtools.MalformedBedLineError:
                     continue
+                except OverflowError:
+                    # This can happen if coords are negative
+                    continue
                 except StopIteration:
                     break
         return BedTool(_generator())
