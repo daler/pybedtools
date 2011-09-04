@@ -1410,6 +1410,14 @@ class BedTool(object):
 
         """
 
+    @_log_to_history
+    @_wraps(prog='tagBam', implicit='i', bam='i')
+    def tag_bam(self):
+        """
+        `files` and `labels` should lists of equal length.
+
+        """
+
     def features(self):
         """
         Returns an iterator of :class:`feature` objects.
