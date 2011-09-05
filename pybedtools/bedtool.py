@@ -1058,6 +1058,14 @@ class BedTool(object):
         '''
 
     @_log_to_history
+    @_wraps(prog='nucBed', implicit='bed', other='fi')
+    def nucleotide_content(self):
+        """
+        Profiles nucleotide content.  The returned BED file contains extra
+        information about the nucleotide content
+        """
+
+    @_log_to_history
     @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
     def subtract(self):
         """
