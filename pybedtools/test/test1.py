@@ -824,19 +824,6 @@ def test_output_kwarg():
     assert c == d
     os.unlink('deleteme.bed')
 
-def test_nucbed():
-    a = pybedtools.example_bedtool('a.bed')
-    fasta = pybedtools.example_filename('test.fa')
-    b = a.nucleotide_content(fi=fasta)
-    s = str(b)
-    expected = fix("""
-#1_usercol	2_usercol	3_usercol	4_usercol	5_usercol	6_usercol	7_pct_at	8_pct_gc	9_num_A	10_num_C	11_num_G	12_num_T	13_num_N	14_num_oth	15_seq_len	
-chr1	1	100	feature1	0	+	0.626263	0.373737	29	21	16	33	0	0	99
-chr1	100	200	feature2	0	+	0.710000	0.290000	36	15	14	35	0	0	100
-chr1	150	500	feature3	0	-	0.651429	0.348571	136	67	55	92	0	0	350
-chr1	900	950	feature4	0	+	0.620000	0.380000	14	6	13	17	0	0	50""")
-    assert b == expected
-
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
