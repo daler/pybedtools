@@ -1066,6 +1066,13 @@ class BedTool(object):
         """
 
     @_log_to_history
+    @_wraps(prog='multiBamCov', implicit='bed')
+    def multi_bam_coverage(self):
+        """
+        Pass a list of sorted and indexed BAM files as `bams`
+        """
+
+    @_log_to_history
     @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
     def subtract(self):
         """

@@ -16,7 +16,7 @@ _prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
 'coverageBed', 'genomeCoverageBed', 'maskFastaFromBed', 'pairToBed', 'slopBed',
 'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
 'mergeBed', 'pairToPair', 'sortBed', 'windowBed', 'groupBy', 'tagBam',
-'nucBed']
+'nucBed', 'multiBamCov']
 
 _tags = {}
 

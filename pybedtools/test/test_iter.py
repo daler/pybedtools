@@ -175,6 +175,41 @@ def test_i_methods():
             f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
             yield (f, )
 
+def test_bed_methods():
+    """
+    Generator that yields tests, inserting different versions of `bed` as needed
+    """
+    for method, send_kwargs, expected in parse_yaml(config_fn):
+        ignore = ['a', 'b','abam','i']
+        skip_test = False
+        for i in ignore:
+            if i in send_kwargs:
+                skip_test = True
+        if skip_test:
+            continue
+        if 'bed' not in send_kwargs:
+            continue
+
+        if 'files' in send_kwargs:
+            send_kwargs['files'] = [pybedtools.example_filename(i) for i in send_kwargs['files']]
+
+        if 'bams' in send_kwargs:
+            send_kwargs['bams'] = [pybedtools.example_filename(i) for i in send_kwargs['bams']]
+
+        if 'fi' in send_kwargs:
+            send_kwargs['fi'] = pybedtools.example_filename(send_kwargs['fi'])
+
+        orig_bed = pybedtools.example_bedtool(send_kwargs['bed'])
+
+        del send_kwargs['bed']
+
+        done = []
+        for kind_bed in ('filename', 'generator', 'stream', 'gzip'):
+            bed = converter[kind_bed](orig_bed)
+            kind = 'i=%(kind_bed)s' % locals()
+            f = partial(run, method, bed, expected, **send_kwargs)
+            f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
+            yield (f, )
 
 def teardown():
     pybedtools.cleanup(remove_all=True)
