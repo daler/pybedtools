@@ -556,6 +556,25 @@ cdef class IntervalFile:
         self.intervalFile_ptr.loadBedFileIntoMap()
         self._loaded = 1
 
+    def rewind(self):
+        """
+        Jump to the beginning of the file.
+        """
+        if not self._open:
+            self.intervalFile_ptr.Open()
+            self._open = 1
+        self.intervalFile_ptr.Rewind()
+
+    def seek(self, offset):
+        """
+        Jump to a specific byte offset in the file
+        """
+        if not self._open:
+            self.intervalFile_ptr.Open()
+            self._open = 1
+        self.intervalFile_ptr.Seek(offset)
+
+
     def all_hits(self, Interval interval, bool same_strand=False, float overlap=0.0):
         """
         :Signature: `IntervalFile.all_hits(interval, same_strand=False, overlap=0.0)`
