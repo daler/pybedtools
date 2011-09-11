@@ -66,6 +66,8 @@ cdef extern from "bedFile.h":
     cdef cppclass BedFile:
         BedFile(string)
         void Open()
+        void Rewind()
+        void Seek(unsigned long offset)
         void Close()
         BED  GetNextBed()
         void loadBedFileIntoMap()
