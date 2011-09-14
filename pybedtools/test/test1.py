@@ -824,6 +824,29 @@ def test_output_kwarg():
     assert c == d
     os.unlink('deleteme.bed')
 
+def test_copy():
+    a = pybedtools.example_bedtool('a.bed')
+    x = a[0]
+
+    # Before adding the __copy__ method to Interval class, making a copy would
+    # hang and then segfault
+    import copy
+    y = copy.copy(x)
+
+    assert y.start == x.start
+    assert y.stop == x.stop
+    assert y.chrom == x.chrom
+    assert y.name == x.name
+    assert y.fields == x.fields
+    assert y.file_type == x.file_type == 'bed'
+
+    # Make sure it's a real copy (changing something in y doesn't change
+    # something in x)
+    y.start += 1
+    assert y.start == x.start + 1
+
+
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
