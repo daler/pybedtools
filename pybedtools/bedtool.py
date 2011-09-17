@@ -8,10 +8,11 @@ import sys
 import random
 import string
 from itertools import groupby, islice
+import multiprocessing
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, \
-    _check_sequence_stderr, isBAM, BEDToolsError
+    _check_sequence_stderr, isBAM, BEDToolsError, _call_randomintersect
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
@@ -1611,7 +1612,9 @@ class BedTool(object):
         return d
 
     def randomintersection(self, other, iterations, intersect_kwargs=None,
-                           shuffle_kwargs=None, debug=False):
+                           shuffle_kwargs=None, debug=False,
+                           report_iterations=False, processes=None,
+                           _orig_processes=None):
         """
         Performs *iterations* shufflings of self, each time intersecting with
         *other*.
@@ -1629,7 +1632,8 @@ class BedTool(object):
         use the "seed" kwarg, that seed will be used *each* time shuffleBed is
         called -- so all your randomization results will be identical for each
         iteration.  To get around this and to allow for tests, debug=True will
-        set the seed to the iteration number.
+        set the seed to the iteration number.  You may also break up the
+        intersections across multiple processes with *processes* > 1.
 
         Example usage:
 
@@ -1642,6 +1646,21 @@ class BedTool(object):
             [2, 2, 2, 0, 2, 3, 2, 1, 2, 3]
 
         """
+        if processes is not None:
+            p = multiprocessing.Pool(processes)
+            iterations_each = [iterations / processes] * processes
+            iterations_each[-1] += iterations % processes
+            results = [p.apply_async(_call_randomintersect, (self, other, it),
+                              dict(intersect_kwargs=intersect_kwargs,
+                                   shuffle_kwargs=shuffle_kwargs,
+                                   debug=debug,
+                                   report_iterations=report_iterations,
+                                   _orig_processes=processes))
+                 for it in iterations_each]
+            for r in results:
+                for value in r.get():
+                    yield value
+            raise StopIteration
 
         if shuffle_kwargs is None:
             shuffle_kwargs = {}
@@ -1654,12 +1673,25 @@ class BedTool(object):
         for i in range(iterations):
             if debug:
                 shuffle_kwargs['seed'] = i
-            tmp = self.shuffle(**shuffle_kwargs)
-            tmp2 = tmp.intersect(other, **intersect_kwargs)
+            if report_iterations:
+                if _orig_processes > 1:
+                    msg = '\rapprox (total across %s processes): %s' \
+                            % (_orig_processes, i * _orig_processes)
+                else:
+                    msg = '\r%s' % i
+                sys.stderr.write(msg)
+                sys.stderr.flush()
+
+            tmp = self.shuffle(stream=True, **shuffle_kwargs)
+            tmp2 = tmp.intersect(other, stream=True, **intersect_kwargs)
 
             yield len(tmp2)
-            os.unlink(tmp.fn)
-            os.unlink(tmp2.fn)
+
+            # Close the open stdouts from subprocess.Popen calls.  Note: doing
+            # this in self.__del__ doesn't fix the open file limit bug; it
+            # needs to be done here.
+            tmp.fn.close()
+            tmp2.fn.close()
             del(tmp)
             del(tmp2)
 

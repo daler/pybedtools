@@ -345,4 +345,18 @@ def _check_sequence_stderr(x):
         return True
     return False
 
+
+def _call_randomintersect(_self, other, iterations, intersect_kwargs,
+        shuffle_kwargs, report_iterations, debug, _orig_processes):
+    """
+    Helper function that list-ifies the output from randomintersection, s.t.
+    it can be pickled across a multiprocess Pool.
+    """
+    return list(_self.randomintersection(other, iterations,
+                                        intersect_kwargs=intersect_kwargs,
+                                        shuffle_kwargs=shuffle_kwargs,
+                                        report_iterations=report_iterations,
+                                        debug=False, processes=None,
+                                        _orig_processes=_orig_processes))
+
 atexit.register(cleanup)
