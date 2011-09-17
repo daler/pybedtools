@@ -549,7 +549,8 @@ class BedTool(object):
                 except StopIteration:
                     self._file_type = 'empty'
                 except ValueError:
-                    self._file_type = IntervalIterator(open(self.fn)).next().file_type
+                    self._file_type = IntervalIterator(open(self.fn))\
+                            .next().file_type
         return self._file_type
 
     def cut(self, indexes):
@@ -1532,8 +1533,8 @@ class BedTool(object):
 
         *results* is a dictionary that you can inspect.
 
-        (Note that the following examples are not run as part of the doctests to
-        avoid forcing users to install SciPy just to pass tests)
+        (Note that the following examples are not run as part of the doctests
+        to avoid forcing users to install SciPy just to pass tests)
 
         The actual overlap::
 
