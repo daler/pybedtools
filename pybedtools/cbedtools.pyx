@@ -139,6 +139,9 @@ cdef class Interval:
         self._bed.fields = list_to_vector(fields)
         self._attrs = None
 
+    def __copy__(self):
+        return create_interval_from_list(self.fields)
+
     property chrom:
         """ the chromosome of the feature"""
         def __get__(self):
