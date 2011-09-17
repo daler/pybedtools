@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+"""
+Test for running many random intersections in parallel.  Use this for making sure the open file bug
+(#38) doesn't return.  Not part of the standard test suite because of the
+amount of time it takes to run....
+
+Stored here because it's a test, but .py extension removed so nosetests doesn't find it.
+"""
+import pybedtools
+import sys
+
+a = pybedtools.example_bedtool('a.bed').set_chromsizes({'chr1':(1,1000)})
+b = pybedtools.example_bedtool('b.bed')
+results = a.randomstats(b, 10000, report_iterations=True, processes=2)
+print results
