@@ -12,5 +12,5 @@ import sys
 
 a = pybedtools.example_bedtool('a.bed').set_chromsizes({'chr1':(1,1000)})
 b = pybedtools.example_bedtool('b.bed')
-results = a.randomstats(b, 10000, report_iterations=True, processes=2)
+results = a.randomstats(b, 10000, report_iterations=True, processes=8, intersect_kwargs={'sorted':True})
 print results

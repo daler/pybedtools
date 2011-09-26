@@ -1670,6 +1670,8 @@ class BedTool(object):
         if not 'u' in intersect_kwargs:
             intersect_kwargs['u'] = True
 
+        resort = intersect_kwargs.get('sorted', False)
+
         for i in range(iterations):
             if debug:
                 shuffle_kwargs['seed'] = i
@@ -1682,7 +1684,13 @@ class BedTool(object):
                 sys.stderr.write(msg)
                 sys.stderr.flush()
 
-            tmp = self.shuffle(stream=True, **shuffle_kwargs)
+            # Re-sort if sorted=True in kwargs
+            if resort:
+                tmp0 = self.shuffle(stream=True, **shuffle_kwargs)
+                tmp = tmp0.sort(stream=True)
+            else:
+                tmp = self.shuffle(stream=True, **shuffle_kwargs)
+
             tmp2 = tmp.intersect(other, stream=True, **intersect_kwargs)
 
             yield len(tmp2)
@@ -1690,6 +1698,8 @@ class BedTool(object):
             # Close the open stdouts from subprocess.Popen calls.  Note: doing
             # this in self.__del__ doesn't fix the open file limit bug; it
             # needs to be done here.
+            if resort:
+                tmp0.fn.close()
             tmp.fn.close()
             tmp2.fn.close()
             del(tmp)
