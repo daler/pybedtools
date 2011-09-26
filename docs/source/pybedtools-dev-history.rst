@@ -1,3 +1,5 @@
+.. _devmodel:
+
 :mod:`pybedtools` development model
 ===================================
 :mod:`pybedtools` is very much an open-source project. We do all of our

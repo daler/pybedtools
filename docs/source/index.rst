@@ -37,6 +37,7 @@ Contents:
    topical-documentation-contents
    scripts
    autodoc_source
+   changes
 
 
 Indices and tables
