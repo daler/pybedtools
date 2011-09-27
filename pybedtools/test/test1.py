@@ -84,6 +84,10 @@ def test_stream():
     for i in iter(g3):
         print i
 
+    for row in f.cut(range(3), stream=True):
+        row[0], row[1], row[2]
+        assert_raises(IndexError, row.__getitem__, 3)
+
     pybedtools.set_tempdir(orig_tempdir)
     os.system('rm -fr unwriteable')
 
