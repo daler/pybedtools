@@ -75,6 +75,8 @@ about 70% faster.  In IPython::
     >>> def L(x,width=100):
     ...     return len(x) > 100
 
+    >>> # The %timeit command is from IPython, and won't work
+    >>> # in a regular Python script:
     >>> %timeit a.filter(greater_than, 100)
     1 loops, best of 3: 1.74 s per loop
 
