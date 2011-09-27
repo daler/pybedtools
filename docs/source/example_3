@@ -24,24 +24,25 @@ def featuretype_filter(feature, featuretype):
 # This function will eventually be run in parallel, applying the filter above
 # to several different BedTools simultaneously
 def subset_featuretypes(featuretype):
-    return g.filter(featuretype_filter, featuretype).saveas()
+    result = g.filter(featuretype_filter, featuretype).saveas()
+    return pybedtools.BedTool(result.fn)
 
 
 # This function performs the intersection of a BAM file with a GFF file and
 # returns the total number of hits.  It will eventually be run in parallel.
-def count_reads_in_features(features):
+def count_reads_in_features(features_fn):
     """
     Callback function to count reads in features
     """
-    # This shows how to use BAM files by using the `abam` kwarg and explicitly
-    # specifying the `b` kwarg as well.
+    # BAM files are auto-detected; no need for an `abam` argument.  Here we
+    # construct a new BedTool out of the BAM file and intersect it with the
+    # features filename.
 
-    # In addition, we use stream=True so that no intermediate tempfile is
+    # We use stream=True so that no intermediate tempfile is
     # created, and bed=True so that the .count() method can iterate through the
     # resulting streamed BedTool.
-    return features.intersect(abam=bam,
-                             b=features.fn,
-                             bed=True,
+    return pybedtools.BedTool(bam).intersect(
+                             b=features_fn,
                              stream=True).count()
 
 
@@ -53,10 +54,12 @@ pool = multiprocessing.Pool()
 featuretypes = ('intron', 'exon')
 introns, exons = pool.map(subset_featuretypes, featuretypes)
 
-# Perform some genome algebra to get unique and shared intron/exon regions
-exon_only = exons.subtract(introns).merge().remove_invalid().saveas()
-intron_only = introns.subtract(exons).merge().remove_invalid().saveas()
-intron_and_exon = exons.intersect(introns).merge().remove_invalid().saveas()
+# Perform some genome algebra to get unique and shared intron/exon regions.
+# Here we keep only the filename of the results, which is safer than an entire
+# BedTool for passing around in parallel computations.
+exon_only = exons.subtract(introns).merge().remove_invalid().saveas().fn
+intron_only = introns.subtract(exons).merge().remove_invalid().saveas().fn
+intron_and_exon = exons.intersect(introns).merge().remove_invalid().saveas().fn
 
 # Do intersections with BAM file in parallel, using the other function we
 # defined above
@@ -70,6 +73,3 @@ labels = ('      exon only:',
 
 for label, reads in zip(labels, results):
     sys.stdout.write('%s %s\n' % (label, reads))
-
-# Clean up any tempfiles that were created
-pybedtools.cleanup(verbose=False)

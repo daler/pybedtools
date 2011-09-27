@@ -15,34 +15,35 @@ def featuretype_filter(feature, featuretype):
 
 
 def subset_featuretypes(featuretype):
-    return g.filter(featuretype_filter, featuretype).saveas()
+    result = g.filter(featuretype_filter, featuretype).saveas()
+    return pybedtools.BedTool(result.fn)
 
 
-def count_reads_in_features(features):
+def count_reads_in_features(features_fn):
     """
     Callback function to count reads in features
     """
-    return features.intersect(abam=bam,
-                             b=features.fn,
-                             bed=True,
+
+    return pybedtools.BedTool(bam).intersect(
+                             b=features_fn,
                              stream=True).count()
+
 
 pool = multiprocessing.Pool()
 
 featuretypes = ('intron', 'exon')
 introns, exons = pool.map(subset_featuretypes, featuretypes)
 
-exon_only = exons.subtract(introns).merge().remove_invalid().saveas()
-intron_only = introns.subtract(exons).merge().remove_invalid().saveas()
-intron_and_exon = exons.intersect(introns).merge().remove_invalid().saveas()
+exon_only = exons.subtract(introns).merge().remove_invalid().saveas().fn
+intron_only = introns.subtract(exons).merge().remove_invalid().saveas().fn
+intron_and_exon = exons.intersect(introns).merge().remove_invalid().saveas().fn
 
 features = (exon_only, intron_only, intron_and_exon)
 results = pool.map(count_reads_in_features, features)
+
 labels = ('      exon only:',
           '    intron only:',
           'intron and exon:')
 
 for label, reads in zip(labels, results):
     sys.stdout.write('%s %s\n' % (label, reads))
-
-pybedtools.cleanup(verbose=False)
