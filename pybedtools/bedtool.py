@@ -1,13 +1,12 @@
 import tempfile
 import shutil
 import subprocess
-import inspect
-from math import floor, ceil
+import operator
 import os
 import sys
 import random
 import string
-from itertools import groupby, islice
+from itertools import islice
 import multiprocessing
 
 from pybedtools.helpers import get_tempdir, _tags,\
@@ -554,7 +553,7 @@ class BedTool(object):
                             .next().file_type
         return self._file_type
 
-    def cut(self, indexes):
+    def cut(self, indexes, stream=False):
         """
         Similar to unix `cut` except indexes are 0-based, must be a list
         and the columns are returned in the order requested.
@@ -566,11 +565,15 @@ class BedTool(object):
 
         See .with_column() if you need to do more complex operations.
         """
-        fh = open(self._tmp(), "w")
-        for f in self:
-            print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
-        fh.close()
-        return BedTool(fh.name)
+        if stream:
+            return BedTool(([f[attr] for attr in indexes] for f in self))
+        else:
+            fh = open(self._tmp(), "w")
+            for f in self:
+                print >>fh, "\t".join(map(str, [f[attr] for attr in indexes]))
+            fh.close()
+            return BedTool(fh.name)
+
 
     @classmethod
     def _tmp(self):
