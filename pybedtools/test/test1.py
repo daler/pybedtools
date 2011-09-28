@@ -849,7 +849,36 @@ def test_copy():
     y.start += 1
     assert y.start == x.start + 1
 
+def test_pickleable():
+    interval = pybedtools.create_interval_from_list(
+        ['chr1', '1', '100', 'asdf'])
+    fn = pybedtools.BedTool._tmp()
+    import pickle
+    out = open(fn, 'w')
+    pickle.dump(interval, out)
+    out.close()
+    new_interval = pickle.load(open(fn))
+    assert str(interval) == str(new_interval)
 
+    interval = pybedtools.create_interval_from_list(
+        ['chr1', '1', '100'])
+    fn = pybedtools.BedTool._tmp()
+    import pickle
+    out = open(fn, 'w')
+    pickle.dump(interval, out)
+    out.close()
+    new_interval = pickle.load(open(fn))
+    assert str(interval) == str(new_interval)
+
+    interval = pybedtools.create_interval_from_list(
+        "chr2L	.	UTR	41	70	0	+	.	ID=mRNA:xs2:UTR:41-70;Parent=mRNA:xs2;".split('\t'))
+    fn = pybedtools.BedTool._tmp()
+    import pickle
+    out = open(fn, 'w')
+    pickle.dump(interval, out)
+    out.close()
+    new_interval = pickle.load(open(fn))
+    assert str(interval) == str(new_interval)
 
 def teardown():
     # always run this!

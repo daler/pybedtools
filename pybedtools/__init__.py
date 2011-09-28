@@ -3,6 +3,7 @@ import sys
 import subprocess
 import tempfile
 import urllib2
+import copy_reg
 import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
                     create_interval_from_list, parse_attributes, \
@@ -19,6 +20,16 @@ _samtools_path = ""
 _filo_path = ""
 KEEP_TEMPFILES = False
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
+
+# Allow Interval objects to be pickled -- required if you want to pass them
+# across process boundaries
+def interval_constructor(fields):
+    return create_interval_from_list(list(fields))
+
+def interval_reducer(interval):
+    return interval_constructor, (tuple(interval.fields), )
+
+copy_reg.pickle(Interval, interval_reducer, interval_constructor)
 
 
 def check_for_bedtools(program_to_check='intersectBed'):
