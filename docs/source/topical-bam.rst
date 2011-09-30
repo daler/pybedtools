@@ -44,7 +44,13 @@ BED results.
 .. doctest::
 
     >>> bam_results = a.intersect(b)
+    >>> bam_results.file_type
+    'bam'
+
     >>> bed_results = a.intersect(b, bed=True)
+    >>> bed_results.file_type
+    'bed'
+
 
 We can iterate over BAM files to get :class:`Interval` objects just like
 iterating over BED or GFF files.  Indexing works, too:

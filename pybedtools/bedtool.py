@@ -273,7 +273,7 @@ class BedTool(object):
         Or use examples that come with pybedtools::
 
              >>> example_files = pybedtools.list_example_files()
-             >>> assert example_files[0] == 'a.bed'
+             >>> assert 'a.bed' in example_files
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """

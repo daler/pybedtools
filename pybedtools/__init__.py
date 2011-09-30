@@ -56,7 +56,7 @@ def data_dir():
 def example_filename(fn):
     """
     Return a bed file from the pybedtools examples directory.  Use
-    :func:`list_example_files` to see a list of files that are included.
+    func:`list_example_files` to see a list of files that are included.
     """
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):

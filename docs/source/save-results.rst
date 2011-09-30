@@ -31,8 +31,9 @@ opening up the files afterward and manually adding a trackline:
     chr1	900	901	feature4	0	+
     <BLANKLINE>
 
-    >>> # printing the BedTool object will not show non-feature lines
+    >>> # printing file-based BedTool objects will also print the track line
     >>> print c
+    track name="a and b"
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-
     chr1	900	901	feature4	0	+
