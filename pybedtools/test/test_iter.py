@@ -1,3 +1,4 @@
+import difflib
 import itertools
 import yaml
 import os
@@ -59,19 +60,26 @@ def parse_yaml(infile):
 
 def run(method, bedtool, expected, **kwargs):
     result = getattr(bedtool, method)(**kwargs)
-    print result.fn
-    print 'Method call:'
-    args = []
-    for key, val in kwargs.items():
-        args.append(('%s=%s' % (key, val)).strip())
+    res = str(result)
+    try:
+        assert str(result) == fix(expected)
+    except AssertionError:
+        print result.fn
+        print 'Method call:'
+        args = []
+        for key, val in kwargs.items():
+            args.append(('%s=%s' % (key, val)).strip())
 
-    args = ', '.join(args)
-    print 'BedTool.%(method)s(%(args)s)' % locals()
-    print 'Got:'
-    print result
-    print 'Expected:'
-    print expected
-    assert str(result) == fix(expected)
+        args = ', '.join(args)
+        print 'BedTool.%(method)s(%(args)s)' % locals()
+        print 'Got:'
+        print res
+        print 'Expected:'
+        print expected
+        print 'Diff:'
+        for i in difflib.unified_diff(res.splitlines(1), expected.splitlines(1)):
+            print i,
+        raise
 
 
 # List of methods that *only* take BAM as input
