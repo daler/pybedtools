@@ -3,9 +3,9 @@
 Make a pie chart where peaks fall in annotations, similar to CEAS
 (http://liulab.dfci.harvard.edu/CEAS/)
 
-A peak will be counted in each class it intersects -- that is, peaks are
-double-counted.  This means that the total of all slices may be higher than the
-number of actual peaks.
+However, multi-featuretype classes are reported.  That is, if a peak falls in
+an exon in one isoform and an intron in another isoform, the class is "exon,
+intron".
 """
 
 import urllib
@@ -18,11 +18,10 @@ from collections import defaultdict
 def make_pie(bed, gff, stranded=False, out='out.png',
              include=None, exclude=None, thresh=0):
 
-    a = pybedtools.example_bedtool(bed)
-    b = pybedtools.example_bedtool(gff).remove_invalid()
+    a = pybedtools.BedTool(bed)
+    b = pybedtools.BedTool(gff).remove_invalid()
 
-    c = a.intersect(a=bed,
-                    b=b,
+    c = a.intersect(b,
                     wao=True,
                     s=stranded,
                     stream=True)
@@ -37,50 +36,60 @@ def make_pie(bed, gff, stranded=False, out='out.png',
     # if/else checks.
     #
     # For un-included featuretypes, put them in the '.' category (unnannotated)
+    if include and exclude:
+        raise ValueError('Can only specify one of `include` or `exclude`.')
     d = defaultdict(set)
     if include:
         for feature in c:
             featuretype = feature[type_idx]
             key = '\t'.join(feature[:afields])
             if featuretype in include:
-                d[featuretype].update([key])
+                d[key].update([featuretype])
             else:
-                d['.'].update([key])
-
+                d[key].update(['.'])
     elif exclude:
         for feature in c:
             featuretype = feature[type_idx]
             key = '\t'.join(feature[:afields])
             if featuretype not in exclude:
-                d[featuretype].update([key])
+                d[key].update([featuretype])
             else:
-                d['.'].update([key])
+                d[key].update(['.'])
     else:
         for feature in c:
             featuretype = feature[type_idx]
             key = '\t'.join(feature[:afields])
-            d[featuretype].update([key])
+            d[key].update([featuretype])
 
-    # Rename '.' as 'unannotated
-    try:
-        d['unannotated'] = d.pop('.')
-    except KeyError:
-        pass
+    def labelmaker(x):
+        x.difference_update('.')
+        label = []
+        for i in list(x):
+            if i == 'three_prime_UTR':
+                i = "3' UTR"
+            if i == 'five_prime_UTR':
+                i = "5' UTR"
+            label.append(i)
+        return ', '.join(sorted(label))
 
     # Prepare results for Google Charts API
-    results = []
-    for featuretype, peaks in d.items():
-        count = len(peaks)
-        results.append((featuretype, count))
+    npeaks = float(len(d))
+    count_d = defaultdict(int)
+    for peak, featuretypes in d.items():
+        if featuretypes == set('.'):
+            featuretype = 'unannotated'
+        else:
+            featuretype = labelmaker(featuretypes)
+        count_d[featuretype] += 1
 
+    results = count_d.items()
     results.sort(key=lambda x: x[1])
     labels, counts = zip(*results)
 
-    total = float(sum(counts))
     labels = []
     counts_to_use = []
     for label, count in results:
-        perc = count/total*100
+        perc = count / npeaks * 100
         if perc > thresh:
             labels.append('%s: %s (%.1f%%)' % (label,
                                                count,
@@ -115,9 +124,12 @@ def main():
                     help='Use strand-specific intersections')
     ap.add_argument('--include', nargs='*', help='Featuretypes to include')
     ap.add_argument('--exclude', nargs='*', help='Featuretypes to exclude')
-    ap.add_argument('--thresh', type=float, help='Threshold percentage below which output will be suppressed')
+    ap.add_argument('--thresh', type=float,
+                    help='Threshold percentage below which output will be '
+                    'suppressed')
     ap.add_argument('--test', action='store_true',
-                    help='Run test, overwriting all other args')
+                    help='Run test, overwriting all other args. Result will '
+                    'be "out.png" in current directory.')
     args = ap.parse_args()
 
     if not args.test:
@@ -136,7 +148,8 @@ def main():
                  gff=pybedtools.example_filename('gdc.gff'),
                  stranded=True,
                  out='out.png',
-                 include=['CDS',
+                 include=['exon',
+                          'CDS',
                           'intron',
                           'five_prime_UTR',
                           'three_prime_UTR'])

@@ -80,6 +80,7 @@ setup(
         scripts = ['pybedtools/scripts/venn_gchart.py',
                    'pybedtools/scripts/venn_mpl.py',
                    'pybedtools/scripts/annotate.py',
+                   'pybedtools/scripts/peak_pie.py',
                    'pybedtools/scripts/intron_exon_reads.py',
                    'pybedtools/scripts/pybedtools_demo.py'],
         author_email="dalerr@niddk.nih.gov",
