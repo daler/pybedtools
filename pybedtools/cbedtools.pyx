@@ -449,7 +449,7 @@ cpdef Interval create_interval_from_list(list fields):
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
         pyb.file_type = 'gff'
     else:
-        raise ValueError('Unable to detect format from %s' % fields)
+        raise MalformedBedLineError('Unable to detect format from %s' % fields)
     pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 

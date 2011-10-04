@@ -935,12 +935,20 @@ class BedTool(object):
         """
         tmp = self._tmp()
         fout = open(tmp, 'w')
-        i = iter(self)
+
+        # If it's a file-based BedTool -- which is likely, if we're trying to
+        # remove invalid features -- then we need to parse it line by line.
+        if isinstance(self.fn, basestring):
+            i = IntervalIterator(open(self.fn))
+        else:
+            i = IntervalIterator(self.fn)
 
         def _generator():
             while True:
                 try:
-                    yield i.next()
+                    feature = i.next()
+                    if feature.start < feature.stop:
+                        yield feature
                 except pybedtools.MalformedBedLineError:
                     continue
                 except OverflowError:
