@@ -409,6 +409,9 @@
         chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-
         chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
 
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# tagBam
+#
 -   method: tag_bam
     kwargs:
         i: gdc.bam
@@ -441,6 +444,9 @@
         None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1
 
 
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# nucBed
+#
 -   method: nucleotide_content
     kwargs:
         bed: a.bed
@@ -453,6 +459,9 @@
         chr1	900	950	feature4	0	+	0.620000	0.380000	14	6	13	17	0	0	50
 
 
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# multiBamCoverage
+#
 -   method: multi_bam_coverage
     kwargs:
         bed: multibamcov_test.bed
@@ -460,3 +469,43 @@
     expected: |
         chr2L	1	100	+	3	2
         chr2L	50	200	-	2	6
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# windowBed
+#
+
+-   method: window
+    kwargs:
+        a: a.bed
+        b: b.bed
+    expected: |
+        chr1	1	100	feature1	0	+	chr1	155	200	feature5	0	-
+        chr1	1	100	feature1	0	+	chr1	800	901	feature6	0	+
+        chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-
+        chr1	100	200	feature2	0	+	chr1	800	901	feature6	0	+
+        chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-
+        chr1	150	500	feature3	0	-	chr1	800	901	feature6	0	+
+        chr1	900	950	feature4	0	+	chr1	155	200	feature5	0	-
+        chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
+
+-   method: window
+    kwargs:
+        a: a.bed
+        b: b.bed
+        Sm: True
+    expected: |
+        chr1	1	100	feature1	0	+	chr1	155	200	feature5	0	-
+        chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-
+        chr1	150	500	feature3	0	-	chr1	800	901	feature6	0	+
+        chr1	900	950	feature4	0	+	chr1	155	200	feature5	0	-
+
+-   method: window
+    kwargs:
+        a: a.bed
+        b: b.bed
+        sm: True
+    expected: |
+        chr1	1	100	feature1	0	+	chr1	800	901	feature6	0	+
+        chr1	100	200	feature2	0	+	chr1	800	901	feature6	0	+
+        chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-
+        chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
