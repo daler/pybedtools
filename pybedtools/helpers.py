@@ -293,15 +293,18 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                         '* Do you have BEDTools installed and on the path?'),
                     13: ('* Do you have permission to write '
                          'to the output file ("%s")?' % tmpfn,),
-                    24: ('* Too many files open -- are you creating lots of '
-                         'BedTool objects without calling del() on them?',)
+                    24: ('* Too many files open -- please submit '
+                         'a bug report so that this can be fixed',)
                    }
 
         print 'Things to check:'
         print '\n\t' + '\n\t'.join(problems[err.errno])
         raise OSError('See above for commands that gave the error')
 
-    return output
+    try:
+        return output
+    finally:
+        output.close()
 
 
 def set_bedtools_path(path=""):
