@@ -301,10 +301,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         print '\n\t' + '\n\t'.join(problems[err.errno])
         raise OSError('See above for commands that gave the error')
 
-    try:
-        return output
-    finally:
-        output.close()
+    return output
 
 
 def set_bedtools_path(path=""):
