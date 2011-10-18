@@ -37,14 +37,111 @@ class IntervalFileTest(unittest.TestCase):
             self.assert_(hit.strand == '-')
 
     def testRichCmp(self):
-        a = Interval("chr21", 9719768, 9739768)
-        b = Interval("chr21", 9719767, 9739768)
+
+        # be obsessive . . .
+        #
+        # ==
+        a = Interval("chr21", 100, 200)
+        b = Interval("chr21", 100, 200)
+        self.assert_(a == b)
+        self.assertFalse(a != b)
+        self.assert_(a <= b)
+        self.assert_(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+        a = Interval("chr21", 100, 100)
+        b = Interval("chr21", 100, 100)
+        self.assert_(a == b)
+        self.assertFalse(a != b)
+        self.assert_(a <= b)
+        self.assert_(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+
+        # != because of strand
+        a = Interval("chr21", 100, 200, strand='+')
+        b = Interval("chr21", 100, 200, strand='-')
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assertFalse(a <= b)
+        self.assertFalse(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+        # a >= b
+        a = Interval("chr21", 100, 300)
+        b = Interval("chr21", 100, 200)
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assertFalse(a <= b)
+        self.assert_(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+        # a <= b
+        a = Interval("chr21", 100, 300)
+        b = Interval("chr21", 300, 300)
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assert_(a <= b)
+        self.assertFalse(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+
+        # a <= b
+        a = Interval("chr21", 100, 300)
+        b = Interval("chr21", 250, 300)
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assert_(a <= b)
+        self.assertFalse(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+        # a < b
+        a = Interval("chr21", 100, 200)
+        b = Interval("chr21", 201, 300)
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assert_(a <= b)
+        self.assertFalse(a >= b)
         self.assert_(a < b)
-        self.assert_(b < a)
-        c = Interval("chr21", 9719767, 9739768)
-        self.assert_(c == b)
-        d = Interval("chr22", 9719767, 9739768)
-        self.assert_(c != d)
+        self.assertFalse(a > b)
+
+        # a > b
+        a = Interval("chr21", 201, 300)
+        b = Interval("chr21", 100, 200)
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assertFalse(a <= b)
+        self.assert_(a >= b)
+        self.assertFalse(a < b)
+        self.assert_(a > b)
+
+        # a != b
+        a = Interval("none", 1, 100)
+        b = Interval("chr21", 1, 100)
+        self.assertFalse(a == b)
+        self.assert_(a != b)
+        self.assertFalse(a <= b)
+        self.assertFalse(a >= b)
+        self.assertFalse(a < b)
+        self.assertFalse(a > b)
+
+        # nested should raise NotImplementedError
+        a = Interval("chr21", 100, 200)
+        b = Interval("chr21", 50, 300)
+        self.assertRaises(NotImplementedError, a.__eq__, b)
+        self.assertRaises(NotImplementedError, a.__ne__, b)
+        self.assertRaises(NotImplementedError, a.__le__, b)
+        self.assertRaises(NotImplementedError, a.__ge__, b)
+        self.assertRaises(NotImplementedError, a.__lt__, b)
+        self.assertRaises(NotImplementedError, a.__gt__, b)
+
+
 
 class IntervalTest(unittest.TestCase):
     file = "data/rmsk.hg18.chr21.small.bed.gz"

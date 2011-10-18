@@ -11,6 +11,7 @@
 from cython.operator cimport dereference as deref
 import sys
 import subprocess
+from collections import defaultdict
 
 cdef dict LOOKUPS = {
     "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4, "strand": 6},
@@ -20,6 +21,75 @@ cdef dict LOOKUPS = {
 for ktype, kdict in LOOKUPS.items():
     for k, v in kdict.items():
         kdict[v] = k
+
+# Keys are tuples of start/start, stop/stop, start/stop, stop/start.
+# Values are which operators should return True, otherwise False
+# < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
+PROFILES_TRUE = {
+                (0, 0, -1, 1): (2, 1, 5),  # a == b, a >= b, a <= b
+                # a  ---------
+                # b  ---------
+
+                (-1, -1, -1, -1): (0, 1),  # a < b, a <= b
+                # a ----
+                # b       -----
+
+                (-1, -1, -1, 0): (1,),  # a <= b
+                # a ----
+                # b     -----  (book-ended)
+
+                (1, 1, 0, 1): (5,),  # a >= b
+                # a     -----
+                # b ----      (book-ended)
+
+                (1, 1, 1, 1): (4, 5), # a > b, a >= b
+                # a       ------
+                # b ----
+
+                (0, 1, -1, 1): (5,),  # a >= b
+                # a  ------------
+                # b  ---------
+
+                (1, 0, -1, 1): (5,),  # a >= b
+                # a   -----------
+                # b -------------
+
+                (-1, 0, -1, 1): (1,),  # a <= b
+                # a -------------
+                # b   -----------
+
+                (0, -1, -1, 1): (1,), # a <= b
+                # a  ---------
+                # b  ------------
+
+                (-1, -1, -1, 1): (1,), # a <= b
+                # a -----------
+                # b        -----------
+
+                (1, 1, -1, 1): (5,),  # a >= b
+                # a        -----------
+                # b -----------
+
+                (1, -1, -1, 1): tuple(), # undef
+                # a    ----
+                # b -----------
+
+                (-1, 1, -1, 1): tuple(), # undef
+                # a -----------
+                # b    ----
+
+                (-1, 0, -1, 0): (1,),  # a <= b
+                # a -----------
+                # b           -
+
+                (1, 0, 0, 1): (5,),  # a >= b
+                # a           -
+                # b -----------
+
+                (0, 0, 0, 0): (1, 2, 5),  # a == b, a <= b, a >= b
+                # a -
+                # b -  (starts and stops are identical for all features)
+            }
 
 
 class MalformedBedLineError(Exception):
@@ -154,17 +224,32 @@ cdef class Interval:
 
     # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
     def __richcmp__(self, other, int op):
-        if self.chrom != other.chrom:
+
+        if (self.chrom != other.chrom) or (self.strand != other.strand):
             if op == 3: return True
-            return 0
-        n = self.name
-        if n is not None and n == other.name:
-            v = 0
-        else:
-            v = cmp(self.start, other.start) or (self.end, other.end)
-        if op in (0, 1, 2): return v
-        if op in (4, 5): return -v
-        return not v
+            return False
+
+        # check all 4 so that we can handle nesting and partial overlaps.
+        profile = (cmp(self.start, other.start),
+                   cmp(self.stop, other.stop),
+                   cmp(self.start, other.stop),
+                   cmp(self.stop, other.start))
+
+        try:
+            if PROFILES_TRUE[profile] == tuple():
+                raise NotImplementedError('Features are nested -- comparison undefined')
+
+            if op != 3:
+                if op in PROFILES_TRUE[profile]:
+                    return True
+                return False
+            else:
+                if 2 in PROFILES_TRUE[profile]:
+                    return False
+                return True
+        except KeyError:
+            raise ValueError('Currently unsupported comparison -- please '
+                             'submit a bug report')
 
     property start:
         """The 0-based start of the feature."""
