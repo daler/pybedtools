@@ -958,6 +958,28 @@ class BedTool(object):
                     break
         return BedTool(_generator())
 
+    def all_hits(self, interval, same_strand=False, overlap=0.0):
+        """
+        Calls the `all_hits` method of an IntervalFile to return all intervals
+        in this current BedTool that overlap `interval`.
+
+        Notes:
+                If this current BedTool is generator-based, it will be
+                converted into a file first.
+
+                If this current BedTool refers to a BAM file, it will be
+                converted to a BED file first using default arguments.  If you
+                don't want this to happen, please convert to BED first before
+                using this method.
+        """
+        fn = self.fn
+        if not isinstance(fn, basestring):
+            fn = self.saveas().fn
+        if self._isbam:
+            fn = self.bam_to_bed().fn
+        interval_file = pybedtools.IntervalFile(fn)
+        return interval_file.all_hits(interval, same_strand, overlap)
+
     @_log_to_history
     @_wraps(prog='bed12ToBed6', implicit='i', bam=None, other=None)
     def bed6(self, **kwargs):
