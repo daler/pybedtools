@@ -11,12 +11,11 @@
 
 import argparse
 import sys
-from math import floor
 import pybedtools
 import urllib
 import urllib2
 
-def venn_gchart(a, b, c, colors=None, labels=None, size='300x300'):
+def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
     """
     a, b, and c are filenames to BED-like files.
 
@@ -30,18 +29,23 @@ def venn_gchart(a, b, c, colors=None, labels=None, size='300x300'):
     """
     a = pybedtools.BedTool(a)
     b = pybedtools.BedTool(b)
-    c = pybedtools.BedTool(c)
+    if c:
+        c = pybedtools.BedTool(c)
 
     # The order of values is meaningful to the API, see
     # http://code.google.com/apis/chart/docs/gallery/venn_charts.html
-    vals = [len(a),
-            len(b),
-            len(c),
-            len(a+b),
-            len(a+c),
-            len(b+c),
-            len(a+b+c)]
-
+    if c:
+        vals = [len(a),
+                len(b),
+                len(c),
+                len(a+b),
+                len(a+c),
+                len(b+c),
+                len(a+b+c)]
+    else:
+        # insert 0 for size of 3rd circle.
+        vals = [len(a), len(b), 0, len(a+b)]
+        labels = labels[:2]
     # API doesn't seem to like large numbers, so get fractions instead, then
     # join make a comma-separated list of values.
     mx = float(max(vals))
@@ -69,6 +73,7 @@ def gchart(data, outfn='out.png'):
 
     # Request and get the PNG
     req = urllib2.Request(url, data)
+    print url + data
     response = urllib2.urlopen(req)
     f = open(outfn,'w')
     f.write(response.read())
@@ -94,7 +99,7 @@ def main():
     op.add_argument('--test', action='store_true', help='run test, overriding all other options.')
     options = op.parse_args()
 
-    reqd_args = ['a','b','c']
+    reqd_args = ['a','b']
     if not options.test:
         for ra in reqd_args:
             if not getattr(options,ra):
