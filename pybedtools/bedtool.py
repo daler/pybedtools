@@ -574,7 +574,6 @@ class BedTool(object):
             fh.close()
             return BedTool(fh.name)
 
-
     @classmethod
     def _tmp(self):
         '''
@@ -843,6 +842,8 @@ class BedTool(object):
             else:
                 tmp = self._tmp()
 
+        additional_args = kwargs.pop('additional_args', None)
+
         # Parse the kwargs into BEDTools-ready args
         cmds = [prog]
         for key, value in kwargs.items():
@@ -870,6 +871,9 @@ class BedTool(object):
             else:
                 cmds.append('-' + key)
                 cmds.append(str(value))
+
+        if additional_args:
+            cmds.append(additional_args)
 
         if debug:
             sys.stderr.write('cmds: ' + str(cmds) + '\n')

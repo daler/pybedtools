@@ -880,6 +880,15 @@ def test_pickleable():
     new_interval = pickle.load(open(fn))
     assert str(interval) == str(new_interval)
 
+
+def test_additional_args():
+    a = pybedtools.example_bedtool('a.bed')
+    expected = fix("""
+    chr1	1	2	1
+    chr1	100	101	1
+    chr1	900	901	1""")
+    assert a.genome_coverage(bg=True, strand='+', genome='hg19', additional_args='-5') == expected
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
