@@ -11,7 +11,7 @@ import multiprocessing
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, \
-    _check_sequence_stderr, isBAM, BEDToolsError, _call_randomintersect
+    _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, _call_randomintersect
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
@@ -309,9 +309,78 @@ class BedTool(object):
         self.history = History()
 
         if self._isbam and isinstance(self.fn, basestring):
-            self._bam_header = ''.join(BAM(self.fn, header_only=True))
+            try:
+                self._bam_header = ''.join(BAM(self.fn, header_only=True))
+
+            # BAM reader will raise ValueError for BGZIPed files that are not
+            # BAM format (e.g., plain BED files that have been BGZIPed for
+            # tabix)
+            except ValueError:
+                self._isbam = False
         else:
             self._bam_header = ""
+
+    def tabix_intervals(self, interval_or_string):
+        """
+        Given either a string in "chrom:start-stop" format, or an interval-like
+        object with chrom, start, stop attributes, return a BedTool of the
+        features in this BedTool that overlap the provided interval.
+        """
+        if not self._tabixed():
+            raise ValueError("This BedTool has not been indexed for tabix "
+                    "-- please use the .tabix() method")
+        if isinstance(interval_or_string, basestring):
+            coords = interval_or_string
+        else:
+            coords = '%s:%s-%s' % (
+                    interval_or_string.chrom,
+                    interval_or_string.start,
+                    interval_or_string.stop)
+        cmds = ['tabix', self.fn, coords]
+        fn = self._tmp()
+
+        p = subprocess.Popen(cmds, stdout=open(fn, 'w'))
+        p.communicate()
+        return BedTool(fn)
+
+    def tabix(self):
+        """
+        Helper function to return a new BedTool that has been BGZIP compressed
+        and indexed by tabix.
+        """
+        fn = self._bgzip()
+        cmds = ['tabix', '-p', self.file_type, fn]
+        os.system(' '.join(cmds))
+        return BedTool(fn)
+
+    def _tabixed(self):
+        """
+        Verifies that we're working with a tabixed file -- a string filename
+        pointing to a BGZIPed file with a .tbi file in the same dir.
+        """
+        if not isinstance(self.fn, basestring):
+            return False
+        if not isBGZIP(self.fn):
+            return False
+        if not os.path.exists(self.fn + '.tbi'):
+            return False
+        return True
+
+    def _bgzip(self):
+        """
+        Checks to see if we already have a BGZIP file; if not then prepare one.
+        """
+
+        # It may already be BGZIPed...
+        if isinstance(self.fn, basestring):
+            if isBAM(self.fn):
+                return self.fn
+
+        # Otherwise, sort it, collapse it if needed, and save the bgzipped.
+        fn = self.sort().fn
+        cmds = ['bgzip', fn]
+        os.system(' '.join(cmds))
+        return fn + '.gz'
 
     def delete_temporary_history(self, ask=True, raw_input_func=None):
         """
@@ -1948,23 +2017,26 @@ class BAM(object):
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
                          'view', stream]
             if header_only:
-                self.cmds.append('-h')
+                self.cmds.append('-H')
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
                                       bufsize=1)
         else:
             # Streaming . . .
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
                          'view', '-']
             if header_only:
-                self.cmds.append('-h')
+                self.cmds.append('-H')
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
                                       stdin=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
                                       bufsize=0)
             # Can't iterate (for i in stream) cause we're dealing with a binary
             # BAM file here.  So read the whole thing in at once.
             self.p.stdin.write(stream.read())
+
 
     def __iter__(self):
         return self

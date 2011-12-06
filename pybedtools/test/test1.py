@@ -27,6 +27,27 @@ def fix(x):
         s += i
     return s
 
+
+# ----------------------------------------------------------------------------
+# Tabix support tests
+# ----------------------------------------------------------------------------
+def test_tabix():
+    a = pybedtools.example_bedtool('a.bed')
+    t = a.tabix()
+    assert t._tabixed()
+    assert t.tabix_intervals('chr1:99-200') == fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	200	feature2	0	+
+    chr1	150	500	feature3	0	-""")
+
+    assert t.tabix_intervals(a[2]) == fix("""
+    chr1	100	200	feature2	0	+
+    chr1	150	500	feature3	0	-""")
+
+
+
+
+
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests
 # ----------------------------------------------------------------------------
