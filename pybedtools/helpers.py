@@ -30,9 +30,9 @@ class BEDToolsError(Error):
     pass
 
 
-def isBAM(fn):
+def isBGZIP(fn):
     """
-    Reads a filename to see if it's a BAM file or not.
+    Reads a filename to see if it's a BGZIPed file or not.
     """
     header_str = open(fn).read(15)
     if len(header_str) < 15:
@@ -46,6 +46,19 @@ def isBAM(fn):
         return True
     return False
 
+
+def isBAM(fn):
+    if not isBGZIP(fn):
+        return False
+
+    # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header . . .
+    cmds = ['samtools', 'view', '-H', fn]
+    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if stderr:
+        return False
+
+    return True
 
 def find_tagged(tag):
     """
