@@ -141,7 +141,7 @@ def test_generator():
     """
     Equality of BedTools created from file, iter(), and generator
     """
-    # Test creation from file vs 
+    # Test creation from file vs
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.BedTool(iter(a))
     assert str(a) == str(b)
@@ -305,7 +305,7 @@ def test_file_type():
 # ----------------------------------------------------------------------------
 # BEDTools wrapper tests --
 #   See test_iter.py, which uses YAML test case definitions, for more complete
-#   tests of BEDTools wrapper methods. 
+#   tests of BEDTools wrapper methods.
 #
 #   Here, we assert exception raises and more complicated things that can't be
 #   easily described in YAML
@@ -398,7 +398,7 @@ CTA
 TCT
 """
     print ''.join(difflib.ndiff(seqs,expected))
-    print expected 
+    print expected
     assert seqs == expected
 
     f = a.sequence(fi=fi,s=True)
@@ -652,7 +652,7 @@ def test_name():
 # ----------------------------------------------------------------------------
 
 def test_flatten():
-    from pybedtools.helpers import _flatten_list 
+    from pybedtools.helpers import _flatten_list
     result = _flatten_list([[1,2,3,0,[0,5],9],[100]])
     print result
     assert result == [1, 2, 3, 0, 0, 5, 9, 100]
@@ -787,7 +787,7 @@ def test_bam_stream_bam_stream():
     None	0	chr2L	211	255	5M	*	0	0	AAATA	IIIII	NM:i:0	NH:i:1
     None	0	chr2L	71	255	5M	*	0	0	GAGAA	IIIII	NM:i:0	NH:i:1
     None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1
-    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")   
+    None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1""")
     d = c.intersect(b)
     print d
     assert str(d) == expected

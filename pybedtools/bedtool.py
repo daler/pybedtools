@@ -11,7 +11,8 @@ import multiprocessing
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, \
-    _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, _call_randomintersect
+    _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, \
+    _call_randomintersect
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
@@ -323,8 +324,8 @@ class BedTool(object):
     def tabix_intervals(self, interval_or_string):
         """
         Given either a string in "chrom:start-stop" format, or an interval-like
-        object with chrom, start, stop attributes, return a BedTool of the
-        features in this BedTool that overlap the provided interval.
+        object with chrom, start, stop attributes, return a *streaming* BedTool
+        of the features in this BedTool that overlap the provided interval.
         """
         if not self._tabixed():
             raise ValueError("This BedTool has not been indexed for tabix "
@@ -344,6 +345,14 @@ class BedTool(object):
         """
         Helper function to return a new BedTool that has been BGZIP compressed
         and indexed by tabix.
+
+        If `in_place` is True, then 1) assume the file is already sorted and 2)
+        replace the existing file with the BGZIPed version.
+
+        `force` will overwrite both the index as well as the BGZIP file.
+
+        If `is_sorted`, then assume the file is already sorted so that
+        BedTool.bgzip() doesn't have to do that work.
         """
         if force:
             force_arg = "-f"
@@ -364,7 +373,7 @@ class BedTool(object):
 
     def _tabixed(self):
         """
-        Verifies that we're working with a tabixed file -- a string filename
+        Verifies that we're working with a tabixed file: a string filename
         pointing to a BGZIPed file with a .tbi file in the same dir.
         """
         if not isinstance(self.fn, basestring):
@@ -378,6 +387,16 @@ class BedTool(object):
     def bgzip(self, in_place=True, force=False, is_sorted=False):
         """
         Checks to see if we already have a BGZIP file; if not then prepare one.
+
+        Always leaves the original file alone.  You can always just make
+        a BedTool out of an already sorted and BGZIPed file to avoid this step.
+
+        `in_place` will put the BGZIPed file in the same dir (possibly after
+        sorting to tempfile).
+
+        If `is_sorted`, then assume the file is already sorted.
+
+        `force` will overwrite without asking.
         """
         if force:
             force_arg = "-f"
@@ -2072,7 +2091,6 @@ class BAM(object):
             # Can't iterate (for i in stream) cause we're dealing with a binary
             # BAM file here.  So read the whole thing in at once.
             self.p.stdin.write(stream.read())
-
 
     def __iter__(self):
         return self
