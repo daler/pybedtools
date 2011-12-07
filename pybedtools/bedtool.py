@@ -337,19 +337,28 @@ class BedTool(object):
                     interval_or_string.start,
                     interval_or_string.stop)
         cmds = ['tabix', self.fn, coords]
-        fn = self._tmp()
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        return BedTool(i.strip() for i in p.stdout)
 
-        p = subprocess.Popen(cmds, stdout=open(fn, 'w'))
-        p.communicate()
-        return BedTool(fn)
-
-    def tabix(self):
+    def tabix(self, in_place=True, force=False, is_sorted=False):
         """
         Helper function to return a new BedTool that has been BGZIP compressed
         and indexed by tabix.
         """
-        fn = self._bgzip()
-        cmds = ['tabix', '-p', self.file_type, fn]
+        if force:
+            force_arg = "-f"
+        else:
+            force_arg = ""
+
+        # Return quickly if nothing to do
+        if self._tabixed() and not force:
+            return self.fn
+
+        # Make sure it's BGZIPed
+        fn = self.bgzip(in_place=in_place, force=force)
+
+        # Create the index
+        cmds = ['tabix', force_arg, '-p', self.file_type, fn]
         os.system(' '.join(cmds))
         return BedTool(fn)
 
@@ -366,21 +375,48 @@ class BedTool(object):
             return False
         return True
 
-    def _bgzip(self):
+    def bgzip(self, in_place=True, force=False, is_sorted=False):
         """
         Checks to see if we already have a BGZIP file; if not then prepare one.
         """
+        if force:
+            force_arg = "-f"
+        else:
+            force_arg = ""
 
         # It may already be BGZIPed...
-        if isinstance(self.fn, basestring):
-            if isBAM(self.fn):
+        if isinstance(self.fn, basestring) and not force:
+            if isBGZIP(self.fn):
                 return self.fn
 
-        # Otherwise, sort it, collapse it if needed, and save the bgzipped.
-        fn = self.sort().fn
-        cmds = ['bgzip', fn]
-        os.system(' '.join(cmds))
-        return fn + '.gz'
+        # If not in_place, then make a tempfile for the BGZIPed version
+        if not in_place:
+            # Get tempfile name, sorted or not
+            if not is_sorted:
+                fn = self.sort().fn
+            else:
+                fn = self._tmp()
+
+            # Register for later deletion
+            outfn = fn + '.gz'
+            BedTool.TEMPFILES.append(outfn)
+
+            # Creates tempfile.gz
+            cmds = ['bgzip', force_arg, fn]
+            os.system(' '.join(cmds))
+            return outfn
+
+        # Otherwise, make sure the BGZIPed version has a similar name to the
+        # current BedTool's file
+        if in_place:
+            if not is_sorted:
+                fn = self.sort().saveas().fn
+            else:
+                fn = self.fn
+            outfn = self.fn + '.gz'
+            cmds = ['bgzip', '-c', force_arg, fn, '>', outfn]
+            os.system(' '.join(cmds))
+            return outfn
 
     def delete_temporary_history(self, ask=True, raw_input_func=None):
         """
