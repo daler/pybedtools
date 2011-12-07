@@ -361,7 +361,7 @@ class BedTool(object):
 
         # Return quickly if nothing to do
         if self._tabixed() and not force:
-            return self.fn
+            return self
 
         # Make sure it's BGZIPed
         fn = self.bgzip(in_place=in_place, force=force)
