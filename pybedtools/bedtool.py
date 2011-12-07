@@ -321,6 +321,37 @@ class BedTool(object):
         else:
             self._bam_header = ""
 
+    def truncate_to_chrom(self, genome):
+        """
+        Some peak-callers extend peaks such that the boundaries overstep
+        chromosome coordinates.  Upon uploading such a file to a genome browser
+        like UCSC, this results in an error like::
+
+            Error line 101 of custom track: chromEnd larger than chrom chr2
+            size
+
+        Use this method to clean your file, truncating any out-of-bounds
+        features to fit within the chromosome coordinates of `genome`.
+
+        `genome` can be either an assembly name ('dm3') or a dictionary where
+        keys are chrom and values are (start, stop) tuples.
+        """
+        if isinstance(genome, dict):
+            chromdict = genome
+        else:
+            assert isinstance(genome, basestring)
+            chromdict = pybedtools.chromsizes(genome)
+
+        tmp = self._tmp()
+        fout = open(tmp, 'w')
+        for chrom, coords in chromdict.items():
+            start, stop = coords
+            start = str(start)
+            stop = str(stop)
+            fout.write('\t'.join([chrom, start, stop]) + '\n')
+        fout.close()
+        return self.intersect(tmp)
+
     def tabix_intervals(self, interval_or_string):
         """
         Given either a string in "chrom:start-stop" format, or an interval-like
