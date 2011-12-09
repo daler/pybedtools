@@ -3,10 +3,12 @@
 Example from the manuscript to print the names of genes that are <5000 bp away
 from intergenic SNPs.  See sh_ms_example.sh for the shell script equivalent.
 """
+from os import path
 from pybedtools import BedTool
 
-snps = BedTool('../test/data/snps.bed.gz')
-genes = BedTool('../test/data/hg19.gff')
+bedtools_dir = path.split(__file__)[0]
+snps = BedTool(path.join(bedtools_dir, '../test/data/snps.bed.gz'))
+genes = BedTool(path.join(bedtools_dir, '../test/data/hg19.gff'))
 
 intergenic_snps = (snps - genes)
 

@@ -435,10 +435,8 @@ cdef class Interval:
                 key = nfields + key
             return self._bed.fields.at(key).c_str()
         elif isinstance(key, slice):
-            return [self._bed.fields.at(i).c_str() for i in \
-                    range(key.start or 0,
-                          key.stop or self._bed.fields.size(),
-                          key.step or 1)]
+            indices = key.indices(self._bed.fields.size())
+            return [self._bed.fields.at(i).c_str() for i in range(*indices)]
 
         elif isinstance(key, basestring):
             if ftype == <char *>"gff":
