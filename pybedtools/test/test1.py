@@ -31,6 +31,22 @@ def fix(x):
 # ----------------------------------------------------------------------------
 # Tabix support tests
 # ----------------------------------------------------------------------------
+
+def test_interval_index():
+    """
+    supplement to the more general test in test_cbedtools.IntervalTest.testGetItemNegative
+    """
+    iv = pybedtools.create_interval_from_list('chr21   9719768 9721892 ALR/Alpha       1004    +'.split())
+    assert iv[-1] == '+'
+    assert iv[2:-1] == ['9721892', 'ALR/Alpha', '1004']
+
+    iv = pybedtools.create_interval_from_list(
+            ['chr1', 'ucb', 'gene', '465', '805', '.', '+', '.',
+                'ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805'])
+    print iv[4:-3]
+    assert iv[4:-3] == ['805', '.']
+
+
 def test_tabix():
     a = pybedtools.example_bedtool('a.bed')
     t = a.tabix()
