@@ -1,7 +1,6 @@
 ##gff-version   3
 ##sequence-region   1 465 30432469
 chr1	ucb	gene	465	805	.	+	.	ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805
-###
 chr1	ucb	gene	631	899	.	+	.	ID=AT1G01010;Name=AT1G01010;rname=AT1G01010
 chr1	ucb	mRNA	631	913	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
 chr1	ucb	CDS	760	913	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
@@ -14,5 +13,4 @@ chr1	ucb	mRNA	486	605	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
 chr1	ucb	mRNA	706	895	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
 chr1	ucb	mRNA	174	326	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
 chr1	ucb	mRNA	439	899	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
-###
 chr1	ucb	gene	60	269	.	-	.	ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_scaffold_1000119;rname=thaliana_1_6160_6269
