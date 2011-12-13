@@ -33,17 +33,22 @@ loss of speed compared to bash scripting.
 
 Example 1: Save a BED file of intersections, with track line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This example saves a new BED file of intersections between `a.bed` and
-`b.bed`, adding a track line to the output::
+This example saves a new BED file of intersections between your files `mydata/snps.bed` and
+`mydata/exons.bed`, adding a track line to the output::
 
     >>> import pybedtools
-    >>> a = pybedtools.BedTool('a.bed')
-    >>> a.intersect('b.bed').saveas('a-and-b.bed', trackline="track name='a and b' color=128,0,0")
+    >>> a = pybedtools.BedTool('mydata/snps.bed')
+    >>> a.intersect('mydata/exons.bed').saveas('snps-in-exons.bed', trackline="track name='SNPs in exons' color=128,0,0")
 
 Example 2: Intersections for a 3-way Venn diagram
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This example gets values for a 3-way Venn diagram of overlaps.  This
-demonstrates operator overloading of :class:`BedTool` objects::
+demonstrates operator overloading of :class:`BedTool` objects.  It assumes that
+you have the files `a.bed`, `b.bed`, and `c.bed` in your current working
+directory.  If you'd like to use example files that come with
+:mod:`pybedtools`, then replace strings like `'a.bed'` with
+`pybedtools.example_filename('a.bed')`, which will retrieve the absolute path
+to the example data file.::
 
 
     >>> import pybedtools
