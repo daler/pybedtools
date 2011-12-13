@@ -161,7 +161,7 @@ A more flexible way to install :mod:`pybedtools` is as follows:
 #. *[optional]* Install `sphinx`_ if needed (`easy_install sphinx`), then run the
    Sphinx doctests::
 
-        cd docs && make doctests
+        cd docs && make doctest
 
 #. *[optional]* Compile the HTML documentation in the `docs` directory of the source tree (this also needs `sphinx`_), then point your browser to
    `docs/build/html/index.html`::
