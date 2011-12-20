@@ -321,6 +321,22 @@ class BedTool(object):
         else:
             self._bam_header = ""
 
+    def split(self, func, *args, **kwargs):
+        """
+        Calls the provided function `func` with each interval.  In contrast to
+        `each` (which does something similar), this method expects `func` to
+        return an *iterable* of Interval objects.
+
+        args and kwargs are passed directly to `func`.
+
+        Returns a new BedTool.
+        """
+        def generator():
+            for orig_interval in self:
+                for interval in func(orig_interval, *args, **kwargs):
+                    yield interval
+        return BedTool(generator())
+
     def truncate_to_chrom(self, genome):
         """
         Some peak-callers extend peaks such that the boundaries overstep

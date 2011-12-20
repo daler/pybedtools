@@ -919,6 +919,34 @@ def test_pickleable():
     new_interval = pickle.load(open(fn))
     assert str(interval) == str(new_interval)
 
+def test_split():
+    a = pybedtools.example_bedtool('a.bed')
+
+    def func(x, dist1, dist2):
+        "shift the features around"
+
+        newstart = x.start + dist1
+        newstop = x.stop + dist1
+        x.start = newstart
+        x.stop = newstop
+        yield x
+
+        x.start -= dist2
+        x.stop -= dist2
+
+        yield x
+
+    result = str(a.split(func, 1000, 100))
+    assert result == fix("""
+    chr1	1001	1100	feature1	0	+
+    chr1	901	1000	feature1	0	+
+    chr1	1100	1200	feature2	0	+
+    chr1	1000	1100	feature2	0	+
+    chr1	1150	1500	feature3	0	-
+    chr1	1050	1400	feature3	0	-
+    chr1	1900	1950	feature4	0	+
+    chr1	1800	1850	feature4	0	+
+    """)
 
 def test_additional_args():
     a = pybedtools.example_bedtool('a.bed')
