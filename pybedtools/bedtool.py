@@ -1138,6 +1138,8 @@ class BedTool(object):
         Calls the `all_hits` method of an IntervalFile to return all intervals
         in this current BedTool that overlap `interval`.
 
+        Require that overlaps have the same strand with same_strand=True.
+
         Notes:
                 If this current BedTool is generator-based, it will be
                 converted into a file first.
@@ -1154,6 +1156,54 @@ class BedTool(object):
             fn = self.bam_to_bed().fn
         interval_file = pybedtools.IntervalFile(fn)
         return interval_file.all_hits(interval, same_strand, overlap)
+
+    def any_hits(self, interval, same_strand=False, overlap=0.0):
+        """
+        Calls the `any_hits` method of an IntervalFile.  If there were any hits
+        within `interval` in this BedTool, then return 1; otherwise 0.
+
+        Require that overlaps have the same strand with same_strand=True.
+
+        Notes:
+                If this current BedTool is generator-based, it will be
+                converted into a file first.
+
+                If this current BedTool refers to a BAM file, it will be
+                converted to a BED file first using default arguments.  If you
+                don't want this to happen, please convert to BED first before
+                using this method.
+        """
+        fn = self.fn
+        if not isinstance(fn, basestring):
+            fn = self.saveas().fn
+        if self._isbam:
+            fn = self.bam_to_bed().fn
+        interval_file = pybedtools.IntervalFile(fn)
+        return interval_file.any_hits(interval, same_strand, overlap)
+
+    def count_hits(self, interval, same_strand=False, overlap=0.0):
+        """
+        Calls the `count_hits` method of an IntervalFile.  Returns the number
+        of valid hits in this BedTool that overlap `interval`.
+
+        Require that overlaps have the same strand with same_strand=True.
+
+        Notes:
+                If this current BedTool is generator-based, it will be
+                converted into a file first.
+
+                If this current BedTool refers to a BAM file, it will be
+                converted to a BED file first using default arguments.  If you
+                don't want this to happen, please convert to BED first before
+                using this method.
+        """
+        fn = self.fn
+        if not isinstance(fn, basestring):
+            fn = self.saveas().fn
+        if self._isbam:
+            fn = self.bam_to_bed().fn
+        interval_file = pybedtools.IntervalFile(fn)
+        return interval_file.count_hits(interval, same_strand, overlap)
 
     @_log_to_history
     @_wraps(prog='bed12ToBed6', implicit='i', bam=None, other=None)

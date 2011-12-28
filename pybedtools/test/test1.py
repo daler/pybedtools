@@ -46,7 +46,6 @@ def test_interval_index():
     print iv[4:-3]
     assert iv[4:-3] == ['805', '.']
 
-
 def test_tabix():
     a = pybedtools.example_bedtool('a.bed')
     t = a.tabix()
@@ -955,6 +954,40 @@ def test_additional_args():
     chr1	100	101	1
     chr1	900	901	1""")
     assert a.genome_coverage(bg=True, strand='+', genome='hg19', additional_args='-5') == expected
+
+
+#------------------------------------------------------------------------------
+# Tests for IntervalFile, as accessed by BedTool objects
+#------------------------------------------------------------------------------
+def test_any_hits():
+    a = pybedtools.example_bedtool('a.bed')
+
+    assert 1 == a.any_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '900', '905', '.', '.', '-']))
+
+    assert 0 == a.any_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '900', '905', '.', '.', '-']), same_strand=True)
+
+    assert 0 == a.any_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '8000', '9000', '.', '.', '-']))
+
+def test_all_hits():
+    a = pybedtools.example_bedtool('a.bed')
+
+    assert [a[2], a[3]] == a.all_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '450', '905', '.', '.', '-']))
+
+    assert [a[2]] == a.all_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '450', '905', '.', '.', '-']), same_strand=True)
+
+def test_count_hits():
+    a = pybedtools.example_bedtool('a.bed')
+
+    assert len(a.all_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '450', '905', '.', '.', '-']))) == 2
+
+    assert len(a.all_hits(pybedtools.create_interval_from_list(
+                      ['chr1', '450', '905', '.', '.', '-']), same_strand=True)) == 1
 
 def teardown():
     # always run this!
