@@ -67,8 +67,7 @@ class Classifier(object):
                     or (exclude and featuretype in exclude):
                 featuretype = '.'
 
-            key = '\t'.join(feature[:bed_fields])
-            d[key].update([featuretype])
+            d[feature].update([featuretype])
 
         return d
 
