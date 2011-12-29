@@ -505,6 +505,11 @@ chr1	900	950	feature4	0	+
     print s.splitlines(True)
     assert a == s
 
+def test_hash():
+    a = pybedtools.example_bedtool('a.bed')
+    d = {}
+    for i in a:
+        d[i] = 1
 
 
 # ----------------------------------------------------------------------------

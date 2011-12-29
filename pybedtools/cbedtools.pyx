@@ -212,6 +212,9 @@ cdef class Interval:
     def __copy__(self):
         return create_interval_from_list(self.fields)
 
+    def __hash__(self):
+        return hash("\t".join(self.fields))
+
     property chrom:
         """ the chromosome of the feature"""
         def __get__(self):
