@@ -67,7 +67,11 @@ class Classifier(object):
                     or (exclude and featuretype in exclude):
                 featuretype = '.'
 
-            d[feature].update([featuretype])
+            # the original query is in the first `bed_fields` items.  Construct
+            # a new feature out of this and use it as the key.
+            key = pybedtools.create_interval_from_list(
+                    feature.fields[:bed_fields])
+            d[key].update([featuretype])
 
         return d
 
