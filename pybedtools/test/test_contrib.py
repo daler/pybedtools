@@ -34,6 +34,25 @@ $      +      + +          #
 #  UNSTRANDED: none
 
 
+def fix(x):
+    """
+    Replaces spaces with tabs, removes spurious newlines, and lstrip()s each
+    line. Makes it really easy to create BED files on the fly for testing and
+    checking.
+    """
+    s = ""
+    for i in  x.splitlines():
+        i = i.lstrip()
+        if i.endswith('\t'):
+            add_tab = '\t'
+        else:
+            add_tab = ''
+        if len(i) == 0:
+            continue
+        i = i.split()
+        i = '\t'.join(i) + add_tab + '\n'
+        s += i
+    return s
 
 def test_classifier():
 
@@ -50,3 +69,70 @@ def test_classifier():
     for k, v in c.class_counts(d).items():
         print 'class: "%s" count: %s' % (k, v)
     raise NotImplementedError('Still working on the test...')
+
+
+def test_cleaned_intersect():
+    x = pybedtools.BedTool("""
+    chr1 1 10      1
+    chr1 20 30     2
+    chr1 100 120   3
+    """, from_string=True)
+    y = pybedtools.BedTool("""
+    chr1 2 7       4
+    chr1 110 120   5
+    chr1 200 210   6
+    """, from_string=True)
+    z = pybedtools.BedTool("""
+    chr1 25 40     7
+    chr1 190 205   8
+    chr1 1000 1001 9
+    """, from_string=True)
+
+    # Two-way test
+    #
+    x2, y2 = pybedtools.contrib.venn_maker.cleaned_intersect([x, y])
+
+    # x should be the same -- 1, 2, 3
+    # y should have 1, 3, 6
+
+    assert x2 == fix("""
+    chr1 1 10
+    chr1 20 30
+    chr1 100 120
+    """)
+
+    assert y2 == fix("""
+    chr1 1 10
+    chr1 100 120
+    chr1 200 210""")
+
+    # Three-way test
+    #
+    x3, y3, z3 = pybedtools.contrib.venn_maker.cleaned_intersect([x, y, z])
+
+    # x should be the same -- 1, 2, 3
+    # y should have 1, 3, 6
+    # z should have 2, 6
+
+    assert x3 == fix("""
+    chr1 1 10
+    chr1 20 30
+    chr1 100 120
+    """)
+
+    assert y3 == fix("""
+    chr1 1 10
+    chr1 100 120
+    chr1 200 210""")
+
+    assert z3 == fix("""
+    chr1 20 30
+    chr1 200 210
+    chr1 1000 1001""")
+
+    print pybedtools.contrib.venn_maker.venn_maker(
+            beds=[x, y, z],
+            names=['x','y','z'],
+            figure_filename='out.tiff',
+            additional_args = ['euler.d=TRUE', 'scaled=TRUE', 'fill=c("red","blue", "orange")'],
+            run=True)
