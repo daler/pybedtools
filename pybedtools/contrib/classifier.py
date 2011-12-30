@@ -40,6 +40,20 @@ class Classifier(object):
 
         To see what's available, use available_featuretypes().
 
+        When run, this method creates the following dictionaries as attributes
+        of this object:
+
+         feature_classes: keys are Intervals from `bed`;
+                          values are sets of featuretypes from `annotations`
+
+         class_features : keys are frozensets of featuretypes from
+                          `annotations`; values are lists of Intervals from
+                          `bed`;
+
+         class_counts   : keys are frozensets of featuretypes from
+                          annotations`; values are number of features -- so the
+                          length of values in the class_features dictionary.
+
         """
         if include and exclude:
             raise ValueError('Can only specify one of `include` or `exclude`')
@@ -52,7 +66,7 @@ class Classifier(object):
         bed_fields = self.bed.field_count()
         featuretype_idx = bed_fields + 2
 
-        d = defaultdict(set)
+        self.feature_classes = defaultdict(set)
 
         x = self.bed.intersect(self.annotations,
                                wao=True,
@@ -71,24 +85,14 @@ class Classifier(object):
             # a new feature out of this and use it as the key.
             key = pybedtools.create_interval_from_list(
                     feature.fields[:bed_fields])
-            d[key].update([featuretype])
+            self.feature_classes[key].update([featuretype])
 
-        return d
+        self.class_features = defaultdict(list)
+        self.class_counts = defaultdict(int)
 
-    def class_counts(self, d):
-        """
-        `d` is the dictionary returned by classify.  Returns a dictionary of
-        featuretype classes as keys and the number of BED features in the class
-        as values.
-
-        A featuretype class can be one featuretype or a combination (e.g.,
-        "exon and intron")
-        """
-        count_d = defaultdict(int)
-        for feature, featuretypes in d.items():
+        for feature, featuretypes in self.feature_classes.items():
             # get rid of "unannotated"
             ft = featuretypes.difference(['.'])
-            label = ','.join(sorted(list(ft)))
-            count_d[label] += 1
-
-        return count_d
+            key = frozenset(ft)
+            self.class_features[key].append(feature)
+            self.class_counts[key] += 1
