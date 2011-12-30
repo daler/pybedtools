@@ -7,6 +7,38 @@ Changes since v0.5.5
 * initial support for tabix files.  Useful for extracting features from
   a single region when you don't need a full intersection.
 
+* new :mod:`pybedtools.contrib` module (in the spirit of Django's `contrib`)
+  where higher-level functionality will be built.
+
+* :class:`pybedtools.contrib.Classifier` class for identifying the classes of
+  intervals.  Useful for making pie charts of intronic/exonic/intergenic etc
+  classes of peaks
+
+* :func:`pybedtools.contrib.venn_maker` function that acts as an interface to
+  the VennDiagram R package -- just give it some BED files and it'll do the
+  rest
+
+* :class:`Interval` objects are pickleable, so you can pass them between
+  processes when using the muliprocessing module
+
+* :class:`Interval` objects are hashable (it's just a hash of the string
+  representation) so that you can use them as dictionary keys.
+
+* :meth:`BedTool.split` method, which accepts a function that returns an
+  iterable of Intervals and is applied to each interval.  Useful for, say,
+  splitting each gene into TSS, TTS, upstream and downstream features.
+
+* :meth:`truncate_to_chrom` method, which truncates features to the chromosome
+  sizes of the provided genome.  Useful for when you try uploading
+  a MACS-generated track to the genome browser, but it complains because peak
+  boundaries have been extended outside chromosome boundaries.
+
+* :class:`BedTool` objects now have full functionality of :class:`IntervalFile`
+  objects -- that is, they have the methods :meth:`BedTool.any_hits`,
+  :meth:`BedTool.all_hits`, and :meth:`BedTool.count_hits` for doing
+  single-interval tests.  Sometimes this will be faster than using the tabix
+  support, sometimes it won't -- it's best to try both, depending on your data.
+
 Changes in v0.5.5
 -----------------
 * Use `additional_args` kwarg to pass arguments verbatim to the underlying
