@@ -9,10 +9,21 @@ usage = """
 
     Send in a list of `N` bed files, and this script will create an N by
     N matrix of their intersections, or optionally, co-localization scores.
-"""
+
+    Run the example with::
+
+        %s --test > matrix.txt
+
+    You can then plot a quick heatmap in R with::
+
+        > m = as.matrix(read.table("matrix.txt"))
+        > heatmap(m)
+
+""" % sys.argv[0]
 
 ap = argparse.ArgumentParser(usage=usage)
-ap.add_argument('beds', nargs="*", help="BED/GTF/GFF/VCF filenames")
+ap.add_argument('beds', nargs="*", help='BED/GTF/GFF/VCF filenames, e.g., '
+                'in a directory of bed files, you can use *.bed')
 ap.add_argument('--enrichment', action='store_true',
                 help='Run randomizations (default 1000, specify otherwise '
                 'with --iterations) on each pairwise comparison and compute '
