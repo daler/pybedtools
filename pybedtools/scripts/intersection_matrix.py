@@ -2,58 +2,80 @@
 import collections
 import sys
 import os.path as op
+import argparse
 from pybedtools import BedTool, example_filename
 
 usage = """
-Send in a list of `N` bed files, and this script will create an N by N matrix
-of their intersections.
 
-Usage:
+    Send in a list of `N` bed files, and this script will create an N by
+    N matrix of their intersections, or optionally, co-localization scores.
+"""
 
-    %s *.bed > matrix.txt
+ap = argparse.ArgumentParser(usage=usage)
+ap.add_argument('beds', nargs="*", help="BED/GTF/GFF/VCF filenames")
+ap.add_argument('--enrichment', action='store_true',
+                help='Run randomizations (default 1000, specify otherwise '
+                'with --iterations) on each pairwise comparison and compute '
+                'the enrichment score as (actual intersection count + 1) / '
+                '(median randomized + 1).')
+ap.add_argument('--genome', help='Required argument if --enrichment is used.  '
+                'Needs to be a string assembly name like "dm3" or "hg19"')
+ap.add_argument('--iterations', default=1000, type=int,
+                help='Number of randomizations to perform for enrichement '
+                'scores')
+ap.add_argument('--test', action='store_true', help='Ignore any input BED '
+                'files and use test BED files')
+args = ap.parse_args()
 
-To run with test data, use:
 
-    %s --test
-
-""" % (op.basename(sys.argv[0]),
-        op.basename(sys.argv[0]))
-
-try:
-    bed_files = sys.argv[1:]
-
-    if bed_files[0] == '--test':
-        # insulator binding sites from ChIP-chip -- 4 proteins, 2 cell types
-        # Genes Dev. 2009 23(11):1338-1350
-        bed_files = ['Cp190_Kc_Bushey_2009.bed',
-                     'Cp190_Mbn2_Bushey_2009.bed',
-                     'CTCF_Kc_Bushey_2009.bed',
-                     'CTCF_Mbn2_Bushey_2009.bed',
-                     'SuHw_Kc_Bushey_2009.bed',
-                     'SuHw_Mbn2_Bushey_2009.bed',
-                     'BEAF_Mbn2_Bushey_2009.bed',
-                     'BEAF_Kc_Bushey_2009.bed'
-                     ]
-        bed_files = [example_filename(i) for i in bed_files]
-
-except IndexError:
-    sys.stderr.write(usage)
+if not args.beds and not args.test:
+    ap.print_help()
     sys.exit(1)
+
+if args.test:
+    # insulator binding sites from ChIP-chip -- 4 proteins, 2 cell types
+    # Genes Dev. 2009 23(11):1338-1350
+    args.beds = [example_filename(i) for i in  [
+            'Cp190_Kc_Bushey_2009.bed',
+            'Cp190_Mbn2_Bushey_2009.bed',
+            'CTCF_Kc_Bushey_2009.bed',
+            'CTCF_Mbn2_Bushey_2009.bed',
+            'SuHw_Kc_Bushey_2009.bed',
+            'SuHw_Mbn2_Bushey_2009.bed',
+            'BEAF_Mbn2_Bushey_2009.bed',
+            'BEAF_Kc_Bushey_2009.bed'
+            ]]
+
 
 def get_name(fname):
     return op.splitext(op.basename(fname))[0]
 
+
+def actual_intersection(a, b):
+    return len(a.intersect(b, u=True))
+
+
+def enrichment_score(a, b):
+    results = a.set_chromsizes(args.genome).randomstats(b, args.iterations)
+    return (results['actual'] + 1) / (results['median randomized'] + 1)
+
+if args.enrichment:
+    FUNC = enrichment_score
+else:
+    FUNC = actual_intersection
+
 matrix = collections.defaultdict(dict)
-for fa in bed_files:
-   a = BedTool(fa)
-   for fb in bed_files:
-       matrix[get_name(fa)][get_name(fb)] = len(a.intersect(fb, u=True))
+for fa in args.beds:
+    a = BedTool(fa)
+    for fb in args.beds:
+        b = BedTool(fb)
+        matrix[get_name(fa)][get_name(fb)] = FUNC(a, b)
 
 keys = sorted(matrix.keys())
 
-print "\t".join(keys)
+print "\t" + "\t".join(keys)
 for k in keys:
-    print k + '\t',
+    print k,
     for j in keys:
         print '\t' + str(matrix[k][j]),
     print
