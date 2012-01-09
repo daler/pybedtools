@@ -24,6 +24,8 @@ usage = """
 ap = argparse.ArgumentParser(usage=usage)
 ap.add_argument('beds', nargs="*", help='BED/GTF/GFF/VCF filenames, e.g., '
                 'in a directory of bed files, you can use *.bed')
+ap.add_argument('--frac', action='store_true',
+                help='Instead of counts, report fraction overlapped')
 ap.add_argument('--enrichment', action='store_true',
                 help='Run randomizations (default 1000, specify otherwise '
                 'with --iterations) on each pairwise comparison and compute '
@@ -34,6 +36,8 @@ ap.add_argument('--genome', help='Required argument if --enrichment is used.  '
 ap.add_argument('--iterations', default=1000, type=int,
                 help='Number of randomizations to perform for enrichement '
                 'scores')
+ap.add_argument('--processes', default=None, type=int,
+                help='Number of CPUs to use for randomization')
 ap.add_argument('--test', action='store_true', help='Ignore any input BED '
                 'files and use test BED files')
 args = ap.parse_args()
@@ -66,12 +70,20 @@ def actual_intersection(a, b):
     return len(a.intersect(b, u=True))
 
 
+def frac_of_a(a, b):
+    len_a = float(len(a))
+    return len(a.intersect(b, u=True)) / len_a
+
 def enrichment_score(a, b):
-    results = a.set_chromsizes(args.genome).randomstats(b, args.iterations)
+    results = a\
+            .set_chromsizes(args.genome)\
+            .randomstats(b, args.iterations, processes=args.processes)
     return (results['actual'] + 1) / (results['median randomized'] + 1)
 
 if args.enrichment:
     FUNC = enrichment_score
+elif args.frac:
+    FUNC = frac_of_a
 else:
     FUNC = actual_intersection
 
