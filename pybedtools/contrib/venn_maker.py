@@ -7,6 +7,7 @@ R script that can be edited and tweaked by the user before being run in R.
 import os
 import string
 import pybedtools
+import subprocess
 
 
 # really just fill in x and filename...leave the rest up to the user.
@@ -180,21 +181,27 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
 
     s += ")"
 
+    if not script_filename:
+        fn = pybedtools.BedTool._tmp()
+    else:
+        fn = script_filename
+
+    fout = open(fn, 'w')
+    fout.write(s)
+    fout.close()
+
+    out = fn + '.Rout'
     if run:
-        if not script_filename:
-            tmp = pybedtools.BedTool._tmp()
-            fout = open(tmp, 'w')
-            fout.write(s)
-            fout.close()
-            fn = tmp
-        else:
-            fn = script_filename
-        os.system('R CMD BATCH %s' % (fn))
+        cmds = ['R', 'CMD', 'BATCH', 
+                fn, out]
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        stdout, stderr = p.communicate()
+        if stdout or stderr:
+            print "stdout:", stdout
+            print "stderr:", stderr
 
     if not script_filename:
         return s
 
-    fout = open(script_filename, 'w')
-    fout.write(s)
-    fout.close()
     return None
