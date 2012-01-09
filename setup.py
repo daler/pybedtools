@@ -81,6 +81,7 @@ setup(
                    'pybedtools/scripts/venn_mpl.py',
                    'pybedtools/scripts/annotate.py',
                    'pybedtools/scripts/peak_pie.py',
+                   'pybedtools/scripts/intersection_matrix.py',
                    'pybedtools/scripts/intron_exon_reads.py',
                    'pybedtools/scripts/pybedtools_demo.py'],
         author_email="dalerr@niddk.nih.gov",
