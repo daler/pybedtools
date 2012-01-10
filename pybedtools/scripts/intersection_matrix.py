@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import collections
+import time
 import sys
 import os.path as op
 import argparse
@@ -21,46 +22,6 @@ usage = """
 
 """ % sys.argv[0]
 
-ap = argparse.ArgumentParser(usage=usage)
-ap.add_argument('beds', nargs="*", help='BED/GTF/GFF/VCF filenames, e.g., '
-                'in a directory of bed files, you can use *.bed')
-ap.add_argument('--frac', action='store_true',
-                help='Instead of counts, report fraction overlapped')
-ap.add_argument('--enrichment', action='store_true',
-                help='Run randomizations (default 1000, specify otherwise '
-                'with --iterations) on each pairwise comparison and compute '
-                'the enrichment score as (actual intersection count + 1) / '
-                '(median randomized + 1).')
-ap.add_argument('--genome', help='Required argument if --enrichment is used.  '
-                'Needs to be a string assembly name like "dm3" or "hg19"')
-ap.add_argument('--iterations', default=1000, type=int,
-                help='Number of randomizations to perform for enrichement '
-                'scores')
-ap.add_argument('--processes', default=None, type=int,
-                help='Number of CPUs to use for randomization')
-ap.add_argument('--test', action='store_true', help='Ignore any input BED '
-                'files and use test BED files')
-args = ap.parse_args()
-
-
-if not args.beds and not args.test:
-    ap.print_help()
-    sys.exit(1)
-
-if args.test:
-    # insulator binding sites from ChIP-chip -- 4 proteins, 2 cell types
-    # Genes Dev. 2009 23(11):1338-1350
-    args.beds = [example_filename(i) for i in  [
-            'Cp190_Kc_Bushey_2009.bed',
-            'Cp190_Mbn2_Bushey_2009.bed',
-            'CTCF_Kc_Bushey_2009.bed',
-            'CTCF_Mbn2_Bushey_2009.bed',
-            'SuHw_Kc_Bushey_2009.bed',
-            'SuHw_Mbn2_Bushey_2009.bed',
-            'BEAF_Mbn2_Bushey_2009.bed',
-            'BEAF_Kc_Bushey_2009.bed'
-            ]]
-
 
 def get_name(fname):
     return op.splitext(op.basename(fname))[0]
@@ -74,31 +35,101 @@ def frac_of_a(a, b):
     len_a = float(len(a))
     return len(a.intersect(b, u=True)) / len_a
 
+
 def enrichment_score(a, b):
     results = a\
             .set_chromsizes(args.genome)\
             .randomstats(b, args.iterations, processes=args.processes)
     return (results['actual'] + 1) / (results['median randomized'] + 1)
 
-if args.enrichment:
-    FUNC = enrichment_score
-elif args.frac:
-    FUNC = frac_of_a
-else:
-    FUNC = actual_intersection
 
-matrix = collections.defaultdict(dict)
-for fa in args.beds:
-    a = BedTool(fa)
-    for fb in args.beds:
-        b = BedTool(fb)
-        matrix[get_name(fa)][get_name(fb)] = FUNC(a, b)
+def create_matrix(beds, func, verbose=False):
+    nfiles = len(beds)
+    total = nfiles ** 2
+    i = 0
+    matrix = collections.defaultdict(dict)
+    for fa in args.beds:
+        a = BedTool(fa)
+        for fb in args.beds:
+            i += 1
+            b = BedTool(fb)
 
-keys = sorted(matrix.keys())
+            if verbose:
+                sys.stderr.write(
+                        '%(i)s of %(total)s: %(fa)s + %(fb)s\n' % locals())
+                sys.stderr.flush()
 
-print "\t" + "\t".join(keys)
-for k in keys:
-    print k,
-    for j in keys:
-        print '\t' + str(matrix[k][j]),
-    print
+            matrix[get_name(fa)][get_name(fb)] = FUNC(a, b)
+
+    return matrix
+
+if __name__ == "__main__":
+
+    ap = argparse.ArgumentParser(usage=usage)
+    ap.add_argument('beds', nargs="*", help='BED/GTF/GFF/VCF filenames, e.g., '
+                    'in a directory of bed files, you can use *.bed')
+    ap.add_argument('--frac', action='store_true',
+                    help='Instead of counts, report fraction overlapped')
+    ap.add_argument('--enrichment', action='store_true',
+                    help='Run randomizations (default 1000, specify otherwise '
+                    'with --iterations) on each pairwise comparison and '
+                    'compute the enrichment score as '
+                    '(actual intersection count + 1) / (median randomized + 1)'
+                    )
+    ap.add_argument('--genome', help='Required argument if --enrichment is '
+                    'used. Needs to be a string assembly name like "dm3" or '
+                    '"hg19"')
+    ap.add_argument('--iterations', default=1000, type=int,
+                    help='Number of randomizations to perform for enrichement '
+                    'scores')
+    ap.add_argument('--processes', default=None, type=int,
+                    help='Number of CPUs to use for randomization')
+    ap.add_argument('--test', action='store_true', help='Ignore any input BED '
+                    'files and use test BED files')
+    ap.add_argument('-v', '--verbose', action='store_true',
+                    help='Be verbose: print which files are '
+                    'currently being intersected and timing info at the end.')
+    args = ap.parse_args()
+
+    if not args.beds and not args.test:
+        ap.print_help()
+        sys.exit(1)
+
+    if args.test:
+        # insulator binding sites from ChIP-chip -- 4 proteins, 2 cell types
+        # Genes Dev. 2009 23(11):1338-1350
+        args.beds = [example_filename(i) for i in  [
+                'Cp190_Kc_Bushey_2009.bed',
+                'Cp190_Mbn2_Bushey_2009.bed',
+                'CTCF_Kc_Bushey_2009.bed',
+                'CTCF_Mbn2_Bushey_2009.bed',
+                'SuHw_Kc_Bushey_2009.bed',
+                'SuHw_Mbn2_Bushey_2009.bed',
+                'BEAF_Mbn2_Bushey_2009.bed',
+                'BEAF_Kc_Bushey_2009.bed'
+                ]]
+
+    if args.enrichment:
+        FUNC = enrichment_score
+    elif args.frac:
+        FUNC = frac_of_a
+    else:
+        FUNC = actual_intersection
+
+    t0 = time.time()
+    matrix = create_matrix(beds=args.beds, func=FUNC, verbose=args.verbose)
+    t1 = time.time()
+
+    nfiles = len(args.beds)
+
+    if args.verbose:
+        sys.stderr.write('Time to construct %s x %s matrix: %.1fs' \
+                % (nfiles, nfiles, (t1 - t0)) + '\n')
+    keys = sorted(matrix.keys())
+
+    sys.stdout.write("\t" + "\t".join(keys) + '\n')
+    for k in keys:
+        sys.stdout.write(k)
+        for j in keys:
+            sys.stdout.write('\t' + str(matrix[k][j]))
+        sys.stdout.write('\n')
