@@ -19,11 +19,17 @@ software, so you may already have them installed:
    on your path. That is, you should be able to call `intersectBed` from any
    directory
 
-#. samtools_.  This is needed for BAM support.  Like BEDTools, the version is
+#. samtools_ [`download page`_].  Optional. This is needed for BAM support; if you don't need
+   SAM/BAM support, then you don't need this.   Like BEDTools, the version is
    not important.  You will get a warning if you try to run :mod:`pybedtools`
    functions that require `samtools`.  The `samtools` programs must be
    available on the path, so you should be able to call `samtools view` from
    any directory.
+
+#. Tabix_ [`download page`_].  Optional.  This is needed for when you would like
+   to have fast, random access to BED/GFF/GTF/VCF files by providing a
+   chrom:start-stop coordinate. Similar to the above, you should be able to
+   call `tabix` from any directory.
 
 #. Python_ 2.5 or greater (Python 3 support is coming soon)
 
@@ -76,7 +82,7 @@ Notes on supported systems
 
 :Linux:
 
-    Routinely tested on Ubuntu 10.04, but should run on any GNU/Linux
+    Routinely tested on Ubuntu 10.04 and 11.10, but should run on any GNU/Linux
     distribution with the above pre-requisites satisfied.
 
 
@@ -124,8 +130,27 @@ should print out::
 
 Installation for developers or for running tests
 ++++++++++++++++++++++++++++++++++++++++++++++++
-A more flexible way to install :mod:`pybedtools` is as follows:
+Installing from github
+``````````````````````
+The very latest code is available from GitHub, at http://github.com/daler/pybedtools.  You'll need to have `git <http://git-scm.com/>`_ installed.
 
+Change to a directory of your choosing, then execute the following command.  It
+will create a new directory, `pybedtools`, and download the source code into
+that directory::
+
+    git clone git@github.com:daler/pybedtools.git
+
+Then change into the new `pybedtools` directory and run the following.  The
+first command compiles the Cython code and the second is the typical Python
+install command::
+
+    python build.py
+    sudo python setup.py install
+
+You should now be aboe to run the "quick test" above.
+
+More detailed installation instructions
+```````````````````````````````````````
 #. Get the source.  There are two ways to do this:
 
     #. **Stable version:** download and unzip the :mod:`pybedtools` source from
@@ -163,7 +188,8 @@ A more flexible way to install :mod:`pybedtools` is as follows:
 
         cd docs && make doctest
 
-#. *[optional]* Compile the HTML documentation in the `docs` directory of the source tree (this also needs `sphinx`_), then point your browser to
+#. *[optional]* Compile the HTML documentation in the `docs` directory of the
+   source tree (this also needs `sphinx`_), then point your browser to
    `docs/build/html/index.html`::
 
         cd docs && make html

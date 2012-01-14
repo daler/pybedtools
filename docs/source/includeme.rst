@@ -1,6 +1,10 @@
 
 .. currentmodule:: pybedtools
 
+.. _Tabix: http://samtools.sourceforge.net/tabix.shtml
+
+.. _download page: http://sourceforge.net/projects/samtools/files/
+
 .. _samtools: http://samtools.sourceforge.net/
 
 .. _tempdir: http://docs.python.org/library/tempfile.html#tempfile.tempdir
