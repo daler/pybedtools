@@ -4,6 +4,7 @@ pybedtools utility scripts:
 
 """
 import sys
+import textwrap
 
 
 def import_module(name):
@@ -12,7 +13,8 @@ def import_module(name):
 
 
 def script_names(module):
-    return [script for script in  module.__all__ if not script[:2] == "__"]
+    return sorted(
+            [script for script in  module.__all__ if not script[:2] == "__"])
 
 
 def main():
@@ -25,7 +27,14 @@ def main():
 
         print __doc__.strip() + "\n"
         for name, mod in zip(scripts, mods):
-            print " %-12s: %s\n" % (name, mod.main.__doc__.strip())
+            scriptname = " %-22s:" % name
+            padding = ' ' * (len(scriptname) + 1)
+            doclines = textwrap.wrap(textwrap.dedent(mod.main.__doc__), 50)
+            print scriptname, doclines[0]
+            for line in doclines[1:]:
+                print padding, line
+            print
+
     else:
         mname = sys.argv.pop(1)
         i = scripts.index(mname)
