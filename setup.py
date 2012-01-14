@@ -83,7 +83,8 @@ setup(
                    'pybedtools/scripts/peak_pie.py',
                    'pybedtools/scripts/intersection_matrix.py',
                    'pybedtools/scripts/intron_exon_reads.py',
-                   'pybedtools/scripts/pybedtools_demo.py'],
+                   'pybedtools/scripts/pybedtools_demo.py',
+                   'pybedtools/scripts/pybedtools'],
         author_email="dalerr@niddk.nih.gov",
         classifiers=[
             'Development Status :: 4 - Beta',
