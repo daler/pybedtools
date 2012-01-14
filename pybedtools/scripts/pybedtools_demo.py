@@ -5,7 +5,10 @@ import pybedtools
 import os
 import time
 
-if __name__ == "__main__":
+def main():
+    """
+    Quick demo of some pybedtools functionality
+    """
 
     print """
 
@@ -105,3 +108,6 @@ if __name__ == "__main__":
         print feature
     print '... (only showing 5)'
     print
+
+if __name__ == "__main__":
+    main()

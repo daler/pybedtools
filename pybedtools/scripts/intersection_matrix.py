@@ -63,8 +63,11 @@ def create_matrix(beds, func, verbose=False):
 
     return matrix
 
-if __name__ == "__main__":
 
+def main():
+    """
+    Creates a pairwise matrix containing overlapping feature counts for many BED files
+    """
     ap = argparse.ArgumentParser(usage=usage)
     ap.add_argument('beds', nargs="*", help='BED/GTF/GFF/VCF filenames, e.g., '
                     'in a directory of bed files, you can use *.bed')
@@ -133,3 +136,6 @@ if __name__ == "__main__":
         for j in keys:
             sys.stdout.write('\t' + str(matrix[k][j]))
         sys.stdout.write('\n')
+
+if __name__ == "__main__":
+    main()
