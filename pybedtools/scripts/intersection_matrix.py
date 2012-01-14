@@ -48,9 +48,9 @@ def create_matrix(beds, func, verbose=False):
     total = nfiles ** 2
     i = 0
     matrix = collections.defaultdict(dict)
-    for fa in args.beds:
+    for fa in beds:
         a = BedTool(fa)
-        for fb in args.beds:
+        for fb in beds:
             i += 1
             b = BedTool(fb)
 
@@ -59,7 +59,7 @@ def create_matrix(beds, func, verbose=False):
                         '%(i)s of %(total)s: %(fa)s + %(fb)s\n' % locals())
                 sys.stderr.flush()
 
-            matrix[get_name(fa)][get_name(fb)] = FUNC(a, b)
+            matrix[get_name(fa)][get_name(fb)] = func(a, b)
 
     return matrix
 
