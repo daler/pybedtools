@@ -57,21 +57,52 @@ def truncator(feature):
 
 def cleaned_intersect(items):
     """
-    Perform interval intersections such that the end products have identical
+    Perform interval intersections such that the end products have identical \
     features for overlapping intervals.
 
     The VennDiagram package does *set* intersection, not *interval*
     intersection.  So the goal here is to represent intersecting intervals as
     intersecting sets of strings.
 
-    The method used here is to substitute the intervals in `y` that overlap `x`
-    with the corresponding elements in `x`.  In the resulting sets, the
-    overlapping features are identical.
+    Doing a simple BEDTools intersectBed call doesn't do the trick (even with
+    the -u argument).  As a concrete example, what would the string be for an
+    intersection of the feature "chr1:1-100" in file `x` and "chr1:50-200" in
+    file `y`?
 
-    Venn diagrams are not well suited for nested overlaps.  This means that
-    while `x` does not change in length, `y` can.  For example, if there are
-    2 features in `x` that overlap one feature in `y`, then `y` will gain those
-    two features in place of its single original feature.
+    The method used here is to substitute the intervals in `y` that overlap `x`
+    with the corresponding elements in `x`.  This means that in the resulting
+    sets, the overlapping features are identical.  To follow up with the
+    example, both `x` and `y` would have an item "chr1:50-200" in their sets,
+    simply indicating *that* one interval overlapped.
+
+    Venn diagrams are not well suited for nested overlaps or multi-overlaps.
+    To illustrate, try drawing the 2-way Venn diagram of the following two
+    files. Specifically, what number goes in the middle -- the number of
+    features in `x` that intersect `y` (1) or the number of features in `y`
+    that intersect `x` (2)?::
+
+        x:
+            chr1  1  100
+            chr1 500 6000
+
+        y:
+            chr1 50 100
+            chr1 80 200
+            chr9 777 888
+
+    In this case, this function will return the following sets::
+
+        x:
+            chr1:1-100
+            chr1:500-6000
+
+        y:
+            chr1:1-100
+            chr9:777-888
+
+    This means that while `x` does not change in length, `y` can.  For example,
+    if there are 2 features in `x` that overlap one feature in `y`, then `y`
+    will gain those two features in place of its single original feature.
 
     This strategy is extended for multiple intersections -- see the source for
     details.
@@ -129,9 +160,11 @@ def cleaned_intersect(items):
 def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
         additional_args=None, run=False):
     """
-    Constructs an R script that calls the venn.diagram function of the
-    R package VennDiagram for extremely flexible Venn and Euler diagram
-    creation.
+    Write an R script to create a Venn diagram out of `beds` (and optionally run it).
+
+    The R script calls the venn.diagram function of the R package VennDiagram
+    for extremely flexible Venn and Euler diagram creation.  Uses
+    `cleaned_intersect()` to create string representations of shared intervals.
 
     `beds` is a list of up to 4 filenames or BedTools.
 
@@ -192,7 +225,7 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
 
     out = fn + '.Rout'
     if run:
-        cmds = ['R', 'CMD', 'BATCH', 
+        cmds = ['R', 'CMD', 'BATCH',
                 fn, out]
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
