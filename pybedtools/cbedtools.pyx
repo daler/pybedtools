@@ -155,7 +155,9 @@ cdef class Attributes:
 
 cdef class Interval:
     """
-    Constructor:
+    Class to represent a genomic interval.
+
+    Constructor::
 
         Interval(chrom, start, end, name=".", score=".", strand=".", otherfields=None)
 
@@ -484,15 +486,28 @@ cdef Interval create_interval(BED b):
 
 cpdef Interval create_interval_from_list(list fields):
     """
-    Constructor:
+    Create an Interval object from a list of strings.
+
+    Constructor::
 
         create_interval_from_list(fields)
 
-    Given the list `fields`, automatically detects the format (BED, GFF, VCF,
-    SAM) and creates a new Interval object.
+    Given the list of strings, `fields`, automatically detects the format (BED,
+    GFF, VCF, SAM) and creates a new Interval object.
 
     `fields` is a list with an arbitrary number of items (it can be quite long,
-    say after a -wao intersection of a BED12 and a GFF).
+    say after a -wao intersection of a BED12 and a GFF), however, the first
+    fields must conform to one of the supported formats.  For example, if you
+    want the resulting Interval to be considered a GFF feature, then the first
+    9 fields must conform to the GFF format.  Similarly, if you want the
+    resulting Interval to be considered a BED feature, then the first three
+    fields must be chrom, start, stop.
+
+    Example usage:
+
+        >>> # Creates a BED3 feature
+        >>> feature = create_interval_from_list(['chr1', '1', '100'])
+
     """
     cdef Interval pyb = Interval.__new__(Interval)
     orig_fields = fields[:]
