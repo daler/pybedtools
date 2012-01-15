@@ -158,9 +158,10 @@ class HistoryStep(object):
 
 def set_tempdir(tempdir):
     """
-    Sets the directory for temp files.  Useful for clusters that use a /scratch
-    partition rather than a /tmp dir.  Convenience function to simply set
-    tempfile.tempdir.
+    Set the directory for temp files.
+
+    Useful for clusters that use a /scratch partition rather than a /tmp dir.
+    Convenience function to simply set tempfile.tempdir.
     """
     if not os.path.exists(tempdir):
         errstr = 'The tempdir you specified, %s, does not exist' % tempdir
@@ -177,8 +178,8 @@ def get_tempdir():
 
 def cleanup(verbose=False, remove_all=False):
     """
-    Deletes all temporary files in the *BedTool.TEMPFILES* class
-    variable.
+    Deletes all temp files from the current session (or optionally *all* \
+            sessions)
 
     If *verbose*, reports what it's doing
 
@@ -319,6 +320,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
 def set_bedtools_path(path=""):
     """
+    Explicitly set path to `BEDTools` installation dir.
+
     If BEDTools is not available on your system path, specify the path to the
     dir containing the BEDTools executables (intersectBed, subtractBed, etc)
     with this function.
@@ -331,6 +334,8 @@ def set_bedtools_path(path=""):
 
 def set_samtools_path(path=""):
     """
+    Explicitly set path to `samtools` installation dir.
+
     If samtools is not available on the path, then it can be explicitly
     specified here.
 
