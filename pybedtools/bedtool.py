@@ -81,13 +81,14 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                              stderr=subprocess.PIPE)
         help_str = p.communicate()[1]
 
-        # underscores throw of ReStructuredText syntax of docstrings, so
+        # underscores throw off ReStructuredText syntax of docstrings, so
         # replace 'em
         help_str = help_str.replace('_', '**')
 
         # indent
         help_str = help_str.split('\n')
-        help_str = ['\t' + i for i in help_str]
+        help_str = ['\n**Original BEDTools help:**'] \
+                + ['\t' + i for i in help_str]
         help_str = '\n'.join(help_str)
 
     # If the program can't be found, then we'll eventually replace the method
@@ -323,6 +324,8 @@ class BedTool(object):
 
     def split(self, func, *args, **kwargs):
         """
+        Split each feature using a user-defined function.
+
         Calls the provided function `func` with each interval.  In contrast to
         `each` (which does something similar), this method expects `func` to
         return an *iterable* of Interval objects.
@@ -339,6 +342,8 @@ class BedTool(object):
 
     def truncate_to_chrom(self, genome):
         """
+        Ensure all features fall within chromosome limits.
+
         Some peak-callers extend peaks such that the boundaries overstep
         chromosome coordinates.  Upon uploading such a file to a genome browser
         like UCSC, this results in an error like::
@@ -370,6 +375,8 @@ class BedTool(object):
 
     def tabix_intervals(self, interval_or_string):
         """
+        Retrieve all intervals within cooridnates from a "tabixed" BedTool.
+
         Given either a string in "chrom:start-stop" format, or an interval-like
         object with chrom, start, stop attributes, return a *streaming* BedTool
         of the features in this BedTool that overlap the provided interval.
@@ -390,6 +397,8 @@ class BedTool(object):
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
+        Prepare a BedTool for use with Tabix.
+
         Helper function to return a new BedTool that has been BGZIP compressed
         and indexed by tabix.
 
@@ -433,10 +442,11 @@ class BedTool(object):
 
     def bgzip(self, in_place=True, force=False, is_sorted=False):
         """
-        Checks to see if we already have a BGZIP file; if not then prepare one.
+        Helper function for more control over "tabixed" BedTools.
 
-        Always leaves the original file alone.  You can always just make
-        a BedTool out of an already sorted and BGZIPed file to avoid this step.
+        Checks to see if we already have a BGZIP file; if not then prepare one.
+        Always leaves the original file alone.  You can always just make a
+        BedTool out of an already sorted and BGZIPed file to avoid this step.
 
         `in_place` will put the BGZIPed file in the same dir (possibly after
         sorting to tempfile).
@@ -565,9 +575,11 @@ class BedTool(object):
 
     def filter(self, func, *args, **kwargs):
         """
-        Takes a function *func* that is called for each feature
-        in the `BedTool` object and returns only those
-        for which the function returns True.
+        Filter features by user-defined function.
+
+        Takes a function *func* that is called for each feature in the
+        `BedTool` object and returns only those for which the function returns
+        True.
 
         *args and **kwargs are passed directly to *func*.
 
@@ -586,6 +598,8 @@ class BedTool(object):
 
     def field_count(self, n=10):
         """
+        Number of fields in each line of this BedTool (checks `n` lines)
+
         Return the number of fields in the features this file contains.  Checks
         the first *n* features.
 
@@ -606,6 +620,8 @@ class BedTool(object):
 
     def each(self, func, *args, **kwargs):
         """
+        Modify each feature with a user-defined function.
+
         Applies user-defined function *func* to each feature.  *func* must
         accept an Interval as its first argument; *args and **kwargs will be
         passed to *func*.
@@ -633,10 +649,11 @@ class BedTool(object):
 
     def introns(self, gene="gene", exon="exon"):
         """
-        Given a BED12 or a GFF with exons, create a new `BedTool` with
-        just introns.
-        the output is a bed6 file with the score column (5) being one of
-        'intron'/'utr5'/'utr3'
+        Create intron features (requires specific input format).
+
+        Given a BED12 or a GFF with exons, create a new `BedTool` with just
+        introns.  The output is a bed6 file with the score column (5) being one
+        of 'intron'/'utr5'/'utr3'
         """
         # iterate over all the features in the gene.
         s = self.sort()
@@ -726,6 +743,8 @@ class BedTool(object):
 
     def cut(self, indexes, stream=False):
         """
+        Analagous to unix `cut`.
+
         Similar to unix `cut` except indexes are 0-based, must be a list
         and the columns are returned in the order requested.
 
@@ -873,6 +892,8 @@ class BedTool(object):
 
     def set_chromsizes(self, chromsizes):
         """
+        Prepare BedTool for operations that require chromosome coords.
+
         Set the chromsizes for this genome. If *chromsizes* is a string, it
         will be considered a genome assembly name.  If that assembly name is
         not available in pybedtools.genome_registry, then it will be searched
@@ -1099,7 +1120,7 @@ class BedTool(object):
     @_log_to_history
     def remove_invalid(self):
         """
-        Remove invalid features and return a new BedTool.
+        Remove invalid features that may break BEDTools programs.
 
         >>> a = pybedtools.BedTool("chr1 10 100\\nchr1 10 1",
         ... from_string=True)
@@ -1135,6 +1156,8 @@ class BedTool(object):
 
     def all_hits(self, interval, same_strand=False, overlap=0.0):
         """
+        Return all intervals that overlap `interval`.
+
         Calls the `all_hits` method of an IntervalFile to return all intervals
         in this current BedTool that overlap `interval`.
 
@@ -1159,6 +1182,8 @@ class BedTool(object):
 
     def any_hits(self, interval, same_strand=False, overlap=0.0):
         """
+        Return whether or not any intervals overlap `interval`.
+
         Calls the `any_hits` method of an IntervalFile.  If there were any hits
         within `interval` in this BedTool, then return 1; otherwise 0.
 
@@ -1183,6 +1208,8 @@ class BedTool(object):
 
     def count_hits(self, interval, same_strand=False, overlap=0.0):
         """
+        Return the number of intervals that overlap `interval`.
+
         Calls the `count_hits` method of an IntervalFile.  Returns the number
         of valid hits in this BedTool that overlap `interval`.
 
@@ -1209,7 +1236,7 @@ class BedTool(object):
     @_wraps(prog='bed12ToBed6', implicit='i', bam=None, other=None)
     def bed6(self, **kwargs):
         """
-        convert a BED12 to a BED6 file
+        Wraps `bed12ToBed6`.
         """
         pass
 
@@ -1217,7 +1244,7 @@ class BedTool(object):
     @_wraps(prog='bamToBed', implicit='i', other=None, nonbam='ALL', bam='i')
     def bam_to_bed(self, **kwargs):
         """
-        Convert BAM to BED.
+        Wraps `bamToBed`.
         """
 
     @_wraps(prog='bedToBam', implicit='i', uses_genome=True, force_bam=True)
@@ -1230,6 +1257,8 @@ class BedTool(object):
     @_log_to_history
     def to_bam(self, **kwargs):
         """
+        Wraps `bedToBam`.
+
         If self.fn is in BED/VCF/GFF format, call BEDTools' bedToBam.  If
         self.fn is in SAM format, then create a header out of the genome file
         and then convert using `samtools`.
@@ -1269,23 +1298,7 @@ class BedTool(object):
             nonbam='bed')
     def intersect(self):
         """
-        Intersect with another BED file. If you want to use BAM as input, you
-        need to specify *abam='filename.bam'*.  Returns a new BedTool object.
-
-        Example usage:
-
-            Create new BedTool object
-
-            >>> a = pybedtools.example_bedtool('a.bed')
-
-            Get overlaps with `b.bed`:
-
-            >>> b = pybedtools.example_bedtool('b.bed')
-            >>> overlaps = a.intersect(b)
-
-            Use `v=True` to get the inverse -- those unique to "a.bed":
-
-            >>> unique_to_a = a.intersect(b, v=True)
+        Wraps `intersectBed`.
         """
 
     @_log_to_history
@@ -1294,9 +1307,11 @@ class BedTool(object):
             add_to_bedtool={'fo': 'seqfn'})
     def sequence(self):
         '''
-        Wraps ``fastaFromBed``.  *fi* is passed in by the user; *bed* is
-        automatically passed in as the bedfile of this object; *fo* by default
-        is a temp file.  Use save_seqs() to save as a file.
+        Wraps `fastaFromBed`.
+
+        *fi* is passed in by the user; *bed* is automatically passed in as the
+        bedfile of this object; *fo* by default is a temp file.  Use
+        save_seqs() to save as a file.
 
         The end result is that this BedTool will have an attribute, self.seqfn,
         that points to the new fasta file.
@@ -1321,6 +1336,8 @@ class BedTool(object):
     @_wraps(prog='nucBed', implicit='bed', other='fi')
     def nucleotide_content(self):
         """
+        Wraps `nucBed`.
+
         Profiles nucleotide content.  The returned BED file contains extra
         information about the nucleotide content
         """
@@ -1329,6 +1346,8 @@ class BedTool(object):
     @_wraps(prog='multiBamCov', implicit='bed')
     def multi_bam_coverage(self):
         """
+        Wraps `multiBamCov`.
+
         Pass a list of sorted and indexed BAM files as `bams`
         """
 
@@ -1336,6 +1355,8 @@ class BedTool(object):
     @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
     def subtract(self):
         """
+        Wraps `subtractBed`.
+
         Subtracts from another BED file and returns a new BedTool object.
 
         Example usage:
@@ -1365,8 +1386,7 @@ class BedTool(object):
             uses_genome=True)
     def slop(self):
         """
-        Wraps slopBed, which adds bp to each feature.  Returns a new BedTool
-        object.
+        Wraps `slopBed`.
 
         If *g* is a dictionary (for example, return values from
         pybedtools.chromsizes() ) it will be converted to a temp file for use
@@ -1408,6 +1428,8 @@ class BedTool(object):
     @_wraps(prog='mergeBed', implicit='i', other=None, bam=None)
     def merge(self):
         """
+        Wraps `mergeBed`.
+
         Merge overlapping features together. Returns a new BedTool object.
 
         Example usage:
@@ -1436,6 +1458,8 @@ class BedTool(object):
     @_wraps(prog='closestBed', implicit='a', other='b', bam=None)
     def closest(self):
         """
+        Wraps `closestBed`.
+
         Return a new BedTool object containing closest features in *b*.  Note
         that the resulting file is no longer a valid BED format; use the
         special "_closest" methods to work with the resulting file.
@@ -1454,7 +1478,7 @@ class BedTool(object):
             nonbam='bed')
     def window(self):
         """
-        Intersect with a window.
+        Wraps `windowBed`.
 
         Example usage::
 
@@ -1477,7 +1501,7 @@ class BedTool(object):
             uses_genome=True)
     def shuffle(self):
         """
-        Shuffle coordinates.
+        Wraps `shuffleBed`.
 
         Example usage:
 
@@ -1496,6 +1520,8 @@ class BedTool(object):
     @_wraps(prog='sortBed', implicit='i')
     def sort(self):
         """
+        Wraps `sortBed`.
+
         Note that chromosomes are sorted lexograpically, so chr12 will come
         before chr9.
 
@@ -1521,6 +1547,8 @@ class BedTool(object):
     @_wraps(prog='annotateBed', implicit='i')
     def annotate(self):
         """
+        Wraps `annotateBed`.
+
         Annotate this BedTool with a list of other files.
         Example usage:
 
@@ -1538,7 +1566,7 @@ class BedTool(object):
     @_wraps(prog='flankBed', implicit='i', uses_genome=True)
     def flank(self):
         """
-        Create flanking intervals on either side of input BED.
+        Wraps `flankBed`.
 
         Example usage:
 
@@ -1569,10 +1597,7 @@ class BedTool(object):
             uses_genome=True, nonbam='ALL')
     def genome_coverage(self):
         """
-        Calculates coverage at each position in the genome.
-
-        Use *bg=True* to have the resulting BedTool return valid BED-like
-        features
+        Wraps `genomeCoverageBed`.
 
         Example usage:
 
@@ -1589,6 +1614,10 @@ class BedTool(object):
             nonbam='ALL')
     def coverage(self):
         """
+        Wraps `coverageBed`.
+
+        Example usage:
+
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
         >>> c = a.coverage(b)
@@ -1603,6 +1632,8 @@ class BedTool(object):
             check_stderr=_check_sequence_stderr)
     def mask_fasta(self):
         """
+        Wraps `maskFastaFromBed`.
+
         Masks a fasta file at the positions in a BED file and saves result as
         'out' and stores the filename in seqfn.
 
@@ -1624,6 +1655,10 @@ class BedTool(object):
     @_wraps(prog='complementBed', implicit='i', uses_genome=True)
     def complement(self):
         """
+        Wraps `complementBed`.
+
+        Example usage:
+
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> a.complement(genome='hg19').head(5) #doctest: +NORMALIZE_WHITESPACE
         chr1	0	1
@@ -1637,6 +1672,10 @@ class BedTool(object):
     @_wraps(prog='overlap', implicit='i')
     def overlap(self):
         """
+        Wraps `overlap`.
+
+        Example usage:
+
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
         >>> c = a.window(b, w=10).overlap(cols=[2,3,8,9])
@@ -1653,6 +1692,7 @@ class BedTool(object):
             nonbam='bedpe')
     def pair_to_bed(self):
         """
+        Wraps `pairToBed`.
         """
 
     # TODO: needs test files and doctests written
@@ -1660,12 +1700,17 @@ class BedTool(object):
     @_wraps(prog='pairToPair', implicit='a', other='b')
     def pair_to_pair(self):
         """
+        Wraps `pairToPair`.
         """
 
     @_log_to_history
     @_wraps(prog='groupBy', implicit='i')
     def groupby(self):
         """
+        Wraps `groupBy`.
+
+        Example usage:
+
         >>> a = pybedtools.example_bedtool('gdc.gff')
         >>> b = pybedtools.example_bedtool('gdc.bed')
         >>> c = a.intersect(b, c=True)
@@ -1689,18 +1734,16 @@ class BedTool(object):
     @_wraps(prog='tagBam', implicit='i', bam='i')
     def tag_bam(self):
         """
+        Wraps `tagBam`.
+
         `files` and `labels` should lists of equal length.
 
         """
 
-    def features(self):
-        """
-        Returns an iterator of :class:`feature` objects.
-        """
-        return iter(self)
-
     def count(self):
         """
+        Count the number features in this BedTool.
+
         Number of features in BED file. Does the same thing as len(self), which
         actually just calls this method.
 
@@ -1717,8 +1760,7 @@ class BedTool(object):
 
     def print_sequence(self):
         """
-        Print the sequence that was retrieved by the :meth:`BedTool.sequence`
-        method.
+        Print the sequence that was retrieved by BedTool.sequence.
 
         See usage example in :meth:`BedTool.sequence`.
         """
@@ -1731,7 +1773,7 @@ class BedTool(object):
 
     def save_seqs(self, fn):
         """
-        Save sequences of features in this BedTool object as a fasta file *fn*.
+        Save sequences, after calling BedTool.sequence.
 
         In order to use this function, you need to have called
         the :meth:`BedTool.sequence()` method.
@@ -1766,6 +1808,8 @@ class BedTool(object):
 
     def randomstats(self, other, iterations, **kwargs):
         """
+        Dictionary of results from many randomly shuffled intersections.
+
         Sends args and kwargs to :meth:`BedTool.randomintersection` and
         compiles results into a dictionary with useful stats.  Requires scipy
         and numpy.
@@ -1874,8 +1918,7 @@ class BedTool(object):
                            report_iterations=False, processes=None,
                            _orig_processes=None):
         """
-        Performs *iterations* shufflings of self, each time intersecting with
-        *other*.
+        Perform `iterations` shufflings, each time intersecting with `other`.
 
         Returns a generator of integers where each integer is the number of
         intersections of a shuffled file with *other*. This distribution can
@@ -1966,6 +2009,8 @@ class BedTool(object):
     @_log_to_history
     def cat(self, other, postmerge=True, **kwargs):
         """
+        Concatate interval files together.
+
         Concatenates two BedTool objects (or an object and a file) and does an
         optional post-merge of the features.
 
@@ -2009,8 +2054,9 @@ class BedTool(object):
     @_log_to_history
     def saveas(self, fn=None, trackline=None):
         """
-        Save BED file as a new file, adding the optional *trackline* to the
-        beginning.
+        Make a copy of the BedTool.
+
+        Optionally adds `trackline` to the beginning of the file.
 
         Returns a new BedTool for the newly saved file.
 
@@ -2039,6 +2085,8 @@ class BedTool(object):
     @_log_to_history
     def moveto(self, fn=None):
         """
+        Move to a new filename (can be much quicker than BedTool.saveas())
+
         Move BED file to new filename, `fn`.
 
         Returns a new BedTool for the new file.
@@ -2063,8 +2111,7 @@ class BedTool(object):
     @_log_to_history
     def random_subset(self, n, seed=None):
         '''
-        Returns a new bedtools object containing a random subset of the
-        features in this subset.
+        Return a BedTool containing a random subset.
 
         Example usage:
 
@@ -2089,8 +2136,10 @@ class BedTool(object):
 
     def total_coverage(self):
         """
-        Returns the total number of bases covered by this BED file.  Does a
-        self.merge() first to remove potentially multiple-counting bases.
+        Return the total number of bases covered by this interval file.
+
+        Does a self.merge() first to remove potentially multiple-counting
+        bases.
 
         Example usage:
 
@@ -2116,6 +2165,8 @@ class BedTool(object):
     @_log_to_history
     def with_attrs(self, **kwargs):
         """
+        Helper method for adding attributes in the middle of a pipeline.
+
         Given arbitrary keyword arguments, turns the keys and values into
         attributes.  Useful for labeling BedTools at creation time.
 
@@ -2138,8 +2189,7 @@ class BedTool(object):
 
     def as_intervalfile(self):
         """
-        Returns an IntervalFile of this BedTool, which provides a low-level
-        interface
+        Returns an IntervalFile of this BedTool for low-level interface.
         """
         if not isinstance(self.fn, basestring):
             fn = self._collapse(self.fn)
