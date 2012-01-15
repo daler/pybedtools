@@ -96,3 +96,8 @@ class Classifier(object):
             key = frozenset(ft)
             self.class_features[key].append(feature)
             self.class_counts[key] += 1
+
+        # convert defaultdicts to regular dicts
+        self.class_features = dict(self.class_features)
+        self.class_counts = dict(self.class_counts)
+        self.feature_classes = dict(self.feature_classes)
