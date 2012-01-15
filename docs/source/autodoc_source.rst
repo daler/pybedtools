@@ -1,269 +1,260 @@
-.. currentmodule:: pybedtools
-.. contents::
 
 .. _autodoc:
 
 :mod:`pybedtools` Reference
-+++++++++++++++++++++++++++
-
-This section is the module reference documentation, and includes the full
-docstrings for methods and functions in :mod:`pybedtools`.  It is separated
-into :ref:`module-level`, :ref:`wrappers`, and :ref:`pbt-unique`.
-
-
-
-
-.. autoclass:: pybedtools.BedTool
-    :members: __init__
-
-.. _module-level:
-
-:mod:`pybedtools` module-level functions
-========================================
-
-Functions for working with example files
-----------------------------------------
-
-.. autofunction:: pybedtools.example_bedtool
-.. autofunction:: pybedtools.example_filename
-.. autofunction:: pybedtools.list_example_files
-.. autofunction:: pybedtools.data_dir
-
-Functions for specifying genome assemblies
-------------------------------------------
-
-.. autofunction:: pybedtools.chromsizes
-.. autofunction:: pybedtools.chromsizes_to_file
-.. autofunction:: pybedtools.get_chromsizes_from_ucsc
-
-Setup
------
-
-.. autofunction:: pybedtools.set_tempdir
-.. autofunction:: pybedtools.get_tempdir
-.. autofunction:: pybedtools.set_bedtools_path
-
-Utilities
----------
-.. autofunction:: pybedtools.cleanup
-.. autofunction:: pybedtools.IntervalIterator
-.. autofunction:: pybedtools.find_tagged
-
-Wrapping
---------
-.. autofunction:: pybedtools.bedtool._wraps
-
-
-.. _wrappers:
-
-:class:`BedTool` methods that wrap BEDTools programs
-====================================================
-
-"Genome algebra" methods
-------------------------
-
-:meth:`intersect` (wraps "intersectBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.intersect
-
-:meth:`merge` (wraps "mergeBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.merge
-
-:meth:`subtract` (wraps "subtractBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.subtract
-
-:meth:`closest` (wraps "closestBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.closest
-
-:meth:`window` (wraps "windowBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.window
-
-:meth:`sort` (wraps "sortBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.sort
-
-:meth:`slop` (wraps "slopBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.slop
-
-:meth:`complementBed` (wraps "complementBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.complement
-
-:meth:`flank` (wraps "flankBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.flank
-
-:meth:`shuffle` (wraps "shuffleBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.shuffle
-
-:meth:`annotate` (wraps "annotateBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.annotate
-
-:meth:`coverage` (wraps "coverageBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.coverage
-
-:meth:`genome_coverage` (wraps "genomeCoverageBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.genome_coverage
-
-:meth:`overlap` (wraps "overlap")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.overlap
-
-:meth:`groupby` (wraps "groupBy")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.groupby
-
-:meth:`pair_to_bed` (wraps "pairToBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.pair_to_bed
-
-:meth:`pair_to_pair` (wraps "pairToPair")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.pair_to_pair
-
-
-
-Methods for converting between formats
---------------------------------------
-
-:meth:`bed6` (wraps "Bed12To6")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.bed6
-
-
-
-
-Methods for working with sequences
-----------------------------------
-
-:meth:`sequence` (wraps "fastaFromBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.sequence
-
-:meth:`mask_fasta` (wraps "maskFastaFromBed")
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.mask_fasta
-
-
-
-
-.. _pbt-unique:
-
-:class:`BedTool` methods unique to :mod:`pybedtools`
-====================================================
-
-
-
-Introspection
--------------
-
-:meth:`count`
-~~~~~~~~~~~~~
-.. automethod:: BedTool.count
-
-:meth:`print_sequence`
-~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.print_sequence
-
-:meth:`field_count`
-~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.field_count
-
-:meth:`head`
-~~~~~~~~~~~~
-.. automethod:: BedTool.head
-
-
-
-Saving
-------
-
-:meth:`saveas`
-~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.saveas
-
-:meth:`save_seqs`
-~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.save_seqs
-
-
-
-
-
-Utilities
----------
-
-:meth:`with_attrs`
-~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.with_attrs
-
-:meth:`cat`
-~~~~~~~~~~~
-.. automethod:: BedTool.cat
-
-:meth:`total_coverage`
-~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.total_coverage
-
-:meth:`delete_temporary_history`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.delete_temporary_history
-
-:meth:`as_intervalfile`
-~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.as_intervalfile
-
-
-
+===========================
+The following tables summarize the methods and functions; click on a method or
+function name to see the complete documentation.
+
+.. contents::
+
+:class:`BedTool` creation
+-------------------------
+The main :class:`BedTool` documentation, with a list of all methods in
+alphabetical order at the bottom.  For more details, please see :ref:`creating
+a BedTool`.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool
+
+`BEDTools` wrappers
+-------------------
+These methods wrap `BEDTools` programs for easy use with Python; you can then
+use the other :mod:`pybedtools` functionality for further manipulation and
+analysis.
+
+The documentation of each of these methods starts with
+:mod:`pybedtools`-specific documentation, possibly followed by an example.
+Finally, the `BEDTools` help is copied verbatim from whatever version was
+installed when generating these docs.
+
+In general the `BEDTool` wrapper methods adhere to the :ref:`Design principles`:
+
+    * :ref:`temp principle`
+    * :ref:`similarity principle`
+    * :ref:`version principle`
+    * :ref:`default args principle`
+
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool.intersect
+    pybedtools.BedTool.merge
+    pybedtools.BedTool.slop
+    pybedtools.BedTool.sort
+    pybedtools.BedTool.window
+    pybedtools.BedTool.flank
+    pybedtools.BedTool.complement
+    pybedtools.BedTool.closest
+    pybedtools.BedTool.coverage
+    pybedtools.BedTool.to_bam
+    pybedtools.BedTool.subtract
+    pybedtools.BedTool.genome_coverage
+    pybedtools.BedTool.bed6
+    pybedtools.BedTool.sequence
+    pybedtools.BedTool.nucleotide_content
+    pybedtools.BedTool.multi_bam_coverage
+    pybedtools.BedTool.shuffle
+    pybedtools.BedTool.annotate
+    pybedtools.BedTool.mask_fasta
+    pybedtools.BedTool.overlap
+    pybedtools.BedTool.pair_to_bed
+    pybedtools.BedTool.pair_to_pair
+    pybedtools.BedTool.groupby
+    pybedtools.BedTool.tag_bam
+
+Other :class:`BedTool` methods
+------------------------------
+These methods are some of the ways in which :mod:`pybedtools` extend the
+BEDTools suite.
 
 
 Feature-by-feature operations
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Methods that operate on a feature-by-feature basis to modify or filter features
+on the fly.
 
-:meth:`each`
-~~~~~~~~~~~~
-.. automethod:: BedTool.each
+.. autosummary::
+    :toctree: autodocs
 
-:meth:`filter`
-~~~~~~~~~~~~~~
-.. automethod:: BedTool.filter
+    pybedtools.BedTool.each
+    pybedtools.BedTool.filter
+    pybedtools.BedTool.truncate_to_chrom
+    pybedtools.BedTool.remove_invalid
 
-:meth:`cut`
-~~~~~~~~~~~
-.. automethod:: BedTool.cut
 
-:meth:`features`
-~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.features
+Searching for features
+~~~~~~~~~~~~~~~~~~~~~~
+These methods take a single interval as input and return the intervals of the
+BedTool that overlap.
+
+This can be useful when searching across many BED files for a particular
+coordinate range -- for example, they can be used identify all binding sites,
+stored in many different BED files, that fall within a gene's coordinates.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool.all_hits
+    pybedtools.BedTool.any_hits
+    pybedtools.BedTool.count_hits
+    pybedtools.BedTool.tabix_intervals
+    pybedtools.BedTool.tabix
+    pybedtools.BedTool.bgzip
+
+
+:class:`BedTool` introspection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+These methods provide information on the :class:`BedTool` object.
+
+If using :meth:`BedTool.head`, don't forget that you can index into
+:class:`BedTool` objects, too.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool.head
+    pybedtools.BedTool.count
+    pybedtools.BedTool.field_count
 
 
 Randomization helpers
----------------------
+~~~~~~~~~~~~~~~~~~~~~
+Helper methods useful for assessing empirical instersection
+distributions between interval files.
 
-:meth:`randomintersection`
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool.randomstats
+    pybedtools.BedTool.randomintersection
+    pybedtools.BedTool.random_subset
+
+Managing :class:`BedTool` objects on disk
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+These methods are used to specify where to save results from :class:`BedTool`
+operations.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool.saveas
+    pybedtools.BedTool.moveto
+
+
+Misc operations
+~~~~~~~~~~~~~~~
+Methods that can't quite be categorized into the above sections.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.BedTool.cat
+    pybedtools.BedTool.cut
+    pybedtools.BedTool.total_coverage
+    pybedtools.BedTool.with_attrs
+    pybedtools.BedTool.as_intervalfile
+    pybedtools.BedTool.introns
+    pybedtools.BedTool.set_chromsizes
+    pybedtools.BedTool.print_sequence
+    pybedtools.BedTool.save_seqs
+
+Module-level functions
+----------------------
+
+Working with example files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.randomintersection
+:mod:`pybedtools` comes with many example files.  Here are some useful
+functions for accessing them.
 
-:meth:`randomstats`
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.example_bedtool
+    pybedtools.list_example_files
+    pybedtools.example_filename
+
+Creating :class:`Interval` objects from scratch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:class:`Interval` objects are the core object in :mod:`pybedtools` to represent
+a genomic interval, written in Cython for speed.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.Interval
+    pybedtools.create_interval_from_list
+
+:mod:`pybedtools` setup and config
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use these functions right after importing in order to use custom paths or to
+clean up the temp directory.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.set_bedtools_path
+    pybedtools.set_samtools_path
+    pybedtools.get_tempdir
+    pybedtools.set_tempdir
+    pybedtools.cleanup
+
+
+Working with "chromsizes" or assembly coordinate files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Many `BEDTools` programs need "genome files" or "chromsizes" files so as to
+remain within the coordinates of the assembly you're working on.  These
+functions help manage these files.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.get_chromsizes_from_ucsc
+    pybedtools.chromsizes
+    pybedtools.chromsizes_to_file
+
+:mod:`pybedtools.contrib`
+-------------------------
+The :mod:`pybedtools.contrib` module contains higher-level code that leverages
+:class:`BedTool` objects for common analyses.
+
+
+:class:`Classifier`
 ~~~~~~~~~~~~~~~~~~~
-.. automethod:: BedTool.randomstats
+An example use-case of the :class:`Classifier` class would be to determine the
+distribution of ChIP-seq peaks in introns/exons/intergenic space.
 
+.. autosummary::
+    :toctree: autodocs
 
-:class:`Interval` class
-~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: pybedtools.Interval
-    :members:
+    pybedtools.contrib.Classifier
+    pybedtools.contrib.Classifier.classify
+    pybedtools.contrib.Classifier.available_featuretypes
 
-:class:`IntervalFile` class
+:class:`IntersectionMatrix`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autoclass:: pybedtools.IntervalFile
-    :members:
+The :class:`IntersectionMatrix` class makes it easy to intersect a large number
+of interval files with each other.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.contrib.IntersectionMatrix
+
+:mod:`contrib.venn_maker`
+~~~~~~~~~~~~~~~~~~~~~~~~~
+The :mod:`venn_maker` module helps you make Venn diagrams using the R package
+`VennDiagram <http://www.biomedcentral.com/1471-2105/12/35>`_.
+
+Note that Venn diagrams are not good for when you have nested intersections.
+See the docs for :func:`pybedtools.contrib.venn_maker.cleaned_intersect` and
+its source for more details.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.contrib.venn_maker.venn_maker
+    pybedtools.contrib.venn_maker.cleaned_intersect

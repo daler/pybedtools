@@ -97,6 +97,8 @@ the corresponding :class:`BedTool` method.  So there's a
 :meth:`BedTool.subtract` method for `subtractBed`, a
 :meth:`BedTool.intersect` method for `intersectBed`, and so on.
 
+.. _`version principle`:
+
 Principle 3: Indifference to BEDTools version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Since :class:`BedTool` methods just wrap BEDTools_ programs, they are as up-to-date as
