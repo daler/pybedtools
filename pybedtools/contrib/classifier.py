@@ -4,10 +4,53 @@ from collections import defaultdict
 
 
 class Classifier(object):
+    """
+    Classify intervals in one file by featuretypes in another.
+    """
     def __init__(self, bed, annotations):
         """
-        Class for working with peaks in overlapping annotated regions --
-        introns, exons, etc
+        Classify features in `bed` -- typically a BED or SAM/BAM but can be any
+        format supported by BedTools -- into classes based on the featuretypes
+        in the GFF/GTF file, `annotations`.
+
+        For example, you can classify ChIP-seq peaks in a BED file by intron,
+        exon, or whatever is annotated in the GFF file.  If you want to
+        consider promoter regions, you'll have to add these features yourself.
+
+        Typical usage::
+
+            >>> bed = pybedtools.example_filename('gdc.bed')
+            >>> gff = pybedtools.example_filename('gdc.gff')
+            >>> c = Classifier(bed, gff)
+            >>> c.classify(include=['intron', 'exon'])
+
+        The `class_counts` dictionary has its keys as sets of featuretypes
+        (each one can be considered a "class" of features) and the value is the
+        number of features in that class.  The special empty set class contains
+        features that did not fall in an annotated region::
+
+            >>> c.class_counts
+            {frozenset([]): 1,
+             frozenset(['exon']): 3,
+             frozenset(['intron']): 3,
+             frozenset(['intron', 'exon']): 1}
+
+        You can access the individual features in the `class_features`
+        dictionary, which contains the same keys but instead of counts, it
+        contains the features themselves.  This is nice for saving the features
+        in a separate BED file, e.g.,
+
+            >>> key = frozenset(['intron'])
+            >>> features = c.class_features[key]
+            >>> pybedtools.BedTool(iter(features)).saveas()
+
+        Furthermore, you can look up the class of any feature in the original
+        BED file using the `feature_classes` dictionary::
+
+            >>> feature = pybedtools.BedTool(bed)[2]
+            >>> c.feature_classes[feature]
+            set(['intron', '.'])
+
         """
         self.bed = pybedtools.BedTool(bed)
         self.annotations = pybedtools.BedTool(annotations)
@@ -28,31 +71,36 @@ class Classifier(object):
 
     def classify(self, include=None, exclude=None, stranded=False):
         """
+        Perform classification, populating dictionaries in `self`.
+
         Intersect the BED file with the annotations file and return
         a dictionary where keys are BED features and values are the set of
         featuretypes that BED feature was found in.
 
 
-        * `include` is an optional list of featuretypes to restrict the
-          classification to
-        * `exclude` is an optional list of featuretypes to
-          exclude from classification (all other featuretypes will be used).
+        `include` is an optional list of featuretypes to restrict the
+        classification to
+
+        `exclude` is an optional list of featuretypes to exclude from
+        classification (all other featuretypes will be used).
 
         To see what's available, use available_featuretypes().
 
         When run, this method creates the following dictionaries as attributes
         of this object:
 
-         feature_classes: keys are Intervals from `bed`;
-                          values are sets of featuretypes from `annotations`
+         :feature_classes:
+            keys are Intervals from `bed`; values are sets of featuretypes from
+            `annotations`
 
-         class_features : keys are frozensets of featuretypes from
-                          `annotations`; values are lists of Intervals from
-                          `bed`;
+         :class_features:
+            keys are frozensets of featuretypes from `annotations`; values are
+            lists of Intervals from `bed`;
 
-         class_counts   : keys are frozensets of featuretypes from
-                          annotations`; values are number of features -- so the
-                          length of values in the class_features dictionary.
+         :class_counts:
+            keys are frozensets of featuretypes from annotations`; values are
+            number of features -- so the length of values in the class_features
+            dictionary.
 
         """
         if include and exclude:
