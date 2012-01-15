@@ -15,6 +15,9 @@ def get_name(fname):
 
 
 class IntersectionMatrix(object):
+    """
+    Class to handle many pairwise comparisons of interval files
+    """
     def __init__(self, beds, genome, iterations, dbfn=None, force=False):
         """
         Class to handle and keep track of many pairwise comparisons of interval
