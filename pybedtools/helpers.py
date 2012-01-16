@@ -51,7 +51,8 @@ def isBAM(fn):
     if not isBGZIP(fn):
         return False
 
-    # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header . . .
+    # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header
+    # . . .
     cmds = ['samtools', 'view', '-H', fn]
     p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
@@ -59,6 +60,7 @@ def isBAM(fn):
         return False
 
     return True
+
 
 def find_tagged(tag):
     """

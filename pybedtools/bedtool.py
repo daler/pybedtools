@@ -414,7 +414,8 @@ class BedTool(object):
             p = subprocess.Popen(['tabix'])
             p.communicate()
         except OSError:
-            raise ValueError('Please install tabix and ensure it is on your path')
+            raise ValueError(
+                    'Please install tabix and ensure it is on your path')
         if force:
             force_arg = "-f"
         else:

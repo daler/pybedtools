@@ -19,7 +19,8 @@ from pybedtools import BedTool
 from pybedtools.cbedtools import parse_attributes
 import collections
 
-# PYTHONPATH=$PYTHONPATH:. python scripts/annotate.py -a data/new.regions.bed -b data/Homo_sapiens.hg18.gtf --upstream 5000
+# PYTHONPATH=$PYTHONPATH:. python scripts/annotate.py -a data/new.regions.bed
+# -b data/Homo_sapiens.hg18.gtf --upstream 5000
 
 # $ pybedtools annotate -a regions.bed -b knownGene.bed --upstream 10000
 #                  --downstream 5000 --report-distance
@@ -29,10 +30,13 @@ import collections
 # where the up/downstream features are determined by a distance
 # parameter, e.g. like --upstream 10000 --downstream 5000
 
+
 def get_gff_name(field):
     attrs = parse_attributes(field)
     for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
-        if key in attrs: return attrs[key]
+        if key in attrs:
+            return attrs[key]
+
 
 def gen_get_name(b, afields):
     btype = b.file_type
@@ -43,7 +47,8 @@ def gen_get_name(b, afields):
             return get_gff_name(fields[afields + 7])
     else:
         raise Exception("not implemented")
-    return get_name 
+    return get_name
+
 
 def add_closest(aname, bname):
     a, b = BedTool(aname), BedTool(bname)
@@ -70,14 +75,17 @@ def add_closest(aname, bname):
     assert len(d) == len(a)
     return d
 
+
 def add_xstream(a, b, dist, updown, report_distance=False):
     # run a window up or downstream.
     dir = dict(up="l", down="r")[updown]
-    kwargs = {'sw':True, dir: dist}
+    kwargs = {'sw': True, dir: dist}
 
     # have to set the other to 0
-    if "l" in kwargs: kwargs["r"] = 0
-    else: kwargs["l"] = 0
+    if "l" in kwargs:
+        kwargs["r"] = 0
+    else:
+        kwargs["l"] = 0
 
     c = a.window(b, **kwargs)
     afields = a.field_count()
@@ -97,13 +105,15 @@ def add_xstream(a, b, dist, updown, report_distance=False):
     # write the entries that did not appear in the window'ed Bed
     for row in a:
         key = "\t".join(row[:afields])
-        if key in seen: continue
+        if key in seen:
+            continue
         d.write(str(row) + "\t.\n")
 
     d.close()
     dbed = BedTool(d.name)
     assert len(dbed) == len(a)
     return dbed
+
 
 def main():
     """

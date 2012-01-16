@@ -1,11 +1,13 @@
 #!/usr/bin/python
 """
-Example from the manuscript; see sh_ms_example.sh for the shell script equivalent.
+Example from the manuscript; see sh_ms_example.sh for the shell script \
+equivalent.
 
 Prints the names of genes that are <5000 bp away from intergenic SNPs.
 """
 from os import path
 from pybedtools import BedTool
+
 
 def main():
     """

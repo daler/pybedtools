@@ -8,6 +8,7 @@ import pybedtools
 import os
 import time
 
+
 def main():
     """
     Quick demo of some pybedtools functionality
@@ -22,8 +23,8 @@ def main():
     # In order to locate files on disk, this script uses pybedtools'
     # example_filename() method to locate filenames of example data.
     #
-    # To save space, example data only consists of the parts needed for this script
-    # to run
+    # To save space, example data only consists of the parts needed for this
+    # script to run
 
     # has genes from chr1 and chr21
     gff_fn = pybedtools.example_filename('hg19.gff')
@@ -40,7 +41,8 @@ def main():
     # a couple of example exons
     exon_fn = pybedtools.example_filename('exons.gff')
 
-    # subset and sequences will be saved as tempfiles that won't get auto-deleted
+    # subset and sequences will be saved as tempfiles that won't get
+    # auto-deleted
     subset_fn = os.path.join(pybedtools.tempfile.gettempdir(),
                           'chr21-genes-with-snps.gff')
     seq_fn = os.path.join(pybedtools.tempfile.gettempdir(),
@@ -65,7 +67,6 @@ def main():
     print '... (only showing 5)'
     print
 
-
     def chrom_filt(g):
         return g.chrom == 'chr21'
 
@@ -74,7 +75,6 @@ def main():
     subset = subset.saveas(subset_fn)
     print '(check saved results in "%s")' % subset_fn
     print
-
 
     print 'Extracting sequences...',
     subset.sequence(fasta_fn).\

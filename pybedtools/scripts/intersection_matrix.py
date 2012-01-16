@@ -71,7 +71,8 @@ def create_matrix(beds, func, verbose=False):
 
 def main():
     """
-    Creates a pairwise matrix containing overlapping feature counts for many BED files
+    Creates a pairwise matrix containing overlapping feature counts for many
+    BED files
     """
     ap = argparse.ArgumentParser(usage=usage)
     ap.add_argument('beds', nargs="*", help='BED/GTF/GFF/VCF filenames, e.g., '

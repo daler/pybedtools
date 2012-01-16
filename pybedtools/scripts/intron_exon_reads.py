@@ -38,7 +38,8 @@ def count_reads_in_features(features):
 
 def main():
     """
-    Third quick example from the documentation -- count reads introns and exons, in parallel
+    Third quick example from the documentation -- count reads introns and
+    exons, in parallel
     """
     ap = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]),
                                  usage=__doc__)

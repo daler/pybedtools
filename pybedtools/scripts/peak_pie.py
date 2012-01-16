@@ -118,7 +118,8 @@ def make_pie(bed, gff, stranded=False, out='out.png',
 
 def main():
     """
-    Make a pie chart of features overlapping annotations (e.g., peaks in introns, exons, etc)
+    Make a pie chart of features overlapping annotations (e.g., peaks in
+    introns, exons, etc)
     """
     ap = argparse.ArgumentParser(description=__doc__,
                           formatter_class=argparse.RawDescriptionHelpFormatter)
