@@ -1,6 +1,8 @@
 
 .. _autodoc:
 
+.. _pybedtools reference:
+
 :mod:`pybedtools` Reference
 ===========================
 The following tables summarize the methods and functions; click on a method or

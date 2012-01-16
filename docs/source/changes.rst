@@ -4,10 +4,16 @@ Changelog
 =========
 Changes since v0.5.5
 --------------------
-* initial support for tabix files.  Useful for extracting features from
+* Overhaul in documentation to hopefully make functionality easier to find
+  and/or discover.  See :ref:`pybedtools reference` for summary tables of the
+  different parts of :mod:`pybedtools`; each entry is linked to further
+  class/method/function-specific docs.  These more detailed docs also have
+  links to view the source code from within the HTML docs for more exploration.
+
+* Initial support for tabix files.  Useful for extracting features from
   a single region when you don't need a full intersection.
 
-* new :mod:`pybedtools.contrib` module (in the spirit of Django's `contrib`)
+* New :mod:`pybedtools.contrib` module (in the spirit of Django's `contrib`)
   where higher-level functionality will be built.
 
 * :class:`pybedtools.contrib.Classifier` class for identifying the classes of
@@ -18,11 +24,15 @@ Changes since v0.5.5
   the VennDiagram R package -- just give it some BED files and it'll do the
   rest
 
-* :class:`Interval` objects are pickleable, so you can pass them between
+* :class:`pybedtools.contrib.IntersectionMatrix` class for handling pairwise
+  intersections of a large number of interval files -- including a local
+  sqlite3 database to avoid re-computing already up-to-date results.
+
+* :class:`Interval` objects are now pickleable, so you can pass them between
   processes when using the muliprocessing module
 
-* :class:`Interval` objects are hashable (it's just a hash of the string
-  representation) so that you can use them as dictionary keys.
+* :class:`Interval` objects are now hashable (it's just a hash of the string
+  representation) so that you can use them as dictionary keys.  Note that 
 
 * :meth:`BedTool.split` method, which accepts a function that returns an
   iterable of Intervals and is applied to each interval.  Useful for, say,
@@ -30,8 +40,9 @@ Changes since v0.5.5
 
 * :meth:`truncate_to_chrom` method, which truncates features to the chromosome
   sizes of the provided genome.  Useful for when you try uploading
-  a MACS-generated track to the genome browser, but it complains because peak
-  boundaries have been extended outside chromosome boundaries.
+  a MACS-generated track to the UCSC genome browser, but it complains because
+  peak boundaries have been extended outside chromosome boundaries . . . this
+  method fixes the problem.
 
 * :class:`BedTool` objects now have full functionality of :class:`IntervalFile`
   objects -- that is, they have the methods :meth:`BedTool.any_hits`,
