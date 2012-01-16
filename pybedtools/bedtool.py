@@ -1752,6 +1752,13 @@ class BedTool(object):
 
         """
 
+    @_log_to_history
+    @_wraps(prog='mapBed', implicit='a', other='b')
+    def map(self):
+        """
+        Wraps `mapBed`. See also :meth:`BedTool.each`.
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.

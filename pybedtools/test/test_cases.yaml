@@ -509,3 +509,40 @@
         chr1	100	200	feature2	0	+	chr1	800	901	feature6	0	+
         chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-
         chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# mapBed
+
+#-   method: map
+#    kwargs:
+#        a: a.bed
+#        b: d.gff
+#    expected: |
+#        chr1	1	100	feature1	0	+	750
+#        chr1	100	200	feature2	0	+	1025
+#        chr1	150	500	feature3	0	-	875
+#        chr1	900	950	feature4	0	+	.
+#
+#-   method: map
+#    kwargs:
+#        a: a.bed
+#        b: d.gff
+#        o: collapse
+#    expected: |
+#        chr1	1	100	feature1	0	+	300,300,150
+#        chr1	100	200	feature2	0	+	300,300,150,275
+#        chr1	150	500	feature3	0	-	300,300,275
+#        chr1	900	950	feature4	0	+	.
+#
+#-   method: map
+#    kwargs:
+#        a: a.bed
+#        b: d.gff
+#        o: collapse
+#        c: 3
+#    expected: |
+#        chr1	1	100	feature1	0	+	gene,mRNA,CDS
+#        chr1	100	200	feature2	0	+	gene,mRNA,CDS,CDS
+#        chr1	150	500	feature3	0	-	gene,mRNA,CDS
+#        chr1	900	950	feature4	0	+	.
+
