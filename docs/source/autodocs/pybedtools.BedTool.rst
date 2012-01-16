@@ -41,6 +41,7 @@ pybedtools.BedTool
       ~BedTool.head
       ~BedTool.intersect
       ~BedTool.introns
+      ~BedTool.map
       ~BedTool.mask_fasta
       ~BedTool.merge
       ~BedTool.moveto

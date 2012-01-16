@@ -39,6 +39,10 @@ In general the `BEDTool` wrapper methods adhere to the :ref:`Design principles`:
     * :ref:`version principle`
     * :ref:`default args principle`
 
+A new interface was introduced in BEDTools v2.15 which retains compatibility
+with :mod:`pybedtools`.  For clarity, in the table below, both the "old" (e.g.,
+`intersectBed`) or "new" (e.g., `bedtools intersect`) versions of calling the
+program are indicated. 
 
 .. autosummary::
     :toctree: autodocs
