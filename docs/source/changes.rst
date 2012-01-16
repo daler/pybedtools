@@ -10,6 +10,8 @@ Changes since v0.5.5
   class/method/function-specific docs.  These more detailed docs also have
   links to view the source code from within the HTML docs for more exploration.
 
+* Wrapped `mapBed`
+
 * Initial support for tabix files.  Useful for extracting features from
   a single region when you don't need a full intersection.
 
@@ -28,11 +30,8 @@ Changes since v0.5.5
   intersections of a large number of interval files -- including a local
   sqlite3 database to avoid re-computing already up-to-date results.
 
-* :class:`Interval` objects are now pickleable, so you can pass them between
-  processes when using the muliprocessing module
-
 * :class:`Interval` objects are now hashable (it's just a hash of the string
-  representation) so that you can use them as dictionary keys.  Note that 
+  representation) so that you can use them as dictionary keys.
 
 * :meth:`BedTool.split` method, which accepts a function that returns an
   iterable of Intervals and is applied to each interval.  Useful for, say,
