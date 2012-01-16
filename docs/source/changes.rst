@@ -38,7 +38,7 @@ Changes since v0.5.5
   iterable of Intervals and is applied to each interval.  Useful for, say,
   splitting each gene into TSS, TTS, upstream and downstream features.
 
-* :meth:`truncate_to_chrom` method, which truncates features to the chromosome
+* :meth:`BedTool.truncate_to_chrom` method, which truncates features to the chromosome
   sizes of the provided genome.  Useful for when you try uploading
   a MACS-generated track to the UCSC genome browser, but it complains because
   peak boundaries have been extended outside chromosome boundaries . . . this

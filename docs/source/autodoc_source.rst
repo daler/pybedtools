@@ -84,6 +84,7 @@ on the fly.
 
     pybedtools.BedTool.each
     pybedtools.BedTool.filter
+    pybedtools.BedTool.split
     pybedtools.BedTool.truncate_to_chrom
     pybedtools.BedTool.remove_invalid
 
