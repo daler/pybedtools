@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+"""
+Example pybedtools usage; please read script and comments for more info
+"""
 from pybedtools import BedTool
 import pybedtools
 import os

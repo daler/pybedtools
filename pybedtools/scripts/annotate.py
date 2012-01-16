@@ -1,4 +1,6 @@
 """
+annotate a file with the neearest features in another.
+
     %prog [options]
 
 if --upstream and --downstream are not specified only 2 colummns are

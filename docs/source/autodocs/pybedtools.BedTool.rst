@@ -31,6 +31,7 @@ pybedtools.BedTool
       ~BedTool.cut
       ~BedTool.delete_temporary_history
       ~BedTool.each
+      ~BedTool.features
       ~BedTool.field_count
       ~BedTool.filter
       ~BedTool.flank

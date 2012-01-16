@@ -70,6 +70,8 @@ For more, see the :mod:`pybedtools.scripts.venn_mpl` and
 command-line scripts to create Venn diagrams using either matplotlib or Google
 Charts API respectively.
 
+.. _third example:
+
 Example 3: Count reads in introns and exons, in parallel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This example shows how to count the number of reads in introns and exons in

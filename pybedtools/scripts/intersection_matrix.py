@@ -1,4 +1,9 @@
 #!/usr/bin/python
+"""
+Create a matrix of many pairwise intersections; see \
+:mod:`pybedtools.contrib.IntersectionMatrix` for more flexibility
+"""
+
 import collections
 import time
 import sys

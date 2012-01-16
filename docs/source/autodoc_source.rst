@@ -256,5 +256,33 @@ its source for more details.
 .. autosummary::
     :toctree: autodocs
 
+    pybedtools.contrib.venn_maker
     pybedtools.contrib.venn_maker.venn_maker
     pybedtools.contrib.venn_maker.cleaned_intersect
+
+Scripts
+-------
+These scripts demonstrate ways of using :mod:`pybedtools` for genomic analyses.
+
+Typically a script will be added here and if the functionality is useful, it is
+abstracted out into a more powerful and flexible module.  For example, the
+:mod:`pybedtools.contrib.venn_maker` module is a more powerful and flexible way
+of making Venn diagrams than the simpler `venn_mpl` and `venn_gchart` scripts
+below.
+
+Another example is the :mod:`pybedtools.contrib.IntersectionMatrix` class,
+which extends the `intersection_matrix.py` script.  The class stores results
+and timestamps in a local sqlite3 database to avoid re-computing up-to-date
+results.
+
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.scripts.pybedtools_demo
+    pybedtools.scripts.venn_mpl
+    pybedtools.scripts.venn_gchart
+    pybedtools.scripts.intersection_matrix
+    pybedtools.scripts.peak_pie
+    pybedtools.scripts.annotate
+    pybedtools.scripts.intron_exon_reads
+    pybedtools.scripts.py_ms_example

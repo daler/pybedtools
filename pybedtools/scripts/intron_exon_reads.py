@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+"""
+Example from pybedtools documentation (:ref:`third example`) to count \
+reads in introns and exons using multiple CPUs.
+"""
+
 import pybedtools
 import argparse
 import os

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 """
-Make a pie chart where peaks fall in annotations, similar to CEAS
-(http://liulab.dfci.harvard.edu/CEAS/)
+Make a pie chart where peaks fall in annotations; see \
+:mod:`pybedtools.contrib.Classifier` for more flexibility.
+
+The results here are similar to CEAS (http://liulab.dfci.harvard.edu/CEAS/).
 
 However, multi-featuretype classes are reported.  That is, if a peak falls in
 an exon in one isoform and an intron in another isoform, the class is "exon,

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """
-    Given 3 files, creates a 3-way Venn diagram of intersections using the
-    Google Chart API.
+Given 3 files, creates a 3-way Venn diagram of intersections using the Google \
+Chart API; see :mod:`pybedtools.contrib.venn_maker` for more flexibility.
 
-    The values in the diagram assume:
+The values in the diagram assume:
 
-        * unstranded intersections
-        * no features that are nested inside larger features
+    * unstranded intersections
+    * no features that are nested inside larger features
 """
 
 import argparse

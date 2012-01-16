@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 """
-    Given 3 files, creates a 3-way Venn diagram of intersections using matplotlib.  
+Given 3 files, creates a 3-way Venn diagram of intersections using matplotlib; \
+see :mod:`pybedtools.contrib.venn_maker` for more flexibility.
 
-    Numbers are placed on the diagram.  If you don't have matplotlib installed.
-    try venn_gchart.py to use the Google Chart API instead.
+Numbers are placed on the diagram.  If you don't have matplotlib installed.
+try venn_gchart.py to use the Google Chart API instead.
 
-    The values in the diagram assume:
+The values in the diagram assume:
 
-        * unstranded intersections
-        * no features that are nested inside larger features
+    * unstranded intersections
+    * no features that are nested inside larger features
 """
 
 import argparse

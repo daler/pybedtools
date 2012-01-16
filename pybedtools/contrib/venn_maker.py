@@ -160,8 +160,8 @@ def cleaned_intersect(items):
 def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
         additional_args=None, run=False):
     """
-    Write an R script to create a Venn diagram out of `beds` (and optionally
-    run it).
+    Given a list of interval files, write an R script to create a Venn \
+    diagram of overlaps (and optionally run it).
 
     The R script calls the venn.diagram function of the R package VennDiagram
     for extremely flexible Venn and Euler diagram creation.  Uses
