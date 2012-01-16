@@ -2,6 +2,7 @@
 tests for contrib module
 """
 import pybedtools
+from pybedtools import Interval
 from pybedtools.contrib import Classifier
 
 # model for gdc.
@@ -59,17 +60,44 @@ def test_classifier():
     c = Classifier(
             bed=pybedtools.example_filename('gdc.bed'),
             annotations=pybedtools.example_filename('gdc.gff'))
-    d = c.classify()
+    c.classify()
 
-    print "\nclassification dict"
-    for k, v in d.items():
-        print k, v
+    bed = pybedtools.example_bedtool('gdc.bed')
 
-    print "\nsummarized"
-    for k, v in c.class_counts(d).items():
-        print 'class: "%s" count: %s' % (k, v)
-    raise NotImplementedError('Still working on the test...')
+    assert c.class_counts == {
+            frozenset(['UTR', 'exon', 'mRNA', 'CDS', 'tRNA', 'gene']): 1,
+            frozenset(['intron', 'gene', 'mRNA']): 3,
+            frozenset([]): 1,
+            frozenset(['gene', 'exon', 'mRNA', 'CDS']): 2,
+            frozenset(['exon', 'mRNA', 'CDS', 'tRNA', 'intron', 'gene']): 1}
 
+    assert c.feature_classes == {
+            bed[0]: set(['.']),
+            bed[1]: set(['gene', 'exon', 'mRNA', 'CDS']),
+            bed[2]: set(['intron', 'gene', 'mRNA']),
+            bed[3]: set(['intron', 'gene', 'mRNA']),
+            bed[4]: set(['tRNA', 'UTR', 'exon', 'mRNA', 'CDS', 'gene']),
+            bed[5]: set(['gene', 'exon', 'mRNA', 'CDS']),
+            bed[6]: set(['intron', 'gene', 'mRNA']),
+            bed[7]: set(['tRNA', 'intron', 'exon', 'mRNA', 'CDS', 'gene']),
+            }
+
+    print 'use these indexes for debugging'
+    for i, f in enumerate(bed):
+        print i, f
+
+    for k, v in c.class_features.items():
+        print k
+        for i in v:
+            print '\t' + str(i)
+
+    assert c.class_features == {
+            frozenset([]): [bed[0]],
+            frozenset(['intron', 'gene', 'mRNA']): [bed[6], bed[2], bed[3]],
+            frozenset(['gene', 'exon', 'mRNA', 'CDS']): [bed[5], bed[1]],
+            frozenset(['UTR', 'exon', 'mRNA', 'CDS', 'tRNA', 'gene']): [bed[4]],
+            frozenset(['exon', 'mRNA', 'CDS', 'tRNA', 'intron', 'gene']): [bed[7]],
+            }
 
 def test_cleaned_intersect():
     x = pybedtools.BedTool("""
