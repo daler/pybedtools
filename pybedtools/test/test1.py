@@ -958,7 +958,7 @@ def test_additional_args():
     chr1	1	2	1
     chr1	100	101	1
     chr1	900	901	1""")
-    assert a.genome_coverage(bg=True, strand='+', genome='hg19', additional_args='-5') == expected
+    assert a.genome_coverage(bg=True, strand='+', g=dict(chr1=(1, 1000)), additional_args='-5') == expected
 
 
 #------------------------------------------------------------------------------
