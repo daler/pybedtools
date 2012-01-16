@@ -714,6 +714,12 @@ class BedTool(object):
         fh.close()
         return BedTool(fh.name)
 
+    def features(self):
+        """
+        Returns an iterable of features
+        """
+        return iter(self)
+
     @property
     def file_type(self):
         """
