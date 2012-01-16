@@ -410,6 +410,11 @@ class BedTool(object):
         If `is_sorted`, then assume the file is already sorted so that
         BedTool.bgzip() doesn't have to do that work.
         """
+        try:
+            p = subprocess.Popen(['tabix'])
+            p.communicate()
+        except OSError:
+            raise ValueError('Please install tabix and ensure it is on your path')
         if force:
             force_arg = "-f"
         else:
