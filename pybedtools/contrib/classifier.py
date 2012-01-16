@@ -27,13 +27,16 @@ class Classifier(object):
         The `class_counts` dictionary has its keys as sets of featuretypes
         (each one can be considered a "class" of features) and the value is the
         number of features in that class.  The special empty set class contains
-        features that did not fall in an annotated region::
+        features that did not fall in an annotated region.
 
-            >>> c.class_counts
-            {frozenset([]): 1,
-             frozenset(['exon']): 3,
-             frozenset(['intron']): 3,
-             frozenset(['intron', 'exon']): 1}
+            >>> results = c.class_counts
+            >>> results == {
+            ... frozenset([]): 1,
+            ... frozenset(['exon']): 3,
+            ... frozenset(['intron']): 3,
+            ... frozenset(['intron', 'exon']): 1}
+            True
+
 
         You can access the individual features in the `class_features`
         dictionary, which contains the same keys but instead of counts, it
@@ -42,14 +45,15 @@ class Classifier(object):
 
             >>> key = frozenset(['intron'])
             >>> features = c.class_features[key]
-            >>> pybedtools.BedTool(iter(features)).saveas()
+            >>> pybedtools.BedTool(iter(features)).saveas()  #doctest: +ELLIPSIS
+            <BedTool(...)>
 
         Furthermore, you can look up the class of any feature in the original
         BED file using the `feature_classes` dictionary::
 
             >>> feature = pybedtools.BedTool(bed)[2]
-            >>> c.feature_classes[feature]
-            set(['intron', '.'])
+            >>> c.feature_classes[feature] == set(['intron', '.'])
+            True
 
         """
         self.bed = pybedtools.BedTool(bed)
