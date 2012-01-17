@@ -64,6 +64,7 @@ setup(
         extras_require={'test': tests_require},
         packages=['pybedtools',
                   'pybedtools.test',
+                  'pybedtools.contrib',
                   'pybedtools.scripts',
                   'pybedtools.test.data'],
         author="Ryan Dale",
