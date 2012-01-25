@@ -836,9 +836,9 @@ class BedTool(object):
     def __sub__(self, other):
         return self.intersect(other, v=True)
 
-    def head(self, n=10):
+    def head(self, n=10, as_string=False):
         """
-        Prints the first *n* lines
+        Prints the first *n* lines or returns them if as_string is True
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> a.head(2) #doctest: +NORMALIZE_WHITESPACE
@@ -850,10 +850,13 @@ class BedTool(object):
         if not isinstance(self.fn, basestring):
             raise NotImplementedError('head() not supported for non file-based'
                     'BedTools')
-        for i, line in enumerate(iter(self)):
-            if i == (n):
-                break
-            print line
+        if as_string:
+            return '\n'.join(str(line) for line in self[:n]) + '\n'
+        else:
+            for i, line in enumerate(iter(self)):
+                if i == (n):
+                    break
+                print line
 
     def set_chromsizes(self, chromsizes):
         """
