@@ -305,7 +305,11 @@ class BedTool(object):
         tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
         self._tag = tag
         _tags[tag] = self
+        if isinstance(fn, unicode):
+            fn = str(fn)
+
         self.fn = fn
+
         self._hascounts = False
         self._file_type = None
         self.history = History()
