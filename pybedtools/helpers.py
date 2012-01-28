@@ -244,7 +244,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stdin=subprocess.PIPE,
                                  bufsize=1)
             for line in stdin:
-                p.stdin.write(line + "\n")
+                p.stdin.write(line)
 
             # This is important to prevent deadlocks
             p.stdin.close()
@@ -268,7 +268,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 stdout, stderr = p.communicate(stdin.read())
             else:
                 for item in stdin:
-                    p.stdin.write(item + "\n")
+                    p.stdin.write(item)
                 stdout, stderr = p.communicate()
             output = tmpfn
             outfile.close()

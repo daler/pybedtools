@@ -953,7 +953,7 @@ class BedTool(object):
             fout.write(trackline.strip() + '\n')
 
         for i in iterable:
-            fout.write(str(i) + '\n')
+            fout.write(str(i))
         fout.close()
         return fn
 
