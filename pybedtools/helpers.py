@@ -218,8 +218,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     needed, e.g., for calling fastaFromBed which will report that it has to
     make a .fai for a fasta file.
     """
-    instream = stdin is not None
-    outstream = tmpfn is None
+    input_is_stream = stdin is not None
+    output_is_stream = tmpfn is None
 
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
@@ -232,8 +232,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
     try:
         # coming from an iterator, sending as iterator
-        if instream and outstream:
-
+        if input_is_stream and output_is_stream:
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
@@ -249,7 +248,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             stderr = None
 
         # coming from an iterator, writing to file
-        if instream and not outstream:
+        if input_is_stream and not output_is_stream:
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
@@ -266,7 +265,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             outfile.close()
 
         # coming from a file, sending as iterator
-        if not instream and outstream:
+        if not input_is_stream and output_is_stream:
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
@@ -275,7 +274,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             stderr = None
 
         # file-to-file
-        if not instream and not outstream:
+        if not input_is_stream and not output_is_stream:
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
