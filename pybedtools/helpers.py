@@ -233,6 +233,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     try:
         # coming from an iterator, sending as iterator
         if input_is_stream and output_is_stream:
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): input is stream, output is '
+                    'stream')
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
@@ -249,6 +254,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from an iterator, writing to file
         if input_is_stream and not output_is_stream:
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): input is stream, output is file')
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
@@ -266,6 +275,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from a file, sending as iterator
         if not input_is_stream and output_is_stream:
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): input is filename, '
+                    'output is stream')
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
@@ -275,6 +289,11 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # file-to-file
         if not input_is_stream and not output_is_stream:
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): input is filename, output '
+                    'is filename (%s)', tmpfn)
+            pybedtools.logger.debug(
+                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
