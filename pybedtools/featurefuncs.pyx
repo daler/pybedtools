@@ -66,3 +66,38 @@ cpdef bedgraph_scale(Interval feature, float scalar):
     feature[3] = str(float(feature[3]) * scalar)
     return feature
 
+
+cdef safe_start_stop(start, stop):
+    """
+    Ensures that feature start/stop coords are non-negative and that start <
+    stop.
+
+    If start is negative, reset to zero.
+
+    If start > stop make start and stop equal to the original start.
+    """
+    if start < 0:
+        start = 0
+    if start > stop:
+        stop = start
+    return start, stop
+
+
+cpdef TSS(Interval feature, int upstream=500, int downstream=500, add_to_name=None):
+    """
+    Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
+    the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
+    """
+    if feature.strand == '-':
+        start = feature.stop - downstream
+        stop = feature.stop + upstream
+    else:
+        start = feature.start - upstream
+        stop = feature.start + downstream
+    if add_to_name:
+        try:
+            feature.name += add_to_name
+        except AttributeError:
+            pass
+    feature.start, feature.stop = safe_start_stop(start, stop)
+    return feature

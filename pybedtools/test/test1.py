@@ -2,6 +2,7 @@ import pybedtools
 import os, difflib, sys
 from nose.tools import assert_raises, raises
 from pybedtools.helpers import BEDToolsError
+from pybedtools import featurefuncs
 
 testdir = os.path.dirname(__file__)
 
@@ -959,6 +960,18 @@ def test_additional_args():
     chr1	100	101	1
     chr1	900	901	1""")
     assert a.genome_coverage(bg=True, strand='+', g=dict(chr1=(1, 1000)), additional_args='-5') == expected
+
+def test_tss():
+    a = pybedtools.example_bedtool('a.bed')
+    results = str(a.each(featurefuncs.TSS, upstream=3, downstream=5, add_to_name='_TSS'))
+    print results
+    assert results == fix("""
+    chr1	0	6	feature1_TSS	0	+
+    chr1	97	105	feature2_TSS	0	+
+    chr1	495	503	feature3_TSS	0	-
+    chr1	897	905	feature4_TSS	0	+
+    """)
+
 
 
 #------------------------------------------------------------------------------
