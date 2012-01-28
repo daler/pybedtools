@@ -10,6 +10,8 @@ Changes since v0.5.5
   class/method/function-specific docs.  These more detailed docs also have
   links to view the source code from within the HTML docs for more exploration.
 
+* Debug mode -- :func:`pybedtools.debug_mode` -- for verbose logging messages
+
 * Wrapped `mapBed`
 
 * Initial support for tabix files.  Useful for extracting features from
@@ -20,11 +22,12 @@ Changes since v0.5.5
 
 * :class:`pybedtools.contrib.Classifier` class for identifying the classes of
   intervals.  Useful for making pie charts of intronic/exonic/intergenic etc
-  classes of peaks
+  classes of peaks.  Note that this is somewhat redundant with the new `mapBed`
+  program in BEDTools.
 
 * :func:`pybedtools.contrib.venn_maker` function that acts as an interface to
   the VennDiagram R package -- just give it some BED files and it'll do the
-  rest
+  rest.
 
 * :class:`pybedtools.contrib.IntersectionMatrix` class for handling pairwise
   intersections of a large number of interval files -- including a local
@@ -33,7 +36,7 @@ Changes since v0.5.5
 * :class:`Interval` objects are now hashable (it's just a hash of the string
   representation) so that you can use them as dictionary keys.
 
-* :meth:`BedTool.split` method, which accepts a function that returns an
+* :meth:`BedTool.split` method, which accepts a function returning an
   iterable of Intervals and is applied to each interval.  Useful for, say,
   splitting each gene into TSS, TTS, upstream and downstream features.
 
