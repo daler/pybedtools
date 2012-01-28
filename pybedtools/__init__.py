@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 import urllib2
 import copy_reg
+import logging
 import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
                     create_interval_from_list, parse_attributes, \
@@ -19,12 +20,42 @@ _path = ""
 _samtools_path = ""
 _filo_path = ""
 KEEP_TEMPFILES = False
+_DEBUG = True
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.WARNING)
+formatter = logging.Formatter('%(name)s [%(levelname)s]: %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
+
+def debug_mode(x, keep_tempfiles=True):
+    """
+    Use debug_mode(True) to show debug log events in the console and to
+    save calling info in BedTool objects.
+    """
+    if x:
+        logger.setLevel(logging.DEBUG)
+        ch.setLevel(logging.DEBUG)
+        _DEBUG = True
+        logger.info('Debug mode enabled.  You may also want to set '
+                'pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion '
+                'of files upon exit.')
+    else:
+        logger.setLevel(logging.INFO)
+        ch.setLevel(logging.INFO)
+        _DEBUG = False
+        logger.info('Debug mode disabled')
+
 
 # Allow Interval objects to be pickled -- required if you want to pass them
 # across process boundaries
 def interval_constructor(fields):
     return create_interval_from_list(list(fields))
+
 
 def interval_reducer(interval):
     return interval_constructor, (tuple(interval.fields), )
