@@ -2068,7 +2068,7 @@ class BedTool(object):
         TMP.close()
         c = BedTool(tmp)
         if postmerge:
-            d = c.merge(**kwargs)
+            d = c.sort().merge(**kwargs)
             return d
         else:
             return c
