@@ -398,7 +398,7 @@ class BedTool(object):
                     interval_or_string.stop)
         cmds = ['tabix', self.fn, coords]
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
-        return BedTool(i.strip() for i in p.stdout)
+        return BedTool(p.stdout)
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
@@ -853,7 +853,7 @@ class BedTool(object):
         if isinstance(self.fn, basestring) and not self._isbam:
             return open(self.fn).read()
 
-        return '\n'.join(str(i) for i in iter(self)) + '\n'
+        return ''.join(str(i) for i in iter(self))
 
     def __len__(self):
         return self.count()

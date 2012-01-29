@@ -63,9 +63,6 @@ def test_tabix():
     chr1	150	500	feature3	0	-""")
 
 
-
-
-
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests
 # ----------------------------------------------------------------------------
@@ -267,7 +264,8 @@ def test_iterator():
     """
     a = pybedtools.BedTool(s, from_string=True)
     results = list(a)
-    assert str(results[0]) == 'chrX\t1\t10', results
+    print results[0]
+    assert str(results[0]) == 'chrX\t1\t10\n', results
 
 def test_indexing():
     """
@@ -765,7 +763,7 @@ def test_print_abam():
 
 def test_bam_iter():
     x = pybedtools.example_bedtool('gdc.bam')
-    s = 'None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1'
+    s = 'None	0	chr2L	11	255	5M	*	0	0	CGACA	IIIII	NM:i:0	NH:i:1\n'
     assert str(x[0]) == str(iter(x).next()) == s
 
 def test_bam_stream_bed():

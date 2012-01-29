@@ -417,7 +417,11 @@ cdef class Interval:
         return self._bed.o_end - self._bed.o_start
 
     def __str__(self):
-        return "\t".join(self.fields)
+        """
+        Interval objects always print with a newline to mimic a line in a
+        BED/GFF/VCF file
+        """
+        return "\t".join(self.fields) + "\n"
 
     def __repr__(self):
         return "Interval(%s:%i-%i)" % (self.chrom, self.start, self.end)
