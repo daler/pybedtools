@@ -32,15 +32,21 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 
-def debug_mode(x, keep_tempfiles=True):
+def debug_mode(x):
     """
-    Use debug_mode(True) to show debug log events in the console and to
-    save calling info in BedTool objects.
+    Enable debug mode.
+
+    Use debug_mode(True) to show debug log events in the console and to save
+    calling info in BedTool objects, and turn it off again with debug_mode(False).
+
+    Note that `pybedtools.KEEP_TEMPFILES` will be set as well, so you will need
+    to clean up the tempfile directory manually after using debug mode.
     """
     if x:
         logger.setLevel(logging.DEBUG)
         ch.setLevel(logging.DEBUG)
         _DEBUG = True
+        KEEP_TEMPFILES = True
         logger.info('Debug mode enabled.  You may also want to set '
                 'pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion '
                 'of files upon exit.')
@@ -48,6 +54,7 @@ def debug_mode(x, keep_tempfiles=True):
         logger.setLevel(logging.INFO)
         ch.setLevel(logging.INFO)
         _DEBUG = False
+        KEEP_TEMPFILES = False
         logger.info('Debug mode disabled')
 
 
