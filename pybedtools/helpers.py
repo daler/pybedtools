@@ -11,12 +11,12 @@ import pybedtools
 
 # Check calls against these names to only allow calls to known BEDTools
 # programs (basic security)
-_prog_names = ['annotateBed', 'bedToBam', 'complementBed', 'flankBed',
+_prog_names = ('annotateBed', 'bedToBam', 'complementBed', 'flankBed',
 'linksBed', 'overlap', 'shuffleBed', 'subtractBed', 'bamToBed', 'bedToIgv',
 'coverageBed', 'genomeCoverageBed', 'maskFastaFromBed', 'pairToBed', 'slopBed',
 'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
 'mergeBed', 'pairToPair', 'sortBed', 'windowBed', 'groupBy', 'tagBam',
-'nucBed', 'multiBamCov', 'mapBed']
+'nucBed', 'multiBamCov', 'mapBed')
 
 _tags = {}
 
