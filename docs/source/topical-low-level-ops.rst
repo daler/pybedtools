@@ -40,3 +40,9 @@ Or count how many hits:
 See the docstrings for :meth:`IntervalFile.all_hits`,
 :meth:`IntervalFile.any_hits`, and :meth:`IntervalFile.count_hits` for
 more, including stranded hits and restricting hits to a specific overlap.
+
+.. note::
+
+    These methods are now available as :class:`BedTool` methods,
+    :meth:`BedTool.all_hits`, :meth:`BedTool.any_hits`, and
+    :meth:`BedTool.count_hits`

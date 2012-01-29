@@ -5,12 +5,16 @@
 
 .. include:: includeme.rst
 
-.. _here: pybedtools_manual.pdf
+.. _PDF version: pybedtools_manual.pdf
 
 Welcome to pybedtools's documentation!
 ======================================
 
 .. include:: ../../README.rst
+
+
+Getting started
+---------------
 
 The documentation is separated into 4 main parts, depending on the depth you'd
 like to cover:
@@ -22,22 +26,7 @@ like to cover:
 * Finally, doctested module documentation can be found in :ref:`autodoc`.
 
 
-A PDF version of this manual can be found `here`_.
-
-.. note::
-
-    If you use :mod:`pybedtools` in your work, please cite the
-    `pybedtools manuscript <http://bioinformatics.oxfordjournals.org/content/27/24/3423>`_:
-
-        Dale RK, Pedersen BS, and Quinlan AR. 2011. *Pybedtools: a flexible
-        Python library for manipulating genomic datasets and annotations*.
-        Bioinformatics 27(24):3423-3424.
-
-    And the `BEDTools manuscript
-    <http://bioinformatics.oxfordjournals.org/content/26/6/841.short>`_:
-
-        Quinlan AR and Hall IM, 2010. *BEDTools: a flexible suite of utilities
-        for comparing genomic features*. Bioinformatics 26(6):841–842.
+A `PDF version`_ of this manual is also available.
 
 Contents:
 ---------

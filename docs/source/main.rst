@@ -19,14 +19,14 @@ software, so you may already have them installed:
    on your path. That is, you should be able to call `intersectBed` from any
    directory
 
-#. samtools_ [`download page`_].  Optional. This is needed for BAM support; if you don't need
+#. samtools_ [`download page`_].  **Optional.** This is needed for BAM support; if you don't need
    SAM/BAM support, then you don't need this.   Like BEDTools, the version is
    not important.  You will get a warning if you try to run :mod:`pybedtools`
    functions that require `samtools`.  The `samtools` programs must be
    available on the path, so you should be able to call `samtools view` from
    any directory.
 
-#. Tabix_ [`download page`_].  Optional.  This is needed for when you would like
+#. Tabix_ [`download page`_].  **Optional.**  This is needed for when you would like
    to have fast, random access to BED/GFF/GTF/VCF files by providing a
    chrom:start-stop coordinate. Similar to the above, you should be able to
    call `tabix` from any directory.
@@ -39,12 +39,12 @@ software, so you may already have them installed:
     * argparse_: installed automatically if using Python <2.7 (it comes with
       Python 2.7); used for command line scripts like the Venn diagram scripts
 
-    * nose_: optional; used for automated testing, not necessary for working with
+    * nose_: **optional**; used for automated testing, not necessary for working with
       :mod:`pybedtools`
 
-    * scipy_: optional; used for computing statistics for randomization procedures
+    * scipy_: **optional**; used for computing statistics for randomization procedures
 
-    * matplotlib_: optional; used by the `venn_mpl.py` script for making a Venn diagram
+    * matplotlib_: **optional**; used by the `venn_mpl.py` script for making a Venn diagram
       with annotated counts; you can use `venn_gchart.py` to use the Google
       Charts API to make a Venn diagram if you don't want to install
       `matplotlib`.
@@ -105,6 +105,10 @@ Note that you may need to be root in order to install.  If you do not have root
 privileges (e.g., if you are installing in your user directory on a cluster), then
 use the `--prefix` argument to `easy_install` to specify a location where you
 have write permission::
+
+    pip install pybedtools --user
+
+or::
 
     easy_install pybedtools --prefix /dir_you_can_write_to
 

@@ -10,8 +10,8 @@ efficiently.
 
 .. _`temp principle`:
 
-Principle 1: Temporary files are created automatically
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Principle 1: Temporary files are created (and deleted) automatically
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Using :class:`BedTool` instances typically has the side effect of creating
 temporary files on disk.  Even when using the iterator protocol of
 :class:`BedTool` objects, temporary files may be created in order to run
@@ -46,18 +46,21 @@ shows one important aspect of :mod:`pybedtools`: every operation results in
 a new temporary file. Temporary files are stored in :file:`/tmp` by
 default, and have the form :file:`/tmp/pybedtools.*.tmp`. 
 
-When you are done using the :mod:`pybedtools` module, make sure to clean up
-all the temp files created with::
+By default, at exit all temp files created during the session will be deleted.
+However, if Python does not exit cleanly (e.g., from a bug in client code),
+then the temp files will not be deleted.
+
+If this happens, from the command line you can always do a::
+
+    rm /tmp/pybedtools.*.tmp
+
+In the middle of a session, you can force a deletion all tempfiles created thus far::
 
     >>> # Don't do this yet if you're following the tutorial!
     >>> pybedtools.cleanup()
 
-If you forget to do this, from the command line you can always do a::
 
-    rm /tmp/pybedtools.*.tmp
-
-to clean everything up.  Alternatively, in this session or another session
-you can use::
+Alternatively, in this session or another session you can use::
 
     >>> pybedtools.cleanup(remove_all=True)
 

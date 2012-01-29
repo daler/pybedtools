@@ -208,6 +208,7 @@ clean up the temp directory.
     pybedtools.get_tempdir
     pybedtools.set_tempdir
     pybedtools.cleanup
+    pybedtools.debug_mode
 
 
 Working with "chromsizes" or assembly coordinate files

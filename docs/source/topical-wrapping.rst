@@ -101,6 +101,13 @@ means it will automatically be found by the test suite.
         """
 
 
+Add to list of known programs
+-----------------------------
+The last thing to do is to add the new program to the end of the tuple
+`pybedtools.helpers._prog_names`.  This creates rudimentary security by only
+allowing these programs to be called, and acts as sort of a central registry
+for programs that have been wrapped.
+
 Summary
 -------
 That's it!  We now have a method, :meth:`BedTool.new_program`, that wraps
