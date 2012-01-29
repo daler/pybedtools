@@ -17,18 +17,26 @@ class Classifier(object):
         exon, or whatever is annotated in the GFF file.  If you want to
         consider promoter regions, you'll have to add these features yourself.
 
-        Typical usage::
-
-            >>> bed = pybedtools.example_filename('gdc.bed')
-            >>> gff = pybedtools.example_filename('gdc.gff')
-            >>> c = Classifier(bed, gff)
-            >>> c.classify(include=['intron', 'exon'])
-
         The `class_counts` dictionary has its keys as sets of featuretypes
         (each one can be considered a "class" of features) and the value is the
         number of features in that class.  The special empty set class contains
         features that did not fall in an annotated region.
 
+        You can access the individual features in the `class_features`
+        dictionary, which contains the same keys but instead of counts, it
+        contains the features themselves.  This is nice for saving the features
+        in a separate BED file, e.g.,
+
+        Furthermore, you can look up the class of any feature in the original
+        BED file using the `feature_classes` dictionary::
+
+
+        Example usage::
+
+            >>> bed = pybedtools.example_filename('gdc.bed')
+            >>> gff = pybedtools.example_filename('gdc.gff')
+            >>> c = pybedtools.contrib.Classifier(bed, gff)
+            >>> c.classify(include=['intron', 'exon'])
             >>> results = c.class_counts
             >>> results == {
             ... frozenset([]): 1,
@@ -36,21 +44,10 @@ class Classifier(object):
             ... frozenset(['intron']): 3,
             ... frozenset(['intron', 'exon']): 1}
             True
-
-
-        You can access the individual features in the `class_features`
-        dictionary, which contains the same keys but instead of counts, it
-        contains the features themselves.  This is nice for saving the features
-        in a separate BED file, e.g.,
-
             >>> key = frozenset(['intron'])
             >>> features = c.class_features[key]
             >>> pybedtools.BedTool(iter(features)).saveas()  #doctest: +ELLIPSIS
             <BedTool(...)>
-
-        Furthermore, you can look up the class of any feature in the original
-        BED file using the `feature_classes` dictionary::
-
             >>> feature = pybedtools.BedTool(bed)[2]
             >>> c.feature_classes[feature] == set(['intron', '.'])
             True
