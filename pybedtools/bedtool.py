@@ -2029,7 +2029,7 @@ class BedTool(object):
             del(tmp2)
 
     @_log_to_history
-    def cat(self, other, postmerge=True, **kwargs):
+    def cat(self, other, postmerge=True, force_truncate=False, **kwargs):
         """
         Concatate interval files together.
 
@@ -2060,11 +2060,34 @@ class BedTool(object):
         else:
             assert isinstance(other, BedTool),\
                     'Either filename or another BedTool instance required'
+
         TMP = open(tmp, 'w')
-        for f in self:
-            TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
-        for f in other:
-            TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+
+        # if filetypes and field counts are the same, don't truncate
+        if not force_truncate:
+            try:
+                same_type = self.file_type == other.file_type
+                same_field_num = self.field_count() == other.field_count()
+            except ValueError:
+                raise ValueError("Can't check filetype or field count -- "
+                "is one of the files you're merging a 'streaming' BedTool?  "
+                "If so, use .saveas() to save to file first")
+
+        if (self.file_type == other.file_type) \
+             and (self.field_count() == other.field_count()) \
+             and not force_truncate:
+            for f in self:
+                TMP.write(str(f))
+            for f in other:
+                TMP.write(str(f))
+
+        # otherwise,
+        else:
+            for f in self:
+                TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+            for f in other:
+                TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+
         TMP.close()
         c = BedTool(tmp)
         if postmerge:
