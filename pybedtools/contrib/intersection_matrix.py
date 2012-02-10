@@ -36,6 +36,25 @@ class IntersectionMatrix(object):
 
         `dbfn` is the filename of the database you'd like to use to track
         what's been completed.
+
+        Example usage:
+
+        First, get a list of bed files to use:
+        >>> beds = [
+        ... pybedtools.example_filename(i) for i in  [
+        ... 'Cp190_Kc_Bushey_2009.bed',
+        ... 'CTCF_Kc_Bushey_2009.bed',
+        ... 'SuHw_Kc_Bushey_2009.bed',
+        ... 'BEAF_Kc_Bushey_2009.bed'
+        ... ]]
+
+        Set some parameters.  "dm3" is the genome to use; info will be stored
+        in "ex.db".  `force=True` means to overwrite what's in the database
+        >>> # In practice, you'll want many more iterations...
+        >>> im = IntersectionMatrix(beds, 'dm3',
+        ...            dbfn='ex.db', iterations=3, force=True)
+        >>> # Use 4 CPUs for randomization
+        >>> matrix = im.create_matrix(verbose=True, processes=4)
         """
         self.beds = beds
         self.genome = genome
@@ -200,12 +219,12 @@ class IntersectionMatrix(object):
                         }
             }
         """
-        nfiles = len(beds)
+        nfiles = len(self.beds)
         total = nfiles ** 2
         i = 0
         matrix = collections.defaultdict(dict)
-        for fa in beds:
-            for fb in beds:
+        for fa in self.beds:
+            for fb in self.beds:
                 i += 1
 
                 if verbose:
@@ -221,19 +240,12 @@ class IntersectionMatrix(object):
 
         return matrix
 
-if __name__ == "__main__":
-    beds = [pybedtools.example_filename(i) for i in  [
-                'Cp190_Kc_Bushey_2009.bed',
-                'Cp190_Mbn2_Bushey_2009.bed',
-                'CTCF_Kc_Bushey_2009.bed',
-                'CTCF_Mbn2_Bushey_2009.bed',
-                'SuHw_Kc_Bushey_2009.bed',
-                'SuHw_Mbn2_Bushey_2009.bed',
-                'BEAF_Mbn2_Bushey_2009.bed',
-                'BEAF_Kc_Bushey_2009.bed'
-                ]]
+    def print_matrix(self, matrix, key):
+        """
+        Prints a pairwise matrix of values. `matrix` is a dict-of-dicts from
+        create_matrix(), and `key` is a field name from the database -- one of:
 
-    im = IntersectionMatrix(
-            beds, 'dm3', dbfn='ex.db', iterations=10, force=False)
-    matrix = im.create_matrix(verbose=True, processes=8)
-    print matrix
+        ['filea', 'fileb', 'timestamp', 'actual', 'median', 'iterations',
+        'self', 'other', 'fractionabove', 'fractionbelow', 'percentile']
+        """
+
