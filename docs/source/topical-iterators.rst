@@ -94,6 +94,7 @@ streaming BedTool to a file before sending to `intersectBed`:
     Example references:
 
         * http://stackoverflow.com/questions/1595492/blocks-send-input-to-python-subprocess-pipeline
+        * http://stackoverflow.com/questions/375427/non-blocking-read-on-a-subprocess-pipe-in-python
         * http://www.python.org/dev/peps/pep-3145/
         * http://stackoverflow.com/questions/3076542/how-can-i-read-all-availably-data-from-subprocess-popen-stdout-non-blocking/3078292#3078292
         * http://stackoverflow.com/questions/3140189/subprocess-popen-stdout-reading-stdout-in-real-time-again (and references therein)
