@@ -600,13 +600,9 @@ cdef class IntervalIterator:
             # another StopIteration.  Not sure why it works, but it does.
             except (StopIteration, ValueError):
                 try:
-                    print "closing stream"
                     self.stream.close()
-                    print "closed stream"
                 except AttributeError:
-                    print "no close"
                     pass
-                print "raising stopiteration"
                 raise StopIteration
                 break
             if line.startswith(('@', '#', 'track', 'browser')):
