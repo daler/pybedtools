@@ -54,12 +54,17 @@ def isBAM(fn):
     # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header
     # . . .
     cmds = ['samtools', 'view', '-H', fn]
-    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-    if stderr:
-        return False
+    try:
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        if stderr:
+            return False
 
-    return True
+        return True
+    except OSError:
+        raise OSError('SAMtools (http://samtools.sourceforge.net/) '
+                          'needs to be installed for BAM support')
+
 
 
 def find_tagged(tag):

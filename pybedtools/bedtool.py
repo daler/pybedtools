@@ -2009,10 +2009,10 @@ class BedTool(object):
 
             # Re-sort if sorted=True in kwargs
             if resort:
-                tmp0 = self.shuffle(stream=True, **shuffle_kwargs)
-                tmp = tmp0.sort(stream=True)
+                tmp0 = self.shuffle(**shuffle_kwargs)
+                tmp = tmp0.sort()
             else:
-                tmp = self.shuffle(stream=True, **shuffle_kwargs)
+                tmp = self.shuffle(**shuffle_kwargs)
 
             tmp2 = tmp.intersect(other, stream=True, **intersect_kwargs)
 
@@ -2021,9 +2021,9 @@ class BedTool(object):
             # Close the open stdouts from subprocess.Popen calls.  Note: doing
             # this in self.__del__ doesn't fix the open file limit bug; it
             # needs to be done here.
-            if resort:
-                tmp0.fn.close()
-            tmp.fn.close()
+            #if resort:
+            #    tmp0.fn.close()
+            #tmp.fn.close()
             tmp2.fn.close()
             del(tmp)
             del(tmp2)
