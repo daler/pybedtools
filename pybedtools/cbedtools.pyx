@@ -590,7 +590,25 @@ cdef class IntervalIterator:
         return self
     def __next__(self):
         while True:
-            line = self.stream.next()
+            try:
+                line = self.stream.next()
+
+            # If you only trap StopIteration, for some reason even after
+            # raising a new StopIteration it goes back to the top of the
+            # while-loop and tries to get the next line again.  This in turn
+            # raises a ValueError, which we catch again . . . and again raise
+            # another StopIteration.  Not sure why it works, but it does.
+            except (StopIteration, ValueError):
+                try:
+                    print "closing stream"
+                    self.stream.close()
+                    print "closed stream"
+                except AttributeError:
+                    print "no close"
+                    pass
+                print "raising stopiteration"
+                raise StopIteration
+                break
             if line.startswith(('@', '#', 'track', 'browser')):
                 continue
             break
