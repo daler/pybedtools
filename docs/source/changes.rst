@@ -16,6 +16,8 @@ Changes since v0.5.5
 
 * Debug mode -- :func:`pybedtools.debug_mode` -- for verbose logging messages.
 
+* Fixed an open file leak (OSError: too many open files)  if opening thousands
+  of streaming bed files in a single session.
 
 * Initial support for tabix files.  Useful for extracting features from
   a single region when you don't need a full intersection.
@@ -28,9 +30,10 @@ Changes since v0.5.5
   classes of peaks.  Note that this is somewhat redundant with the new `mapBed`
   program in BEDTools.
 
-* :class:`pybedtools.contrib.IntersectionMatrix` class for handling pairwise
-  intersections of a large number of interval files -- including a local
-  sqlite3 database to avoid re-computing already up-to-date results.
+* Experimental :class:`pybedtools.contrib.IntersectionMatrix` class for
+  handling pairwise intersections of a large number of interval files --
+  including a local sqlite3 database to avoid re-computing already up-to-date
+  results.
 
 * :class:`Interval` objects are now hashable (it's just a hash of the string
   representation) so that you can use them as dictionary keys.
@@ -59,6 +62,12 @@ Changes since v0.5.5
   programs using the chromsweep algorithm.
 
 * Wrapped `mapBed`
+
+* Wrapped `multiIntersectBed`.  Because this program uses different semantics
+  than other programs (e.g., does not have an implicit file to work on; -i` is
+  not a single file but a list of files), you currently need to call it with
+  a list of filenames as the `i` kwarg.  Future development will allow more
+  flexibility, like using other BedTool objects or streaming BedTools.
 
 Changes in v0.5.5
 -----------------
