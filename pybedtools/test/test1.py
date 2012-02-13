@@ -1005,6 +1005,25 @@ def test_count_hits():
     assert len(a.all_hits(pybedtools.create_interval_from_list(
                       ['chr1', '450', '905', '.', '.', '-']), same_strand=True)) == 1
 
+
+def test_multi_intersect():
+    # Need to test here because "-i" is not a single other-bedtool like other
+    # "-i" BEDTools programs, and this throws off the iter testing.
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    x = pybedtools.BedTool()
+    assert x.multi_intersect(i=[a.fn, b.fn]) == fix("""
+        chr1	1	155	1	1	1	0
+        chr1	155	200	2	1,2	1	1
+        chr1	200	500	1	1	1	0
+        chr1	800	900	1	2	0	1
+        chr1	900	901	2	1,2	1	1
+        chr1	901	950	1	1	1	0""")
+
+    assert x.multi_intersect(i=[a.fn, b.fn], cluster=True) == fix("""
+        chr1	155	200	2	1,2	1	1
+        chr1	900	901	2	1,2	1	1""")
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)
