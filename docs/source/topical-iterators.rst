@@ -55,6 +55,49 @@ streaming BedTool to a file before sending to `intersectBed`:
     >>> d = a.intersect(c, stream=True)
 
 
+.. warning::
+
+    Chaining two streaming BedTool objects together?  You'll need to be
+    careful, because sometimes this will result in deadlocks.  You'll see zero
+    CPU usage as pybedtools tries to write to the stdin of a downstream BedTool
+    object.
+
+    For example, for two BedTool objects pointing to files that have >5000
+    features, the following usually blocks::
+
+
+        len(a.intersect(b, stream=True).intersect(a, stream=True))
+
+
+    The solution is to save to a tempfile first, or use non-streaming BedTools.
+    All of the following will work fine::
+
+        >>> # only use file-based
+        >>> len(a.intersect(b).intersect(a))
+
+        >>> # using the second streaming BedTool is fine
+        >>> len(a.intersect(b).intersect(a, stream=True))
+
+        >>> # if you have a streaming BedTool, "render" it to a tempfile with
+        >>> # saveas()
+        >>> len(a.intersect(b, stream=True).saveas().intersect(a))
+
+    There's a nice explanation of blocking along with figures at
+    http://www.pixelbeat.org/programming/stdio_buffering/.  Most solutions to
+    this blocking problem on stackoverflow suggest using threads, but in my
+    test cases this tends to make interactive IPython sessions act strangely.
+    Another option is to try pexpect, but I have been unable to get this to
+    work and it requires an additional dependency.
+
+    Contributions to help solve this would be most appreciated!
+
+    Example references:
+
+        * http://stackoverflow.com/questions/1595492/blocks-send-input-to-python-subprocess-pipeline
+        * http://www.python.org/dev/peps/pep-3145/
+        * http://stackoverflow.com/questions/3076542/how-can-i-read-all-availably-data-from-subprocess-popen-stdout-non-blocking/3078292#3078292
+        * http://stackoverflow.com/questions/3140189/subprocess-popen-stdout-reading-stdout-in-real-time-again (and references therein)
+
 Creating a :class:`BedTool` from an iterable
 --------------------------------------------
 You can create a :class:`BedTool` on the fly from a generator or iterator -- in
