@@ -147,7 +147,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # auto-substitution.
             # Note: here, `implicit` is something like "a"; `bam` is something
             # like "abam"
-            if (implicit not in kwargs) and (bam not in kwargs):
+            if (implicit not in kwargs) and (bam not in kwargs) and (implicit is not None):
                 if not self._isbam:
                     kwargs[implicit] = self.fn
                 else:
@@ -241,7 +241,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 class BedTool(object):
     TEMPFILES = []
 
-    def __init__(self, fn, from_string=False):
+    def __init__(self, fn=None, from_string=False):
         """
         Wrapper around Aaron Quinlan's ``BEDtools`` suite of programs
         (https://github.com/arq5x/bedtools); also contains many useful
@@ -979,7 +979,8 @@ class BedTool(object):
         default_list_delimiter = ' '
         list_delimiters = {'annotateBed': ' ',
                                'overlap': ',',
-                               'groupBy': ','}
+                               'groupBy': ',',
+                     'multiIntersectBed': ' '}
 
         stdin = None
 
@@ -1761,6 +1762,19 @@ class BedTool(object):
         """
         Wraps `mapBed` (v2.15+: `bedtools map`); See also :meth:`BedTool.each`.
         """
+
+    @_log_to_history
+    @_wraps(prog='multiIntersectBed')
+    def multi_intersect(self):
+        """
+        Wraps `multiIntersectBed` (v2.15+: `bedtools multiintersect`)
+
+        Provide a list of filenames as the "i" argument, e.g. if you already
+        have BedTool objects then use::
+
+            x.mulit_intersect(i=[a.fn, b.fn])
+        """
+
 
     def count(self):
         """
