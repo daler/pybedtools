@@ -50,12 +50,10 @@ def test_venn_mpl():
     here = os.path.dirname(__file__)
     expected_fn = os.path.join(here, 'mpl-expected.png')
 
-    pybedtools.bedtool.random.seed(1)
-    a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
-    b = a.random_subset(100).shuffle(genome='hg19', seed=1)
-    b = b.cat(a.random_subset(100, seed=1))
-    c = a.random_subset(200).shuffle(genome='hg19', seed=2)
-    c = c.cat(b.random_subset(100, seed=1))
+    original = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed').sort().merge()
+    a = pybedtools.BedTool(original[:300]).saveas()
+    b = pybedtools.BedTool(original[:20]).saveas().cat(pybedtools.BedTool(original[400:500]).saveas())
+    c = pybedtools.BedTool(original[15:30]).saveas().cat(pybedtools.BedTool(original[450:650]).saveas())
 
     outfn = 'mplout.png'
     venn_mpl.venn_mpl(a=a.fn, b=b.fn, c=c.fn, colors=['r','b','g'], outfn=outfn, labels=['a','b','c'])
