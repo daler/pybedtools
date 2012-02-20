@@ -21,6 +21,7 @@ from version import __version__
 _bedtools_path = ""
 _samtools_path = ""
 _tabix_path = ""
+_R_path = ""
 
 
 # Checking for BEDTools will happen when creating the first BedTool; other
@@ -28,6 +29,7 @@ _tabix_path = ""
 _bedtools_installed = False
 _samtools_installed = False
 _tabix_installed = False
+_R_installed = False
 
 KEEP_TEMPFILES = False
 _DEBUG = True

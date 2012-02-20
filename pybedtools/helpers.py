@@ -101,6 +101,16 @@ def _check_for_samtools():
         raise ValueError(
                 'Please install samtools and ensure it is on your path')
 
+def _check_for_R():
+    try:
+        p = subprocess.Popen([
+            os.path.join(pybedtools._R_path, 'R'),
+            '--version'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        pybedtools._R_installed = True
+    except OSError:
+        raise ValueError(
+                'Please install R and ensure it is on your path')
 
 class Error(Exception):
     """Base class for this module's exceptions"""
