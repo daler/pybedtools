@@ -120,9 +120,9 @@ Note that since we are viewing BED output, *the start and stops are 0-based*:
 
     >>> d = a.intersect(b, bed=True)
     >>> d.head(3)
-    chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-
-    chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-
-    chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-
+    chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-	9329	9365	0,0,0	1	36,	0,
+    chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-	9329	9365	0,0,0	1	36,	0,
+    chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-	9329	9365	0,0,0	1	36,	0,
 
 Consistent with BEDTools programs, BAM files are **not** supported as the
 second input argument.  In other words, `intersectBed` does not have both
