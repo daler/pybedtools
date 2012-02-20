@@ -905,12 +905,12 @@ class BedTool(object):
             raise NotImplementedError('head() not supported for non file-based'
                     'BedTools')
         if as_string:
-            return '\n'.join(str(line) for line in self[:n]) + '\n'
+            return ''.join(str(line) for line in self[:n])
         else:
             for i, line in enumerate(iter(self)):
                 if i == (n):
                     break
-                print line
+                print line,
 
     def set_chromsizes(self, chromsizes):
         """
