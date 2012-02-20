@@ -89,6 +89,60 @@ def interval_reducer(interval):
 copy_reg.pickle(Interval, interval_reducer, interval_constructor)
 
 
+def load_path_config(fn):
+    """
+    You can use a config file to specify installation paths of various programs
+    used by pybedtools.  This can be useful for testing, or using different
+    versions of programs.
+
+    `fn` is a config file with the following format.  If an entry is blank,
+    then assume it's already on the path. All items must be lowercase::
+
+        [paths]
+        bedtools=/tools/BEDTools/bin
+        samtools=
+        r=
+        tabix=
+
+    You only need to specify paths you need to change, so this is a valid file
+    that will only specify the path to use for R::
+
+        [paths]
+        r=/usr/bin/R-dev
+
+    If `fn` is not a string, then assume it is a dictionary of (program,
+    paths). This is used primarily for testing.
+    """
+    setters = dict(
+            bedtools=helpers.set_bedtools_path,
+            samtools=helpers.set_samtools_path,
+            r=helpers.set_R_path,
+            tabix=helpers.set_tabix_path)
+
+    if isinstance(fn, dict):
+        for prog, setter in setters.items():
+            try:
+                path = fn[prog]
+                setter(path)
+            except KeyError:
+                pass
+
+    if isinstance(fn, basestring):
+        import ConfigParser
+        c = ConfigParser.SafeConfigParser()
+        c.read(fn)
+        if c.sections() != ['paths']:
+            raise ValueError("Invalid path config -- must have "
+                             "only one section, [paths].")
+        for prog, setter in setters.items():
+            try:
+                path = c.get('paths', prog)
+                setter(path)
+
+            except ConfigParser.NoOptionError:
+                pass
+
+
 def data_dir():
     """
     Returns the data directory that contains example files for tests and
