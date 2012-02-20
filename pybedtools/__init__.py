@@ -12,13 +12,23 @@ from cbedtools import Interval, IntervalFile, overlap, \
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
                     find_tagged, set_bedtools_path, set_samtools_path
+import helpers
 from bedtool import BedTool
 import genome_registry
 from __main__ import main
 from version import __version__
-_path = ""
+
+_bedtools_path = ""
 _samtools_path = ""
-_filo_path = ""
+_tabix_path = ""
+
+
+# Checking for BEDTools will happen when creating the first BedTool; other
+# checks happen at first use (BAM object creation; tabix-ing a BedTool)
+_bedtools_installed = False
+_samtools_installed = False
+_tabix_installed = False
+
 KEEP_TEMPFILES = False
 _DEBUG = True
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
