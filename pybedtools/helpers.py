@@ -93,7 +93,8 @@ def _check_for_tabix():
 
 def _check_for_samtools():
     try:
-        p = subprocess.Popen(['samtools'],
+        p = subprocess.Popen([
+            os.path.join(pybedtools._samtools_path, 'samtools')],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         pybedtools._samtools_installed = True
     except OSError:
