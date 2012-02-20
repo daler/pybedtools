@@ -47,7 +47,8 @@ def debug_mode(x):
     Enable debug mode.
 
     Use debug_mode(True) to show debug log events in the console and to save
-    calling info in BedTool objects, and turn it off again with debug_mode(False).
+    calling info in BedTool objects, and turn it off again with
+    debug_mode(False).
 
     Note that `pybedtools.KEEP_TEMPFILES` will be set as well, so you will need
     to clean up the tempfile directory manually after using debug mode.
@@ -68,6 +69,12 @@ def debug_mode(x):
         logger.info('Debug mode disabled')
 
 
+def check_for_bedtools(program_to_check="intersectBed"):
+    """
+    For backwards compatibility; please use helpers._check_for_bedtools()
+    """
+    return helpers._check_for_bedtools(program_to_check)
+
 # Allow Interval objects to be pickled -- required if you want to pass them
 # across process boundaries
 def interval_constructor(fields):
@@ -78,19 +85,6 @@ def interval_reducer(interval):
     return interval_constructor, (tuple(interval.fields), )
 
 copy_reg.pickle(Interval, interval_reducer, interval_constructor)
-
-
-def check_for_bedtools(program_to_check='intersectBed'):
-    try:
-        p = subprocess.Popen([program_to_check],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except OSError as err:
-        if err.errno == 2:
-            raise OSError("Please make sure you have installed BEDTools"\
-                          "(https://github.com/arq5x/bedtools) and that "\
-                          "it's on the path.")
-
-check_for_bedtools()
 
 
 def data_dir():

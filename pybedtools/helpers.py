@@ -67,6 +67,40 @@ _prog_names = (
 _tags = {}
 
 
+def _check_for_bedtools(program_to_check='intersectBed'):
+    try:
+        p = subprocess.Popen(
+                [os.path.join(pybedtools._bedtools_path, program_to_check)],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        pybedtools._bedtools_installed = True
+    except OSError as err:
+        if err.errno == 2:
+            raise OSError("Please make sure you have installed BEDTools"\
+                          "(https://github.com/arq5x/bedtools) and that "\
+                          "it's on the path.")
+
+
+def _check_for_tabix():
+        try:
+            p = subprocess.Popen(['tabix'],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
+            pybedtools._tabix_installed = True
+        except OSError:
+            raise ValueError(
+                    'Please install tabix and ensure it is on your path')
+
+
+def _check_for_samtools():
+    try:
+        p = subprocess.Popen(['samtools'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        pybedtools._samtools_installed = True
+    except OSError:
+        raise ValueError(
+                'Please install samtools and ensure it is on your path')
+
+
 class Error(Exception):
     """Base class for this module's exceptions"""
     pass
@@ -99,6 +133,9 @@ def isBAM(fn):
 
     # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header
     # . . .
+    if not pybedtools._samtools_installed:
+        _check_for_samtools()
+
     cmds = ['samtools', 'view', '-H', fn]
     try:
         p = subprocess.Popen(
@@ -275,11 +312,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     if cmds[0] not in _prog_names:
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
 
-    # use specifed path, "" by default. Special-case groupBy.
-    if cmds[0] == 'groupBy':
-        cmds[0] = os.path.join(pybedtools._filo_path, cmds[0])
-    else:
-        cmds[0] = os.path.join(pybedtools._path, cmds[0])
+    # use specifed path, "" by default
+    cmds[0] = os.path.join(pybedtools._bedtools_path, cmds[0])
 
     try:
         # coming from an iterator, sending as iterator
@@ -400,7 +434,7 @@ def set_bedtools_path(path=""):
     To reset and use the default system path, call this function with no
     arguments or use path="".
     """
-    pybedtools._path = path
+    pybedtools._bedtools_path = path
 
 
 def set_samtools_path(path=""):
@@ -415,14 +449,16 @@ def set_samtools_path(path=""):
     pybedtools._samtools_path = path
 
 
-def set_filo_path(path=""):
+def set_tabix_path(path=""):
     """
-    If filo is not available on the path, then it can be explicitly
+    Explicitly set path to `tabix` installation dir.
+
+    If tabix is not available on the path, then it can be explicitly
     specified here.
 
     Use path="" to reset to default system path.
     """
-    pybedtools._filo_path = path
+    pybedtools._tabix_path = path
 
 
 def _check_sequence_stderr(x):

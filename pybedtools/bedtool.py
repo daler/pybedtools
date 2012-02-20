@@ -14,6 +14,7 @@ from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, \
     _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, \
     _call_randomintersect
+import helpers
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
@@ -147,7 +148,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # auto-substitution.
             # Note: here, `implicit` is something like "a"; `bam` is something
             # like "abam"
-            if (implicit not in kwargs) and (bam not in kwargs) and (implicit is not None):
+            if (implicit not in kwargs) \
+                    and (bam not in kwargs) and (implicit is not None):
                 if not self._isbam:
                     kwargs[implicit] = self.fn
                 else:
@@ -283,6 +285,9 @@ class BedTool(object):
         self._isbam = False
         self._bam_header = ""
 
+        if not pybedtools._bedtools_installed:
+            helpers._check_for_bedtools()
+
         if not from_string:
             if isinstance(fn, BedTool):
                 fn = fn.fn
@@ -415,13 +420,8 @@ class BedTool(object):
         If `is_sorted`, then assume the file is already sorted so that
         BedTool.bgzip() doesn't have to do that work.
         """
-        try:
-            p = subprocess.Popen(['tabix'],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-        except OSError:
-            raise ValueError(
-                    'Please install tabix and ensure it is on your path')
+        if not pybedtools._tabix_installed:
+            helpers._check_for_tabix()
         if force:
             force_arg = "-f"
         else:
@@ -435,7 +435,8 @@ class BedTool(object):
         fn = self.bgzip(in_place=in_place, force=force)
 
         # Create the index
-        cmds = ['tabix', force_arg, '-p', self.file_type, fn]
+        cmds = [os.path.join(pybedtools._tabix_path, 'tabix'),
+                force_arg, '-p', self.file_type, fn]
         os.system(' '.join(cmds))
         return BedTool(fn)
 
@@ -1284,6 +1285,9 @@ class BedTool(object):
             return self._bed_to_bam(**kwargs)
         if self.file_type == 'sam':
 
+            if not pybedtools._samtools_installed:
+                helpers._check_for_samtools()
+
             # construct a genome out of whatever kwargs were passed in
             kwargs = self.check_genome(**kwargs)
 
@@ -1294,15 +1298,11 @@ class BedTool(object):
                     '-t', kwargs['g'],
                     '-']
             tmp = self._tmp()
-            try:
-                p = subprocess.Popen(cmds,
-                                     stdout=open(tmp, 'w'),
-                                     stderr=subprocess.PIPE,
-                                     stdin=subprocess.PIPE,
-                                     bufsize=1)
-            except OSError:
-                raise OSError('SAMtools (http://samtools.sourceforge.net/) '
-                              'needs to be installed for BAM support')
+            p = subprocess.Popen(cmds,
+                                 stdout=open(tmp, 'w'),
+                                 stderr=subprocess.PIPE,
+                                 stdin=subprocess.PIPE,
+                                 bufsize=1)
             for line in self:
                 p.stdin.write(str(line) + '\n')
             stdout, stderr = p.communicate()
@@ -2271,15 +2271,8 @@ class BAM(object):
         """
         self.stream = stream
         self.header_only = header_only
-        test_cmds = ['samtools', 'view']
-        try:
-            p = subprocess.Popen(test_cmds,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-        except OSError:
-            raise OSError('SAMtools (http://samtools.sourceforge.net/) '
-                          'needs to be installed for BAM support')
+        if not pybedtools._samtools_installed:
+            helpers._check_for_samtools()
 
         if isinstance(self.stream, basestring):
             self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
