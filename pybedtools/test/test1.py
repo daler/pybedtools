@@ -770,16 +770,17 @@ def test_bam_stream_bed():
     x = pybedtools.example_bedtool('gdc.bam')
     b = pybedtools.example_bedtool('gdc.gff')
     c = x.intersect(b, u=True, bed=True, stream=True)
+    str_c = str(c)
     expected = fix("""
-    chr2L	70	75	None	255	-
-    chr2L	140	145	None	255	-
-    chr2L	150	155	None	255	-
-    chr2L	210	215	None	255	+
-    chr2L	70	75	None	255	+
-    chr2L	140	145	None	255	+
-    chr2L	160	165	None	255	+
+    chr2L	70	75	None	255	-	70	75	0,0,0	1	5,	0,
+    chr2L	140	145	None	255	-	140	145	0,0,0	1	5,	0,
+    chr2L	150	155	None	255	-	150	155	0,0,0	1	5,	0,
+    chr2L	210	215	None	255	+	210	215	0,0,0	1	5,	0,
+    chr2L	70	75	None	255	+	70	75	0,0,0	1	5,	0,
+    chr2L	140	145	None	255	+	140	145	0,0,0	1	5,	0,
+    chr2L	160	165	None	255	+	160	165	0,0,0	1	5,	0,
     """)
-    assert c == expected
+    assert str_c == expected
 
 def test_bam_stream_bam():
     x = pybedtools.example_bedtool('gdc.bam')
