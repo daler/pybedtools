@@ -71,46 +71,65 @@ def _check_for_bedtools(program_to_check='intersectBed'):
     try:
         p = subprocess.Popen(
                 [os.path.join(pybedtools._bedtools_path, program_to_check)],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         pybedtools._bedtools_installed = True
     except OSError as err:
         if err.errno == 2:
-            raise OSError("Please make sure you have installed BEDTools"\
-                          "(https://github.com/arq5x/bedtools) and that "\
-                          "it's on the path.")
+            if pybedtools._bedtools_path:
+                add_msg = "(tried path '%s')" % pybedtools._bedtools_path
+            else:
+                add_msg = ""
+            raise OSError("Please make sure you have installed BEDTools"
+                          "(https://github.com/arq5x/bedtools) and that "
+                          "it's on the path. %s" % add_msg)
 
 
 def _check_for_tabix():
-        try:
-            p = subprocess.Popen(['tabix'],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-            pybedtools._tabix_installed = True
-        except OSError:
-            raise ValueError(
-                    'Please install tabix and ensure it is on your path')
+    try:
+        p = subprocess.Popen(
+                [os.path.join(pybedtools._tabix_path, 'tabix')],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        pybedtools._tabix_installed = True
+    except OSError:
+        if pybedtools._tabix_path:
+            add_msg = "(tried path '%s')" % pybedtools._tabix_path
+        else:
+            add_msg = ""
+        raise ValueError(
+                'Please install tabix and ensure it is on your path %s'
+                % add_msg)
 
 
 def _check_for_samtools():
     try:
-        p = subprocess.Popen([
-            os.path.join(pybedtools._samtools_path, 'samtools')],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [os.path.join(pybedtools._samtools_path, 'samtools')],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         pybedtools._samtools_installed = True
     except OSError:
+        if pybedtools._samtools_path:
+            add_msg = "(tried path '%s')" % pybedtools._samtools_path
+        else:
+            add_msg = ""
         raise ValueError(
-                'Please install samtools and ensure it is on your path')
+                'Please install samtools and ensure it is on your path %s'
+                % add_msg)
 
 def _check_for_R():
     try:
-        p = subprocess.Popen([
-            os.path.join(pybedtools._R_path, 'R'),
-            '--version'],
+        p = subprocess.Popen(
+            [os.path.join(pybedtools._R_path, 'R'), '--version'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         pybedtools._R_installed = True
     except OSError:
+        if pybedtools._R_path:
+            add_msg = "(tried path '%s')" % pybedtools._R_path
+        else:
+            add_msg = ""
         raise ValueError(
-                'Please install R and ensure it is on your path')
+                'Please install R and ensure it is on your path %s'
+                % add_msg)
 
 class Error(Exception):
     """Base class for this module's exceptions"""
