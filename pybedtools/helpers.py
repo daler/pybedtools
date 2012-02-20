@@ -20,7 +20,7 @@ _prog_names = (
 'mapBed',
 'genomeCoverageBed',
 'mergeBed',
-# TODO: 'clusterBed',
+'clusterBed',
 'complementBed',
 'subtractBed',
 'slopBed',

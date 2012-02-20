@@ -1775,6 +1775,12 @@ class BedTool(object):
             x.mulit_intersect(i=[a.fn, b.fn])
         """
 
+    @_log_to_history
+    @_wraps(prog='clusterBed', implicit='i')
+    def cluster(self):
+        """
+        Wraps `clusterBed` (v2.15+: `bedtools cluster`)
+        """
 
     def count(self):
         """
