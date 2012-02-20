@@ -77,6 +77,7 @@ def check_for_bedtools(program_to_check="intersectBed"):
     """
     return helpers._check_for_bedtools(program_to_check)
 
+
 # Allow Interval objects to be pickled -- required if you want to pass them
 # across process boundaries
 def interval_constructor(fields):

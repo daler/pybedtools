@@ -1,6 +1,7 @@
 """
 tests for contrib module
 """
+import sys
 import pybedtools
 from pybedtools import Interval
 from pybedtools.contrib import Classifier
@@ -158,9 +159,13 @@ def test_cleaned_intersect():
     chr1 200 210
     chr1 1000 1001""")
 
-    print pybedtools.contrib.venn_maker.venn_maker(
-            beds=[x, y, z],
-            names=['x','y','z'],
-            figure_filename='out.tiff',
-            additional_args = ['euler.d=TRUE', 'scaled=TRUE', 'fill=c("red","blue", "orange")'],
-            run=True)
+    try:
+        pybedtools.helpers._check_for_R()
+        print pybedtools.contrib.venn_maker.venn_maker(
+                beds=[x, y, z],
+                names=['x','y','z'],
+                figure_filename='out.tiff',
+                additional_args = ['euler.d=TRUE', 'scaled=TRUE', 'fill=c("red","blue", "orange")'],
+                run=True)
+    except ValueError:
+        sys.stderr.write('R installation not found; skipping test')
