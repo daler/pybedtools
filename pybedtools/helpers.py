@@ -472,6 +472,18 @@ def set_tabix_path(path=""):
     pybedtools._tabix_path = path
 
 
+def set_R_path(path=""):
+    """
+    Explicitly set path to `R` installation dir.
+
+    If R is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    pybedtools._R_path = path
+
+
 def _check_sequence_stderr(x):
     """
     If stderr created by fastaFromBed starst with 'index file', then don't
