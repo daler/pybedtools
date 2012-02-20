@@ -416,8 +416,9 @@ class BedTool(object):
         BedTool.bgzip() doesn't have to do that work.
         """
         try:
-            p = subprocess.Popen(['tabix'])
-            p.communicate()
+            p = subprocess.Popen(['tabix'],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
         except OSError:
             raise ValueError(
                     'Please install tabix and ensure it is on your path')
