@@ -75,19 +75,17 @@ def test_venn_gchart():
     here = os.path.dirname(__file__)
     expected = open(os.path.join(here, 'gchart-expected.png')).read()
 
+    original = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed').sort().merge()
+    a = pybedtools.BedTool(original[:300]).saveas()
+    b = pybedtools.BedTool(original[:20]).saveas().cat(pybedtools.BedTool(original[400:500]).saveas())
+    c = pybedtools.BedTool(original[15:30]).saveas().cat(pybedtools.BedTool(original[450:650]).saveas())
 
-    pybedtools.bedtool.random.seed(1)
-    a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
-    b = a.random_subset(100).shuffle(genome='hg19', seed=1)
-    b = b.cat(a.random_subset(100, seed=1))
-    c = a.random_subset(200).shuffle(genome='hg19', seed=2)
-    c = c.cat(b.random_subset(100, seed=1))
     colors='00FF00,FF0000,0000FF'
-    outfn = 'out.png'
+    outfn = 'gchart_out.png'
     labels = 'a,b,c'
 
     expected_data = {'chco': '00FF00,FF0000,0000FF',
-                     'chd': 't:1.0,0.2,0.3,0.104,0.048,0.1,0.048',
+                     'chd': 't:1.0,0.4,0.716666666667,0.0666666666667,0.05,0.183333333333,0.0166666666667',
                      'chs': '300x300',
                      'cht': 'v',
                      'chdl': 'a|b|c'}
