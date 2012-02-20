@@ -11,12 +11,58 @@ import pybedtools
 
 # Check calls against these names to only allow calls to known BEDTools
 # programs (basic security)
-_prog_names = ('annotateBed', 'bedToBam', 'complementBed', 'flankBed',
-'linksBed', 'overlap', 'shuffleBed', 'subtractBed', 'bamToBed', 'bedToIgv',
-'coverageBed', 'genomeCoverageBed', 'maskFastaFromBed', 'pairToBed', 'slopBed',
-'unionBedGraphs', 'bed12ToBed6', 'closestBed', 'fastaFromBed', 'intersectBed',
-'mergeBed', 'pairToPair', 'sortBed', 'windowBed', 'groupBy', 'tagBam',
-'nucBed', 'multiBamCov', 'mapBed', 'multiIntersectBed')
+_prog_names = (
+# Genome arithmetic
+'intersectBed',
+'windowBed',
+'closestBed',
+'coverageBed',
+'mapBed',
+'genomeCoverageBed',
+'mergeBed',
+# TODO: 'clusterBed',
+'complementBed',
+'subtractBed',
+'slopBed',
+'flankBed',
+'sortBed',
+# TODO: 'randomBed',
+'shuffleBed',
+'annotateBed',
+
+# multi-way
+'multiIntersectBed',
+'unionBedGraphs',
+
+# PE
+'pairToBed',
+'pairToPair',
+
+# format conversion
+'bamToBed',
+'bedToBam',
+# TODO: 'bedpeToBam',
+'bed12ToBed6',
+
+
+# fasta
+'fastaFromBed',
+'maskFastaFromBed',
+'nucBed',
+
+# bam-centric
+'multiBamCov',
+'tagBam',
+
+# misc
+'overlap',
+'bedToIgv',
+'linksBed',
+# TODO: 'windowMaker',
+'groupBy',
+# TODO: 'expand',
+
+)
 
 _tags = {}
 
@@ -55,7 +101,8 @@ def isBAM(fn):
     # . . .
     cmds = ['samtools', 'view', '-H', fn]
     try:
-        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+                cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if stderr:
             return False
@@ -64,7 +111,6 @@ def isBAM(fn):
     except OSError:
         raise OSError('SAMtools (http://samtools.sourceforge.net/) '
                           'needs to be installed for BAM support')
-
 
 
 def find_tagged(tag):
