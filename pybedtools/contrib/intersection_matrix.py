@@ -40,21 +40,21 @@ class IntersectionMatrix(object):
         Example usage:
 
         First, get a list of bed files to use:
-        >>> beds = [
-        ... pybedtools.example_filename(i) for i in  [
-        ... 'Cp190_Kc_Bushey_2009.bed',
-        ... 'CTCF_Kc_Bushey_2009.bed',
-        ... 'SuHw_Kc_Bushey_2009.bed',
-        ... 'BEAF_Kc_Bushey_2009.bed'
-        ... ]]
+        #>>> beds = [
+        #... pybedtools.example_filename(i) for i in  [
+        #... 'Cp190_Kc_Bushey_2009.bed',
+        #... 'CTCF_Kc_Bushey_2009.bed',
+        #... 'SuHw_Kc_Bushey_2009.bed',
+        #... 'BEAF_Kc_Bushey_2009.bed'
+        #... ]]
 
         Set some parameters.  "dm3" is the genome to use; info will be stored
         in "ex.db".  `force=True` means to overwrite what's in the database
-        >>> # In practice, you'll want many more iterations...
-        >>> im = IntersectionMatrix(beds, 'dm3',
-        ...            dbfn='ex.db', iterations=3, force=True)
-        >>> # Use 4 CPUs for randomization
-        >>> matrix = im.create_matrix(verbose=True, processes=4)
+        #>>> # In practice, you'll want many more iterations...
+        #>>> im = IntersectionMatrix(beds, 'dm3',
+        #...            dbfn='ex.db', iterations=3, force=True)
+        #>>> # Use 4 CPUs for randomization
+        #>>> matrix = im.create_matrix(verbose=True, processes=4)
         """
         self.beds = beds
         self.genome = genome
