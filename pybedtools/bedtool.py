@@ -126,11 +126,18 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 raise NotImplementedError(help_str)
             return not_implemented_func
 
+        _add_doc = []
+        if implicit:
+            _add_doc.append("\n\tFor convenience, the file or stream this "\
+                    "BedTool points to is implicitly passed as the `-%s` argument"\
+                    " to `%s`" % (implicit, prog))
+
         def wrapped(self, *args, **kwargs):
             """
             A newly created function that will be returned by the _wraps()
             decorator
             """
+
             # Only one non-keyword argument is supported; this is then assumed
             # to be "other" (e.g., `-b` for intersectBed)
             if len(args) > 0:
@@ -229,7 +236,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             orig = ''
         else:
             orig = func.__doc__
-        wrapped.__doc__ = orig + help_str
+
+        wrapped.__doc__ = orig + "\n".join(_add_doc) + help_str
 
         # Add the original method's name to a new attribute so we can access it
         # when logging history
