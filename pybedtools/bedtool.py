@@ -1785,6 +1785,18 @@ class BedTool(object):
         """
 
     @_log_to_history
+    @_wraps(prog='randomBed', uses_genome=True)
+    def random(self):
+        """
+        Wraps `randomBed` (v2.15+: `bedtools random`)
+
+        Since this method does not operate on an existing file, create a BedTool with no arguments and then call this method, e.g., 
+
+        >>> x = BedTool()
+        >>> y = x.random(l=100, n=10, genome='hg19')
+        """
+
+    @_log_to_history
     @_wraps(prog='clusterBed', implicit='i')
     def cluster(self):
         """

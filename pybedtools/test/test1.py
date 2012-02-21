@@ -1025,6 +1025,24 @@ def test_multi_intersect():
         chr1	155	200	2	1,2	1	1
         chr1	900	901	2	1,2	1	1""")
 
+
+def test_random():
+    a = pybedtools.BedTool()
+    result = a.random(l=10, n=10, genome='hg19', seed=1)
+    assert result == fix("""
+    chrX	71897396	71897406	1	10	+
+    chr15	91866877	91866887	2	10	-
+    chr22	4961862	4961872	3	10	-
+    chr1	35524746	35524756	4	10	+
+    chr17	33430614	33430624	5	10	+
+    chr2	74764380	74764390	6	10	+
+    chr2	13039576	13039586	7	10	-
+    chr10	45451946	45451956	8	10	+
+    chr14	92167770	92167780	9	10	-
+    chr18	3196571	3196581	10	10	-
+    """)
+
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

@@ -26,7 +26,7 @@ _prog_names = (
 'slopBed',
 'flankBed',
 'sortBed',
-# TODO: 'randomBed',
+'randomBed',
 'shuffleBed',
 'annotateBed',
 
