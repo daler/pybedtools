@@ -129,8 +129,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         _add_doc = []
         if implicit:
             _add_doc.append("\n\tFor convenience, the file or stream this "\
-                    "BedTool points to is implicitly passed as the `-%s` argument"\
-                    " to `%s`" % (implicit, prog))
+                    "BedTool points to is implicitly passed as the `-%s` "
+                    "argument to `%s`" % (implicit, prog))
 
         def wrapped(self, *args, **kwargs):
             """
@@ -1790,10 +1790,18 @@ class BedTool(object):
         """
         Wraps `randomBed` (v2.15+: `bedtools random`)
 
-        Since this method does not operate on an existing file, create a BedTool with no arguments and then call this method, e.g., 
+        Since this method does not operate on an existing file, create
+        a BedTool with no arguments and then call this method, e.g.,
 
         >>> x = BedTool()
         >>> y = x.random(l=100, n=10, genome='hg19')
+        """
+
+    @_log_to_history
+    @_wraps('bedpeToBam', implicit='i', uses_genome=True)
+    def bedpe_to_bam(self):
+        """
+        Wraps `bedpeToBam` (v2.15+: `bedtools bedpetobam`)
         """
 
     @_log_to_history

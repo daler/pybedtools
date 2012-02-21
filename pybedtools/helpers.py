@@ -41,7 +41,7 @@ _prog_names = (
 # format conversion
 'bamToBed',
 'bedToBam',
-# TODO: 'bedpeToBam',
+'bedpeToBam',
 'bed12ToBed6',
 
 
