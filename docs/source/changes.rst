@@ -4,9 +4,9 @@ Changelog
 =========
 Changes since v0.5.5
 --------------------
-* Overhaul in documentation to hopefully make functionality easier to find
-  and/or discover.  See :ref:`pybedtools reference` for summary tables of the
-  different parts of :mod:`pybedtools`; each entry is linked to further
+* Overhaul in online documentation to hopefully make functionality easier to
+  find and/or discover.  See :ref:`pybedtools reference` for summary tables of
+  the different parts of :mod:`pybedtools`; each entry is linked to further
   class/method/function-specific docs.  These more detailed docs also have
   links to view the source code from within the HTML docs for more exploration.
 
@@ -16,8 +16,8 @@ Changes since v0.5.5
 
 * Debug mode -- :func:`pybedtools.debug_mode` -- for verbose logging messages.
 
-* Fixed an open file leak (OSError: too many open files)  if opening thousands
-  of streaming bed files in a single session.
+* Fixed an open file leak (OSError: too many open files) that occured when
+  opening thousands of streaming bed files in a single session.
 
 * Initial support for tabix files.  Useful for extracting features from
   a single region when you don't need a full intersection.
@@ -61,13 +61,25 @@ Changes since v0.5.5
   :class:`BedTool` instances . . . which in turn led to problems with BEDTools
   programs using the chromsweep algorithm.
 
-* Wrapped `mapBed`
+* Wrapped new `mapBed` tool
 
-* Wrapped `multiIntersectBed`.  Because this program uses different semantics
-  than other programs (e.g., does not have an implicit file to work on; -i` is
-  not a single file but a list of files), you currently need to call it with
-  a list of filenames as the `i` kwarg.  Future development will allow more
-  flexibility, like using other BedTool objects or streaming BedTools.
+* Wrapped new `clusterBed` tool
+
+* Wrapped new `multiIntersectBed` tool.  Because this program uses different
+  semantics than other programs (e.g., does not have an implicit file to work
+  on; `-i` is not a single file but a list of files), you currently need to
+  call it with a list of filenames as the `i` kwarg.  Future development will
+  allow more flexibility, like using other BedTool objects or streaming
+  BedTools.
+
+* Made venn_gchart and venn_mpl tests more stable
+
+* Automatic documenting of which args are passed implicitly for BedTool method
+  calls
+
+* More robust mechanisms for specifying custom paths for BEDTools installation
+  as well as optional tabix, samtools, and R installations.  This makes it
+  easier to explicitly specify which versions of the tools to use.
 
 Changes in v0.5.5
 -----------------
