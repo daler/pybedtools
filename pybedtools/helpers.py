@@ -32,7 +32,7 @@ _prog_names = (
 
 # multi-way
 'multiIntersectBed',
-'unionBedGraphs',
+# TODO: 'unionBedGraphs',
 
 # PE
 'pairToBed',
