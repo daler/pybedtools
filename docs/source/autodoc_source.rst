@@ -48,29 +48,33 @@ program are indicated.
     :toctree: autodocs
 
     pybedtools.BedTool.intersect
-    pybedtools.BedTool.merge
-    pybedtools.BedTool.slop
-    pybedtools.BedTool.sort
     pybedtools.BedTool.window
-    pybedtools.BedTool.flank
-    pybedtools.BedTool.complement
     pybedtools.BedTool.closest
     pybedtools.BedTool.coverage
-    pybedtools.BedTool.to_bam
-    pybedtools.BedTool.subtract
+    pybedtools.BedTool.map
     pybedtools.BedTool.genome_coverage
-    pybedtools.BedTool.bed6
-    pybedtools.BedTool.sequence
-    pybedtools.BedTool.nucleotide_content
-    pybedtools.BedTool.multi_bam_coverage
+    pybedtools.BedTool.merge
+    pybedtools.BedTool.cluster
+    pybedtools.BedTool.complement
+    pybedtools.BedTool.subtract
+    pybedtools.BedTool.slop
+    pybedtools.BedTool.flank
+    pybedtools.BedTool.sort
+    pybedtools.BedTool.random
     pybedtools.BedTool.shuffle
     pybedtools.BedTool.annotate
-    pybedtools.BedTool.mask_fasta
-    pybedtools.BedTool.overlap
+    pybedtools.BedTool.multi_intersect
     pybedtools.BedTool.pair_to_bed
     pybedtools.BedTool.pair_to_pair
-    pybedtools.BedTool.groupby
+    pybedtools.BedTool.bed6
+    pybedtools.BedTool.to_bam
+    pybedtools.BedTool.sequence
+    pybedtools.BedTool.mask_fasta
+    pybedtools.BedTool.nucleotide_content
+    pybedtools.BedTool.multi_bam_coverage
     pybedtools.BedTool.tag_bam
+    pybedtools.BedTool.overlap
+    pybedtools.BedTool.groupby
 
 Other :class:`BedTool` methods
 ------------------------------

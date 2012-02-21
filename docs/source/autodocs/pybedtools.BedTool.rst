@@ -20,6 +20,7 @@ pybedtools.BedTool
       ~BedTool.as_intervalfile
       ~BedTool.bam_to_bed
       ~BedTool.bed6
+      ~BedTool.bedpe_to_bam
       ~BedTool.bgzip
       ~BedTool.cat
       ~BedTool.check_genome
@@ -53,6 +54,7 @@ pybedtools.BedTool
       ~BedTool.pair_to_bed
       ~BedTool.pair_to_pair
       ~BedTool.print_sequence
+      ~BedTool.random
       ~BedTool.random_subset
       ~BedTool.randomintersection
       ~BedTool.randomstats
