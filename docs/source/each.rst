@@ -52,3 +52,15 @@ And we apply it like this:
     chr1	150	500	feature3	2.85714285714e-06	-	1
     chr1	900	950	feature4	2e-05	+	1
     <BLANKLINE>
+
+Similar to :meth:`BedTool.filter`, we could have used the Python built-in
+function `map` to map a function to each :class:`Interval`.  In fact, this can
+still be useful if you don't want a :class:`BedTool` object as a result.  For
+example::
+
+    >>> feature_lengths = map(len, a)
+
+However, the :meth:`BedTool.each` method returns a :class:`BedTool` object,
+which can be used in a chain of commands, e.g., ::
+
+    >>> a.intersect(b).each(normalize_count).filter(lamda x: float(x[4]) < 1e-5)

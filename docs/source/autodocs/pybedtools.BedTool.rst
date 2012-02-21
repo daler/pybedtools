@@ -24,6 +24,7 @@ pybedtools.BedTool
       ~BedTool.cat
       ~BedTool.check_genome
       ~BedTool.closest
+      ~BedTool.cluster
       ~BedTool.complement
       ~BedTool.count
       ~BedTool.count_hits
@@ -46,6 +47,7 @@ pybedtools.BedTool
       ~BedTool.merge
       ~BedTool.moveto
       ~BedTool.multi_bam_coverage
+      ~BedTool.multi_intersect
       ~BedTool.nucleotide_content
       ~BedTool.overlap
       ~BedTool.pair_to_bed

@@ -30,14 +30,6 @@ For example, this intersect and merge can be combined into one command:
     >>> x2 == x3
     True
 
-
-In general, methods that return :class:`BedTool` objects have the following
-text in their docstring to indicate this::
-
-        .. note::
-
-            This method returns a new BedTool instance
-
 A rule of thumb is that all methods that wrap BEDTools_ programs return
 :class:`BedTool` objects, so you can chain these together. Many
 :mod:`pybedtools`-unique methods return :class:`BedTool` objects too, just
@@ -55,6 +47,16 @@ Now we have new files in the current directory called :file:`a-with-b.bed`
 and :file:`a-with-b-merged.bed`.  Since :meth:`BedTool.saveas` returns a
 :class:`BedTool` object, `x4` points to the :file:`a-with-b-merged.bed`
 file.
+
+Sometimes it can be cleaner to separate consecutive calls on each line:
+
+.. doctest::
+
+    >>> x4 = a\
+    ... .intersect(b, u=True)\
+    ... .saveas('a-with-b.bed')\
+    ... .merge()\
+    ... .saveas('a-with-b-merged.bed')
 
 Operator overloading
 --------------------

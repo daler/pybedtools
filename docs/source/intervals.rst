@@ -15,14 +15,18 @@ First, let's get a :class:`BedTool` to work with:
 
     >>> a = pybedtools.example_bedtool('a.bed')
 
-We can access the :class:`Intervals` of `a` several different ways. The
-most common use is probably by using the :class:`BedTool` `a` as an
-iterator.  For now though, let's look at a single :class:`Interval`:
+We can access the :class:`Intervals` of `a` several different ways.
+Probably the most convenient way is by indexing a :class:`BedTool` object:
 
 .. doctest::
 
-    >>> feature = iter(a).next()
+    >>> feature = a[0]
 
+:class:`BedTool` objects support slices, too:
+
+.. doctest::
+
+    >>> features = a[1:3]
 
 Common :class:`Interval` attributes
 -----------------------------------
@@ -34,9 +38,13 @@ Printing a feature converts it into the original line from the file:
     >>> print feature
     chr1	1	100	feature1	0	+
 
-All features have `chrom`, `start`, `stop`, `name`, `score`, and `strand`
-attributes.  Note that `start` and `stop` are long integers, while
-everything else (including `score`) is a string.
+The string representation of an :class:`Interval` object is simply a valid line,
+**including the newline**, for the format from which that :class:`Interval` was
+created (accessible via :attr:`Interval.file_type`).
+
+All features, no matter what the file type, have `chrom`, `start`, `stop`,
+`name`, `score`, and `strand` attributes.  Note that `start` and `stop` are
+long integers, while everything else (including `score`) is a string.
 
 .. doctest::
 

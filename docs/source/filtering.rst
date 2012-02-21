@@ -59,6 +59,14 @@ length of interest, like this:
 See :ref:`BedTools as iterators` for more advanced and space-efficient usage
 of :meth:`filter` using iterators.
 
+Note that we could have used the built-in Python function, `filter()`, but that
+would have returned an iterator that we would have to construct a new
+:class:`pybedtools.BedTool` out of.  The :meth:`BedTool.filter` method returns
+a ready-to-use :class:`BedTool` object, which allows embedding of
+:meth:`BedTool.filter` calls in a chain of commands, e.g.::
+
+    >>> a.intersect(b).filter(lambda x: len(x) < 100).merge()
+
 Fast filtering functions in Cython
 ----------------------------------
 

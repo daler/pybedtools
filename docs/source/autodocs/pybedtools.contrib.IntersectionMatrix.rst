@@ -18,6 +18,7 @@ pybedtools.contrib.IntersectionMatrix
       ~IntersectionMatrix.create_matrix
       ~IntersectionMatrix.done
       ~IntersectionMatrix.get_row
+      ~IntersectionMatrix.print_matrix
       ~IntersectionMatrix.run_and_insert
    
    
