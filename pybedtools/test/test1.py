@@ -630,6 +630,16 @@ def test_cat():
     c = a.cat(b, postmerge=False)
     assert len(a) + len(b) == len(c), (len(a), len(b), len(c))
 
+    print c
+    assert c == fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	200	feature2	0	+
+    chr1	150	500	feature3	0	-
+    chr1	900	950	feature4	0	+
+    chr1	155	200	feature5	0	-
+    chr1	800	901	feature6	0	+
+    """)
+
 def test_randomstats():
     chromsizes = {'chr1':(1,1000)}
     a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
