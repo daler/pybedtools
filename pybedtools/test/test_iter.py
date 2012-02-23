@@ -82,6 +82,19 @@ def run(method, bedtool, expected, **kwargs):
         print 'Diff:'
         for i in difflib.unified_diff(res.splitlines(1), expected.splitlines(1)):
             print i,
+
+        # Make tabs and newlines visible
+        spec_res = res.replace('\t', '\\t').replace('\n', '\\n\n')
+        spec_expected = expected.replace('\t', '\\t').replace('\n', '\\n\n')
+
+        print 'Showing special characters:'
+        print 'Got:'
+        print spec_res
+        print 'Expected:'
+        print spec_expected
+        print 'Diff:'
+        for i in difflib.unified_diff(spec_res.splitlines(1), spec_expected.splitlines(1)):
+            print i,
         raise
 
 
