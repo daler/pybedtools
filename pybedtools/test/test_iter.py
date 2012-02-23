@@ -62,8 +62,10 @@ def parse_yaml(infile):
 def run(method, bedtool, expected, **kwargs):
     result = getattr(bedtool, method)(**kwargs)
     res = str(result)
+    expected = fix(expected)
     try:
-        assert str(result) == fix(expected)
+        assert res == expected
+
     except AssertionError:
         print result.fn
         print 'Method call:'
