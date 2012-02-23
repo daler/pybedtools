@@ -1810,6 +1810,13 @@ class BedTool(object):
         Wraps `clusterBed` (v2.15+: `bedtools cluster`)
         """
 
+    @_log_to_history
+    @_wraps(prog='unionBedGraphs')
+    def union_bedgraphs(self):
+        """
+        Wraps `unionBedGraphs` (v2.15+: `bedtools unionbedg`)
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.
