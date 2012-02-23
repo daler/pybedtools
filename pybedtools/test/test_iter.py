@@ -33,18 +33,19 @@ def fix(x):
     """
     s = ""
     for i in x.splitlines():
-
-        # annotateBed adds tabs to the end of a line, so make sure we add it
-        # back on the 'fixed' version
-        if i.endswith('\t'):
-            extra = '\t'
-        else:
-            extra = ''
         i = i.strip('\n\r')
         if len(i) == 0:
             continue
-        i = i.split()
-        i = '\t'.join(i)+extra+'\n'
+
+        # If the expected output contains tabs, then use those to split,
+        # otherwise space.  This allows you to have expected output with blank
+        # fields (e.g., "\t\t")
+        if '\t' in i:
+            i = i.split('\t')
+        else:
+            i = i.split()
+
+        i = '\t'.join(i)+'\n'
         s += i
     return s
 
