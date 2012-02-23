@@ -1054,7 +1054,6 @@ def test_union_bedgraphs():
 
     x = pybedtools.BedTool()
     result = x.union_bedgraphs(i=[a.fn, b.fn, c.fn])
-    print result
     assert result == fix("""
     chr1  900 1000    0   60  0
     chr1  1000    1500    10  60  0
@@ -1066,6 +1065,29 @@ def test_union_bedgraphs():
     chr1  2070    2090    20  0   0
     chr1  2090    2100    20  0   20
     """)
+
+
+def test_window_maker():
+    x = pybedtools.BedTool()
+    a = pybedtools.example_bedtool('a.bed')
+    result = x.window_maker(b=a.fn, w=50)
+    print result
+    assert result == fix("""
+    chr1	1	51
+    chr1	51	100
+    chr1	100	150
+    chr1	150	200
+    chr1	150	200
+    chr1	200	250
+    chr1	250	300
+    chr1	300	350
+    chr1	350	400
+    chr1	400	450
+    chr1	450	500
+    chr1	900	950
+    """)
+
+
 
 def test_random():
     a = pybedtools.BedTool()

@@ -58,7 +58,7 @@ _prog_names = (
 'overlap',
 'bedToIgv',
 'linksBed',
-# TODO: 'windowMaker',
+'windowMaker',
 'groupBy',
 # TODO: 'expand',
 

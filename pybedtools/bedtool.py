@@ -1815,6 +1815,16 @@ class BedTool(object):
     def union_bedgraphs(self):
         """
         Wraps `unionBedGraphs` (v2.15+: `bedtools unionbedg`)
+
+        Warning: using the `header=True` kwarg will result in a file that is
+        not in true BED format, which may break downstream analysis.
+        """
+
+    @_log_to_history
+    @_wraps(prog='windowMaker')
+    def window_maker(self):
+        """
+        Wraps `windowMaker` (v2.15+: `bedtools makewindows`)
         """
 
     def count(self):
