@@ -2131,10 +2131,9 @@ class BedTool(object):
         tmp = self._tmp()
         TMP = open(tmp, 'w')
 
-        postmerge = kwargs.setdefault('postmerge', True)
-        del kwargs['postmerge']  # don't pass postmerge on to merge
-        force_truncate = kwargs.setdefault('force_truncate', False)
-        del kwargs['force_truncate']  # don't pass on to merge
+        # postmerge and force_trucate don't get passed on to merge
+        postmerge = kwargs.pop('postmerge', True)
+        force_truncate = kwargs.pop('force_truncate', False)
 
         # if filetypes and field counts are the same, don't truncate
         if not force_truncate:
