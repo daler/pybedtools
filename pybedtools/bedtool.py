@@ -2151,10 +2151,10 @@ class BedTool(object):
 
         if not force_truncate and same_type and same_field_num:
             for f in self:
-                TMP.write(str(f) + '\n')
+                TMP.write(str(f))
             for other in other_beds:
                 for f in other:
-                    TMP.write(str(f) + '\n')
+                    TMP.write(str(f))
 
         # otherwise, truncate
         else:
