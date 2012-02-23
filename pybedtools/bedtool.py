@@ -1720,7 +1720,6 @@ class BedTool(object):
         Wraps `pairToBed` (v2.15+: `bedtools pairtobed`).
         """
 
-    # TODO: needs test files and doctests written
     @_log_to_history
     @_wraps(prog='pairToPair', implicit='a', other='b')
     def pair_to_pair(self):
