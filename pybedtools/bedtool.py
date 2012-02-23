@@ -2084,20 +2084,21 @@ class BedTool(object):
             del(tmp2)
 
     @_log_to_history
-    def cat(self, other, postmerge=True, force_truncate=False, **kwargs):
+    def cat(self, *others, **kwargs):
         """
-        Concatate interval files together.
+        Concatenate interval files together.
 
         Concatenates two BedTool objects (or an object and a file) and does an
         optional post-merge of the features.
 
         Use *postmerge=False* if you want to keep features separate.
+        Use *force_truncate=True* to truncate all files to chrom, start, stop
 
         TODO:
 
-            currently truncates at BED3 format!
+            force_truncate=True currently truncates at BED3 format!
 
-        kwargs are sent to :meth:`BedTool.merge`.
+        other kwargs are sent to :meth:`BedTool.merge`.
 
         Example usage:
 
@@ -2107,41 +2108,62 @@ class BedTool(object):
         chr1	1	500
         chr1	800	950
         <BLANKLINE>
-
+        >>> print a.cat(*[b,b], postmerge=False) #doctest: +NORMALIZE_WHITESPACE
+        chr1	1	100	feature1	0	+
+        chr1	100	200	feature2	0	+
+        chr1	150	500	feature3	0	-
+        chr1	900	950	feature4	0	+
+        chr1	155	200	feature5	0	-
+        chr1	800	901	feature6	0	+
+        chr1	155	200	feature5	0	-
+        chr1	800	901	feature6	0	+
+        <BLANKLINE>
         """
+        assert len(others) > 0, 'You must specify at least one other bedfile!'
+        other_beds = []
+        for other in others:
+            if isinstance(other, basestring):
+                other = BedTool(other)
+            else:
+                assert isinstance(other, BedTool),\
+                        'Either filename or another BedTool instance required'
+            other_beds.append(other)
         tmp = self._tmp()
-        if isinstance(other, basestring):
-            other = BedTool(other)
-        else:
-            assert isinstance(other, BedTool),\
-                    'Either filename or another BedTool instance required'
-
         TMP = open(tmp, 'w')
+
+        postmerge = kwargs.setdefault('postmerge', True)
+        del kwargs['postmerge']  # don't pass postmerge on to merge
+        force_truncate = kwargs.setdefault('force_truncate', False)
+        del kwargs['force_truncate']  # don't pass on to merge
 
         # if filetypes and field counts are the same, don't truncate
         if not force_truncate:
             try:
-                same_type = self.file_type == other.file_type
-                same_field_num = self.field_count() == other.field_count()
+                a_type = self.file_type
+                a_field_num = self.field_count()
+                same_type = all(a_type == other.file_type \
+                                                        for other in other_beds)
+                same_field_num = all(a_field_num == other.field_count() \
+                                                        for other in other_beds)
             except ValueError:
                 raise ValueError("Can't check filetype or field count -- "
                 "is one of the files you're merging a 'streaming' BedTool?  "
                 "If so, use .saveas() to save to file first")
 
-        if (self.file_type == other.file_type) \
-             and (self.field_count() == other.field_count()) \
-             and not force_truncate:
+        if not force_truncate and same_type and same_field_num:
             for f in self:
-                TMP.write(str(f))
-            for f in other:
-                TMP.write(str(f))
+                TMP.write(str(f) + '\n')
+            for other in other_beds:
+                for f in other:
+                    TMP.write(str(f) + '\n')
 
-        # otherwise,
+        # otherwise, truncate
         else:
             for f in self:
                 TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
-            for f in other:
-                TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+            for other in other_beds:
+                for f in other:
+                    TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
 
         TMP.close()
         c = BedTool(tmp)
