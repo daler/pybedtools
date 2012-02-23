@@ -1042,11 +1042,6 @@ def test_random():
     chr18	3196571	3196581	10	10	-
     """)
 
-def test_bedpe_to_bam():
-    a = pybedtools.example_bedtool('bedpe.bed')
-    result = a.bedpe_to_bam(genome='hg19')
-    print result
-    raise NotImplementedError('still working on test...')
 
 def teardown():
     # always run this!

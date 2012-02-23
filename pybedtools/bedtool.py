@@ -1798,7 +1798,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps('bedpeToBam', implicit='i', uses_genome=True)
+    @_wraps('bedpeToBam', implicit='i', uses_genome=True, force_bam=True)
     def bedpe_to_bam(self):
         """
         Wraps `bedpeToBam` (v2.15+: `bedtools bedpetobam`)
