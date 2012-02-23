@@ -594,3 +594,14 @@
         chr1	100	200	chr5	5000	5100	bedpe_example1	30	+	-	chr5	5000	5100	chr1	1000	2000	bedpe_example1		-	+
         chr9	1000	5000	chr9	3000	3800	bedpe_example2	100	-	-	chr9	3000	3800	chr9	100	500	bedpe_example2		-	-
         chr9	1000	5000	chr9	3000	3800	bedpe_example2	100	-	-	chr9	3000	3800	chr9	100	500	bedpe_example2		-	-
+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# pairToBed
+-   method: pair_to_bed
+    kwargs:
+            a: bedpe.bed
+            b: b.bed
+    expected: |
+        chr1	100	200	chr5	5000	5100	bedpe_example1	30	+	-	chr1	155	200	feature5	0	-
+
