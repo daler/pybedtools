@@ -1827,6 +1827,13 @@ class BedTool(object):
         Wraps `windowMaker` (v2.15+: `bedtools makewindows`)
         """
 
+    @_log_to_history
+    @_wraps(prog='expandCols', implicit='i')
+    def expand(self):
+        """
+        Wraps `expandCols` (v2.15+: `bedtools expand`)
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.

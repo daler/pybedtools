@@ -60,8 +60,7 @@ _prog_names = (
 'linksBed',
 'windowMaker',
 'groupBy',
-# TODO: 'expand',
-
+'expandCols',
 )
 
 _tags = {}

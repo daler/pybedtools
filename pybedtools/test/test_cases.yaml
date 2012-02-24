@@ -605,3 +605,18 @@
     expected: |
         chr1	100	200	chr5	5000	5100	bedpe_example1	30	+	-	chr1	155	200	feature5	0	-
 
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# expandCols
+#
+-   method: expand
+    kwargs:
+            i: expand_test.bed
+            c: 5
+    expected: |
+        chr1	10	20	1,2,3	10
+        chr1	10	20	1,2,3	20
+        chr1	10	20	1,2,3	30
+        chr1	40	50	4,5,6	40
+        chr1	40	50	4,5,6	50
+        chr1	40	50	4,5,6	60
