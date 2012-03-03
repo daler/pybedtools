@@ -126,7 +126,7 @@ cdef class Attributes(dict):
 
         self.sep, self.field_sep = (";", "=") if "=" in attr_str else (";", " ")
         kvs = map(str.strip, attr_str.strip().split(self.sep))
-        for field, value in [kv.split(self.field_sep) for kv in kvs if kv]:
+        for field, value in [kv.split(self.field_sep, 1) for kv in kvs if kv]:
             self[field] = value.replace('"', '')
 
     def __setitem__(self, key, value):
