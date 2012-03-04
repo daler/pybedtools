@@ -101,11 +101,9 @@ cdef class Attributes(dict):
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
     """
     cdef str sep, field_sep, _attr_str
-    cdef object _interval_obj
 
-    def __init__(self, interval_obj, attr_str=""):
+    def __init__(self, attr_str=""):
         self._attr_str = attr_str
-        self._interval_obj = interval_obj
 
         # quick exit
         if attr_str == "":
@@ -117,23 +115,11 @@ cdef class Attributes(dict):
             self[field] = value.replace('"', '')
 
     def __setitem__(self, key, value):
-        """
-        Sets both the key/item in self.dict *as well as* the interval object's
-        attrs field if it's a GFF Interval
-        """
         dict.__setitem__(self, key, value)
-        
-        # if the object is used standalone
-        if self._interval_obj is None: return
-        
-        if self._interval_obj.file_type == 'gff':
-            self._interval_obj[8] = str(self)
-        else:
-            raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
 
     def __str__(self):
         # stringify all items first
-        items = [(i, str(j)) for i,j in dict.iteritems(self)]
+        items = [(i, str(j)) for i,j in dict.items(self)]
         return self.sep.join([self.field_sep.join(kvs) for kvs in items])
 
 cdef class Interval:
@@ -292,18 +278,32 @@ cdef class Interval:
         def __get__(self):
             return self._bed.end - self._bed.start
 
+    cpdef deparse_attrs(self):
+        
+        if self._attrs is None: return
+        
+        if self.file_type != "gff":
+            raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
+        
+        cdef char *cstr
+        tmp = self._attrs.__str__()
+        cstr = tmp
+        self._bed.fields[8] = string(cstr)
+
     property fields:
         def __get__(self):
+            self.deparse_attrs()
             return string_vec2list(self._bed.fields)
 
+        
     property attrs:
         def __get__(self):
             cdef string ftype = self._bed.file_type
             if self._attrs is None:
                 if ftype == <char *>"gff":
-                    self._attrs = Attributes(self, self._bed.fields[8].c_str())
+                    self._attrs = Attributes(self._bed.fields[8].c_str())
                 else:
-                    self._attrs = Attributes(self, "")
+                    self._attrs = Attributes("")
             return self._attrs
 
         def __set__(self, attrs):
@@ -410,6 +410,8 @@ cdef class Interval:
         cdef int i
         cdef string ftype = self._bed.file_type
 
+        self.deparse_attrs()
+        
         if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
             if key >= nfields:
