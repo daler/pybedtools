@@ -41,14 +41,14 @@ def frac_of_a(a, b):
     return len(a.intersect(b, u=True)) / len_a
 
 
-def enrichment_score(a, b):
+def enrichment_score(a, b, genome=None, iterations=None, processes=None):
     results = a\
-            .set_chromsizes(args.genome)\
-            .randomstats(b, args.iterations, processes=args.processes)
+            .set_chromsizes(genome)\
+            .randomstats(b, iterations=iterations, processes=processes)
     return (results['actual'] + 1) / (results['median randomized'] + 1)
 
 
-def create_matrix(beds, func, verbose=False):
+def create_matrix(beds, func, verbose=False, **kwargs):
     nfiles = len(beds)
     total = nfiles ** 2
     i = 0
@@ -64,7 +64,7 @@ def create_matrix(beds, func, verbose=False):
                         '%(i)s of %(total)s: %(fa)s + %(fb)s\n' % locals())
                 sys.stderr.flush()
 
-            matrix[get_name(fa)][get_name(fb)] = func(a, b)
+            matrix[get_name(fa)][get_name(fb)] = func(a, b, **kwargs)
 
     return matrix
 
@@ -120,13 +120,17 @@ def main():
 
     if args.enrichment:
         FUNC = enrichment_score
+        kwargs = dict(genome=args.genome, iterations=args.iterations,
+                processes=args.processes)
     elif args.frac:
         FUNC = frac_of_a
+        kwargs = {}
     else:
         FUNC = actual_intersection
+        kwargs = {}
 
     t0 = time.time()
-    matrix = create_matrix(beds=args.beds, func=FUNC, verbose=args.verbose)
+    matrix = create_matrix(beds=args.beds, func=FUNC, verbose=args.verbose, **kwargs)
     t1 = time.time()
 
     nfiles = len(args.beds)

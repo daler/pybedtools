@@ -38,13 +38,13 @@ Changes since v0.5.5
 * :class:`Interval` objects are now hashable (it's just a hash of the string
   representation) so that you can use them as dictionary keys.
 
-* :meth:`BedTool.split` method, which accepts a function returning an
-  iterable of :class:`Interval` objects. The function is applied to each
-  interval.  Useful for, say, splitting each gene into TSS, TTS, upstream and
-  downstream features.
+* :meth:`BedTool.split` method, which accepts a function returning an iterable
+  of :class:`Interval` objects. The function is applied to each interval.
+  Useful for, say, splitting each gene into TSS, TTS, upstream and downstream
+  features.
 
-* :meth:`BedTool.truncate_to_chrom` method, which truncates features to the chromosome
-  sizes of the provided genome.  Useful for when you try uploading
+* :meth:`BedTool.truncate_to_chrom` method, which truncates features to the
+  chromosome sizes of the provided genome.  Useful for when you try uploading
   a MACS-generated track to the UCSC genome browser, but it complains because
   peak boundaries have been extended outside chromosome boundaries . . . this
   method fixes the problem.
@@ -61,9 +61,16 @@ Changes since v0.5.5
   :class:`BedTool` instances . . . which in turn led to problems with BEDTools
   programs using the chromsweep algorithm.
 
+* Concatentate multiple files with one call to :meth:`BedTool.cat` (thanks Jake
+  Biesinger)
+
+* Wrapped `unionBedGraphs`, `pairToBed`, `pairToPair`, `bedpeToBam`
+
 * Wrapped new `mapBed` tool
 
 * Wrapped new `clusterBed` tool
+
+* Wrapped new `randomBed` tool
 
 * Wrapped new `multiIntersectBed` tool.  Because this program uses different
   semantics than other programs (e.g., does not have an implicit file to work
@@ -71,6 +78,10 @@ Changes since v0.5.5
   call it with a list of filenames as the `i` kwarg.  Future development will
   allow more flexibility, like using other BedTool objects or streaming
   BedTools.
+
+* Wrapped new `expandCols` tool
+
+* Wrapped new `windowMaker` tool
 
 * Made venn_gchart and venn_mpl tests more stable
 
