@@ -96,19 +96,6 @@ class MalformedBedLineError(Exception):
     pass
 
 
-cpdef parse_attributes(str attr_str):
-    """
-    parse the attribute string from gff or gtf into a dictionary
-    """
-    cdef str sep, field_sep
-    cdef dict _attributes = {}
-    sep, field_sep = (";", "=") if "=" in attr_str else (";", " ")
-    kvs = map(str.strip, attr_str.strip().split(sep))
-    for field, value in [kv.split(field_sep) for kv in kvs if kv]:
-        _attributes[field] = value.replace('"', '')
-    return _attributes
-
-
 cdef class Attributes(dict):
     """
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
@@ -135,6 +122,10 @@ cdef class Attributes(dict):
         attrs field if it's a GFF Interval
         """
         dict.__setitem__(self, key, value)
+        
+        # if the object is used standalone
+        if self._interval_obj is None: return
+        
         if self._interval_obj.file_type == 'gff':
             self._interval_obj[8] = str(self)
         else:
@@ -339,11 +330,10 @@ cdef class Interval:
                 if self.name_key and self.name_key in attrs:
                     return attrs[self.name_key]
                 """
-                attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
-                    if key in attrs:
-                        return attrs[key]
+                    if key in self.attrs:
+                        return self.attrs[key]
 
             elif ftype == <char *>"vcf":
                 s = self.fields[2]
@@ -356,20 +346,12 @@ cdef class Interval:
         def __set__(self, value):
             cdef string ftype = self._bed.file_type
             if ftype == <char *>"gff":
-                attrs = parse_attributes(self._bed.fields[8].c_str())
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
-                    if not key in attrs:
+                    if not key in self.attrs:
                         continue
-                    attrs[key] = value
-                    attr_str = self._bed.fields[8].c_str()
-                    field_sep, quote = ("=", "") if "=" in attr_str \
-                                                 else (" ", '"')
-                    attr_str = ";".join(["%s%s%s%s%s" % \
-                         (k, field_sep, quote, v, quote) \
-                             for k, v in attrs.iteritems()])
 
-                    self._bed.fields[8] = string(attr_str)
+                    self.attrs[key] = value
                     break
 
             elif ftype == <char *>"vcf":
@@ -441,11 +423,10 @@ cdef class Interval:
 
         elif isinstance(key, basestring):
             if ftype == <char *>"gff":
-                attrs = parse_attributes(self._bed.fields[8].c_str())
                 try:
-                    return attrs[key]
+                    return self.attrs[key]
                 except:
-                    return getattr(self, key)
+                    pass
             return getattr(self, key)
 
     def __setitem__(self, object key, object value):
