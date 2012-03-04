@@ -81,6 +81,9 @@ Changes since v0.5.5
   as well as optional tabix, samtools, and R installations.  This makes it
   easier to explicitly specify which versions of the tools to use.
 
+* Improvements to GFF attributes: handle unescaped "=" (from sim4db GFFs) and
+  make Attribute class properly dict-like (thanks Libor Mořkovský)
+
 Changes in v0.5.5
 -----------------
 * Use `additional_args` kwarg to pass arguments verbatim to the underlying
