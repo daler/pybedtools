@@ -109,18 +109,16 @@ cpdef parse_attributes(str attr_str):
     return _attributes
 
 
-cdef class Attributes:
+cdef class Attributes(dict):
     """
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
     """
     cdef str sep, field_sep, _attr_str
     cdef object _interval_obj
-    cdef dict _attr_dict
 
     def __init__(self, interval_obj, attr_str=""):
         self._attr_str = attr_str
         self._interval_obj = interval_obj
-        self._attr_dict = {}
 
         # quick exit
         if attr_str == "":
@@ -128,30 +126,24 @@ cdef class Attributes:
 
         self.sep, self.field_sep = (";", "=") if "=" in attr_str else (";", " ")
         kvs = map(str.strip, attr_str.strip().split(self.sep))
-        for field, value in [kv.split(self.field_sep) for kv in kvs if kv]:
-            self._attr_dict[field] = value.replace('"', '')
+        for field, value in [kv.split(self.field_sep, 1) for kv in kvs if kv]:
+            self[field] = value.replace('"', '')
 
     def __setitem__(self, key, value):
         """
         Sets both the key/item in self.dict *as well as* the interval object's
         attrs field if it's a GFF Interval
         """
-        self._attr_dict[key] = value
+        dict.__setitem__(self, key, value)
         if self._interval_obj.file_type == 'gff':
             self._interval_obj[8] = str(self)
         else:
             raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
 
-    def __getitem__(self, key):
-        return self._attr_dict[key]
-
     def __str__(self):
         # stringify all items first
-        items = [(i, str(j)) for i,j in self._attr_dict.items()]
+        items = [(i, str(j)) for i,j in dict.iteritems(self)]
         return self.sep.join([self.field_sep.join(kvs) for kvs in items])
-
-    def __repr__(self):
-        return repr(self._attr_dict)
 
 cdef class Interval:
     """
