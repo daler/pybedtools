@@ -64,17 +64,22 @@ program are indicated.
     pybedtools.BedTool.shuffle
     pybedtools.BedTool.annotate
     pybedtools.BedTool.multi_intersect
+    pybedtools.BedTool.union_bedgraphs
     pybedtools.BedTool.pair_to_bed
     pybedtools.BedTool.pair_to_pair
-    pybedtools.BedTool.bed6
+    pybedtools.BedTool.bam_to_bed
     pybedtools.BedTool.to_bam
+    pybedtools.BedTool.bedpe_to_bam
+    pybedtools.BedTool.bed6
     pybedtools.BedTool.sequence
     pybedtools.BedTool.mask_fasta
     pybedtools.BedTool.nucleotide_content
     pybedtools.BedTool.multi_bam_coverage
     pybedtools.BedTool.tag_bam
     pybedtools.BedTool.overlap
+    pybedtools.BedTool.window_maker
     pybedtools.BedTool.groupby
+    pybedtools.BedTool.expand
 
 Other :class:`BedTool` methods
 ------------------------------
