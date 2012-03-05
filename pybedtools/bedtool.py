@@ -60,7 +60,10 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     kwargs to attributes to be created in the resulting BedTool.  Typically it
     is {'fo':'seqfn'} which will add the resulting sequence name to the
     BedTool's .seqfn attribute. If *add_to_bedtool* is not None, then the
-    returned BedTool will be *self* with the added attribute.
+    returned BedTool will be *self* with the added attribute.  If a key is
+    "stdout" (e.g., {"stdout": attr_name}), then save the stdout of the command
+    as a tempfile and store the tempfile's name in the attribute.  This is
+    required for linksBed and bedToIgv.
 
     *nonbam* is a kwarg that even if the input file was a BAM, the output will
     *not* be BAM format.  For example, the `-bed` arg for intersectBed will
@@ -183,16 +186,20 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # Do the actual call
             stream = call_bedtools(cmds, tmp, stdin=stdin,
                                    check_stderr=check_stderr)
-            result = BedTool(stream)
 
             # Post-hoc editing of the BedTool -- for example, this is used for
             # the sequence methods to add a `seqfn` attribute to the resulting
             # BedTool.
             if add_to_bedtool is not None:
                 for kw, attr in add_to_bedtool.items():
-                    value = kwargs[kw]
+                    if kw == 'stdout':
+                        value = stream
+                    else:
+                        value = kwargs[kw]
                     setattr(self, attr, value)
                     result = self
+            else:
+                result = BedTool(stream)
 
             # Decide whether the output is BAM format or not.
             result_is_bam = False
@@ -1829,6 +1836,17 @@ class BedTool(object):
     def expand(self):
         """
         Wraps `expandCols` (v2.15+: `bedtools expand`)
+        """
+
+    @_log_to_history
+    @_wraps(prog='linksBed', implicit='i', add_to_bedtool={'stdout': 'links_html'})
+    def links(self):
+        """
+        Wraps `linksBed` (v2.15+: `bedtools links`)
+
+        After running this method, a new attribute `links_html` will be
+        attached to this BedTool -- it will be a temp filename containing the
+        HTML links.
         """
 
     def count(self):

@@ -1016,7 +1016,6 @@ def test_count_hits():
     assert len(a.all_hits(pybedtools.create_interval_from_list(
                       ['chr1', '450', '905', '.', '.', '-']), same_strand=True)) == 1
 
-
 def test_multi_intersect():
     # Need to test here because "-i" is not a single other-bedtool like other
     # "-i" BEDTools programs, and this throws off the iter testing.
@@ -1034,7 +1033,6 @@ def test_multi_intersect():
     assert x.multi_intersect(i=[a.fn, b.fn], cluster=True) == fix("""
         chr1	155	200	2	1,2	1	1
         chr1	900	901	2	1,2	1	1""")
-
 
 def test_union_bedgraphs():
     # from unionBedGraphs -examples...
@@ -1066,7 +1064,6 @@ def test_union_bedgraphs():
     chr1  2090    2100    20  0   20
     """)
 
-
 def test_window_maker():
     x = pybedtools.BedTool()
     a = pybedtools.example_bedtool('a.bed')
@@ -1087,8 +1084,6 @@ def test_window_maker():
     chr1	900	950
     """)
 
-
-
 def test_random():
     a = pybedtools.BedTool()
     result = a.random(l=10, n=10, genome='hg19', seed=1)
@@ -1105,6 +1100,17 @@ def test_random():
     chr18	3196571	3196581	10	10	-
     """)
 
+def test_links():
+    # have to be careful about the path, since it is embedded in the HTML
+    # output.
+    a = pybedtools.BedTool(
+            os.path.join(
+                os.path.relpath(pybedtools.data_dir()),
+                'a.bed'))
+    a = a.links()
+    exp = open(pybedtools.example_filename('a.links.html')).read()
+    obs = open(a.links_html).read()
+    assert exp == obs
 
 def teardown():
     # always run this!
