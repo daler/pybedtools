@@ -86,9 +86,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
         # indent
         help_str = help_str.split('\n')
-        help_str = ['\n**Original BEDTools help:**'] \
+        help_str = ['\n\n**Original BEDTools help:**::'] \
                 + ['\t' + i for i in help_str]
-        help_str = '\n'.join(help_str)
+        help_str = '\n'.join(help_str) + '\n'
 
     # If the program can't be found, then we'll eventually replace the method
     # with a version that does nothing raise a NotImplementedError (plus a
