@@ -18,11 +18,14 @@ def gz(x):
     version.
     """
     fin = open(x.fn)
-    gzfn = pybedtools.BedTool._tmp() + '.gz'
+    orig_suffix = pybedtools.tempfile_suffix
+    pybedtools.tempfile_suffix = '.tmp.gz'
+    gzfn = pybedtools.BedTool._tmp()
     fout = gzip.open(gzfn, 'wb')
     fout.writelines(fin)
     fout.close()
     fin.close()
+    pybedtools.tempfile_suffix = orig_suffix
     return pybedtools.BedTool(gzfn)
 
 def fix(x):
