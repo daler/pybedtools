@@ -18,7 +18,7 @@ def gz(x):
     version.
     """
     fin = open(x.fn)
-    gzfn = pybedtools.BedTool._tmp()
+    gzfn = pybedtools.BedTool._tmp() + '.gz'
     fout = gzip.open(gzfn, 'wb')
     fout.writelines(fin)
     fout.close()
