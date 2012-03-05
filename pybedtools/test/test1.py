@@ -1112,6 +1112,13 @@ def test_links():
     obs = open(a.links_html).read()
     assert exp == obs
 
+def test_igv():
+    a = pybedtools.example_bedtool('a.bed')
+    a = a.igv()
+    obs = open(a.igv_script).read()
+    exp = open(pybedtools.example_filename('a.igv_script')).read()
+    assert obs == exp
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

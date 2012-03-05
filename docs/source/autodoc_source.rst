@@ -78,6 +78,7 @@ program are indicated.
     pybedtools.BedTool.tag_bam
     pybedtools.BedTool.overlap
     pybedtools.BedTool.links
+    pybedtools.BedTool.igv
     pybedtools.BedTool.window_maker
     pybedtools.BedTool.groupby
     pybedtools.BedTool.expand

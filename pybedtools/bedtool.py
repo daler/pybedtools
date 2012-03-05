@@ -1839,14 +1839,25 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='linksBed', implicit='i', add_to_bedtool={'stdout': 'links_html'})
+    @_wraps(prog='linksBed', implicit='i',
+            add_to_bedtool={'stdout': 'links_html'})
     def links(self):
         """
         Wraps `linksBed` (v2.15+: `bedtools links`)
 
-        After running this method, a new attribute `links_html` will be
-        attached to this BedTool -- it will be a temp filename containing the
-        HTML links.
+        The resulting BedTool will have a new attribute `links_html`.  This
+        attribute is a temp filename containing the HTML links.
+        """
+
+    @_log_to_history
+    @_wraps(prog='bedToIgv', implicit='i',
+            add_to_bedtool={'stdout': 'igv_script'})
+    def igv(self):
+        """
+        Wraps `bedToIgv` (v2.15+: `bedtools igv`)
+
+        The resulting BedTool will have a new attribute `igv_script`.  This
+        attribute is a temp filename containing the IGV script.
         """
 
     def count(self):

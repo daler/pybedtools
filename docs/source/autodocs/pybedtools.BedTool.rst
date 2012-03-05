@@ -42,6 +42,7 @@ pybedtools.BedTool
       ~BedTool.groupby
       ~BedTool.handle_kwargs
       ~BedTool.head
+      ~BedTool.igv
       ~BedTool.intersect
       ~BedTool.introns
       ~BedTool.links
