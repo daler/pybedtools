@@ -18,9 +18,6 @@ import helpers
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
-tempfile_prefix = 'pybedtools.'
-tempfile_suffix = '.tmp'
-
 
 _implicit_registry = {}
 _other_registry = {}
@@ -798,8 +795,8 @@ class BedTool(object):
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
         '''
-        tmpfn = tempfile.NamedTemporaryFile(prefix=tempfile_prefix,
-                                            suffix=tempfile_suffix,
+        tmpfn = tempfile.NamedTemporaryFile(prefix=pybedtools.tempfile_prefix,
+                                            suffix=pybedtools.tempfile_suffix,
                                             delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
