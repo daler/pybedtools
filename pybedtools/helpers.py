@@ -55,7 +55,7 @@ _prog_names = (
 'tagBam',
 
 # misc
-'overlap',
+'getOverlap',
 'bedToIgv',
 'linksBed',
 'windowMaker',

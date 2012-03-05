@@ -985,7 +985,7 @@ class BedTool(object):
         # If you pass in a list, how should it be converted to a BedTools arg?
         default_list_delimiter = ' '
         list_delimiters = {'annotateBed': ' ',
-                               'overlap': ',',
+                            'getOverlap': ',',
                                'groupBy': ',',
                      'multiIntersectBed': ' '}
 
@@ -1691,10 +1691,10 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='overlap', implicit='i')
+    @_wraps(prog='getOverlap', implicit='i')
     def overlap(self):
         """
-        Wraps `overlap` (v2.15+: `bedtools overlap`).
+        Wraps `overlap` (v2.15+: `bedtools overlap`)
 
         Example usage:
 
