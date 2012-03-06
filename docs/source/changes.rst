@@ -2,8 +2,8 @@
 
 Changelog
 =========
-Changes since v0.5.5
---------------------
+Changes in v0.6
+---------------
 * Overhaul in online documentation to hopefully make functionality easier to
   find and/or discover.  See :ref:`pybedtools reference` for summary tables of
   the different parts of :mod:`pybedtools`; each entry is linked to further
