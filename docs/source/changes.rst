@@ -64,24 +64,19 @@ Changes in v0.6
 * Concatentate multiple files with one call to :meth:`BedTool.cat` (thanks Jake
   Biesinger)
 
-* Wrapped `unionBedGraphs`, `pairToBed`, `pairToPair`, `bedpeToBam`
+* Wrapped previous BEDTools programs:
+    * `unionBedGraphs` (:meth:`BedTool.union_bedgraphs`)
+    * `pairToBed` (:meth:`BedTool.pair_to_bed`)
+    * `pairToPair` (:meth:`BedTool.pair_to_pair`)
+    * `bedpeToBam` (:meth:`BedTool.bedpe_to_bam`)
 
-* Wrapped new `mapBed` tool
-
-* Wrapped new `clusterBed` tool
-
-* Wrapped new `randomBed` tool
-
-* Wrapped new `multiIntersectBed` tool.  Because this program uses different
-  semantics than other programs (e.g., does not have an implicit file to work
-  on; `-i` is not a single file but a list of files), you currently need to
-  call it with a list of filenames as the `i` kwarg.  Future development will
-  allow more flexibility, like using other BedTool objects or streaming
-  BedTools.
-
-* Wrapped new `expandCols` tool
-
-* Wrapped new `windowMaker` tool
+* Wrapped new BEDTools programs:
+    * `mapBed` (:meth:`BedTool.map`)
+    * `clusterBed` (:meth:`BedTool.cluster`)
+    * `randomBed` (:meth:`BedTool.random`)
+    * `multiIntersectBed` (:meth:`BedTool.multi_intersect`)
+    * `expandCols` (:meth:`BedTool.expand`)
+    * `windowMaker` (:meth:`BedTool.window_maker`)
 
 * Made venn_gchart and venn_mpl tests more stable
 
@@ -129,13 +124,18 @@ Changes in v0.5
 * support for running random intersections in parallel.  See
   :meth:`BedTool.randomstats` and :meth:`BedTool.randomintersection` (thanks,
   Jake Biesinger)
+
 * Cython `Interval.__copy__()` for compatibility with `copy` module
+
 * `seek()` and `rewind()` methods for `IntervalFile` class, used for Aaron
   Quinlan's new chromsweep algorithm (https://github.com/arq5x/chrom_sweep)
   (thanks, Aaron)
+
 * support and tests for new BEDTools programs `multiBamCov`, `tagBam`, and `nucBed`
+
 * `output="out.bed"` kwarg for all wrapped methods for explicitly specifying
   where to save output -- no more moving tempfiles
+
 * docs improvements:
     * direct comparison with a shell script to illustrate benefit of
       `pybedtools`; see :ref:`shell_comparison`
