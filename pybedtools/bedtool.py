@@ -1860,6 +1860,19 @@ class BedTool(object):
         attribute is a temp filename containing the IGV script.
         """
 
+
+    @_log_to_history
+    @_wraps(prog='bamToFastq', implicit='i', bam='i', make_tempfile_for='fq',
+            add_to_bedtool={'fq': 'fastq'})
+    def bam_to_fastq(self):
+        """
+        Wraps `bamToFastq` (v2.15+: `bedtools bamtofastq`)
+
+        The `fq` argument is required.
+
+        The resulting BedTool will have a new attribute, `fastq`.
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.
