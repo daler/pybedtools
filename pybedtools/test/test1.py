@@ -1119,6 +1119,12 @@ def test_igv():
     exp = open(pybedtools.example_filename('a.igv_script')).read()
     assert obs == exp
 
+def test_bam_to_fastq():
+    x = pybedtools.example_bedtool('small.bam')
+    tmpfn = pybedtools.BedTool._tmp()
+    y = x.bam_to_fastq(fq=tmpfn)
+    assert open(y.fastq).read() == open(pybedtools.example_filename('small.fastq')).read()
+
 def teardown():
     # always run this!
     pybedtools.cleanup(remove_all=True)

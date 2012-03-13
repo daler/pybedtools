@@ -5,8 +5,6 @@
 
 .. include:: includeme.rst
 
-.. _PDF version: pybedtools_manual.pdf
-
 Welcome to pybedtools's documentation!
 ======================================
 
@@ -25,8 +23,6 @@ like to cover:
 * More advanced features are described in the :ref:`topical` section. 
 * Finally, doctested module documentation can be found in :ref:`autodoc`.
 
-
-A `PDF version`_ of this manual is also available.
 
 Contents:
 ---------

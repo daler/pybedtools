@@ -43,7 +43,7 @@ _prog_names = (
 'bedToBam',
 'bedpeToBam',
 'bed12ToBed6',
-
+'bamToFastq',
 
 # fasta
 'fastaFromBed',
