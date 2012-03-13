@@ -77,6 +77,7 @@ Changes in v0.6
     * `multiIntersectBed` (:meth:`BedTool.multi_intersect`)
     * `expandCols` (:meth:`BedTool.expand`)
     * `windowMaker` (:meth:`BedTool.window_maker`)
+    * `bamToFastq` (:meth:`BedTool.bam_to_fastq`)
 
 * Made venn_gchart and venn_mpl tests more stable
 

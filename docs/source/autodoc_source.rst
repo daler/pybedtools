@@ -71,6 +71,7 @@ program are indicated.
     pybedtools.BedTool.to_bam
     pybedtools.BedTool.bedpe_to_bam
     pybedtools.BedTool.bed6
+    pybedtools.BedTool.bam_to_fastq
     pybedtools.BedTool.sequence
     pybedtools.BedTool.mask_fasta
     pybedtools.BedTool.nucleotide_content
