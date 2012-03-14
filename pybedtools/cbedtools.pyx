@@ -104,12 +104,14 @@ cdef class Attributes(dict):
 
     def __init__(self, attr_str=""):
         self._attr_str = attr_str
+        
+        # sets the default separators when created empty
+        self.sep, self.field_sep = (";", "=") if "=" in attr_str else (";", " ")
 
         # quick exit
         if attr_str == "":
             return
 
-        self.sep, self.field_sep = (";", "=") if "=" in attr_str else (";", " ")
         kvs = map(str.strip, attr_str.strip().split(self.sep))
         for field, value in [kv.split(self.field_sep, 1) for kv in kvs if kv]:
             self[field] = value.replace('"', '')
@@ -119,7 +121,7 @@ cdef class Attributes(dict):
 
     def __str__(self):
         # stringify all items first
-        items = [(i, str(j)) for i,j in dict.items(self)]
+        items = [(i, str(j)) for i,j in dict.iteritems(self)]
         return self.sep.join([self.field_sep.join(kvs) for kvs in items])
 
 cdef class Interval:
