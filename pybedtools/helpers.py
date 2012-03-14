@@ -43,7 +43,7 @@ _prog_names = (
 'bedToBam',
 'bedpeToBam',
 'bed12ToBed6',
-
+'bamToFastq',
 
 # fasta
 'fastaFromBed',
@@ -55,7 +55,7 @@ _prog_names = (
 'tagBam',
 
 # misc
-'overlap',
+'getOverlap',
 'bedToIgv',
 'linksBed',
 'windowMaker',

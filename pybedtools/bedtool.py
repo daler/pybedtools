@@ -18,9 +18,6 @@ import helpers
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
 
-tempfile_prefix = 'pybedtools.'
-tempfile_suffix = '.tmp'
-
 
 _implicit_registry = {}
 _other_registry = {}
@@ -63,7 +60,10 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     kwargs to attributes to be created in the resulting BedTool.  Typically it
     is {'fo':'seqfn'} which will add the resulting sequence name to the
     BedTool's .seqfn attribute. If *add_to_bedtool* is not None, then the
-    returned BedTool will be *self* with the added attribute.
+    returned BedTool will be *self* with the added attribute.  If a key is
+    "stdout" (e.g., {"stdout": attr_name}), then save the stdout of the command
+    as a tempfile and store the tempfile's name in the attribute.  This is
+    required for linksBed and bedToIgv.
 
     *nonbam* is a kwarg that even if the input file was a BAM, the output will
     *not* be BAM format.  For example, the `-bed` arg for intersectBed will
@@ -89,9 +89,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
         # indent
         help_str = help_str.split('\n')
-        help_str = ['\n**Original BEDTools help:**'] \
+        help_str = ['\n\n**Original BEDTools help:**::'] \
                 + ['\t' + i for i in help_str]
-        help_str = '\n'.join(help_str)
+        help_str = '\n'.join(help_str) + '\n'
 
     # If the program can't be found, then we'll eventually replace the method
     # with a version that does nothing raise a NotImplementedError (plus a
@@ -186,16 +186,20 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # Do the actual call
             stream = call_bedtools(cmds, tmp, stdin=stdin,
                                    check_stderr=check_stderr)
-            result = BedTool(stream)
 
             # Post-hoc editing of the BedTool -- for example, this is used for
             # the sequence methods to add a `seqfn` attribute to the resulting
             # BedTool.
             if add_to_bedtool is not None:
                 for kw, attr in add_to_bedtool.items():
-                    value = kwargs[kw]
+                    if kw == 'stdout':
+                        value = stream
+                    else:
+                        value = kwargs[kw]
                     setattr(self, attr, value)
                     result = self
+            else:
+                result = BedTool(stream)
 
             # Decide whether the output is BAM format or not.
             result_is_bam = False
@@ -798,8 +802,8 @@ class BedTool(object):
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
         '''
-        tmpfn = tempfile.NamedTemporaryFile(prefix=tempfile_prefix,
-                                            suffix=tempfile_suffix,
+        tmpfn = tempfile.NamedTemporaryFile(prefix=pybedtools.tempfile_prefix,
+                                            suffix=pybedtools.tempfile_suffix,
                                             delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
@@ -988,7 +992,7 @@ class BedTool(object):
         # If you pass in a list, how should it be converted to a BedTools arg?
         default_list_delimiter = ' '
         list_delimiters = {'annotateBed': ' ',
-                               'overlap': ',',
+                            'getOverlap': ',',
                                'groupBy': ',',
                      'multiIntersectBed': ' '}
 
@@ -1694,10 +1698,10 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='overlap', implicit='i')
+    @_wraps(prog='getOverlap', implicit='i')
     def overlap(self):
         """
-        Wraps `overlap` (v2.15+: `bedtools overlap`).
+        Wraps `overlap` (v2.15+: `bedtools overlap`)
 
         Example usage:
 
@@ -1832,6 +1836,41 @@ class BedTool(object):
     def expand(self):
         """
         Wraps `expandCols` (v2.15+: `bedtools expand`)
+        """
+
+    @_log_to_history
+    @_wraps(prog='linksBed', implicit='i',
+            add_to_bedtool={'stdout': 'links_html'})
+    def links(self):
+        """
+        Wraps `linksBed` (v2.15+: `bedtools links`)
+
+        The resulting BedTool will have a new attribute `links_html`.  This
+        attribute is a temp filename containing the HTML links.
+        """
+
+    @_log_to_history
+    @_wraps(prog='bedToIgv', implicit='i',
+            add_to_bedtool={'stdout': 'igv_script'})
+    def igv(self):
+        """
+        Wraps `bedToIgv` (v2.15+: `bedtools igv`)
+
+        The resulting BedTool will have a new attribute `igv_script`.  This
+        attribute is a temp filename containing the IGV script.
+        """
+
+
+    @_log_to_history
+    @_wraps(prog='bamToFastq', implicit='i', bam='i', make_tempfile_for='fq',
+            add_to_bedtool={'fq': 'fastq'})
+    def bam_to_fastq(self):
+        """
+        Wraps `bamToFastq` (v2.15+: `bedtools bamtofastq`)
+
+        The `fq` argument is required.
+
+        The resulting BedTool will have a new attribute, `fastq`.
         """
 
     def count(self):

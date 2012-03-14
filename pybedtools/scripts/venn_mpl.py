@@ -127,10 +127,8 @@ def main():
     if options.test:
         pybedtools.bedtool.random.seed(1)
         a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
-        b = a.random_subset(100).shuffle(genome='hg19', seed=1)
-        b = b.cat(a.random_subset(100))
-        c = a.random_subset(200).shuffle(genome='hg19', seed=2)
-        c = c.cat(b.random_subset(100))
+        b = pybedtools.example_bedtool('venn.b.bed')
+        c = pybedtools.example_bedtool('venn.c.bed')
         options.a = a.fn
         options.b = b.fn
         options.c = c.fn

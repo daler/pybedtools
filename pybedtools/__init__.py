@@ -23,6 +23,9 @@ _samtools_path = ""
 _tabix_path = ""
 _R_path = ""
 
+tempfile_prefix = 'pybedtools.'
+tempfile_suffix = '.tmp'
+
 
 # Checking for BEDTools will happen when creating the first BedTool; other
 # checks happen at first use (BAM object creation; tabix-ing a BedTool)

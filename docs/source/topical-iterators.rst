@@ -11,7 +11,7 @@ objects also have the ability to "stream", much like piping in Unix.  That
 is, the data are created only one line at a time in memory, instead of
 either creating a list of all data in memory or writing all data to disk.
 
-.. warning::
+.. note::
 
     You'll need to be careful when using :mod:`BedTool` objects as
     generators, since any operation that reads all the features of a

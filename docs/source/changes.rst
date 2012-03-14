@@ -2,8 +2,8 @@
 
 Changelog
 =========
-Changes since v0.5.5
---------------------
+Changes in v0.6
+---------------
 * Overhaul in online documentation to hopefully make functionality easier to
   find and/or discover.  See :ref:`pybedtools reference` for summary tables of
   the different parts of :mod:`pybedtools`; each entry is linked to further
@@ -38,13 +38,13 @@ Changes since v0.5.5
 * :class:`Interval` objects are now hashable (it's just a hash of the string
   representation) so that you can use them as dictionary keys.
 
-* :meth:`BedTool.split` method, which accepts a function returning an
-  iterable of :class:`Interval` objects. The function is applied to each
-  interval.  Useful for, say, splitting each gene into TSS, TTS, upstream and
-  downstream features.
+* :meth:`BedTool.split` method, which accepts a function returning an iterable
+  of :class:`Interval` objects. The function is applied to each interval.
+  Useful for, say, splitting each gene into TSS, TTS, upstream and downstream
+  features.
 
-* :meth:`BedTool.truncate_to_chrom` method, which truncates features to the chromosome
-  sizes of the provided genome.  Useful for when you try uploading
+* :meth:`BedTool.truncate_to_chrom` method, which truncates features to the
+  chromosome sizes of the provided genome.  Useful for when you try uploading
   a MACS-generated track to the UCSC genome browser, but it complains because
   peak boundaries have been extended outside chromosome boundaries . . . this
   method fixes the problem.
@@ -61,16 +61,22 @@ Changes since v0.5.5
   :class:`BedTool` instances . . . which in turn led to problems with BEDTools
   programs using the chromsweep algorithm.
 
-* Wrapped new `mapBed` tool
+* Concatentate multiple files with one call to :meth:`BedTool.cat` (thanks Jake
+  Biesinger)
 
-* Wrapped new `clusterBed` tool
+* Wrapped previous BEDTools programs:
+    * `unionBedGraphs` (:meth:`BedTool.union_bedgraphs`)
+    * `pairToBed` (:meth:`BedTool.pair_to_bed`)
+    * `pairToPair` (:meth:`BedTool.pair_to_pair`)
+    * `bedpeToBam` (:meth:`BedTool.bedpe_to_bam`)
 
-* Wrapped new `multiIntersectBed` tool.  Because this program uses different
-  semantics than other programs (e.g., does not have an implicit file to work
-  on; `-i` is not a single file but a list of files), you currently need to
-  call it with a list of filenames as the `i` kwarg.  Future development will
-  allow more flexibility, like using other BedTool objects or streaming
-  BedTools.
+* Wrapped new BEDTools programs:
+    * `mapBed` (:meth:`BedTool.map`)
+    * `clusterBed` (:meth:`BedTool.cluster`)
+    * `randomBed` (:meth:`BedTool.random`)
+    * `multiIntersectBed` (:meth:`BedTool.multi_intersect`)
+    * `expandCols` (:meth:`BedTool.expand`)
+    * `windowMaker` (:meth:`BedTool.window_maker`)
 
 * Made venn_gchart and venn_mpl tests more stable
 
@@ -80,6 +86,9 @@ Changes since v0.5.5
 * More robust mechanisms for specifying custom paths for BEDTools installation
   as well as optional tabix, samtools, and R installations.  This makes it
   easier to explicitly specify which versions of the tools to use.
+
+* Improvements to GFF attributes: handle unescaped "=" (from sim4db GFFs) and
+  make Attribute class properly dict-like (thanks Libor Mořkovský)
 
 Changes in v0.5.5
 -----------------
@@ -115,13 +124,18 @@ Changes in v0.5
 * support for running random intersections in parallel.  See
   :meth:`BedTool.randomstats` and :meth:`BedTool.randomintersection` (thanks,
   Jake Biesinger)
+
 * Cython `Interval.__copy__()` for compatibility with `copy` module
+
 * `seek()` and `rewind()` methods for `IntervalFile` class, used for Aaron
   Quinlan's new chromsweep algorithm (https://github.com/arq5x/chrom_sweep)
   (thanks, Aaron)
+
 * support and tests for new BEDTools programs `multiBamCov`, `tagBam`, and `nucBed`
+
 * `output="out.bed"` kwarg for all wrapped methods for explicitly specifying
   where to save output -- no more moving tempfiles
+
 * docs improvements:
     * direct comparison with a shell script to illustrate benefit of
       `pybedtools`; see :ref:`shell_comparison`

@@ -33,6 +33,7 @@ pybedtools.BedTool
       ~BedTool.cut
       ~BedTool.delete_temporary_history
       ~BedTool.each
+      ~BedTool.expand
       ~BedTool.features
       ~BedTool.field_count
       ~BedTool.filter
@@ -41,8 +42,10 @@ pybedtools.BedTool
       ~BedTool.groupby
       ~BedTool.handle_kwargs
       ~BedTool.head
+      ~BedTool.igv
       ~BedTool.intersect
       ~BedTool.introns
+      ~BedTool.links
       ~BedTool.map
       ~BedTool.mask_fasta
       ~BedTool.merge
@@ -74,7 +77,9 @@ pybedtools.BedTool
       ~BedTool.to_bam
       ~BedTool.total_coverage
       ~BedTool.truncate_to_chrom
+      ~BedTool.union_bedgraphs
       ~BedTool.window
+      ~BedTool.window_maker
       ~BedTool.with_attrs
    
    
