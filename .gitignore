@@ -10,3 +10,5 @@ pybedtools.egg-info/*
 *.pyc
 *.so
 *.fai
+*.egg
+
