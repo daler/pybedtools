@@ -106,7 +106,7 @@ cdef class Attributes(dict):
         self._attr_str = attr_str
         
         # sets the default separators when created empty
-        self.sep, self.field_sep = (";", "=") if "=" in attr_str else (";", " ")
+        self.sep, self.field_sep = (";", "=") if "=" in attr_str or attr_str == "" else (";", " ")
 
         # quick exit
         if attr_str == "":
