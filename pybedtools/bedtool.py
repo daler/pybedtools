@@ -232,6 +232,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 result_is_bam = True
 
             result._isbam = result_is_bam
+            result._cmds = cmds
+            result._kwargs = kwargs
             return result
 
         # Now add the edited docstring (original Python doctring plus BEDTools
