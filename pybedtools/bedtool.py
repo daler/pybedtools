@@ -1361,6 +1361,27 @@ class BedTool(object):
 
         '''
 
+    @staticmethod
+    def seq(loc, fasta):
+        """
+        Return just the sequence from a region string or a single location
+        >>> BedTool.seq('chr1:2-10', pybedtools.example_filename('test.fa'))
+        'GATGAGTCT'
+        >>> BedTool.seq(('chr1', 1, 10), pybedtools.example_filename('test.fa'))
+        'GATGAGTCT'
+
+        """
+        if isinstance(loc, basestring):
+            chrom, start_end = loc.split(":")
+            start, end = map(int, start_end.split("-"))
+            start -= 1
+        else:
+            chrom, start, end = loc[0], loc[1], loc[2]
+
+        loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
+        lseq = loc.sequence(fi=fasta)
+        return "".join([l.rstrip() for l in open(lseq.seqfn) if l[0] != ">"])
+
     @_log_to_history
     @_wraps(prog='nucBed', implicit='bed', other='fi')
     def nucleotide_content(self):
@@ -2422,3 +2443,8 @@ class BAM(object):
                 raise StopIteration
 
         return line
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.ELLIPSIS |\
+                                   doctest.NORMALIZE_WHITESPACE)
