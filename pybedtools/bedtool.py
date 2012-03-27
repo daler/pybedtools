@@ -300,16 +300,7 @@ class BedTool(object):
         if not pybedtools._bedtools_installed:
             helpers._check_for_bedtools()
 
-        if not from_string:
-            if isinstance(fn, BedTool):
-                fn = fn.fn
-            elif isinstance(fn, basestring):
-                if not os.path.exists(fn):
-                    raise ValueError('File "%s" does not exist' % fn)
-                self._isbam = isBAM(fn)
-            else:
-                fn = fn
-        else:
+        if from_string:
             bed_contents = fn
             fn = self._tmp()
             fout = open(fn, 'w')
@@ -319,6 +310,16 @@ class BedTool(object):
                 line = '\t'.join(line.split()) + '\n'
                 fout.write(line)
             fout.close()
+
+        else:
+            if isinstance(fn, BedTool):
+                fn = fn.fn
+            elif isinstance(fn, basestring):
+                if not os.path.exists(fn):
+                    raise ValueError('File "%s" does not exist' % fn)
+                self._isbam = isBAM(fn)
+            else:
+                fn = fn
 
         tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
         self._tag = tag
