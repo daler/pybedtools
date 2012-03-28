@@ -312,26 +312,29 @@ class BedTool(object):
             fout.close()
 
         else:
+            # our work is already done
             if isinstance(fn, BedTool):
                 fn = fn.fn
+
+            # from_string=False, so assume it's a filename
             elif isinstance(fn, basestring):
                 if not os.path.exists(fn):
                     raise ValueError('File "%s" does not exist' % fn)
                 self._isbam = isBAM(fn)
+
+            # make an IntervalIterator if tuple or list
+            elif isinstance(fn, (list, tuple)):
+                fn = IntervalIterator(iter(fn))
+
+            # Otherwise assume iterator, say an open file as from
+            # subprocess.PIPE
             else:
                 fn = fn
 
-        tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
-        self._tag = tag
-        _tags[tag] = self
         if isinstance(fn, unicode):
             fn = str(fn)
 
         self.fn = fn
-
-        self._hascounts = False
-        self._file_type = None
-        self.history = History()
 
         if self._isbam and isinstance(self.fn, basestring):
             try:
@@ -344,6 +347,13 @@ class BedTool(object):
                 self._isbam = False
         else:
             self._bam_header = ""
+
+        tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
+        self._tag = tag
+        _tags[tag] = self
+        self._hascounts = False
+        self._file_type = None
+        self.history = History()
 
     def split(self, func, *args, **kwargs):
         """
