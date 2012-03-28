@@ -18,5 +18,6 @@ This section contains additional documentation not covered in the tutorial.
     topical-genome
     topical-random
     topical-wrapping
+    topical-comparisons
     sh-comparison
     pybedtools-dev-history

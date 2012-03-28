@@ -65,6 +65,7 @@ pybedtools.BedTool
       ~BedTool.remove_invalid
       ~BedTool.save_seqs
       ~BedTool.saveas
+      ~BedTool.seq
       ~BedTool.sequence
       ~BedTool.set_chromsizes
       ~BedTool.shuffle
