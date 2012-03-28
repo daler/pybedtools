@@ -574,16 +574,28 @@ cdef list bed_vec2list(vector[BED] bv):
 def overlap(int s1, int s2, int e1, int e2):
     return min(e1, e2) - max(s1, s2)
 
+
 cdef class IntervalIterator:
     cdef object stream
+    cdef int _isstring
     def __init__(self, stream):
         self.stream = stream
+
+        # For speed, check int rather than call isinstance().
+        # -1 is unset, 0 assumes list/tuple/iterable, and 1 is a string.
+        #
+        # Also assumes that all items in the iterable `stream` are the same
+        # type...this seems like a reasonable assumption.
+        self._isstring = -1
+
     def __iter__(self):
         return self
     def __next__(self):
         while True:
             try:
                 line = self.stream.next()
+                if self._isstring < 0:
+                    self._isstring = int(isinstance(line, basestring))
 
             # If you only trap StopIteration, for some reason even after
             # raising a new StopIteration it goes back to the top of the
@@ -597,11 +609,18 @@ cdef class IntervalIterator:
                     pass
                 raise StopIteration
                 break
-            if line.startswith(('@', '#', 'track', 'browser')):
-                continue
+
+            if self._isstring:
+                if line.startswith(('@', '#', 'track', 'browser')):
+                    continue
             break
-        fields = line.rstrip('\r\n').split('\t')
+
+        if self._isstring:
+            fields = line.rstrip('\r\n').split('\t')
+        else:
+            fields = map(str, line)
         return create_interval_from_list(fields)
+
 
 
 cdef class IntervalFile:

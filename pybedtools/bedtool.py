@@ -850,13 +850,14 @@ class BedTool(object):
                 # gets passed to create_interval_from_fields.
                 return IntervalIterator(self.fn)
 
-        # Otherwise assume fn is already an iterable
-        else:
+        if isinstance(self.fn, (IntervalIterator, IntervalFile)):
             return self.fn
+
+        return IntervalIterator(self.fn)
 
     @property
     def intervals(self):
-        return IntervalFile(self.fn)
+        return iter(self)
 
     def __repr__(self):
         if isinstance(self.fn, file):
