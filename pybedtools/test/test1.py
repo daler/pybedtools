@@ -47,6 +47,40 @@ def test_interval_index():
     print iv[4:-3]
     assert iv[4:-3] == ['805', '.']
 
+def test_tuple_creation():
+    # everything as a string
+    t = [
+            ("chr1", "1", "100", "feature1", "0", "+"),
+            ("chr1", "100", "200", "feature2", "0", "+"),
+            ("chr1", "150", "500", "feature3", "0", "-"),
+            ("chr1", "900", "950", "feature4", "0", "+")
+        ]
+    x = pybedtools.BedTool(t).saveas()
+    assert pybedtools.example_bedtool('a.bed') == x
+
+    t = [
+            ("chr1", 1, 100, "feature1", 0, "+"),
+            ("chr1", 100, 200, "feature2", 0, "+"),
+            ("chr1", 150, 500, "feature3", 0, "-"),
+            ("chr1", 900, 950, "feature4", 0, "+")
+        ]
+    x = pybedtools.BedTool(t).saveas()
+    assert pybedtools.example_bedtool('a.bed') == x
+
+    t = [
+            ("chr1", "fake", "gene", "50", "300", ".", "+", ".", "ID=gene1"),
+            ("chr1", "fake", "mRNA", "50", "300", ".", "+", ".", "ID=mRNA1;Parent=gene1;"),
+            ("chr1", "fake", "CDS", "75", "150", ".", "+", ".", "ID=CDS1;Parent=mRNA1;"),
+            ("chr1", "fake", "CDS", "200", "275", ".", "+", ".", "ID=CDS2;Parent=mRNA1;"),
+            ("chr1", "fake", "rRNA", "1200", "1275", ".", "+", ".", "ID=rRNA1;"),]
+    x = pybedtools.BedTool(t).saveas()
+
+    # Make sure that x has actual Intervals and not plain tuples or something
+    assert isinstance(x[0], pybedtools.Interval)
+    assert repr(x[0]) == "Interval(chr1:49-300)"
+    assert x[0]['ID'] == 'gene1'
+
+
 def test_tabix():
     a = pybedtools.example_bedtool('a.bed')
     t = a.tabix()
