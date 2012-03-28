@@ -1,12 +1,11 @@
 import pybedtools
 import os, difflib, sys
+from nose import with_setup
 from nose.tools import assert_raises, raises
 from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
+from tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
-testdir = os.path.dirname(__file__)
-
-pybedtools.set_tempdir('.')
 
 def fix(x):
     """
@@ -32,6 +31,26 @@ def fix(x):
 # ----------------------------------------------------------------------------
 # Tabix support tests
 # ----------------------------------------------------------------------------
+
+def make_unwriteable():
+    """
+    Make a directory that cannot be written to and set the pybedtools tempdir
+    to it. This is used to isolate "streaming" tests to ensure they do not
+    write to disk.
+    """
+    if os.path.exists(unwriteable):
+        os.system('rm -rf %s' % unwriteable)
+    os.system('mkdir -p %s' % unwriteable)
+    os.system('chmod -w %s' % unwriteable)
+    pybedtools.set_tempdir(unwriteable)
+
+def cleanup_unwriteable():
+    """
+    Reset to normal tempdir operation....
+    """
+    if os.path.exists(unwriteable):
+        os.system('rm -rf %s' % unwriteable)
+    pybedtools.set_tempdir(test_tempdir)
 
 def test_interval_index():
     """
@@ -100,24 +119,18 @@ def test_tabix():
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests
 # ----------------------------------------------------------------------------
+
+@with_setup(make_unwriteable, cleanup_unwriteable)
 def test_stream():
     """
     Stream and file-based equality, both whole-file and Interval by
     Interval
     """
+    cleanup_unwriteable()
+
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
     c = a.intersect(b)
-
-    # make an unwriteable dir...
-    orig_tempdir = pybedtools.get_tempdir()
-    if os.path.exists('unwriteable'):
-        os.system('rm -rf unwriteable')
-    os.system('mkdir unwriteable')
-    os.system('chmod -w unwriteable')
-
-    # ...set that to the new tempdir
-    pybedtools.set_tempdir('unwriteable')
 
     # this should really not be written anywhere
     d = a.intersect(b, stream=True)
@@ -128,7 +141,7 @@ def test_stream():
     assert d_contents == c_contents
 
     # reconstruct d and check Interval-by-Interval equality
-    pybedtools.set_tempdir('unwriteable')
+    make_unwriteable()
     d = a.intersect(b, stream=True)
 
     for i,j in zip(c, d):
@@ -139,11 +152,11 @@ def test_stream():
     f = pybedtools.example_bedtool('d.gff')
 
     # file-based
-    pybedtools.set_tempdir(orig_tempdir)
+    cleanup_unwriteable()
     g1 = f.intersect(a)
 
     # streaming
-    pybedtools.set_tempdir('unwriteable')
+    make_unwriteable()
     g2 = f.intersect(a, stream=True)
 
     for i,j in zip(g1, g2):
@@ -1156,6 +1169,3 @@ def test_bam_to_fastq():
     y = x.bam_to_fastq(fq=tmpfn)
     assert open(y.fastq).read() == open(pybedtools.example_filename('small.fastq')).read()
 
-def teardown():
-    # always run this!
-    pybedtools.cleanup(remove_all=True)
