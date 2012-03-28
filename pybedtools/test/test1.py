@@ -120,12 +120,9 @@ def test_stream():
     for i in iter(g3):
         print i
 
-    for row in f.cut(range(3), stream=True):
+    for row in a.cut([0, 1, 2, 5], stream=True):
         row[0], row[1], row[2]
-        assert_raises(IndexError, row.__getitem__, 3)
-
-    pybedtools.set_tempdir(orig_tempdir)
-    os.system('rm -fr unwriteable')
+        assert_raises(IndexError, row.__getitem__, 4)
 
 def test_stream_of_stream():
     """

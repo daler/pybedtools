@@ -790,12 +790,20 @@ class BedTool(object):
         Similar to unix `cut` except indexes are 0-based, must be a list
         and the columns are returned in the order requested.
 
-        In addition, indexes can contain keys of the GFF/GTF attributes,
-        in which case the values are returned. e.g. 'gene_name' will return the
+        This method returns a BedTool of results, which means that the indexes
+        returned must be valid GFF/GTF/BED/SAM features.
+
+        If you would like arbitrary columns -- say, just chrom and featuretype
+        of a GFF, which would not comprise a valid feature -- then instead of
+        this method, simply use indexes on each feature, e.g,
+
+        >>> gff = pybedtools.example_bedtool('d.gff')
+        >>> results = [(f[0], f[2]) for f in gff]
+
+        In addition, `indexes` can contain keys of the GFF/GTF attributes, in
+        which case the values are returned. e.g. 'gene_name' will return the
         corresponding name from a GTF, or 'start' will return the start
         attribute of a BED Interval.
-
-        See .with_column() if you need to do more complex operations.
         """
         if stream:
             return BedTool(([f[attr] for attr in indexes] for f in self))
