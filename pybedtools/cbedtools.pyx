@@ -523,7 +523,7 @@ cpdef Interval create_interval_from_list(list fields):
 
     # VCF
     elif fields[1].isdigit() and not fields[3].isdigit() and len(fields) >= 8:
-        pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[1]) + 1, 
+        pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[1]) + 1,
                            string(fields[2]), string(fields[5]), string('.'),
                            list_to_vector(fields))
         pyb.file_type = 'vcf'

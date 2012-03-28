@@ -1901,7 +1901,6 @@ class BedTool(object):
         attribute is a temp filename containing the IGV script.
         """
 
-
     @_log_to_history
     @_wraps(prog='bamToFastq', implicit='i', bam='i', make_tempfile_for='fq',
             add_to_bedtool={'fq': 'fastq'})
@@ -2238,9 +2237,9 @@ class BedTool(object):
                 a_type = self.file_type
                 a_field_num = self.field_count()
                 same_type = all(a_type == other.file_type \
-                                                        for other in other_beds)
+                                                    for other in other_beds)
                 same_field_num = all(a_field_num == other.field_count() \
-                                                        for other in other_beds)
+                                                    for other in other_beds)
             except ValueError:
                 raise ValueError("Can't check filetype or field count -- "
                 "is one of the files you're merging a 'streaming' BedTool?  "
