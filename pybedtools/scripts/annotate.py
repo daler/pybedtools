@@ -32,7 +32,7 @@ import collections
 
 
 def get_gff_name(field):
-    attrs = Attributes(None, field)
+    attrs = Attributes(field)
     for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
         if key in attrs:
             return attrs[key]
