@@ -16,7 +16,7 @@ for each of the up and downstream columns.
 import argparse
 import sys
 from pybedtools import BedTool
-from pybedtools.cbedtools import parse_attributes
+from pybedtools.cbedtools import Attributes
 import collections
 
 # PYTHONPATH=$PYTHONPATH:. python scripts/annotate.py -a data/new.regions.bed
@@ -32,7 +32,7 @@ import collections
 
 
 def get_gff_name(field):
-    attrs = parse_attributes(field)
+    attrs = Attributes(None, field)
     for key in ("ID", "gene_name", "transcript_id", "gene_id", "Parent"):
         if key in attrs:
             return attrs[key]

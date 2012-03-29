@@ -96,3 +96,4 @@ cdef class Interval:
     cdef BED *_bed
     cdef object _attrs
     cpdef append(Interval self, object value)
+    cpdef deparse_attrs(Interval self)
