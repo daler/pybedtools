@@ -2,10 +2,7 @@ import pybedtools
 import sys
 import os, difflib
 from nose.tools import assert_raises
-
-testdir = os.path.dirname(__file__)
-
-pybedtools.set_tempdir('.')
+from tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
 def fix(x):
     """
@@ -37,10 +34,12 @@ def test_cleanup():
     """
     make sure the tempdir and cleanup work
     """
-    assert os.path.abspath(pybedtools.get_tempdir()) == os.path.abspath('.')
+    #assert os.path.abspath(pybedtools.get_tempdir()) == os.path.abspath('.')
 
     # make a fake tempfile, not created during this pybedtools session
-    testfn = 'pybedtools.TESTING.tmp'
+    pybedtools.cleanup()
+
+    testfn = os.path.join(test_tempdir, 'pybedtools.TESTING.tmp')
     os.system('touch %s' % testfn)
     assert os.path.exists(testfn)
 

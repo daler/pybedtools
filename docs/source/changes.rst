@@ -2,6 +2,23 @@
 
 Changelog
 =========
+
+Changes since v0.6
+------------------
+* New :class:`pybedtools.contrib.plotting.Track` class allows plotting of
+  features with matplotlib.  The `Track` class subclasses
+  `matplotlib.collections.PolyCollection`, making it rather fast for 1000s of
+  features.
+
+* See the `scripts/plotting_example.py` script for a way of visually showing
+  the results of BEDTools operations . . . great for teaching BEDTools to new
+  users.
+
+* :class:`BedTool` creation using tuples/lists of values -- everything is
+  converted to string before creating an :class:`Interval` object.
+
+
+
 Changes in v0.6
 ---------------
 * Overhaul in online documentation to hopefully make functionality easier to
@@ -77,6 +94,7 @@ Changes in v0.6
     * `multiIntersectBed` (:meth:`BedTool.multi_intersect`)
     * `expandCols` (:meth:`BedTool.expand`)
     * `windowMaker` (:meth:`BedTool.window_maker`)
+    * `bamToFastq` (:meth:`BedTool.bam_to_fastq`)
 
 * Made venn_gchart and venn_mpl tests more stable
 

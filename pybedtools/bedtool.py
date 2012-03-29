@@ -232,6 +232,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 result_is_bam = True
 
             result._isbam = result_is_bam
+            result._cmds = cmds
+            result._kwargs = kwargs
             return result
 
         # Now add the edited docstring (original Python doctring plus BEDTools
@@ -300,16 +302,7 @@ class BedTool(object):
         if not pybedtools._bedtools_installed:
             helpers._check_for_bedtools()
 
-        if not from_string:
-            if isinstance(fn, BedTool):
-                fn = fn.fn
-            elif isinstance(fn, basestring):
-                if not os.path.exists(fn):
-                    raise ValueError('File "%s" does not exist' % fn)
-                self._isbam = isBAM(fn)
-            else:
-                fn = fn
-        else:
+        if from_string:
             bed_contents = fn
             fn = self._tmp()
             fout = open(fn, 'w')
@@ -320,17 +313,30 @@ class BedTool(object):
                 fout.write(line)
             fout.close()
 
-        tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
-        self._tag = tag
-        _tags[tag] = self
+        else:
+            # our work is already done
+            if isinstance(fn, BedTool):
+                fn = fn.fn
+
+            # from_string=False, so assume it's a filename
+            elif isinstance(fn, basestring):
+                if not os.path.exists(fn):
+                    raise ValueError('File "%s" does not exist' % fn)
+                self._isbam = isBAM(fn)
+
+            # make an IntervalIterator if tuple or list
+            elif isinstance(fn, (list, tuple)):
+                fn = IntervalIterator(iter(fn))
+
+            # Otherwise assume iterator, say an open file as from
+            # subprocess.PIPE
+            else:
+                fn = fn
+
         if isinstance(fn, unicode):
             fn = str(fn)
 
         self.fn = fn
-
-        self._hascounts = False
-        self._file_type = None
-        self.history = History()
 
         if self._isbam and isinstance(self.fn, basestring):
             try:
@@ -343,6 +349,13 @@ class BedTool(object):
                 self._isbam = False
         else:
             self._bam_header = ""
+
+        tag = ''.join([random.choice(string.lowercase) for _ in xrange(8)])
+        self._tag = tag
+        _tags[tag] = self
+        self._hascounts = False
+        self._file_type = None
+        self.history = History()
 
     def split(self, func, *args, **kwargs):
         """
@@ -779,12 +792,20 @@ class BedTool(object):
         Similar to unix `cut` except indexes are 0-based, must be a list
         and the columns are returned in the order requested.
 
-        In addition, indexes can contain keys of the GFF/GTF attributes,
-        in which case the values are returned. e.g. 'gene_name' will return the
+        This method returns a BedTool of results, which means that the indexes
+        returned must be valid GFF/GTF/BED/SAM features.
+
+        If you would like arbitrary columns -- say, just chrom and featuretype
+        of a GFF, which would not comprise a valid feature -- then instead of
+        this method, simply use indexes on each feature, e.g,
+
+        >>> gff = pybedtools.example_bedtool('d.gff')
+        >>> results = [(f[0], f[2]) for f in gff]
+
+        In addition, `indexes` can contain keys of the GFF/GTF attributes, in
+        which case the values are returned. e.g. 'gene_name' will return the
         corresponding name from a GTF, or 'start' will return the start
         attribute of a BED Interval.
-
-        See .with_column() if you need to do more complex operations.
         """
         if stream:
             return BedTool(([f[attr] for attr in indexes] for f in self))
@@ -839,13 +860,14 @@ class BedTool(object):
                 # gets passed to create_interval_from_fields.
                 return IntervalIterator(self.fn)
 
-        # Otherwise assume fn is already an iterable
-        else:
+        if isinstance(self.fn, (IntervalIterator, IntervalFile)):
             return self.fn
+
+        return IntervalIterator(self.fn)
 
     @property
     def intervals(self):
-        return IntervalFile(self.fn)
+        return iter(self)
 
     def __repr__(self):
         if isinstance(self.fn, file):
@@ -1361,6 +1383,27 @@ class BedTool(object):
 
         '''
 
+    @staticmethod
+    def seq(loc, fasta):
+        """
+        Return just the sequence from a region string or a single location
+        >>> BedTool.seq('chr1:2-10', pybedtools.example_filename('test.fa'))
+        'GATGAGTCT'
+        >>> BedTool.seq(('chr1', 1, 10), pybedtools.example_filename('test.fa'))
+        'GATGAGTCT'
+
+        """
+        if isinstance(loc, basestring):
+            chrom, start_end = loc.split(":")
+            start, end = map(int, start_end.split("-"))
+            start -= 1
+        else:
+            chrom, start, end = loc[0], loc[1], loc[2]
+
+        loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
+        lseq = loc.sequence(fi=fasta)
+        return "".join([l.rstrip() for l in open(lseq.seqfn) if l[0] != ">"])
+
     @_log_to_history
     @_wraps(prog='nucBed', implicit='bed', other='fi')
     def nucleotide_content(self):
@@ -1860,7 +1903,6 @@ class BedTool(object):
         attribute is a temp filename containing the IGV script.
         """
 
-
     @_log_to_history
     @_wraps(prog='bamToFastq', implicit='i', bam='i', make_tempfile_for='fq',
             add_to_bedtool={'fq': 'fastq'})
@@ -2197,9 +2239,9 @@ class BedTool(object):
                 a_type = self.file_type
                 a_field_num = self.field_count()
                 same_type = all(a_type == other.file_type \
-                                                        for other in other_beds)
+                                                    for other in other_beds)
                 same_field_num = all(a_field_num == other.field_count() \
-                                                        for other in other_beds)
+                                                    for other in other_beds)
             except ValueError:
                 raise ValueError("Can't check filetype or field count -- "
                 "is one of the files you're merging a 'streaming' BedTool?  "
@@ -2422,3 +2464,8 @@ class BAM(object):
                 raise StopIteration
 
         return line
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.ELLIPSIS |\
+                                   doctest.NORMALIZE_WHITESPACE)
