@@ -287,7 +287,7 @@ class BedTool(object):
             ... chrX  1  100
             ... chrX 25  800
             ... '''
-            >>> a = BedTool(s,from_string=True).saveas('a.bed')
+            >>> a = BedTool(s,from_string=True)
 
         Or use examples that come with pybedtools::
 
@@ -1970,6 +1970,8 @@ class BedTool(object):
         <BLANKLINE>
         >>> b = a.save_seqs('example.fa')
         >>> assert open(b.fn).read() == open(a.fn).read()
+        >>> if os.path.exists('example.fa'):
+        ...     os.unlink('example.fa')
         """
 
         if not hasattr(self, 'seqfn'):
@@ -2294,6 +2296,8 @@ class BedTool(object):
         >>> b = a.saveas('other.bed', trackline="name='test run' color=0,55,0")
         >>> open(b.fn).readline()
         "name='test run' color=0,55,0\\n"
+        >>> if os.path.exists('other.bed'):
+        ...     os.unlink('other.bed')
         """
         if fn is None:
             fn = self._tmp()

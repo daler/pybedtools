@@ -901,6 +901,8 @@ def test_bam_to_sam_to_bam():
     print c
     print c.fn
     assert str(c) == orig
+    if os.path.exists('ex.sam'):
+        os.unlink('ex.sam')
 
 def test_bam_filetype():
     # regression test -- this was segfaulting before because IntervalFile

@@ -2,6 +2,7 @@
 tests for contrib module
 """
 import sys
+import os
 import pybedtools
 from pybedtools import Interval
 from pybedtools.contrib import Classifier
@@ -170,3 +171,6 @@ def test_cleaned_intersect():
                 run=True)
     except ValueError:
         sys.stderr.write('R installation not found; skipping test')
+
+    if os.path.exists('out.tiff'):
+        os.unlink('out.tiff')
