@@ -115,6 +115,16 @@ def test_tabix():
     chr1	100	200	feature2	0	+
     chr1	150	500	feature3	0	-""")
 
+    # clean up
+    fns = [
+            pybedtools.example_filename('a.bed.gz'),
+            pybedtools.example_filename('a.bed.gz.tbi'),
+          ]
+    for fn in fns:
+        if os.path.exists(fn):
+            os.unlink(fn)
+
+
 
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests
