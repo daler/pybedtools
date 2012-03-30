@@ -53,8 +53,9 @@ class Track(collections.PolyCollection):
         >>> track = Track(a, alpha=0.5, picker=5)
         >>> fig = plt.figure()
         >>> ax = fig.add_subplot(111)
-        >>> ax.add_collection(track)
-        >>> ax.axis('tight')
+        >>> ax.add_collection(track) #doctest: +ELLIPSIS
+        <pybedtools.contrib.plotting.Track object at 0x...>
+        >>> limits = ax.axis('tight')
         """
         if isinstance(features, pybedtools.BedTool)\
                 and isinstance(features.fn, basestring):
