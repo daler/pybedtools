@@ -11,4 +11,6 @@ pybedtools.egg-info/*
 *.so
 *.fai
 *.egg
-
+pybedtools/_Window.c
+pybedtools/cbedtools.cpp
+pybedtools/featurefuncs.cpp
