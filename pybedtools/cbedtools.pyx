@@ -104,7 +104,7 @@ cdef class Attributes(dict):
 
     def __init__(self, attr_str=""):
         self._attr_str = attr_str
-        
+
         # sets the default separators when created empty
         self.sep, self.field_sep = (";", "=") if "=" in attr_str or attr_str == "" else (";", " ")
 
@@ -281,12 +281,12 @@ cdef class Interval:
             return self._bed.end - self._bed.start
 
     cpdef deparse_attrs(self):
-        
+
         if self._attrs is None: return
-        
+
         if self.file_type != "gff":
             raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
-        
+
         cdef char *cstr
         tmp = self._attrs.__str__()
         cstr = tmp
@@ -297,7 +297,7 @@ cdef class Interval:
             self.deparse_attrs()
             return string_vec2list(self._bed.fields)
 
-        
+
     property attrs:
         def __get__(self):
             cdef string ftype = self._bed.file_type
@@ -413,7 +413,7 @@ cdef class Interval:
         cdef string ftype = self._bed.file_type
 
         self.deparse_attrs()
-        
+
         if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
             if key >= nfields:
