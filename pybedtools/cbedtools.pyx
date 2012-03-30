@@ -285,7 +285,7 @@ cdef class Interval:
         if self._attrs is None: return
 
         if self.file_type != "gff":
-            raise ValueError('Setting attributes not supported for non-GFF-like Intervals')
+            raise ValueError('Interval.attrs was not None, but this was a non-GFF Interval')
 
         cdef char *cstr
         tmp = self._attrs.__str__()

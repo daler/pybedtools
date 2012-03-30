@@ -232,7 +232,8 @@ class IntervalTest(unittest.TestCase):
         ivf = IntervalFile(self.file)
         iv = ivf.next()
         if iv.file_type != 'gff':
-            self.assertRaises(ValueError, iv.attrs.__setitem__, 'a','b')
+            iv.attrs['a'] = 'b'
+            self.assertRaises(ValueError, str, iv)
             return
         iv.attrs['ID'] = 'fake'
         iv.attrs['field0'] = 'asdf'
