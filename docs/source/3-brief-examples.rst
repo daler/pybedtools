@@ -68,7 +68,8 @@ to the example data file.::
 For more, see the :mod:`pybedtools.scripts.venn_mpl` and
 :mod:`pybedtools.scripts.venn_gchart` scripts, which wrap this functionality in
 command-line scripts to create Venn diagrams using either matplotlib or Google
-Charts API respectively.
+Charts API respectively.  Also see the :mod:`pybedtools.contrib.venn_maker`
+module for a flexible interface to the VennDiagram `R` package.
 
 .. _third example:
 
