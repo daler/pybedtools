@@ -13,41 +13,14 @@ attempting to install :mod:`pybedtools`.
 Many of these requirements are used by other genomics and bioinformatics
 software, so you may already have them installed:
 
-#. BEDTools_. The version is not important, but later versions will have more
-   features so it's a good idea to get the latest.  Follow the instructions at
-   https://github.com/arq5x/bedtools to install, and make sure the programs are
-   on your path. That is, you should be able to call `intersectBed` from any
-   directory
-
-#. samtools_ [`download page`_].  **Optional.** This is needed for BAM support; if you don't need
-   SAM/BAM support, then you don't need this.   Like BEDTools, the version is
-   not important.  You will get a warning if you try to run :mod:`pybedtools`
-   functions that require `samtools`.  The `samtools` programs must be
-   available on the path, so you should be able to call `samtools view` from
-   any directory.
-
-#. Tabix_ [`download page`_].  **Optional.**  This is needed for when you would like
-   to have fast, random access to BED/GFF/GTF/VCF files by providing a
-   chrom:start-stop coordinate. Similar to the above, you should be able to
-   call `tabix` from any directory.
+#. BEDTools_
+        The version is not important, but later versions will have more
+        features so it's a good idea to get the latest.  Follow the
+        instructions at https://github.com/arq5x/bedtools to install, and make
+        sure the programs are on your path. That is, you should be able to call
+        `intersectBed` from any directory
 
 #. Python_ 2.5 or greater (Python 3 support is coming soon)
-
-#. Python modules: these are the modules that :mod:`pybedtools` uses.  All but
-   argparse_ are optional.
-
-    * argparse_: installed automatically if using Python <2.7 (it comes with
-      Python 2.7); used for command line scripts like the Venn diagram scripts
-
-    * nose_: **optional**; used for automated testing, not necessary for working with
-      :mod:`pybedtools`
-
-    * scipy_: **optional**; used for computing statistics for randomization procedures
-
-    * matplotlib_: **optional**; used by the `venn_mpl.py` script for making a Venn diagram
-      with annotated counts; you can use `venn_gchart.py` to use the Google
-      Charts API to make a Venn diagram if you don't want to install
-      `matplotlib`.
 
 #. A C/C++ compiler
     * **On Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
@@ -58,16 +31,49 @@ software, so you may already have them installed:
     * **On Linux:** `gcc`, usually already installed; on Ubuntu, install with `sudo apt-get install
       build-essentials`
 
-#. pip_ or easy_install_: these are used for automated installation of Python
-   packages.  If you don't already have these installed,  you can use these
-   commands to get `pip`:
+#. **Optional.** samtools_ [`download page`_]
+        Required for BAM support.   Like BEDTools, the version is not
+        important.  You will get a warning if you try to run :mod:`pybedtools`
+        functions that require `samtools`.  The `samtools` programs must be
+        available on the path, so you should be able to call `samtools view`
+        from any directory.
 
-    ::
+#. **Optional.** Tabix_ [`download page`_].  
+        Required for fast, random access to BED/GFF/GTF/VCF files by providing
+        a chrom:start-stop coordinate.  Similar to the above, you should be
+        able to call `tabix` from any directory.
 
-        $ curl -O http://python-distribute.org/distribute_setup.py
-        $ python distribute_setup.py
-        $ curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-        $ python get-pip.py
+#. Python modules: these are the modules that :mod:`pybedtools` uses.  All but
+   argparse_ are optional.
+
+    * argparse_:
+            installed automatically if using Python <2.7 (it comes with Python
+            2.7); used for command line scripts like the Venn diagram scripts
+
+    * **Optional.** nose_
+            used for automated testing, not necessary for working with
+            :mod:`pybedtools`
+
+    * **Optional.** scipy_
+            used for computing statistics for randomization procedures
+
+    * **Optional.** matplotlib_
+            used plotting code (:mod:`pybedtools.contrib.plotting` and by the
+            `venn_mpl.py` script for making a Venn diagram with annotated
+            counts. You can use `venn_gchart.py` to use the Google Charts API
+            to make a Venn diagram or the :mod:`pybedtools.contrib.venn_maker`
+            if you don't want to install `matplotlib`.
+
+
+#. pip_ or easy_install_:
+        these are used for automated installation of Python packages.  If you
+        don't already have these installed,  you can use these commands to get
+        `pip`::
+
+            $ curl -O http://python-distribute.org/distribute_setup.py
+            $ python distribute_setup.py
+            $ curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+            $ python get-pip.py
 
 Notes on supported systems
 ++++++++++++++++++++++++++
@@ -101,10 +107,11 @@ or::
 
     easy_install pybedtools
 
+Done! You can now run a quick test of your installation:
+
 Note that you may need to be root in order to install.  If you do not have root
 privileges (e.g., if you are installing in your user directory on a cluster), then
-use the `--prefix` argument to `easy_install` to specify a location where you
-have write permission::
+use the following options::
 
     pip install pybedtools --user
 
@@ -112,7 +119,6 @@ or::
 
     easy_install pybedtools --prefix /dir_you_can_write_to
 
-Done! You can now run a quick test of your installation:
 
 Quick test
 ``````````
@@ -133,35 +139,46 @@ should print out::
 
 
 Installation for developers or for running tests
-++++++++++++++++++++++++++++++++++++++++++++++++
-Installing from github
-``````````````````````
-The very latest code is available from GitHub, at http://github.com/daler/pybedtools.  You'll need to have `git <http://git-scm.com/>`_ installed.
-
-Change to a directory of your choosing, then execute the following command.  It
-will create a new directory, `pybedtools`, and download the source code into
-that directory::
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Clone the repository::
 
     git clone git@github.com:daler/pybedtools.git
 
-Then change into the new `pybedtools` directory and run the following.  The
-first command compiles the Cython code and the second is the typical Python
+
+Developer installation depends on the version.
+
+**Version <= 0.6:**  The first command compiles the Cython code and the second is the typical Python
 install command::
 
     python build.py
-    sudo python setup.py install
+    sudo python setup.py develop
 
-You should now be aboe to run the "quick test" above.
 
-More detailed installation instructions
-```````````````````````````````````````
-#. Get the source.  There are two ways to do this:
+**Version > 0.6:** After version 0.6, the developer installation was
+streamlined, auto-detecting whether you have Cython installed or not::
 
-    #. **Stable version:** download and unzip the :mod:`pybedtools` source from
-       http://pypi.python.org/pypi/pybedtools
+    sudo python setup.py develop
 
-    #. **Development version:** clone the git repository at
-       http://github.com/daler/pybedtools
+The `develop` option means that any changes you make to the code will be
+reflected system-wide.  However, if you make changes to any of the `.pyx`
+files, you will need to again run the command::
+
+
+    # make changes to a .pyx file....
+    $ sudo python setup.py develop
+
+
+You should now be able to run the "quick test" above.
+
+More detailed developer installation instructions
++++++++++++++++++++++++++++++++++++++++++++++++++
+The very latest code is available from GitHub, at
+http://github.com/daler/pybedtools.  You'll need to have `git
+<http://git-scm.com/>`_ installed.
+
+#. Get the source by cloning the git repository at
+   http://github.com/daler/pybedtools, which will create a new `pybedtools`
+   directory
 
 #. Move to the newly created directory
 
@@ -203,3 +220,19 @@ More detailed installation instructions
    copy at `docs/build/html/pybedtools_manual.pdf`)::
 
         cd docs && make latexpdf
+
+Contributing
+~~~~~~~~~~~~
+Any and all contributions are welcome.  Here's how to contribute:
+
+#. Fork the `pybedtools repository <http://github.com/daler/pybedtools>`_ on
+   github (see `forking help <http://help.github.com/fork-a-repo/>`_).
+
+#. Make your changes/fixes/improvements locally.
+
+#. Optional, but much-appreciated: write some tests for your changes.
+        (Don't worry about integrating your tests into the test framework. You
+        can just attach the tests either as a commited script or as comments to
+        the commit and I can integrate them later)
+
+#. Send a pull request (see `pull request help <http://help.github.com/send-pull-requests/>`_)
