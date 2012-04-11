@@ -6,7 +6,7 @@ import pybedtools
 
 class Track(collections.PolyCollection):
     def __init__(self, features, chrom=None, ybase=0, yheight=1,
-            visibility='dense', **kwargs):
+            visibility='dense', stranded=True, **kwargs):
         """
         Subclass of matplotlib's PolyCollection that can be added to an Axes.
 
@@ -27,6 +27,8 @@ class Track(collections.PolyCollection):
               piling up, the track will be a lot higher on the y-axis than
               `yheight`.
 
+        `stranded`, if True, will draw arrrow-shaped features to indicate
+        direction (where the point is 10% of the total gene length)
 
         `**kwargs` are passed to matplotlib.collections.PolyCollection.
 
@@ -68,17 +70,39 @@ class Track(collections.PolyCollection):
         collections.PolyCollection.__init__(
                 self, verts=self._get_verts(), **kwargs)
 
+    def _shape(self, feature, ybase, yheight):
+        offset = len(feature) * 0.1
+        if feature.strand == '-':
+            return [
+                    (feature.stop, ybase),
+                    (feature.stop, ybase + yheight),
+                    (feature.start + offset, ybase + yheight),
+                    (feature.start, ybase + yheight * 0.5),
+                    (feature.start + offset, ybase)
+                    ]
+
+        elif feature.strand == '+':
+            return [
+                    (feature.start, ybase),
+                    (feature.start, ybase + yheight),
+                    (feature.stop - offset, ybase + yheight),
+                    (feature.stop, ybase + yheight * 0.5),
+                    (feature.stop - offset, ybase)
+                    ]
+
+        return [
+                (feature.start, ybase),
+                (feature.start, ybase + yheight),
+                (feature.stop, ybase + yheight),
+                (feature.stop, ybase)
+                ]
+
     def _get_verts(self):
         verts = []
 
         if self._visibility == 'dense':
             for feature in self.features:
-                verts.append([
-                    (feature.start, self._ybase),
-                    (feature.start, self._ybase + self._yheight),
-                    (feature.stop, self._ybase + self._yheight),
-                    (feature.stop, self._ybase),
-                    ])
+                verts.append(self._shape(feature, self._ybase, self._yheight))
             self.ymax = self._ybase + self._yheight
 
         if self._visibility == 'squish':
@@ -101,12 +125,7 @@ class Track(collections.PolyCollection):
                 if ybase is None:
                     ybase = self._ybase + len(stack) * self._yheight
                     stack.append(feature.end)
-                verts.append([
-                    (feature.start, ybase),
-                    (feature.start, ybase + self._yheight),
-                    (feature.stop, ybase + self._yheight),
-                    (feature.stop, ybase),
-                    ])
+                verts.append(self._shape(feature, ybase, self._yheight))
             self.ymax = self._ybase + len(stack) * self._yheight
 
         return verts
