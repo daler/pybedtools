@@ -117,7 +117,8 @@ setup(
                    'pybedtools/scripts/intersection_matrix.py',
                    'pybedtools/scripts/intron_exon_reads.py',
                    'pybedtools/scripts/pybedtools_demo.py',
-                   'pybedtools/scripts/pybedtools'],
+                   'pybedtools/scripts/pybedtools',
+                   'pybedtools/scripts/examples/pbt_plotting_example.py'],
         author_email="dalerr@niddk.nih.gov",
         classifiers=[
             'Development Status :: 4 - Beta',
