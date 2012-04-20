@@ -2421,6 +2421,26 @@ class BedTool(object):
         return IntervalFile(fn)
 
 
+    def liftover(self, chainfile, unmapped=None, liftover_args=""):
+        """
+        Returns a new BedTool of the liftedOver features, saving the unmapped
+        ones as `unmapped`.  If `unmapped` is None, then discards the unmapped
+        features.
+
+        `liftover_args` is a string of additional args that is passed,
+        verbatim, to liftOver.
+
+        Needs `liftOver` from UCSC to be on the path and a `chainfile`
+        downloaded from UCSC.
+        """
+        result = BedTool._tmp()
+        if unmapped is None:
+            unmapped = BedTool._tmp()
+        cmds = ['liftOver', liftover_args, self.fn, chainfile, result, unmapped]
+        os.system(' '.join(cmds))
+        return BedTool(result)
+
+
 class BAM(object):
     def __init__(self, stream, header_only=False):
         """
