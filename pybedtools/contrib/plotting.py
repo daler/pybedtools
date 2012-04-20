@@ -130,6 +130,13 @@ class Track(collections.PolyCollection):
 
         return verts
 
+    def get_xlims(self, ax):
+        """
+        Needs `ax` to convert to transData coords
+        """
+        bb = self.get_datalim(ax.transData)
+        return (bb.xmin, bb.xmax)
+
     @property
     def midpoint(self):
         return self._ybase + (self.ymax - self._ybase) / 2.0
