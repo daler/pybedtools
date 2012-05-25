@@ -180,6 +180,7 @@ Methods that can't quite be categorized into the above sections.
     pybedtools.BedTool.set_chromsizes
     pybedtools.BedTool.print_sequence
     pybedtools.BedTool.save_seqs
+    pybedtools.BedTool.liftover
 
 Module-level functions
 ----------------------

@@ -14,9 +14,16 @@ Changes since v0.6
   the results of BEDTools operations . . . great for teaching BEDTools to new
   users.
 
+* New :meth:`BedTool.liftover` method (needs a chain file from UCSC and the
+  `liftover` program installed)
+
 * :class:`BedTool` creation using tuples/lists of values -- everything is
   converted to string before creating an :class:`Interval` object.
 
+* bugfix: :meth:`BedTool.window_maker` now handles the `genome` kwarg correctly
+
+* bugfix: `pybedtools.cleanup(remove_all=True)` now works correctly when using
+  the default temp dir
 
 
 Changes in v0.6
