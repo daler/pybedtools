@@ -292,7 +292,7 @@ def get_tempdir():
     """
     Gets the current tempdir for the module.
     """
-    return tempfile.tempdir
+    return tempfile.gettempdir()
 
 
 def cleanup(verbose=False, remove_all=False):
