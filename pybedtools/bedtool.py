@@ -26,7 +26,7 @@ _bam_registry = {}
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
-           nonbam=None, force_bam=False):
+           nonbam=None, force_bam=False, genome_none_if=None):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -73,6 +73,10 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
     *force_bam*, if True, will force the output to be BAM.  This is used for
     bedToBam.
+
+    *genome_none_if* is a list of arguments that will ignore the requirement
+    for a genome.  This is needed for window_maker, where -b and -g are
+    mutually exclusive.
     """
     not_implemented = False
 
@@ -94,8 +98,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         help_str = '\n'.join(help_str) + '\n'
 
     # If the program can't be found, then we'll eventually replace the method
-    # with a version that does nothing raise a NotImplementedError (plus a
-    # helpful message).
+    # with a version that does nothing but raise a NotImplementedError (plus
+    # a helpful message).
     except OSError:
         help_str = '"%s" does not appear to be installed '\
                        'or on the path, so this method is '\
@@ -145,7 +149,13 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 kwargs[other] = args[0]
 
             # Should this function handle genome files?
+            check_for_genome = uses_genome
             if uses_genome:
+                if genome_none_if:
+                    for i in genome_none_if:
+                        if i in kwargs:
+                            check_for_genome = False
+            if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
 
             # Add the implicit values to kwargs.  If the current BedTool is
@@ -1868,7 +1878,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowMaker', uses_genome=True)
+    @_wraps(prog='windowMaker', uses_genome=True, genome_none_if=['b'])
     def window_maker(self):
         """
         Wraps `windowMaker` (v2.15+: `bedtools makewindows`)
