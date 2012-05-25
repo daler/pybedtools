@@ -14,7 +14,6 @@ pybedtools.scripts.annotate
       gen_get_name
       get_gff_name
       main
-      parse_attributes
    
    
 
@@ -24,6 +23,7 @@ pybedtools.scripts.annotate
 
    .. autosummary::
    
+      Attributes
       BedTool
    
    

@@ -14,6 +14,7 @@ pybedtools.Interval
    .. autosummary::
    
       ~Interval.append
+      ~Interval.deparse_attrs
    
    
 
