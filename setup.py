@@ -6,35 +6,26 @@ import os
 import sys
 from setuptools import setup
 from distutils.extension import Extension
-
-# optional cython
 try:
-  from Cython.Distutils import build_ext
+    from Cython.Distutils import build_ext
+
 except ImportError:
-  from distutils.command import build_ext as _build_ext
-  class build_ext(_build_ext.build_ext):
+    sys.stderr.write("""
+    ==================================================
 
-      description = "change pyx files to corresponding .c/.cpp (fallback when cython is not installed)"
+    Please install Cython (http://cython.org/),
+    which is required to build pybedtools. Usually
+    you can do:
 
-      def build_extensions(self):
-          # First, sanity-check the 'extensions' list
-          self.check_extensions_list(self.extensions)
-          
-          for extension in self.extensions:
-              iscpp = extension.language and extension.language.lower() == 'c++'
-              target_ext = '.cpp' if iscpp else '.c'
+        pip install -U cython
 
-              patchedsrc = []
-              for source in extension.sources:
-                (root, ext) = os.path.splitext(source)
-                if ext == '.pyx':
-                  patchedsrc.append(root + target_ext)
-                else:
-                  patchedsrc.append(source)
+    or
 
-              extension.sources = patchedsrc
-              self.build_extension(extension)
-  
+        easy_install -U cython
+
+    ==================================================
+    """)
+    sys.exit(1)
 
 if 'setuptools.extension' in sys.modules:
     m = sys.modules['setuptools.extension']
@@ -42,29 +33,38 @@ if 'setuptools.extension' in sys.modules:
 
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','')
-sources=["src/bedFile.cpp",
-         "src/fileType.cpp",
-         "src/gzstream.cpp",
-         "pybedtools/cbedtools.pyx"]
-
+sources=["src/bedFile.pyx",
+         "src/fileType.pxi",
+         "src/gzstream.pxd",
+         "pybedtools/cbedtools.cpp"]
 
 exts = [ Extension("pybedtools.cbedtools",
-                   sources=sources,
+                   sources=["pybedtools/cbedtools.pyx",
+                            "pybedtools/cbedtools.pxi",
+                            "pybedtools/cbedtools.pxd"] \
+                            + glob.glob("src/*.cpp"),
                    libraries=["stdc++", 'z'],
-                   library_dirs=["src/"],
                    include_dirs=["src/"],
+                   depends = glob.glob("src/*.h"),
                    language="c++"),
 
          Extension('pybedtools.featurefuncs',
-                   sources=sources + ["pybedtools/featurefuncs.pyx"],
+                   sources=["pybedtools/featurefuncs.pyx",
+                            "pybedtools/cbedtools.pyx",
+                            "pybedtools/cbedtools.pxi",
+                            "pybedtools/cbedtools.pxd"] \
+                            + glob.glob("src/*.cpp"),
                    libraries=["stdc++", 'z'],
                    include_dirs=["src/"],
-                   library_dirs=["src/"],
+                   depends = glob.glob("src/*.h"),
                    language="c++"),
 
          Extension('pybedtools._Window',
                     sources=['pybedtools/_Window.pyx'],),
         ]
+
+
+
 
 long_description = """
 ``pybedtools`` is a Python extension of Aaron Quinlan's BEDtools suite
@@ -86,13 +86,12 @@ and see full documentation and tutorial at:
 
 tests_require = ['nose>=0.11', 'pyyaml']
 setup(
-        cmdclass= {'build_ext': build_ext},
         name="pybedtools",
         version=version,
         ext_modules=exts,
+        cmdclass = {'build_ext': build_ext},
         install_requires=['argparse'],
         tests_require=tests_require,
-        setup_requires=tests_require,
         extras_require={'test': tests_require},
         packages=['pybedtools',
                   'pybedtools.test',
@@ -117,8 +116,8 @@ setup(
                    'pybedtools/scripts/intersection_matrix.py',
                    'pybedtools/scripts/intron_exon_reads.py',
                    'pybedtools/scripts/pybedtools_demo.py',
-                   'pybedtools/scripts/pybedtools',
-                   'pybedtools/scripts/examples/pbt_plotting_example.py'],
+                   'pybedtools/scripts/examples/pbt_plotting_example.py',
+                   'pybedtools/scripts/pybedtools'],
         author_email="dalerr@niddk.nih.gov",
         classifiers=[
             'Development Status :: 4 - Beta',
