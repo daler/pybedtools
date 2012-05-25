@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Changes since v0.6
-------------------
+Changes in v0.6.1
+-----------------
 * New :class:`pybedtools.contrib.plotting.Track` class allows plotting of
   features with matplotlib.  The `Track` class subclasses
   `matplotlib.collections.PolyCollection`, making it rather fast for 1000s of
