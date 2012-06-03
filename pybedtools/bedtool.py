@@ -2284,7 +2284,10 @@ class BedTool(object):
         TMP.close()
         c = BedTool(tmp)
         if postmerge:
-            d = c.sort().merge(**kwargs)
+            d = c.sort(stream=True).merge(**kwargs)
+
+            # Explicitly delete -- needed when using multiprocessing
+            os.unlink(tmp)
             return d
         else:
             return c
