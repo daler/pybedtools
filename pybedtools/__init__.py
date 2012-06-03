@@ -15,6 +15,7 @@ from helpers import get_tempdir, set_tempdir, cleanup, \
 import helpers
 from bedtool import BedTool
 import genome_registry
+import stats
 from __main__ import main
 from version import __version__
 

@@ -2138,6 +2138,43 @@ class BedTool(object):
             yield r.get()
         raise StopIteration
 
+    def naive_jaccard(self, other, genome_fn=None, iterations=None,
+            processes=1, shuffle_kwargs=None, intersect_kwargs=None):
+        """
+        Computes the naive Jaccard statistic (intersection divided by union).
+
+        See Favorov et al. (2012) PLoS Comput Biol 8(5): e1002529 for more
+        info.
+
+        If `iterations` is None, then do not perform random shufflings.
+
+        If `iterations` is an integer, perform `iterations` random shufflings,
+        each time computing the Jaccard statistic to build an empirical
+        distribution.  `genome_fn` will also be needed; optional `processes`
+        will split the iteations across multiple CPUs.
+
+        Returns a tuple of the observed Jaccard statistic and a list of the
+        randomized statistics (which will be an empty list if `iterations` was
+        None).
+        """
+        if iterations is None:
+            return pybedtools.stats.jaccard(self, other), []
+        if not genome_fn:
+            raise ValueError("Need a genome filename in order to perform "
+                    "randomization")
+        return pybedtools.stats.jaccard(self, other), \
+                list(
+                        self.random_op(
+                            iterations=iterations,
+                            func=pybedtools.stats.random_jaccard,
+                            func_args=(self, other),
+                            func_kwargs=dict(
+                                genome_fn=genome_fn,
+                                shuffle_kwargs=shuffle_kwargs,
+                                intersect_kwargs=intersect_kwargs),
+                            processes=8)
+                        )
+
     def _randomintersection(self, other, iterations, genome_fn,
             intersect_kwargs=None, shuffle_kwargs=None, processes=1):
         """
