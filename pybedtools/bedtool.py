@@ -2503,7 +2503,6 @@ class BedTool(object):
             fn = self.fn
         return IntervalFile(fn)
 
-
     def liftover(self, chainfile, unmapped=None, liftover_args=""):
         """
         Returns a new BedTool of the liftedOver features, saving the unmapped
@@ -2519,7 +2518,8 @@ class BedTool(object):
         result = BedTool._tmp()
         if unmapped is None:
             unmapped = BedTool._tmp()
-        cmds = ['liftOver', liftover_args, self.fn, chainfile, result, unmapped]
+        cmds = ['liftOver', liftover_args, self.fn, chainfile, result,
+                unmapped]
         os.system(' '.join(cmds))
         return BedTool(result)
 
