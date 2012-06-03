@@ -1158,15 +1158,18 @@ def test_random():
 
 def test_links():
     # have to be careful about the path, since it is embedded in the HTML
-    # output.
-    a = pybedtools.BedTool(
-            os.path.join(
-                os.path.relpath(pybedtools.data_dir()),
-                'a.bed'))
+    # output -- so make a copy of the example file, and delete when done.
+    os.system('cp %s a.links.bed' % pybedtools.example_filename('a.bed'))
+    a = pybedtools.BedTool('a.links.bed')
     a = a.links()
     exp = open(pybedtools.example_filename('a.links.html')).read()
     obs = open(a.links_html).read()
+    print exp
+    print obs
     assert exp == obs
+    os.unlink('a.links.bed')
+
+
 
 def test_igv():
     a = pybedtools.example_bedtool('a.bed')
