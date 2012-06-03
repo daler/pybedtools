@@ -2245,6 +2245,13 @@ class BedTool(object):
         postmerge = kwargs.pop('postmerge', True)
         force_truncate = kwargs.pop('force_truncate', False)
 
+        stream_merge = kwargs.get('stream', False)
+        if stream_merge and postmerge:
+            raise ValueError("The post-merge step in the `cat()` method "
+                    "perfoms a sort, which uses stream=True.  Using "
+                    "stream=True for the merge as well will result in a "
+                    "deadlock!")
+
         # if filetypes and field counts are the same, don't truncate
         if not force_truncate:
             try:
