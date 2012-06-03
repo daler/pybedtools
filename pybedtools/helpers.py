@@ -115,6 +115,7 @@ def _check_for_samtools():
                 'Please install samtools and ensure it is on your path %s'
                 % add_msg)
 
+
 def _check_for_R():
     try:
         p = subprocess.Popen(
@@ -129,6 +130,7 @@ def _check_for_R():
         raise ValueError(
                 'Please install R and ensure it is on your path %s'
                 % add_msg)
+
 
 class Error(Exception):
     """Base class for this module's exceptions"""
@@ -524,5 +526,16 @@ def _call_randomintersect(_self, other, iterations, intersect_kwargs,
                                         report_iterations=report_iterations,
                                         debug=False, processes=None,
                                         _orig_processes=_orig_processes))
+
+
+def close_or_delete(x):
+    """
+    Single function that can be used to get rid of a BedTool, whether it's a
+    streaming or file-based version.
+    """
+    if isinstance(x.fn, basestring):
+        os.unlink(x.fn)
+    elif hasattr(x.fn, 'close'):
+        x.fn.close()
 
 atexit.register(cleanup)
