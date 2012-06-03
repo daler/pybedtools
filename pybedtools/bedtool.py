@@ -2138,6 +2138,31 @@ class BedTool(object):
             yield r.get()
         raise StopIteration
 
+    def _randomintersection(self, other, iterations, genome_fn,
+            intersect_kwargs=None, shuffle_kwargs=None, processes=1):
+        """
+        Re-implementation of BedTool.randomintersection using the new
+        `random_op` method
+        """
+        if shuffle_kwargs is None:
+            shuffle_kwargs = {}
+        if intersect_kwargs is None:
+            intersect_kwargs = {}
+        if not genome_fn:
+            raise ValueError("Need a genome filename in order to perform "
+                    "randomization")
+        return list(
+                        self.random_op(
+                            iterations=iterations,
+                            func=pybedtools.stats.random_intersection,
+                            func_args=(self, other),
+                            func_kwargs=dict(
+                                genome_fn=genome_fn,
+                                shuffle_kwargs=shuffle_kwargs,
+                                intersect_kwargs=intersect_kwargs),
+                            processes=8)
+                        )
+
     def randomintersection(self, other, iterations, intersect_kwargs=None,
                            shuffle_kwargs=None, debug=False,
                            report_iterations=False, processes=None,
