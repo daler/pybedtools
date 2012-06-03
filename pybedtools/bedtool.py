@@ -2100,6 +2100,44 @@ class BedTool(object):
         }
         return d
 
+    def random_op(self, iterations, func, func_args, func_kwargs, processes=1):
+        """
+        Generalized method for applying a function in parallel.
+
+        Typically used when having to do many random shufflings.
+
+        `func_args` and `func_kwargs` will be passed to `func` each time in
+        `iterations`, and these iterations will be split across `processes`
+        processes.
+
+        Notes on the function, `func`:
+
+            * the function should manually remove any tempfiles created.  This
+              is because the BedTool.TEMPFILES list of auto-created tempfiles
+              does not share state across processes, so things will not get
+              cleaned up automatically as they do in a single-process
+              pybedtools session.
+
+            * this includes deleting any "chromsizes" or genome files --
+              generally it will be best to require a genome filename in
+              `func_kwargs` if you'll be using any BedTool methods that accept
+              the `g` kwarg.
+
+            * the function should be a module-level function (rather than a
+              class method) because class methods can't be pickled across
+              process boundaries
+
+            * the function can have any signature and have any return value
+        """
+        p = multiprocessing.Pool(processes)
+        iterations_each = [iterations / processes] * processes
+        iterations_each[-1] += iterations % processes
+        results = [p.apply_async(func, func_args, func_kwargs) \
+                for it in range(iterations)]
+        for r in results:
+            yield r.get()
+        raise StopIteration
+
     def randomintersection(self, other, iterations, intersect_kwargs=None,
                            shuffle_kwargs=None, debug=False,
                            report_iterations=False, processes=None,
