@@ -22,6 +22,16 @@ cpdef center(Interval feature, int width=100):
     return feature
 
 
+cpdef midpoint(Interval feature):
+    """
+    Specialized version of `center()` that just returns the single-bp midpoint
+    """
+    start = feature.start + (feature.stop - feature.start) / 2
+    stop = start
+    feature.start = start
+    feature.stop = stop
+    return feature
+
 cpdef greater_than(Interval feature, int size=100):
     """
     Return True if feature length > *size*

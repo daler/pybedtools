@@ -2560,6 +2560,71 @@ class BedTool(object):
         os.system(' '.join(cmds))
         return BedTool(result)
 
+    def absolute_distance(self, other, closest_kwargs=None,
+            use_midpoints=False):
+        """
+        Returns an iterator of the *absolute* distances between features in
+        self and other.
+
+        If `use_midpoints` is True, then only use the midpoints of features
+        (which will return values where features are overlapping).  Otherwise,
+        when features overlap the value will always be zero.
+
+        `closest_kwargs` are passed to self.closest(); either `d` or
+        'D` are required in order to get back distance values (`d=True` is
+        default)
+        """
+        from featurefuncs import midpoint
+
+        if closest_kwargs is None:
+            closest_kwargs = {'d': True}
+
+        if 'D' not in closest_kwargs:
+            closest_kwargs.update(dict(d=True))
+
+        if use_midpoints:
+            mid_self = self.each(midpoint).saveas()
+            mid_other = other.each(midpoint).saveas()
+            c = mid_self.closest(mid_other, stream=True, **closest_kwargs)
+        else:
+            c = self.closest(other, stream=True, **closest_kwargs)
+        for i in c:
+            yield int(i[-1])
+
+    def relative_distance(self, other, genome=None, g=None):
+        """
+        Returns an iterator of relative distances between features in self and
+        other.
+
+        First computes the midpoints of self and other, then returns distances
+        of each feature in `other` relative to the distance between `self`
+        features.
+
+        Requires either `genome` (dictionary of chromsizes or assembly name) or
+        `g` (filename of chromsizes file).
+        """
+        if (genome is None) and (g is None):
+            raise ValueError('Need either `genome` or `g` arg for relative '
+                    'distance')
+        if genome and g:
+            raise ValueError('Please specify only one of `genome` or `g`')
+
+        if genome:
+            g_dict = dict(genome=genome)
+        if g:
+            g_dict = dict(g=g)
+
+        from featurefuncs import midpoint
+
+        # This gets the space between features in self.
+        c = self.each(midpoint).complement(**g_dict)
+
+        mid_other = other.each(midpoint).saveas()
+
+        hits = c.intersect(other, wao=True, stream=True)
+        for i in hits:
+            yield float(i[-1]) / len(i)
+
 
 class BAM(object):
     def __init__(self, stream, header_only=False):
