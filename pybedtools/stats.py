@@ -1,6 +1,7 @@
 import helpers
 import pybedtools
 
+
 def jaccard(x, y, intersect_kwargs=None):
     """
     Returns the naive Jaccard statistic (intersection over union; both in bp)
@@ -22,7 +23,9 @@ def jaccard(x, y, intersect_kwargs=None):
 
     return float(numerator) / denominator
 
-def random_jaccard(x, y, genome_fn, shuffle_kwargs=None, intersect_kwargs=None):
+
+def random_jaccard(x, y, genome_fn, shuffle_kwargs=None,
+        intersect_kwargs=None):
     """
     Shuffles `x`, using the chromsizes in `genome_fn` and any additional
     `shuffle_kwargs`, then call `jaccard()` with any additional
@@ -34,6 +37,7 @@ def random_jaccard(x, y, genome_fn, shuffle_kwargs=None, intersect_kwargs=None):
     result = jaccard(z, y, intersect_kwargs)
     helpers.close_or_delete(z)
     return result
+
 
 def random_intersection(x, y, genome_fn, shuffle_kwargs, intersect_kwargs):
     z = x.shuffle(g=genome_fn, **shuffle_kwargs)
