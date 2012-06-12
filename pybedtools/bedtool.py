@@ -2172,7 +2172,7 @@ class BedTool(object):
                                 genome_fn=genome_fn,
                                 shuffle_kwargs=shuffle_kwargs,
                                 intersect_kwargs=intersect_kwargs),
-                            processes=8)
+                            processes=processes)
                         )
 
     def _randomintersection(self, other, iterations, genome_fn,
