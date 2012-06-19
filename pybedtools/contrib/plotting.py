@@ -156,8 +156,8 @@ def binary_heatmap(bts, names):
     `bts` is an iterable of BedTool objects or filenames; `names` is a list of
     labels to use in the plot and is exactly the same length as `bts`.
 
-    Prints a summary report, plots the results matrix, and returns the sorted
-    NumPy array.  See source for further details.
+    Plots the array with matplotlib; returns a dictionary summarizing the
+    results and the sorted NumPy array.  See source for further details.
     """
     # Be flexible about input types
     _bts = []
@@ -240,5 +240,6 @@ if __name__ == "__main__":
     #        pybedtools.example_bedtool('a.bed'),
     #        pybedtools.example_bedtool('b.bed')]
     #names = ['a','b']
-    m = binary_heatmap(bts, names)
+    d, m = binary_heatmap(bts, names)
+    print binary_summary(d)
     plt.show()
