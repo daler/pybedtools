@@ -3,6 +3,18 @@
 Changelog
 =========
 
+Changes since v0.6.1
+--------------------
+* :meth:`BedTool.cat` now works better with multiprocessing
+
+* New generic method for running randomizations in parallel: :meth:`BedTool.random_op`
+
+* New method implementing Jaccard statistic (with pvalue using randomizations):
+  :meth:`BedTool.naive_jaccard`
+
+* :func:`featurefuncs.extend_fields` helper function to pad fields with `'.'`,
+  useful for manipulating features with the :meth:`BedTool.each` method
+
 Changes in v0.6.1
 -----------------
 * New :class:`pybedtools.contrib.plotting.Track` class allows plotting of
@@ -10,7 +22,7 @@ Changes in v0.6.1
   `matplotlib.collections.PolyCollection`, making it rather fast for 1000s of
   features.
 
-* See the `scripts/plotting_example.py` script for a way of visually showing
+* See the `scripts/pbt_plotting_example.py` script for a way of visually showing
   the results of BEDTools operations . . . great for teaching BEDTools to new
   users.
 
