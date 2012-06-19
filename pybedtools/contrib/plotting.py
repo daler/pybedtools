@@ -1,6 +1,8 @@
+from collections import defaultdict
 import matplotlib
 from matplotlib import collections
 from matplotlib import pyplot as plt
+import numpy as np
 import pybedtools
 
 
@@ -140,3 +142,103 @@ class Track(collections.PolyCollection):
     @property
     def midpoint(self):
         return self._ybase + (self.ymax - self._ybase) / 2.0
+
+
+def binary_heatmap(bts, names):
+    """
+    Plots a "binary heatmap", showing the results of a multi-intersection.
+
+    Each row is a different genomic region found in at least one of the input
+    BedTools; each column represents a different file.  Black indicates whether
+    a feature was found at that particular site.  Rows with black all the way
+    across indicates that all features were colocalized at those sites.
+
+    `bts` is an iterable of BedTool objects or filenames; `names` is a list of
+    labels to use in the plot and is exactly the same length as `bts`.
+
+    Prints a summary report, plots the results matrix, and returns the sorted
+    NumPy array.  See source for further details.
+    """
+    # Be flexible about input types
+    _bts = []
+    for bt in bts:
+        if isinstance(bt, pybedtools.BedTool):
+            if not isinstance(bt.fn, basestring):
+                bt = bt.saveas()
+            _bts.append(bt.fn)
+        elif isinstance(bt, basestring):
+            _bts.append(bt)
+
+    # Do the multi-intersection.
+    results = pybedtools.BedTool().multi_intersect(
+            i=_bts,
+            names=names,
+            cluster=True)
+
+    # If 4 files were provided with labels 'a', 'b', 'c', and 'd, each line
+    # would look something like:
+    #
+    #   chr2L    65716    65765    4    a,b,c,d    1    1    1    1
+    #   chr2L    71986    72326    1    c          0    0    1    0
+    #
+    # The last four columns will become the matrix; save the class labels (5th
+    # column) for a printed out report
+    d = defaultdict(int)
+    m = []
+    for item in results:
+        cls = item[4]
+        d[cls] += 1
+        m.append(item[5:])
+
+    m = np.array(m, dtype=int)
+
+    # To impart some order in the matrix, give columns increasingly higher
+    # weights...
+    weights = [2 ** i for i in range(1, len(names) + 1)[::-1]]
+
+    # ...then create scores...
+    score_mat = m * weights
+
+    # ...and re-sort the matrix based on row sums (reversed so that highest
+    # scores are on top)
+    ind = np.argsort(score_mat.sum(axis=1))[::-1]
+    m = m[ind, :]
+
+    # Plot and label it
+    fig = plt.figure(figsize=(3, 10))
+    ax = fig.add_subplot(111)
+
+    # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so that
+    # array's [0,0] is in the upper left corner.
+    mappable = ax.imshow(m, aspect='auto', interpolation='nearest',
+            cmap=matplotlib.cm.binary, origin='upper')
+    ax.set_xticks(range(len(names)))
+    ax.set_xticklabels(names, rotation=90)
+    fig.subplots_adjust(left=0.25)
+
+    return d, m
+
+def binary_summary(d):
+    """
+    Convenience function useful printing the results from binary_heatmap().
+    """
+    s = []
+    for item in sorted(d.items(), key=lambda x: x[1], reverse=True):
+        s.append('%s : %s' % (item))
+    return '\n'.join(s)
+
+if __name__ == "__main__":
+    bts = [
+            pybedtools.example_bedtool('BEAF_Kc_Bushey_2009.bed'),
+            pybedtools.example_bedtool('CTCF_Kc_Bushey_2009.bed'),
+            pybedtools.example_bedtool('Cp190_Kc_Bushey_2009.bed'),
+            pybedtools.example_bedtool('SuHw_Kc_Bushey_2009.bed'),
+        ]
+    names = ['BEAF', 'CTCF', 'Cp190', 'Su(Hw)']
+
+    #bts = [
+    #        pybedtools.example_bedtool('a.bed'),
+    #        pybedtools.example_bedtool('b.bed')]
+    #names = ['a','b']
+    m = binary_heatmap(bts, names)
+    plt.show()
