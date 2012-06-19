@@ -1037,7 +1037,16 @@ def test_tss():
     chr1	897	905	feature4_TSS	0	+
     """)
 
-
+def test_extend_fields():
+    a = pybedtools.example_bedtool('a.bed')
+    results = str(a.each(featurefuncs.extend_fields, 8))
+    print results
+    assert results == fix("""
+    chr1	1	100	feature1	0	+	.	.
+    chr1	100	200	feature2	0	+	.	.
+    chr1	150	500	feature3	0	-	.	.
+    chr1	900	950	feature4	0	+	.	.
+    """)
 
 #------------------------------------------------------------------------------
 # Tests for IntervalFile, as accessed by BedTool objects
