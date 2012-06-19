@@ -44,6 +44,7 @@ cpdef midpoint(Interval feature):
     feature.stop = stop
     return feature
 
+
 cpdef greater_than(Interval feature, int size=100):
     """
     Return True if feature length > *size*
@@ -84,6 +85,7 @@ cpdef rename(Interval feature, str name):
     feature.name = name
     return feature
 
+
 cpdef bedgraph_scale(Interval feature, float scalar):
     feature[3] = str(float(feature[3]) * scalar)
     return feature
@@ -110,12 +112,41 @@ cpdef TSS(Interval feature, int upstream=500, int downstream=500, add_to_name=No
     Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
     the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
     """
+    return five_prime(feature, upstream, downstream, add_to_name)
+
+
+cpdef five_prime(Interval feature, int upstream=500, int downstream=500, add_to_name=None):
+    """
+    Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
+    the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
+    """
     if feature.strand == '-':
         start = feature.stop - downstream
         stop = feature.stop + upstream
     else:
         start = feature.start - upstream
         stop = feature.start + downstream
+    if add_to_name:
+        try:
+            feature.name += add_to_name
+        except AttributeError:
+            pass
+    feature.start, feature.stop = safe_start_stop(start, stop)
+    return feature
+
+
+cpdef three_prime(Interval feature, int upstream=500, int downstream=500, add_to_name=None):
+    """
+    Returns the 3'-most coordinate, plus `upstream` and `downstream` bp; adds
+    the string `add_to_name` to the feature's name if provided (e.g.,
+    "_polyA-site")
+    """
+    if feature.strand == '-':
+        start = feature.start - downstream
+        stop = feature.start + upstream
+    else:
+        start = feature.stop - upstream
+        stop = feature.stop + downstream
     if add_to_name:
         try:
             feature.name += add_to_name
