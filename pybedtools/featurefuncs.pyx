@@ -1,6 +1,18 @@
 # cython: profile=True
 #
 from cbedtools cimport Interval
+from cbedtools import create_interval_from_list
+
+
+cpdef extend_fields(Interval feature, int n):
+    """
+    Pads the fields of the feature with "." to a total length of `n` fields,
+    """
+    fields = feature.fields[:]
+    while len(fields) < n:
+        fields.append('.')
+    return create_interval_from_list(fields)
+
 
 cpdef center(Interval feature, int width=100):
     """
