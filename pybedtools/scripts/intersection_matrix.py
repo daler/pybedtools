@@ -9,6 +9,7 @@ import time
 import sys
 import os.path as op
 import argparse
+import pybedtools
 from pybedtools import BedTool, example_filename
 
 usage = """
@@ -41,10 +42,9 @@ def frac_of_a(a, b):
     return len(a.intersect(b, u=True)) / len_a
 
 
-def enrichment_score(a, b, genome=None, iterations=None, processes=None):
+def enrichment_score(a, b, genome_fn, iterations=None, processes=None):
     results = a\
-            .set_chromsizes(genome)\
-            .randomstats(b, iterations=iterations, processes=processes)
+            .randomstats(b, new=True, genome_fn=genome_fn, iterations=iterations, processes=processes)
     return (results['actual'] + 1) / (results['median randomized'] + 1)
 
 
@@ -120,8 +120,10 @@ def main():
 
     if args.enrichment:
         FUNC = enrichment_score
-        kwargs = dict(genome=args.genome, iterations=args.iterations,
+        genome_fn = pybedtools.chromsizes_to_file(pybedtools.chromsizes(args.genome))
+        kwargs = dict(genome_fn=genome_fn, iterations=args.iterations,
                 processes=args.processes)
+
     elif args.frac:
         FUNC = frac_of_a
         kwargs = {}
