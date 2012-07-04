@@ -1993,7 +1993,7 @@ class BedTool(object):
         new_bedtool.seqfn = fn
         return new_bedtool
 
-    def randomstats(self, other, iterations, **kwargs):
+    def randomstats(self, other, iterations, new=False, genome_fn=None, **kwargs):
         """
         Dictionary of results from many randomly shuffled intersections.
 
@@ -2061,8 +2061,18 @@ class BedTool(object):
 
         # List of counts from randomly shuffled versions.
         # Length of counts == *iterations*.
-        distribution = self.randomintersection(other, iterations=iterations,
-                                               **kwargs)
+
+        if not new:
+            distribution = self.randomintersection(other,
+                    iterations=iterations, **kwargs)
+        else:
+            # use new mechanism
+            if genome_fn is None:
+                raise ValueError('`genome_fn` must be provided if using the '
+                        'new _randomintersection mechanism')
+            distribution = self._randomintersection(other,
+                    iterations=iterations, genome_fn=genome_fn, **kwargs)
+
         distribution = np.array(list(distribution))
 
         # Median of distribution
@@ -2098,6 +2108,7 @@ class BedTool(object):
         'lower_%sth' % lower_thresh: lower,
         'upper_%sth' % upper_thresh: upper,
         }
+        del distribution
         return d
 
     def random_op(self, iterations, func, func_args, func_kwargs, processes=1):
@@ -2197,7 +2208,7 @@ class BedTool(object):
                                 genome_fn=genome_fn,
                                 shuffle_kwargs=shuffle_kwargs,
                                 intersect_kwargs=intersect_kwargs),
-                            processes=8)
+                            processes=processes)
                         )
 
     def randomintersection(self, other, iterations, intersect_kwargs=None,
