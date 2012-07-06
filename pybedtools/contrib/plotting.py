@@ -144,7 +144,7 @@ class Track(collections.PolyCollection):
         return self._ybase + (self.ymax - self._ybase) / 2.0
 
 
-def binary_heatmap(bts, names):
+def binary_heatmap(bts, names, plot=True):
     """
     Plots a "binary heatmap", showing the results of a multi-intersection.
 
@@ -156,8 +156,10 @@ def binary_heatmap(bts, names):
     `bts` is an iterable of BedTool objects or filenames; `names` is a list of
     labels to use in the plot and is exactly the same length as `bts`.
 
-    Plots the array with matplotlib; returns a dictionary summarizing the
-    results and the sorted NumPy array.  See source for further details.
+    If `plot=True`, then plot the sorted, labeled matrix with matplotlib.
+
+    Returns (summary, m) where `summary` is a dictionary summarizing the
+    results and `m` is the sorted NumPy array.  See source for further details.
     """
     # Be flexible about input types
     _bts = []
@@ -193,17 +195,18 @@ def binary_heatmap(bts, names):
     m = np.array(m, dtype=int)
     ind = sort_binary_matrix(m)
 
-    # Plot and label it
-    fig = plt.figure(figsize=(3, 10))
-    ax = fig.add_subplot(111)
+    if plot:
+        # Plot and label it
+        fig = plt.figure(figsize=(3, 10))
+        ax = fig.add_subplot(111)
 
-    # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so that
-    # array's [0,0] is in the upper left corner.
-    mappable = ax.imshow(m[ind], aspect='auto', interpolation='nearest',
-            cmap=matplotlib.cm.binary, origin='upper')
-    ax.set_xticks(range(len(names)))
-    ax.set_xticklabels(names, rotation=90)
-    fig.subplots_adjust(left=0.25)
+        # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so that
+        # array's [0,0] is in the upper left corner.
+        mappable = ax.imshow(m[ind], aspect='auto', interpolation='nearest',
+                cmap=matplotlib.cm.binary, origin='upper')
+        ax.set_xticks(range(len(names)))
+        ax.set_xticklabels(names, rotation=90)
+        fig.subplots_adjust(left=0.25)
 
     return d, m
 
