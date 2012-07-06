@@ -190,7 +190,8 @@ def binary_heatmap(bts, names):
         d[cls] += 1
         m.append(item[5:])
 
-    m = sort_binary_matrix(np.array(m, dtype=int))
+    m = np.array(m, dtype=int)
+    ind = sort_binary_matrix(m)
 
     # Plot and label it
     fig = plt.figure(figsize=(3, 10))
@@ -198,7 +199,7 @@ def binary_heatmap(bts, names):
 
     # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so that
     # array's [0,0] is in the upper left corner.
-    mappable = ax.imshow(m, aspect='auto', interpolation='nearest',
+    mappable = ax.imshow(m[ind], aspect='auto', interpolation='nearest',
             cmap=matplotlib.cm.binary, origin='upper')
     ax.set_xticks(range(len(names)))
     ax.set_xticklabels(names, rotation=90)
@@ -209,10 +210,8 @@ def binary_heatmap(bts, names):
 
 def sort_binary_matrix(m):
     """
-    Performs a column-weighted sort on a binary matrix.
+    Performs a column-weighted sort on a binary matrix, returning the new index
     """
-    m = m.copy()
-
     # To impart some order in the matrix, give columns increasingly higher
     # weights...
     weights = [2 ** i for i in range(1, m.shape[1] + 1)[::-1]]
@@ -223,8 +222,7 @@ def sort_binary_matrix(m):
     # ...and re-sort the matrix based on row sums (reversed so that highest
     # scores are on top)
     ind = np.argsort(score_mat.sum(axis=1))[::-1]
-    m = m[ind, :]
-    return m
+    return ind
 
 
 def binary_summary(d):
