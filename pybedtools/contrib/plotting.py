@@ -190,19 +190,7 @@ def binary_heatmap(bts, names):
         d[cls] += 1
         m.append(item[5:])
 
-    m = np.array(m, dtype=int)
-
-    # To impart some order in the matrix, give columns increasingly higher
-    # weights...
-    weights = [2 ** i for i in range(1, len(names) + 1)[::-1]]
-
-    # ...then create scores...
-    score_mat = m * weights
-
-    # ...and re-sort the matrix based on row sums (reversed so that highest
-    # scores are on top)
-    ind = np.argsort(score_mat.sum(axis=1))[::-1]
-    m = m[ind, :]
+    m = sort_binary_matrix(np.array(m, dtype=int))
 
     # Plot and label it
     fig = plt.figure(figsize=(3, 10))
@@ -217,6 +205,27 @@ def binary_heatmap(bts, names):
     fig.subplots_adjust(left=0.25)
 
     return d, m
+
+
+def sort_binary_matrix(m):
+    """
+    Performs a column-weighted sort on a binary matrix.
+    """
+    m = m.copy()
+
+    # To impart some order in the matrix, give columns increasingly higher
+    # weights...
+    weights = [2 ** i for i in range(1, m.shape[1] + 1)[::-1]]
+
+    # ...then create scores...
+    score_mat = m * weights
+
+    # ...and re-sort the matrix based on row sums (reversed so that highest
+    # scores are on top)
+    ind = np.argsort(score_mat.sum(axis=1))[::-1]
+    m = m[ind, :]
+    return m
+
 
 def binary_summary(d):
     """
