@@ -151,6 +151,7 @@ distributions between interval files.
     pybedtools.BedTool.randomstats
     pybedtools.BedTool.randomintersection
     pybedtools.BedTool.random_subset
+    pybedtools.BedTool.naive_jaccard
 
 Managing :class:`BedTool` objects on disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

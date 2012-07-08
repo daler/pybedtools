@@ -7,10 +7,11 @@ significance value to the overlap between two BEDfiles.
 
 The strategy is to randomly shuffle a file many times, each time doing an
 intersection with another file of interest and counting the number of
-intersections.  Upon doing this many times, an empirical distribution is
-constructed, and the number of intersections between the original,
-un-shuffled file is compared to this empirical distribution to obtain a
-p-value, or compared to the median of the distribution to get a score.
+intersections (or computing some other statistic on the overlap).  Upon doing
+this many times, an empirical distribution is constructed, and the number of
+intersections between the original, un-shuffled file is compared to this
+empirical distribution to obtain a p-value, or compared to the median of the
+distribution to get a score.
 
 There are two methods, :meth:`pybedtools.BedTool.randomintersection` which does the
 brute force randomizations, and :meth:`BedTool.randomstats` which compiles
@@ -47,6 +48,9 @@ Last, setting `debug=True` means that the random seed will be set in a
 predictable manner so that we'll always get the same results for testing.
 In practice, make sure you use `debug=False` (the default) to ensure random
 results.
+
+Furthermore, using the `processes` kwarg will substantially speed up the
+comparison (e.g., `processes=8` to split the randomizations across 8 cores).
 
 .. doctest::
 
@@ -149,3 +153,38 @@ For example:
 
 Contributions toward improving this code or implementing other methods of
 statistical testing are very welcome!
+
+
+Other statistics
+----------------
+In practice, a comparison between two sets of features (say, two transcription
+factors) with 1000 randomizations will have an empirical p-value of < 0.001.
+That is, out of all the randomizations performed,  every single one had fewer
+intersections than the original.  Of course the resolution of the p-value is
+dependent on the number of randomizations:  the lowest nonzero p-value for
+10000 iterations will be 0.0001.  Getting a non-zero p-value often requires
+doing more randomizations than is practical (several million to tens of
+millions).
+
+That's where the enrichment score comes in.  The randomized intersections
+typically have a normal distribution, but just in case, we take the median of
+the randomized intersections and call this the background or control.  Then we
+divide the actual intersections by this median to get an enrichment score.
+
+The advantage to using the enrichment score is that it gives nonzero scores for
+more fine-grained comparison among sets of features without performing
+impractical amounts of randomization.  The first example of its usage that I'm
+aware of is Negre et al. (2010) PLoS Genet 6(1): e1000814,  The downside of
+this metric is that the numbers are relative, and have their greatest utility
+for making biological conclusions when used in large matrices of pairwise
+comparisons.
+
+:meth:`BedTool.randomintersection` and :meth:`BedTool.randomstats` both use the
+intersection count method.  That is, for each randomization the calculated
+metric is "number of intersection events".  An alternative is to compute the
+Jaccard statistic on each iteration, as implemented in
+:meth:`BedTool.naive_jaccard`. The Jaccard statistic (or Jaccard similarity) is
+the ratio of the intersection over the union, and is introduced in a genomic
+intersection context in Favorov et al. (2012) PLoS Comput Biol 8(5): e1002529.
+However, this still has the same p-value resolution limitation, so the
+actual-divided-by-median approach could be tried here as well.

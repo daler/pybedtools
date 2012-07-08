@@ -14,6 +14,7 @@ pybedtools.BedTool
    .. autosummary::
    
       ~BedTool.__init__
+      ~BedTool.absolute_distance
       ~BedTool.all_hits
       ~BedTool.annotate
       ~BedTool.any_hits
@@ -54,15 +55,18 @@ pybedtools.BedTool
       ~BedTool.moveto
       ~BedTool.multi_bam_coverage
       ~BedTool.multi_intersect
+      ~BedTool.naive_jaccard
       ~BedTool.nucleotide_content
       ~BedTool.overlap
       ~BedTool.pair_to_bed
       ~BedTool.pair_to_pair
       ~BedTool.print_sequence
       ~BedTool.random
+      ~BedTool.random_op
       ~BedTool.random_subset
       ~BedTool.randomintersection
       ~BedTool.randomstats
+      ~BedTool.relative_distance
       ~BedTool.remove_invalid
       ~BedTool.save_seqs
       ~BedTool.saveas
