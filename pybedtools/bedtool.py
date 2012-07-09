@@ -2042,7 +2042,8 @@ class BedTool(object):
             print results['percentile']
             90.0
         """
-        if 'intersect_kwargs' not in kwargs:
+        if ('intersect_kwargs' not in kwargs) or \
+                (kwargs['intersect_kwargs'] is None):
             kwargs['intersect_kwargs'] = {'u': True}
         try:
             from scipy import stats
