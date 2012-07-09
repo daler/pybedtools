@@ -2057,7 +2057,8 @@ class BedTool(object):
                  'Either filename or another BedTool instance required'
 
         # Actual (unshuffled) counts.
-        actual = len(self.intersect(other, kwargs['intersect_kwargs']))
+        i_kwargs = kwargs['intersect_kwargs']
+        actual = len(self.intersect(other, **i_kwargs))
 
         # List of counts from randomly shuffled versions.
         # Length of counts == *iterations*.
