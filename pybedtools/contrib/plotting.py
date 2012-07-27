@@ -361,8 +361,9 @@ class TrackCollection(object):
 
 
 class BedToolsDemo(TrackCollection):
-    def __init__(self, config, method, result_kwargs=None, method_kwargs=None,
-            title_kwargs=None, new_style=True, subplots_adjust=None, *args, **kwargs):
+    def __init__(self, config, method, data_path=None,
+            result_kwargs=None, method_kwargs=None, title_kwargs=None,
+            new_style=True, subplots_adjust=None, *args, **kwargs):
         """
         Class to handle BEDTools demos in a way that maintains flexibility.
 
@@ -378,6 +379,10 @@ class BedToolsDemo(TrackCollection):
 
         :param method:
             Method of `BedTool` object to use, e.g., 'intersect'
+
+        :param data_path:
+            If not None, this path will be prepended to the files listed in
+            `config`
 
         :param result_kwargs:
             Configuration for the results track.  This isn't added to the
@@ -414,6 +419,15 @@ class BedToolsDemo(TrackCollection):
         self.title_kwargs = title_kwargs
         self.new_style = new_style
         self.subplots_adjust = subplots_adjust
+
+        # convert lists to tuples, cause we're going to edit the paths
+        config = [list(i) for i in config]
+        if data_path:
+            for conf in config:
+                if not isinstance(conf[0], basestring):
+                    raise ValueError("data_path was specified, so you need "
+                            "filenames in the config")
+                conf[0] = os.path.join(data_path, conf[0])
 
         bt1 = pybedtools.BedTool(config[0][0])
         method = getattr(bt1, method)
