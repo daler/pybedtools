@@ -362,7 +362,7 @@ class TrackCollection(object):
 
 class BedToolsDemo(TrackCollection):
     def __init__(self, config, method, result_kwargs=None, method_kwargs=None,
-            title_kwargs=None, *args, **kwargs):
+            title_kwargs=None, new_style=True, subplots_adjust=None, *args, **kwargs):
         """
         Class to handle BEDTools demos in a way that maintains flexibility.
 
@@ -390,6 +390,15 @@ class BedToolsDemo(TrackCollection):
             Keyword args for plot title (the text itself will come from the
             command that was run; this is for things like font size)
 
+        :param new_style:
+            Edit commands so that they use the "new style" BEDTools calls
+            ("bedtools intersect" rather than "intersectBed")
+
+        :param subplots_adjust:
+            Additional kwargs sent to the figure's subplots_adjust() method,
+            e.g., `dict(top=0.7)`
+
+
         :param args:
             Addtional arguments sent to TrackCollection
 
@@ -403,6 +412,8 @@ class BedToolsDemo(TrackCollection):
         if title_kwargs is None:
             title_kwargs = {}
         self.title_kwargs = title_kwargs
+        self.new_style = new_style
+        self.subplots_adjust = subplots_adjust
 
         bt1 = pybedtools.BedTool(config[0][0])
         method = getattr(bt1, method)
@@ -419,9 +430,14 @@ class BedToolsDemo(TrackCollection):
 
     def plot(self, ax=None):
         ax = super(BedToolsDemo, self).plot(ax)
+        cmds = self.result._cmds[:]
+        if self.new_style:
+            cmds[0] = "bedtools %s" % pybedtools.settings._prog_names[os.path.basename(cmds[0])]
         ax.set_title(
-                ' '.join([os.path.basename(i) for i in self.result._cmds]),
+                ' '.join([os.path.basename(i) for i in cmds]),
                 **self.title_kwargs)
+        if self.subplots_adjust:
+            ax.figure.subplots_adjust(**self.subplots_adjust)
         return ax
 
 if __name__ == "__main__":
@@ -456,7 +472,8 @@ if __name__ == "__main__":
             padding=0.5,
             figsize=(10, 2),
             method_kwargs=dict(u=True),
-            result_kwargs=dict(visibility='squish', label='result'))
+            result_kwargs=dict(visibility='squish', label='result'),
+            subplots_adjust=dict(top=0.6))
     p.plot()
 
     p = BedToolsDemo(config[0:1], figsize=(10, 2), method='merge',
