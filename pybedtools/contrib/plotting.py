@@ -12,14 +12,18 @@ class Track(collections.PolyCollection):
         """
         Subclass of matplotlib's PolyCollection that can be added to an Axes.
 
-        `features` can be an existing BedTool, or anything than can be used to
-        create a BedTool (e.g., a filename or a generator of Interval objects)
+        :param features:
+            Can be an existing BedTool, or anything than can be used to create
+            a BedTool (e.g., a filename or a generator of Interval objects)
 
-        `ybase` is the y-coord of the bottom edge of the track.
+        :param ybase:
+            y-coord of the bottom edge of the track (in data coordinates)
 
-        `yheight` is how high each feature will be.
+        :param yheight:
+            How high each feature will be, in data coordinates
 
-        `visibility` mimics the settings in the UCSC Genome Browser:
+        :param visibility:
+            Mimics the settings in the UCSC Genome Browser:
 
             * "dense" is the default; overlapping features can be seen if you
               set alpha < 1.
@@ -29,14 +33,22 @@ class Track(collections.PolyCollection):
               piling up, the track will be a lot higher on the y-axis than
               `yheight`.
 
-        `stranded`, if True, will draw arrrow-shaped features to indicate
-        direction (where the point is 10% of the total gene length)
+        :param stranded:
+            If boolean and True, will draw arrrow-shaped features to indicate
+            direction (where the point is 10% of the total gene length)
 
-        `**kwargs` are passed to matplotlib.collections.PolyCollection.
+            If a dictionary, map strands to colors, e.g., {'+': 'r', '-': 'b'}.
 
-        Use Track.ymax to get the max y-value used in the track -- useful if
-        you've created a "squish" track but would like to stack another track
-        on top, and need to calculate what the new Track's `ybase` should be.
+        :param kwargs:
+            Additional keyword args are passed to
+            matplotlib.collections.PolyCollection.
+
+        Notes:
+
+        After creating a track, use the `ymax` attribute to get the max y-value
+        used in the track -- useful if you've created a "squish" track but
+        would like to stack another track on top, and need to calculate what
+        the new Track's `ybase` should be.
 
         The returned PolyCollection will have the `features` attribute, which
         contains the BedTool it was created from -- so you can write callback
@@ -227,8 +239,8 @@ def binary_heatmap(bts, names, plot=True):
         fig = plt.figure(figsize=(3, 10))
         ax = fig.add_subplot(111)
 
-        # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so that
-        # array's [0,0] is in the upper left corner.
+        # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so
+        # that array's [0,0] is in the upper left corner.
         mappable = ax.imshow(m[ind], aspect='auto', interpolation='nearest',
                 cmap=matplotlib.cm.binary, origin='upper')
         ax.set_xticks(range(len(names)))
