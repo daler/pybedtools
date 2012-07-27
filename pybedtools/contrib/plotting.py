@@ -69,29 +69,33 @@ class Track(collections.PolyCollection):
         self._visibility = visibility
         self._ybase = ybase
         self._yheight = yheight
+        self.stranded = stranded
+        self._check_stranded_dict()
+        facecolors = self._colors()
+        kwargs.update(dict(facecolors=facecolors))
         collections.PolyCollection.__init__(
                 self, verts=self._get_verts(), **kwargs)
 
     def _shape(self, feature, ybase, yheight):
-        offset = len(feature) * 0.1
-        if feature.strand == '-':
-            return [
-                    (feature.stop, ybase),
-                    (feature.stop, ybase + yheight),
-                    (feature.start + offset, ybase + yheight),
-                    (feature.start, ybase + yheight * 0.5),
-                    (feature.start + offset, ybase)
-                    ]
+        if self.stranded and not isinstance(self.stranded, dict):
+            offset = len(feature) * 0.1
+            if feature.strand == '-':
+                return [
+                        (feature.stop, ybase),
+                        (feature.stop, ybase + yheight),
+                        (feature.start + offset, ybase + yheight),
+                        (feature.start, ybase + yheight * 0.5),
+                        (feature.start + offset, ybase)
+                        ]
 
-        elif feature.strand == '+':
-            return [
-                    (feature.start, ybase),
-                    (feature.start, ybase + yheight),
-                    (feature.stop - offset, ybase + yheight),
-                    (feature.stop, ybase + yheight * 0.5),
-                    (feature.stop - offset, ybase)
-                    ]
-
+            elif feature.strand == '+':
+                return [
+                        (feature.start, ybase),
+                        (feature.start, ybase + yheight),
+                        (feature.stop - offset, ybase + yheight),
+                        (feature.stop, ybase + yheight * 0.5),
+                        (feature.stop - offset, ybase)
+                        ]
         return [
                 (feature.start, ybase),
                 (feature.start, ybase + yheight),
@@ -131,6 +135,29 @@ class Track(collections.PolyCollection):
             self.ymax = self._ybase + len(stack) * self._yheight
 
         return verts
+
+    def _check_stranded_dict(self):
+        if not isinstance(self.stranded, dict):
+            return True
+        if '+' not in self.stranded:
+            raise ValueError('stranded dict "%s" does not have required '
+                    'key "+"' % self.stranded)
+        if '-' not in self.stranded:
+            raise ValueError('stranded dict "%s" does not have required '
+                    'key "-"' % self.stranded)
+        return True
+
+    def _colors(self):
+        if not isinstance(self.stranded, dict):
+            return None
+        colors = []
+        for feature in self.features:
+            try:
+                colors.append(self.stranded[feature.strand])
+            except KeyError:
+                raise KeyError('strand color dict "%s" does not have a key '
+                        'for strand "%s"' % (self.stranded, feature.strand))
+        return colors
 
     def get_xlims(self, ax):
         """
