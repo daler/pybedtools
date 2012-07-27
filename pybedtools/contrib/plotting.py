@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 import matplotlib
 from matplotlib import collections
@@ -276,7 +277,155 @@ def binary_summary(d):
         s.append('%s : %s' % (item))
     return '\n'.join(s)
 
+
+class TrackCollection(object):
+    def __init__(self, config, yheight=1, figsize=None, padding=0.1):
+        """
+        Handles multiple tracks on the same figure.
+
+        :param config:
+            A list of tuples that configures tracks.
+
+            Each tuple contains a filename, BedTool object, or other
+            iterable of pybedtools.Interval objects and a dictionary of
+            keyword args that will be used to create a corresponding Track
+            object, e.g.::
+
+                [
+                    ('a.bed',
+                        dict(color='r', alpha=0.5, label='a')),
+                    (BedTool('a.bed').intersect('b.bed'),
+                        dict(color='g', label='b')),
+                ]
+
+            In this dictionary, do not specify `ybase`, since that will be
+            handled for you.  Also do not specify `yheight` in these
+            dictionaries -- `yheight` should be provided as a separate kwarg to
+            so that the `padding` kwarg works correctly.
+
+        :param figsize:
+            Figure size tuple of (width, height), in inches.
+
+        :param padding:
+            Amount of padding to place in between tracks, as a fraction of
+            `yheight`
+        """
+        self.config = config
+        self.figsize = figsize
+        self.yheight = yheight
+        self.padding = padding
+
+        for features, kwargs in self.config:
+            if 'ybase' in kwargs:
+                raise ValueError('Please do not specify "ybase"; this '
+                'is handled automatically by the %s class' \
+                        % self.__class__.__name__)
+            if 'yheight' in kwargs:
+                raise ValueError('Please do not specify "yheight", '
+                        'this should be a separate arg to the %s '
+                        'constructor' % self.__class__.__name__)
+
+    def plot(self, ax=None):
+        """
+        If `ax` is None, create a new figure.  Otherwise, plot on `ax`.
+        Iterates through the configuration, plotting each BedTool-like object
+        as a separate track.
+        """
+        if ax is None:
+            fig = plt.figure(figsize=self.figsize)
+            ax = fig.add_subplot(111)
+        yticks = []
+        yticklabels = []
+        ybase = 0
+        i = 0
+        padding = self.yheight * self.padding
+
+        # Reverse config because incremental Track plotting works from bottom
+        # up; this plots user-provided tracks in order from top down
+        for features, kwargs in self.config[::-1]:
+            t = Track(features, yheight=self.yheight, ybase=ybase, **kwargs)
+            ybase = t.ymax + padding
+            ax.add_collection(t)
+            if 'label' in kwargs:
+                yticklabels.append(kwargs['label'])
+            else:
+                yticklabels.append(str(i))
+                i += 1
+            yticks.append(t.midpoint)
+
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(yticklabels)
+
+        ax.axis('tight')
+        return ax
+
+
+class BedToolsDemo(TrackCollection):
+    def __init__(self, config, method, result_kwargs=None, method_kwargs=None,
+            title_kwargs=None, *args, **kwargs):
+        """
+        Class to handle BEDTools demos in a way that maintains flexibility.
+
+        If the `config` list contains only one item, assume the method is one
+        of the "-i" tools that only operate on one file.
+
+        If the `config` list contains two items, then use the first as "-a" and
+        the second as "-b".
+
+        :param config:
+            Either a list of (filename, options) tuples -- see docstring for
+            TrackCollection for more info.
+
+        :param method:
+            Method of `BedTool` object to use, e.g., 'intersect'
+
+        :param result_kwargs:
+            Configuration for the results track.  This isn't added to the
+            config list because the results haven't been created yet...
+
+        :param method_kwargs:
+            Keyword argument that are passed to the method, e.g., `u=True`
+
+        :param title_kwargs:
+            Keyword args for plot title (the text itself will come from the
+            command that was run; this is for things like font size)
+
+        :param args:
+            Addtional arguments sent to TrackCollection
+
+        :param kwargs:
+            Additional keyword arguments sent to TrackCollection
+        """
+        if method_kwargs is None:
+            method_kwargs = {}
+        if result_kwargs is None:
+            result_kwargs = {}
+        if title_kwargs is None:
+            title_kwargs = {}
+        self.title_kwargs = title_kwargs
+
+        bt1 = pybedtools.BedTool(config[0][0])
+        method = getattr(bt1, method)
+        if len(config) == 2:
+            result = method(config[1][0], **method_kwargs)
+        elif len(config) == 1:
+            result = method(**method_kwargs)
+        else:
+            raise ValueError("`config` must have length 1 (for '-i' tools) or "
+                    "length 2 (for '-a -b' tools).")
+        config.append((result, result_kwargs))
+        self.result = result
+        super(BedToolsDemo, self).__init__(config, *args, **kwargs)
+
+    def plot(self, ax=None):
+        ax = super(BedToolsDemo, self).plot(ax)
+        ax.set_title(
+                ' '.join([os.path.basename(i) for i in self.result._cmds]),
+                **self.title_kwargs)
+        return ax
+
 if __name__ == "__main__":
+    """
     bts = [
             pybedtools.example_bedtool('BEAF_Kc_Bushey_2009.bed'),
             pybedtools.example_bedtool('CTCF_Kc_Bushey_2009.bed'),
@@ -291,4 +440,27 @@ if __name__ == "__main__":
     #names = ['a','b']
     d, m = binary_heatmap(bts, names)
     print binary_summary(d)
+    """
+    config = [
+            (pybedtools.example_bedtool('a.bed'),
+                dict(stranded={'+':'b', '-':'c'},
+                     alpha=0.3,
+                     visibility='squish',
+                     label='a.bed')),
+            (pybedtools.example_bedtool('b.bed'),
+                dict(color='b', alpha=0.3, visibility='squish', label='b.bed'))
+            ]
+
+    p = BedToolsDemo(config,
+            'intersect',
+            padding=0.5,
+            figsize=(10, 2),
+            method_kwargs=dict(u=True),
+            result_kwargs=dict(visibility='squish', label='result'))
+    p.plot()
+
+    p = BedToolsDemo(config[0:1], figsize=(10, 2), method='merge',
+            title_kwargs=dict(size=10))
+    p.plot()
+
     plt.show()
