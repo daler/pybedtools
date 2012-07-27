@@ -1,0 +1,58 @@
+# Example config file, in YAML format, for use with the ConfiguredBedToolsDemo
+# class.  This provides a one-stop-shop "styling" mechanism for many similar
+# operations (say, when documenting the tools themselves....)
+
+#
+# Optional data path.  If you want to use files that ship with pybedtools, call
+# the ConfiguredBedToolsDemo constructor with
+# data_path=pybedtools.example_filename("")
+data_path:
+
+# config: a list of 2-tuples.
+#
+# **WARNING** 
+#   This is really ugly, the purpose is to show how to use different parameters
+#   for demonstration!
+config:
+
+    # First 2-tuple in the list:
+    -
+        # Sub-item 1 is the filename.  If "data_path" key is provided, that will be
+        # prepended to the filename at runtime
+        - a.bed
+
+        # Sub-item 2 contains the config info for a Track object.
+        -
+            stranded:
+                "+": b
+                "-": r
+            alpha: 0.3
+            visibility: squish
+            label: a.bed
+
+    # Second 2-tuple in the list:
+    -
+        - b.bed
+        -
+            stranded: True
+            alpha: 0.3
+            visibility: squish
+            label: b.bed
+
+# Any results will be styled like this
+result_kwargs:
+    alpha: 0.8
+    color: "#dd9922"
+    visibility: squish
+    label: result
+
+# title tweak
+title_kwargs:
+    size: 10
+
+# subplots tweak
+subplots_adjust:
+    top: 0.8
+
+# size tweak
+figsize: [11, 2]

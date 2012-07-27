@@ -438,6 +438,7 @@ class BedToolsDemo(TrackCollection):
         else:
             raise ValueError("`config` must have length 1 (for '-i' tools) or "
                     "length 2 (for '-a -b' tools).")
+
         config.append((result, result_kwargs))
         self.result = result
         super(BedToolsDemo, self).__init__(config, *args, **kwargs)
@@ -446,13 +447,40 @@ class BedToolsDemo(TrackCollection):
         ax = super(BedToolsDemo, self).plot(ax)
         cmds = self.result._cmds[:]
         if self.new_style:
-            cmds[0] = "bedtools %s" % pybedtools.settings._prog_names[os.path.basename(cmds[0])]
+            cmds[0] = "bedtools %s" \
+                    % pybedtools.settings._prog_names[
+                            os.path.basename(cmds[0])]
         ax.set_title(
                 ' '.join([os.path.basename(i) for i in cmds]),
                 **self.title_kwargs)
         if self.subplots_adjust:
             ax.figure.subplots_adjust(**self.subplots_adjust)
         return ax
+
+
+class ConfiguredBedToolsDemo(BedToolsDemo):
+    def __init__(self, yaml_config, method, method_kwargs, **kwargs):
+        """
+        Wrapper around BedToolsDemo class that reads in a YAML config file.
+        Useful for using the same "style" configuration many times.
+
+        Contents of `yaml_config` must be YAML versions of BedToolsDemo args
+        and kwargs **except** `method` and `method_kwargs`.
+        """
+        import yaml
+        conf = yaml.load(open(yaml_config))
+
+        disallowed = ['method', 'method_kwargs']
+        for dis in disallowed:
+            if dis in conf:
+                raise ValueError(
+                        "'%s' cannot be provided in the YAML config" % dis)
+
+        conf['method'] = method
+        conf['method_kwargs'] = method_kwargs
+        conf.update(kwargs)
+        super(ConfiguredBedToolsDemo, self).__init__(**conf)
+
 
 if __name__ == "__main__":
     """
@@ -471,27 +499,10 @@ if __name__ == "__main__":
     d, m = binary_heatmap(bts, names)
     print binary_summary(d)
     """
-    config = [
-            (pybedtools.example_bedtool('a.bed'),
-                dict(stranded={'+':'b', '-':'c'},
-                     alpha=0.3,
-                     visibility='squish',
-                     label='a.bed')),
-            (pybedtools.example_bedtool('b.bed'),
-                dict(color='b', alpha=0.3, visibility='squish', label='b.bed'))
-            ]
-
-    p = BedToolsDemo(config,
-            'intersect',
-            padding=0.5,
-            figsize=(10, 2),
-            method_kwargs=dict(u=True),
-            result_kwargs=dict(visibility='squish', label='result'),
-            subplots_adjust=dict(top=0.6))
-    p.plot()
-
-    p = BedToolsDemo(config[0:1], figsize=(10, 2), method='merge',
-            title_kwargs=dict(size=10))
-    p.plot()
-
+    conf_file = pybedtools.example_filename('democonfig.yaml')
+    data_path = pybedtools.example_filename("")  # dir name
+    ax1 = ConfiguredBedToolsDemo(conf_file, method='intersect', method_kwargs={},
+            data_path=data_path).plot()
+    ax2 = ConfiguredBedToolsDemo(conf_file, method='intersect', method_kwargs=dict(u=True),
+            data_path=data_path).plot()
     plt.show()
