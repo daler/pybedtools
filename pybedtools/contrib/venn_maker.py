@@ -228,10 +228,10 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
     out = fn + '.Rout'
     if run:
 
-        if not pybedtools._R_installed:
+        if not pybedtools.settings._R_installed:
             helpers._check_for_R()
 
-        cmds = [os.path.join(pybedtools._R_path, 'R'), 'CMD', 'BATCH',
+        cmds = [os.path.join(pybedtools.settings._R_path, 'R'), 'CMD', 'BATCH',
                 fn, out]
         p = subprocess.Popen(
                 cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

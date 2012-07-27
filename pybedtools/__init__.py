@@ -19,24 +19,8 @@ import stats
 from __main__ import main
 from version import __version__
 
-_bedtools_path = ""
-_samtools_path = ""
-_tabix_path = ""
-_R_path = ""
+import settings
 
-tempfile_prefix = 'pybedtools.'
-tempfile_suffix = '.tmp'
-
-
-# Checking for BEDTools will happen when creating the first BedTool; other
-# checks happen at first use (BAM object creation; tabix-ing a BedTool)
-_bedtools_installed = False
-_samtools_installed = False
-_tabix_installed = False
-_R_installed = False
-
-KEEP_TEMPFILES = False
-_DEBUG = True
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
 logger = logging.getLogger(__name__)
@@ -75,11 +59,11 @@ def debug_mode(x):
         logger.info('Debug mode disabled')
 
 
-def check_for_bedtools(program_to_check="intersectBed"):
+def check_for_bedtools(program_to_check="intersectBed", force_check=False):
     """
     For backwards compatibility; please use helpers._check_for_bedtools()
     """
-    return helpers._check_for_bedtools(program_to_check)
+    return helpers._check_for_bedtools(program_to_check, force_check)
 
 
 # Allow Interval objects to be pickled -- required if you want to pass them

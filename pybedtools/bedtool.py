@@ -17,6 +17,7 @@ from pybedtools.helpers import get_tempdir, _tags,\
 import helpers
 from cbedtools import IntervalFile, IntervalIterator
 import pybedtools
+import settings
 
 
 _implicit_registry = {}
@@ -309,7 +310,7 @@ class BedTool(object):
         self._isbam = False
         self._bam_header = ""
 
-        if not pybedtools._bedtools_installed:
+        if not settings._bedtools_installed:
             helpers._check_for_bedtools()
 
         if from_string:
@@ -455,7 +456,7 @@ class BedTool(object):
         If `is_sorted`, then assume the file is already sorted so that
         BedTool.bgzip() doesn't have to do that work.
         """
-        if not pybedtools._tabix_installed:
+        if not settings._tabix_installed:
             helpers._check_for_tabix()
         if force:
             force_arg = "-f"
@@ -470,7 +471,7 @@ class BedTool(object):
         fn = self.bgzip(in_place=in_place, force=force)
 
         # Create the index
-        cmds = [os.path.join(pybedtools._tabix_path, 'tabix'),
+        cmds = [os.path.join(settings._tabix_path, 'tabix'),
                 force_arg, '-p', self.file_type, fn]
         os.system(' '.join(cmds))
         return BedTool(fn)
@@ -833,8 +834,8 @@ class BedTool(object):
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
         '''
-        tmpfn = tempfile.NamedTemporaryFile(prefix=pybedtools.tempfile_prefix,
-                                            suffix=pybedtools.tempfile_suffix,
+        tmpfn = tempfile.NamedTemporaryFile(prefix=settings.tempfile_prefix,
+                                            suffix=settings.tempfile_suffix,
                                             delete=False)
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
@@ -1329,13 +1330,13 @@ class BedTool(object):
             return self._bed_to_bam(**kwargs)
         if self.file_type == 'sam':
 
-            if not pybedtools._samtools_installed:
+            if not settings._samtools_installed:
                 helpers._check_for_samtools()
 
             # construct a genome out of whatever kwargs were passed in
             kwargs = self.check_genome(**kwargs)
 
-            cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
+            cmds = [os.path.join(settings._samtools_path, 'samtools'),
                     'view',
                     '-S',
                     '-b',
@@ -2646,11 +2647,11 @@ class BAM(object):
         """
         self.stream = stream
         self.header_only = header_only
-        if not pybedtools._samtools_installed:
+        if not settings._samtools_installed:
             helpers._check_for_samtools()
 
         if isinstance(self.stream, basestring):
-            self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
+            self.cmds = [os.path.join(settings._samtools_path, 'samtools'),
                          'view', stream]
             if header_only:
                 self.cmds.append('-H')
@@ -2660,7 +2661,7 @@ class BAM(object):
                                       bufsize=1)
         else:
             # Streaming . . .
-            self.cmds = [os.path.join(pybedtools._samtools_path, 'samtools'),
+            self.cmds = [os.path.join(settings._samtools_path, 'samtools'),
                          'view', '-']
             if header_only:
                 self.cmds.append('-H')

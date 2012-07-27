@@ -67,7 +67,7 @@ def test_bedtools_check():
     pybedtools.check_for_bedtools()
 
     # but this should crap out
-    assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent',))
+    assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent', force_check=True))
 
 def test_call():
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')

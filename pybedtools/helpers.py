@@ -9,90 +9,58 @@ import struct
 import atexit
 import pybedtools
 
-# Check calls against these names to only allow calls to known BEDTools
-# programs (basic security)
-_prog_names = (
-# Genome arithmetic
-'intersectBed',
-'windowBed',
-'closestBed',
-'coverageBed',
-'mapBed',
-'genomeCoverageBed',
-'mergeBed',
-'clusterBed',
-'complementBed',
-'subtractBed',
-'slopBed',
-'flankBed',
-'sortBed',
-'randomBed',
-'shuffleBed',
-'annotateBed',
+import settings
 
-# multi-way
-'multiIntersectBed',
-'unionBedGraphs',
-
-# PE
-'pairToBed',
-'pairToPair',
-
-# format conversion
-'bamToBed',
-'bedToBam',
-'bedpeToBam',
-'bed12ToBed6',
-'bamToFastq',
-
-# fasta
-'fastaFromBed',
-'maskFastaFromBed',
-'nucBed',
-
-# bam-centric
-'multiBamCov',
-'tagBam',
-
-# misc
-'getOverlap',
-'bedToIgv',
-'linksBed',
-'windowMaker',
-'groupBy',
-'expandCols',
-)
 
 _tags = {}
 
 
-def _check_for_bedtools(program_to_check='intersectBed'):
+def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
+    """
+    Checks installation as well as version (based on whether or not "bedtools
+    intersect" works, or just "intersectBed")
+    """
+    if settings._bedtools_installed and not force_check:
+        return True
+
     try:
         p = subprocess.Popen(
-                [os.path.join(pybedtools._bedtools_path, program_to_check)],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        pybedtools._bedtools_installed = True
-    except OSError as err:
-        if err.errno == 2:
-            if pybedtools._bedtools_path:
-                add_msg = "(tried path '%s')" % pybedtools._bedtools_path
-            else:
-                add_msg = ""
-            raise OSError("Please make sure you have installed BEDTools"
-                          "(https://github.com/arq5x/bedtools) and that "
-                          "it's on the path. %s" % add_msg)
+                [os.path.join(settings._bedtools_path, 'bedtools'),
+                    settings._prog_names[program_to_check]],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        settings._bedtools_installed = True
+        settings._v_2_15_plus = True
+
+    except (OSError, KeyError) as err:
+
+        try:
+            p = subprocess.Popen(
+                    [os.path.join(settings._bedtools_path, program_to_check)],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            settings._bedtools_installed = True
+            settings._v_2_15_plus = False
+
+        except OSError as err:
+            if err.errno == 2:
+                if settings._bedtools_path:
+                    add_msg = "(tried path '%s')" % settings._bedtools_path
+                else:
+                    add_msg = ""
+                raise OSError("Please make sure you have installed BEDTools"
+                              "(https://github.com/arq5x/bedtools) and that "
+                              "it's on the path. %s" % add_msg)
 
 
 def _check_for_tabix():
     try:
         p = subprocess.Popen(
-                [os.path.join(pybedtools._tabix_path, 'tabix')],
+                [os.path.join(settings._tabix_path, 'tabix')],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
-        pybedtools._tabix_installed = True
+        settings._tabix_installed = True
     except OSError:
-        if pybedtools._tabix_path:
-            add_msg = "(tried path '%s')" % pybedtools._tabix_path
+        if settings._tabix_path:
+            add_msg = "(tried path '%s')" % settings._tabix_path
         else:
             add_msg = ""
         raise ValueError(
@@ -103,12 +71,12 @@ def _check_for_tabix():
 def _check_for_samtools():
     try:
         p = subprocess.Popen(
-            [os.path.join(pybedtools._samtools_path, 'samtools')],
+            [os.path.join(settings._samtools_path, 'samtools')],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        pybedtools._samtools_installed = True
+        settings._samtools_installed = True
     except OSError:
-        if pybedtools._samtools_path:
-            add_msg = "(tried path '%s')" % pybedtools._samtools_path
+        if settings._samtools_path:
+            add_msg = "(tried path '%s')" % settings._samtools_path
         else:
             add_msg = ""
         raise ValueError(
@@ -119,12 +87,12 @@ def _check_for_samtools():
 def _check_for_R():
     try:
         p = subprocess.Popen(
-            [os.path.join(pybedtools._R_path, 'R'), '--version'],
+            [os.path.join(settings._R_path, 'R'), '--version'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        pybedtools._R_installed = True
+        settings._R_installed = True
     except OSError:
-        if pybedtools._R_path:
-            add_msg = "(tried path '%s')" % pybedtools._R_path
+        if settings._R_path:
+            add_msg = "(tried path '%s')" % settings._R_path
         else:
             add_msg = ""
         raise ValueError(
@@ -164,7 +132,7 @@ def isBAM(fn):
 
     # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header
     # . . .
-    if not pybedtools._samtools_installed:
+    if not settings._samtools_installed:
         _check_for_samtools()
 
     cmds = ['samtools', 'view', '-H', fn]
@@ -307,7 +275,7 @@ def cleanup(verbose=False, remove_all=False):
     If *remove_all*, then ALL files matching "pybedtools.*.tmp" in the temp dir
     will be deleted.
     """
-    if pybedtools.KEEP_TEMPFILES:
+    if settings.KEEP_TEMPFILES:
         return
     for fn in pybedtools.BedTool.TEMPFILES:
         if verbose:
@@ -340,11 +308,12 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     input_is_stream = stdin is not None
     output_is_stream = tmpfn is None
 
-    if cmds[0] not in _prog_names:
+    if (cmds[0] not in settings._old_names) \
+            and (cmds[0] not in settings._new_names):
         raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
 
     # use specifed path, "" by default
-    cmds[0] = os.path.join(pybedtools._bedtools_path, cmds[0])
+    cmds[0] = os.path.join(settings._bedtools_path, cmds[0])
 
     try:
         # coming from an iterator, sending as iterator
@@ -465,7 +434,7 @@ def set_bedtools_path(path=""):
     To reset and use the default system path, call this function with no
     arguments or use path="".
     """
-    pybedtools._bedtools_path = path
+    settings._bedtools_path = path
 
 
 def set_samtools_path(path=""):
@@ -477,7 +446,7 @@ def set_samtools_path(path=""):
 
     Use path="" to reset to default system path.
     """
-    pybedtools._samtools_path = path
+    settings._samtools_path = path
 
 
 def set_tabix_path(path=""):
@@ -489,7 +458,7 @@ def set_tabix_path(path=""):
 
     Use path="" to reset to default system path.
     """
-    pybedtools._tabix_path = path
+    settings._tabix_path = path
 
 
 def set_R_path(path=""):
@@ -501,7 +470,7 @@ def set_R_path(path=""):
 
     Use path="" to reset to default system path.
     """
-    pybedtools._R_path = path
+    settings._R_path = path
 
 
 def _check_sequence_stderr(x):
