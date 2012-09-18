@@ -84,14 +84,19 @@ and see full documentation and tutorial at:
 
 """
 
+install_requires = []
+if sys.version_info[0] == 2:
+    if sys.version_info[1] < 7:
+        install_requires = ['argparse', 'ordereddict']
+
 tests_require = ['nose>=0.11', 'pyyaml']
 setup(
         name="pybedtools",
         version=version,
         ext_modules=exts,
         cmdclass = {'build_ext': build_ext},
-        install_requires=['argparse'],
         tests_require=tests_require,
+        install_requires=install_requires,
         extras_require={'test': tests_require},
         packages=['pybedtools',
                   'pybedtools.test',
