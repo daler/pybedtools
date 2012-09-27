@@ -67,7 +67,7 @@ class Classifier(object):
         """
         featuretypes = set()
         for i in self.annotations:
-            featuretypes.update(i[2])
+            featuretypes.update([i[2]])
         return list(featuretypes)
 
     def classify(self, include=None, exclude=None, stranded=False):
@@ -133,7 +133,7 @@ class Classifier(object):
             # the original query is in the first `bed_fields` items.  Construct
             # a new feature out of this and use it as the key.
             key = pybedtools.create_interval_from_list(
-                    feature.fields[:bed_fields])
+                feature.fields[:bed_fields])
             self.feature_classes[key].update([featuretype])
 
         self.class_features = defaultdict(list)
@@ -150,3 +150,21 @@ class Classifier(object):
         self.class_features = dict(self.class_features)
         self.class_counts = dict(self.class_counts)
         self.feature_classes = dict(self.feature_classes)
+
+    def features_to_file(self, prefix="", suffix=""):
+        """
+        Writes a set of files, one for each class.
+
+        The filenames will be constructed based on the class names, track lines
+        will be added to indicate classes, and `prefix` and `suffix` will be
+        added to the filenames.
+        """
+        def make_filename(klass):
+            return prefix + '_'.join(sorted(list(klass))) + suffix
+
+        def make_trackline(klass):
+            return 'track name="%s"' % (' '.join(sorted(list(klass))))
+
+        for klass, features in self.class_features.iteritems():
+            pybedtools.BedTool(features)\
+                .saveas(make_filename(klass), make_trackline(klass))
