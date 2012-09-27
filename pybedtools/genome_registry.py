@@ -30,6 +30,22 @@ dm3 = OrderedDict((
     ('chrYHet', (0, 347038)),
 ))
 
+# No chrUextra or chrM
+dm3.default = OrderedDict()
+for chrom, size in dm3.items():
+    if chrom in ['chrUextra', 'chrM']:
+        continue
+    dm3.default[chrom] = size
+
+# No chrU*, chr*Het, or chrM
+dm3.euchromatic = OrderedDict()
+for chrom, size in dm3.default.items():
+    if 'chrU' in chrom:
+        continue
+    if 'Het' in chrom:
+        continue
+    dm3.euchromatic[chrom] = size
+
 
 mm9 = OrderedDict((
     ('chr1', (0, 197195432)),
@@ -68,6 +84,15 @@ mm9 = OrderedDict((
     ('chrX_random', (0, 1785075)),
     ('chrY_random', (0, 58682461)),
 ))
+
+mm9.default = OrderedDict()
+for chrom, size in mm9.items():
+    if '_random' in chrom:
+        continue
+    if chrom == 'chrM':
+        continue
+    mm9.default[chrom] = size
+
 
 hg18 = OrderedDict((
     ('chr1', (0, 247249719)),
@@ -120,6 +145,15 @@ hg18 = OrderedDict((
     ('chr9_random', (0, 1146434)),
     ('chrX_random', (0, 1719168)),
 ))
+
+hg18.default = OrderedDict()
+for chrom, size in hg18.items():
+    if '_' in chrom:
+        continue
+    if chrom == 'chrM':
+        continue
+    hg18.default[chrom] = size
+
 
 hg19 = OrderedDict((
     ('chr1', (0,249250621)),
@@ -216,3 +250,11 @@ hg19 = OrderedDict((
     ('chrUn_gl000226', (0,15008)),
     ('chr18_gl000207_random', (0,4262)),
 ))
+
+hg19.default = OrderedDict()
+for chrom, size in hg19.items():
+    if '_' in chrom:
+        continue
+    if chrom == 'chrM':
+        continue
+    hg19.default[chrom] = size
