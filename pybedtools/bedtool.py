@@ -1830,7 +1830,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='multiIntersectBed')
+    @_wraps(prog='multiIntersectBed', uses_genome=True)
     def multi_intersect(self):
         """
         Wraps `multiIntersectBed` (v2.15+: `bedtools multiintersect`)
