@@ -61,7 +61,7 @@ class MultiClassifier(object):
             >>> # Example method of making a name converter.
             >>> # (note that the split `fns` have the form 'split_exon.gff')
             >>> def name_converter(x):
-            ...     return x.split('_')[-1].replace('.gff', '')
+            ...     return x.split('_')[-1]
 
             >>> c = MultiClassifier(bed, fns, names=name_converter, genome='dm3')
             >>> c.classify()
@@ -101,12 +101,12 @@ class MultiClassifier(object):
         self.class_genome_bp = defaultdict(int)
 
     @classmethod
-    def split_annotations(self, annotations, prefix='.'):
+    def split_annotations(self, annotations, prefix='split_'):
         files = {}
         for feature in pybedtools.BedTool(annotations):
             featuretype = feature[2]
             if featuretype not in files:
-                filename = 'split_%s.gff' % featuretype
+                filename = '%s%s' % (prefix, featuretype)
                 files[featuretype] = open(filename, 'w')
             files[featuretype].write(str(feature))
         for f in files.values():
