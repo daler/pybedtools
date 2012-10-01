@@ -1,3 +1,4 @@
+import os
 import pybedtools
 import itertools
 from collections import defaultdict
@@ -28,7 +29,10 @@ class MultiClassifier(object):
         annotations file (i.e., sample_name="exon" would not be a good choice).
 
         `names` is an optional list of names that correspond to `annotations`
-        if it is a list.
+        if it is a list, OR a function that maps items in `annotations` to
+        a featuretype name -- e.g.::
+
+            names=lambda x: x.replace('.gff', '')
 
         `genome` is the string assembly name, or dictionary of {chrom: (start,
         stop)} coordinates for each chromosome.  It is used to determine the
@@ -51,8 +55,15 @@ class MultiClassifier(object):
 
             >>> bam = pybedtools.example_bedtool('x.bam')
             >>> bed = bam.bam_to_bed(split=True).sort()
-            >>> annotations = pybedtools.example_bedtool('dm3-chr2L-5M.gff.gz')
-            >>> c = MultiClassifier(bed, annotations, genome='dm3')
+            >>> anno = pybedtools.example_filename('dm3-chr2L-5M.gff.gz')
+            >>> names, fns = MultiClassifier.split_annotations(anno)
+
+            >>> # Example method of making a name converter.
+            >>> # (note that the split `fns` have the form 'split_exon.gff')
+            >>> def name_converter(x):
+            ...     return x.split('_')[-1].replace('.gff', '')
+
+            >>> c = MultiClassifier(bed, fns, names=name_converter, genome='dm3')
             >>> c.classify()
             >>> inc = ['exon', 'intron']
             >>> table = c.print_table(include=inc)
@@ -63,15 +74,21 @@ class MultiClassifier(object):
             exon, intron	12882	118826
             intron	9949	375417
 
+            >>> # Clean up the split files.
+            >>> for fn in fns:
+            ...     os.unlink(fn)
+
         """
         self.bed = pybedtools.BedTool(bed)
         self.sample_name = 'sample'
         self.genome = genome
 
-        if isinstance(annotations, list):
+        if isinstance(annotations, (list, tuple)):
             annotations = [pybedtools.BedTool(i).fn for i in annotations]
             if names is None:
                 names = annotations
+            if hasattr(names, '__call__'):
+                names = [names(i) for i in annotations]
         else:
             names, files = self.split_annotations(annotations)
             annotations = list(files)
@@ -83,12 +100,13 @@ class MultiClassifier(object):
         self.class_sample_bp = defaultdict(int)
         self.class_genome_bp = defaultdict(int)
 
+    @classmethod
     def split_annotations(self, annotations, prefix='.'):
         files = {}
-        for feature in annotations:
+        for feature in pybedtools.BedTool(annotations):
             featuretype = feature[2]
             if featuretype not in files:
-                filename = '.split_%s.gff' % featuretype
+                filename = 'split_%s.gff' % featuretype
                 files[featuretype] = open(filename, 'w')
             files[featuretype].write(str(feature))
         for f in files.values():
