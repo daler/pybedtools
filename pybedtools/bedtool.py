@@ -154,7 +154,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             if uses_genome:
                 if genome_none_if:
                     for i in genome_none_if:
-                        if i in kwargs:
+                        if i in kwargs or i == implicit:
                             check_for_genome = False
             if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
@@ -1879,7 +1879,8 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowMaker', uses_genome=True, genome_none_if=['b'])
+    @_wraps(prog='windowMaker', implicit='b', uses_genome=True,
+            genome_none_if=['b'])
     def window_maker(self):
         """
         Wraps `windowMaker` (v2.15+: `bedtools makewindows`)
