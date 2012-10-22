@@ -996,6 +996,16 @@ class BedTool(object):
 
         fout = open(fn, 'w')
 
+        # special case: if BAM-format BedTool is provided, no trackline should
+        # be supplied, and don't iterate -- copy the file wholesale
+        if isinstance(iterable, BedTool) and iterable._isbam:
+            if trackline:
+                raise ValueError("trackline provided, but input is a BAM "
+                                 "file, which takes no track line")
+            fout.write(open(self.fn).read())
+            fout.close()
+            return fn
+
         if trackline:
             fout.write(trackline.strip() + '\n')
 
