@@ -27,7 +27,7 @@ _bam_registry = {}
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
-           nonbam=None, force_bam=False, genome_none_if=None):
+           nonbam=None, force_bam=False, genome_none_if=None, genome_if=None):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -78,6 +78,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     *genome_none_if* is a list of arguments that will ignore the requirement
     for a genome.  This is needed for window_maker, where -b and -g are
     mutually exclusive.
+
+    *genome_if* is a list of arguments that will trigger the requirement for
+    a genome; otherwise no genome needs to be specified.
     """
     not_implemented = False
 
@@ -156,6 +159,11 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     for i in genome_none_if:
                         if i in kwargs or i == implicit:
                             check_for_genome = False
+                if genome_if:
+                    check_for_genome = False
+                    for i in genome_if:
+                        if (i in kwargs) or (i == implicit):
+                            check_for_genome = True
             if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
 
@@ -1840,7 +1848,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='multiIntersectBed', uses_genome=True)
+    @_wraps(prog='multiIntersectBed', uses_genome=True, genome_if=['empty'])
     def multi_intersect(self):
         """
         Wraps `multiIntersectBed` (v2.15+: `bedtools multiintersect`)
