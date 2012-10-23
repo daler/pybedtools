@@ -1199,3 +1199,24 @@ def test_window():
     assert str(z[0]) == "chr1\t0\t100000\n"
     assert str(z[10000]) == 'chr16\t20800000\t20900000\n'
 
+def test_gtf_gff_attrs():
+    # smoke test.
+    #
+    # this has always worked:
+    gff = ["chr1","fake","mRNA","51", "300",".", "+",".","ID=mRNA1;Parent=gene1;"]
+    gff = pybedtools.create_interval_from_list(gff)
+    gff.attrs
+
+    # this previously failed because of the "=" in the attr string.
+    gff = ['scaffold_52', 'Cufflinks', 'exon', '5478', '5568', '.', '+', '.', 'gene_id "XLOC_017766"; transcript_id "TCONS_00033979"; exon_number "6"; gene_name "g18412"; oId "PAC:26897502"; nearest_ref "PAC:26897502"; class_code "="; tss_id "TSS21210"; p_id "P18851";']
+    gff = pybedtools.create_interval_from_list(gff)
+    gff.attrs
+
+    # TODO: is it necessary to support GFF vs GTF detection in this case:
+    #
+    #   GFF:
+    #           class_code=" "
+    #
+    #   GTF:
+    #           class_code "="
+

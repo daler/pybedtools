@@ -101,19 +101,39 @@ cdef class Attributes(dict):
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
     """
     cdef str sep, field_sep, _attr_str
+    cdef dict _quoted
 
     def __init__(self, attr_str=""):
         self._attr_str = attr_str
 
-        # sets the default separators when created empty
-        self.sep, self.field_sep = (";", "=") if "=" in attr_str or attr_str == "" else (";", " ")
+        # in general, GFF files will have either as many '=' as ';'
+        # (or ';'-1 if there's no trailing ';')
+        n_semi = attr_str.count(';')
+        n_eq = attr_str.count('=')
+        n_quotes = attr_str.count('"')
+
+        if n_eq > n_semi - 1:
+            self.sep, self.field_sep = (';', '=')
+        else:
+            self.sep, self.field_sep = (';', ' ')
+
+        # TODO: pathological case . . . detect this as GFF:
+        #
+        #   class_code=" "
+        #
+        # and this as GTF:
+        #
+        #   class_code "="
 
         # quick exit
         if attr_str == "":
             return
 
+        self._quoted = {}
         kvs = map(str.strip, attr_str.strip().split(self.sep))
         for field, value in [kv.split(self.field_sep, 1) for kv in kvs if kv]:
+            if value.count('"') == 2:
+                self._quoted[field] = True
             self[field] = value.replace('"', '')
 
     def __setitem__(self, key, value):
@@ -121,7 +141,11 @@ cdef class Attributes(dict):
 
     def __str__(self):
         # stringify all items first
-        items = [(i, str(j)) for i,j in dict.iteritems(self)]
+        items = []
+        for field, val in dict.iteritems(self):
+            if self._quoted[field]:
+                val = '"' + str(val) + '"'
+            items.append((field, val))
         return self.sep.join([self.field_sep.join(kvs) for kvs in items])
 
 cdef class Interval:
