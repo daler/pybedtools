@@ -2013,13 +2013,18 @@ class BedTool(object):
         new_bedtool.seqfn = fn
         return new_bedtool
 
-    def randomstats(self, other, iterations, new=False, genome_fn=None, **kwargs):
+    def randomstats(self, other, iterations, new=False, genome_fn=None,
+                    include_distribution=False, **kwargs):
         """
         Dictionary of results from many randomly shuffled intersections.
 
         Sends args and kwargs to :meth:`BedTool.randomintersection` and
         compiles results into a dictionary with useful stats.  Requires scipy
         and numpy.
+
+        If `include_distribution` is True, then the dictionary will include the
+        full distribution; otherwise, the distribution is deleted and cleaned
+        up to save on memory usage.
 
         This is one possible way of assigning significance to overlaps between
         two files. See, for example:
@@ -2130,7 +2135,10 @@ class BedTool(object):
         'lower_%sth' % lower_thresh: lower,
         'upper_%sth' % upper_thresh: upper,
         }
-        del distribution
+        if include_distribution:
+            d['distribution'] = distribution
+        else:
+            del distribution
         return d
 
     def random_op(self, iterations, func, func_args, func_kwargs, processes=1):
