@@ -27,7 +27,8 @@ _bam_registry = {}
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
-           nonbam=None, force_bam=False, genome_none_if=None, genome_if=None):
+           nonbam=None, force_bam=False, genome_none_if=None, genome_if=None,
+           does_not_return_bedtool=None):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -81,6 +82,12 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
     *genome_if* is a list of arguments that will trigger the requirement for
     a genome; otherwise no genome needs to be specified.
+
+    *does_not_return_bedtool*, if not None, should be a function that handles
+    the returned output.  Its signature should be ``func(output, kwargs)``,
+    where `output` is the output from the [possibly streaming] call to BEDTools
+    and `kwargs` are passed verbatim from the wrapped method call. This is used
+    for jaccard and reldist methods.
     """
     not_implemented = False
 
@@ -207,6 +214,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # Do the actual call
             stream = call_bedtools(cmds, tmp, stdin=stdin,
                                    check_stderr=check_stderr)
+
+            if does_not_return_bedtool:
+                return does_not_return_bedtool(stream, **kwargs)
 
             # Post-hoc editing of the BedTool -- for example, this is used for
             # the sequence methods to add a `seqfn` attribute to the resulting
