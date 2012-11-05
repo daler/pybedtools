@@ -42,6 +42,15 @@ def mapped_read_count(bam, force=False):
 
 
 def bam_to_bigwig(bam, genome, output):
+    """
+    Given a BAM file `bam` and assembly `genome`, create a bigWig file scaled
+    such that the values represent scaled reads -- that is, reads per million
+    mapped reads.
+
+    Assumes that `bedGraphToBigWig` from UCSC tools is installed; see
+    http://genome.ucsc.edu/goldenPath/help/bigWig.html for more details on the
+    format.
+    """
     genome_file = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
     readcount = mapped_read_count(bam)
     scale = 1 / (readcount / 1e6)
