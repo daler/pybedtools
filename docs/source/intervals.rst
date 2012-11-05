@@ -309,7 +309,7 @@ dictionary.
     {'ID': 'mRNA1', 'Parent': 'gene1'}
 
     >>> # add some new attributes
-    >>> gff.attrs['Awesomeness'] = 99
+    >>> gff.attrs['Awesomeness'] = "99"
     >>> gff.attrs['ID'] = 'transcript1'
 
     >>> # Changes in attributes are propagated to the printable feature
