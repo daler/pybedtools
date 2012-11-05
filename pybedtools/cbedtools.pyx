@@ -143,8 +143,11 @@ cdef class Attributes(dict):
         # stringify all items first
         items = []
         for field, val in dict.iteritems(self):
-            if self._quoted[field]:
-                val = '"' + str(val) + '"'
+            try:
+                if self._quoted[field]:
+                    val = '"' + str(val) + '"'
+            except KeyError:
+                pass
             items.append((field, val))
         return self.sep.join([self.field_sep.join(kvs) for kvs in items])
 
