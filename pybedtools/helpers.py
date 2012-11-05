@@ -25,9 +25,9 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
 
     try:
         p = subprocess.Popen(
-                [os.path.join(settings._bedtools_path, 'bedtools'),
-                    settings._prog_names[program_to_check]],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            [os.path.join(settings._bedtools_path, 'bedtools'),
+             settings._prog_names[program_to_check]],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         settings._bedtools_installed = True
         settings._v_2_15_plus = True
 
@@ -35,8 +35,8 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
 
         try:
             p = subprocess.Popen(
-                    [os.path.join(settings._bedtools_path, program_to_check)],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                [os.path.join(settings._bedtools_path, program_to_check)],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             settings._bedtools_installed = True
             settings._v_2_15_plus = False
 
@@ -54,8 +54,8 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
 def _check_for_tabix():
     try:
         p = subprocess.Popen(
-                [os.path.join(settings._tabix_path, 'tabix')],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            [os.path.join(settings._tabix_path, 'tabix')],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         settings._tabix_installed = True
     except OSError:
@@ -64,8 +64,8 @@ def _check_for_tabix():
         else:
             add_msg = ""
         raise ValueError(
-                'Please install tabix and ensure it is on your path %s'
-                % add_msg)
+            'Please install tabix and ensure it is on your path %s'
+            % add_msg)
 
 
 def _check_for_samtools():
@@ -80,8 +80,8 @@ def _check_for_samtools():
         else:
             add_msg = ""
         raise ValueError(
-                'Please install samtools and ensure it is on your path %s'
-                % add_msg)
+            'Please install samtools and ensure it is on your path %s'
+            % add_msg)
 
 
 def _check_for_R():
@@ -96,8 +96,7 @@ def _check_for_R():
         else:
             add_msg = ""
         raise ValueError(
-                'Please install R and ensure it is on your path %s'
-                % add_msg)
+            'Please install R and ensure it is on your path %s' % add_msg)
 
 
 class Error(Exception):
@@ -138,15 +137,16 @@ def isBAM(fn):
     cmds = ['samtools', 'view', '-H', fn]
     try:
         p = subprocess.Popen(
-                cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if stderr:
             return False
 
         return True
     except OSError:
-        raise OSError('SAMtools (http://samtools.sourceforge.net/) '
-                          'needs to be installed for BAM support')
+        raise OSError(
+            'SAMtools (http://samtools.sourceforge.net/) '
+            'needs to be installed for BAM support')
 
 
 def find_tagged(tag):
@@ -231,10 +231,9 @@ class HistoryStep(object):
 
         # Format args and kwargs
         args_string = ','.join(map(self._clean_arg, self.args))
-        kwargs_string = ','.join(['%s=%s' % \
-                        (i[0], self._clean_arg(i[1])) \
-                        for i in self.kwargs.items()])
-
+        kwargs_string = ','.join(
+            ['%s=%s' % (i[0], self._clean_arg(i[1]))
+             for i in self.kwargs.items()])
         # stick a comma on the end if there's something here
         if len(args_string) > 0:
             args_string += ', '
@@ -319,10 +318,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         # coming from an iterator, sending as iterator
         if input_is_stream and output_is_stream:
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): input is stream, output is '
-                    'stream')
+                'helpers.call_bedtools(): input is stream, output is '
+                'stream')
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
+                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
@@ -340,9 +339,9 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         # coming from an iterator, writing to file
         if input_is_stream and not output_is_stream:
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): input is stream, output is file')
+                'helpers.call_bedtools(): input is stream, output is file')
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
+                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
@@ -361,10 +360,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         # coming from a file, sending as iterator
         if not input_is_stream and output_is_stream:
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): input is filename, '
-                    'output is stream')
+                'helpers.call_bedtools(): input is filename, '
+                'output is stream')
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
+                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
@@ -375,10 +374,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         # file-to-file
         if not input_is_stream and not output_is_stream:
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): input is filename, output '
-                    'is filename (%s)', tmpfn)
+                'helpers.call_bedtools(): input is filename, output '
+                'is filename (%s)', tmpfn)
             pybedtools.logger.debug(
-                    'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
+                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
@@ -397,7 +396,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 stderr = None
 
         if stderr:
-            sys.stderr.write('\nCommand was:\n\n\t%s\n' % \
+            sys.stderr.write('\nCommand was:\n\n\t%s\n' %
                              subprocess.list2cmdline(cmds))
             sys.stderr.write('\nError message was:\n')
             sys.stderr.write(stderr)
@@ -408,13 +407,14 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         print '%s: %s' % (type(err), os.strerror(err.errno))
         print 'The command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds)
 
-        problems = {2: ('* Did you spell the command correctly?',
-                        '* Do you have BEDTools installed and on the path?'),
-                    13: ('* Do you have permission to write '
-                         'to the output file ("%s")?' % tmpfn,),
-                    24: ('* Too many files open -- please submit '
-                         'a bug report so that this can be fixed',)
-                   }
+        problems = {
+            2: ('* Did you spell the command correctly?',
+                '* Do you have BEDTools installed and on the path?'),
+            13: ('* Do you have permission to write '
+                 'to the output file ("%s")?' % tmpfn,),
+            24: ('* Too many files open -- please submit '
+                 'a bug report so that this can be fixed',)
+        }
 
         print 'Things to check:'
         print '\n\t' + '\n\t'.join(problems[err.errno])
@@ -484,17 +484,21 @@ def _check_sequence_stderr(x):
 
 
 def _call_randomintersect(_self, other, iterations, intersect_kwargs,
-        shuffle_kwargs, report_iterations, debug, _orig_processes):
+                          shuffle_kwargs, report_iterations, debug,
+                          _orig_processes):
     """
     Helper function that list-ifies the output from randomintersection, s.t.
     it can be pickled across a multiprocess Pool.
     """
-    return list(_self.randomintersection(other, iterations,
-                                        intersect_kwargs=intersect_kwargs,
-                                        shuffle_kwargs=shuffle_kwargs,
-                                        report_iterations=report_iterations,
-                                        debug=False, processes=None,
-                                        _orig_processes=_orig_processes))
+    return list(
+        _self.randomintersection(
+            other, iterations,
+            intersect_kwargs=intersect_kwargs,
+            shuffle_kwargs=shuffle_kwargs,
+            report_iterations=report_iterations,
+            debug=False, processes=None,
+            _orig_processes=_orig_processes)
+    )
 
 
 def close_or_delete(x):

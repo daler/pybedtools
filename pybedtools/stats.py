@@ -61,7 +61,7 @@ def jaccard(x, y, intersect_kwargs=None):
 
 
 def random_jaccard(x, y, genome_fn, shuffle_kwargs=None,
-        intersect_kwargs=None):
+                   intersect_kwargs=None):
     """
     Shuffles `x`, using the chromsizes in `genome_fn` and any additional
     `shuffle_kwargs`, then call `jaccard()` with any additional

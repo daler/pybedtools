@@ -22,55 +22,55 @@ _DEBUG = True
 # programs (basic security)
 _prog_names = {
 
-# Genome arithmetic
-'intersectBed': 'intersect',
-        'windowBed': 'window',
-       'closestBed': 'closest',
-      'coverageBed': 'coverage',
-           'mapBed': 'map',
-'genomeCoverageBed': 'genomecov',
-         'mergeBed': 'merge',
-       'clusterBed': 'cluster',
+    # Genome arithmetic
+    'intersectBed': 'intersect',
+    'windowBed': 'window',
+    'closestBed': 'closest',
+    'coverageBed': 'coverage',
+    'mapBed': 'map',
+    'genomeCoverageBed': 'genomecov',
+    'mergeBed': 'merge',
+    'clusterBed': 'cluster',
     'complementBed': 'complement',
-      'subtractBed': 'subtract',
-          'slopBed': 'slop',
-         'flankBed': 'flank',
-          'sortBed': 'sort',
-        'randomBed': 'random',
-       'shuffleBed': 'shuffle',
-      'annotateBed': 'annotate',
+    'subtractBed': 'subtract',
+    'slopBed': 'slop',
+    'flankBed': 'flank',
+    'sortBed': 'sort',
+    'randomBed': 'random',
+    'shuffleBed': 'shuffle',
+    'annotateBed': 'annotate',
 
-# multi-way
-'multiIntersectBed': 'multiinter',
-   'unionBedGraphs': 'unionbedg',
+    # multi-way
+    'multiIntersectBed': 'multiinter',
+    'unionBedGraphs': 'unionbedg',
 
-# PE
-        'pairToBed': 'pairtobed',
-       'pairToPair': 'pairtopair',
+    # PE
+    'pairToBed': 'pairtobed',
+    'pairToPair': 'pairtopair',
 
-# format conversion
-         'bamToBed': 'bamtobed',
-         'bedToBam': 'bedtobam',
-       'bedpeToBam': 'bedpetobam',
-      'bed12ToBed6': 'bed12tobed6',
-       'bamToFastq': 'bamtofastq',
+    # format conversion
+    'bamToBed': 'bamtobed',
+    'bedToBam': 'bedtobam',
+    'bedpeToBam': 'bedpetobam',
+    'bed12ToBed6': 'bed12tobed6',
+    'bamToFastq': 'bamtofastq',
 
-# fasta
-     'fastaFromBed': 'getfasta',
- 'maskFastaFromBed': 'maskfasta',
-           'nucBed': 'nuc',
+    # fasta
+    'fastaFromBed': 'getfasta',
+    'maskFastaFromBed': 'maskfasta',
+    'nucBed': 'nuc',
 
-# bam-centric
-      'multiBamCov': 'multicov',
-           'tagBam': 'tag',
+    # bam-centric
+    'multiBamCov': 'multicov',
+    'tagBam': 'tag',
 
-# misc
-       'getOverlap': 'overlap',
-         'bedToIgv': 'igv',
-         'linksBed': 'links',
-      'windowMaker': 'makewindows',
-          'groupBy': 'groupby',
-       'expandCols': 'expand',
+    # misc
+    'getOverlap': 'overlap',
+    'bedToIgv': 'igv',
+    'linksBed': 'links',
+    'windowMaker': 'makewindows',
+    'groupBy': 'groupby',
+    'expandCols': 'expand',
 }
 
 _old_names = _prog_names.keys()

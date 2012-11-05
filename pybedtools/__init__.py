@@ -7,11 +7,11 @@ import copy_reg
 import logging
 import scripts
 from cbedtools import Interval, IntervalFile, overlap, \
-                    create_interval_from_list, Attributes, \
-                    MalformedBedLineError, IntervalIterator
+    create_interval_from_list, Attributes, \
+    MalformedBedLineError, IntervalIterator
 from _Window import Window
 from helpers import get_tempdir, set_tempdir, cleanup, \
-                    find_tagged, set_bedtools_path, set_samtools_path
+    find_tagged, set_bedtools_path, set_samtools_path
 import helpers
 from bedtool import BedTool
 import genome_registry
@@ -48,9 +48,10 @@ def debug_mode(x):
         ch.setLevel(logging.DEBUG)
         _DEBUG = True
         KEEP_TEMPFILES = True
-        logger.info('Debug mode enabled.  You may also want to set '
-                'pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion '
-                'of files upon exit.')
+        logger.info(
+            'Debug mode enabled.  You may also want to set '
+            'pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion '
+            'of files upon exit.')
     else:
         logger.setLevel(logging.INFO)
         ch.setLevel(logging.INFO)
@@ -103,10 +104,10 @@ def load_path_config(fn):
     paths). This is used primarily for testing.
     """
     setters = dict(
-            bedtools=helpers.set_bedtools_path,
-            samtools=helpers.set_samtools_path,
-            r=helpers.set_R_path,
-            tabix=helpers.set_tabix_path)
+        bedtools=helpers.set_bedtools_path,
+        samtools=helpers.set_samtools_path,
+        r=helpers.set_R_path,
+        tabix=helpers.set_tabix_path)
 
     if isinstance(fn, dict):
         for prog, setter in setters.items():
