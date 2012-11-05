@@ -67,7 +67,8 @@ class Track(collections.PolyCollection):
 
 
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> track = Track(a, alpha=0.5, picker=5)
+        >>> track = pybedtools.contrib.plotting.Track(a, alpha=0.5, picker=5)
+        >>> import matplotlib.pyplot as plt
         >>> fig = plt.figure()
         >>> ax = fig.add_subplot(111)
         >>> ax.add_collection(track) #doctest: +ELLIPSIS
