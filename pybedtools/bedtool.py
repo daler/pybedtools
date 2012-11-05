@@ -2208,13 +2208,18 @@ class BedTool(object):
             yield r.get()
         raise StopIteration
 
-    def naive_jaccard(self, other, genome_fn=None, iterations=None,
+    def random_jaccard(self, other, genome_fn=None, iterations=None,
                       processes=1, shuffle_kwargs=None, intersect_kwargs=None):
         """
         Computes the naive Jaccard statistic (intersection divided by union).
 
+        .. note::
+
+            If you don't need the randomization functionality of this method,
+            you can use the simpler BedTool.jaccard method instead.
+
         See Favorov et al. (2012) PLoS Comput Biol 8(5): e1002529 for more
-        info.
+        info on the Jaccard statistic for intersections.
 
         If `iterations` is None, then do not perform random shufflings.
 
