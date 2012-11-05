@@ -902,17 +902,34 @@ def test_bam_to_sam_to_bam():
     a = pybedtools.example_bedtool('gdc.bam')
     orig = str(a)
     assert a.file_type == 'bam'
-    b = a.saveas('ex.sam')
-    assert b.file_type == 'sam'
+
+    # saveas should maintain BAM format
+    b = a.saveas()
+    assert b.file_type == 'bam'
+
+    # Converting to string gets SAM format
     assert str(b) == orig
+
+    # b is a bam; to_bam should return a bam
     c = b.to_bam(genome='dm3')
     assert c.file_type == 'bam'
-    print 'c:'
-    print c
-    print c.fn
-    assert str(c) == orig
-    if os.path.exists('ex.sam'):
-        os.unlink('ex.sam')
+
+    # in fact, it should be the same file:
+    assert c.fn == b.fn
+
+    # In order to get SAM format, need to print to file.
+    d = open(pybedtools.BedTool._tmp(), 'w')
+    d.write(str(c))
+    d.close()
+    d = pybedtools.BedTool(d.name)
+    assert d.file_type == 'sam'
+
+    e = d.to_bam(genome='dm3')
+    assert e.file_type == 'bam'
+
+    # everybody should be the same
+    assert a == b == c == d == e
+
 
 def test_bam_filetype():
     # regression test -- this was segfaulting before because IntervalFile
