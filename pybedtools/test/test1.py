@@ -1246,3 +1246,15 @@ def test_jaccard():
 
     results2 = x.jaccard(pybedtools.example_bedtool('b.bed'), stream=True)
     assert results == results2, results2
+
+def test_reldist():
+    x = pybedtools.example_bedtool('a.bed')
+    results = x.reldist(pybedtools.example_bedtool('b.bed'))
+    assert results == {'reldist': [0.15, 0.21, 0.28], 'count': [1, 1, 1], 'total': [3, 3, 3], 'fraction': [0.333, 0.333, 0.333]}, results
+
+    results2 = x.reldist(pybedtools.example_bedtool('b.bed'), detail=True)
+    print results2
+    assert results2 == fix("""
+    chr1	1	100	feature1	0	+	0.282
+    chr1	100	200	feature2	0	+	0.153
+    chr1	150	500	feature3	0	-	0.220""")

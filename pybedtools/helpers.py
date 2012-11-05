@@ -538,4 +538,34 @@ def _jaccard_output_to_dict(s, **kwargs):
     return dict(zip(header, data))
 
 
+def _reldist_output_handler(s, **kwargs):
+    """
+    reldist, if called with -detail, returns a valid BED file with the relative
+    distance as the last field.  In that case, return the BedTool immediately.
+    If not -detail, then the results are a table, in which case here we parse
+    into a dict for convenience.
+    """
+    if 'detail' in kwargs:
+        return pybedtools.BedTool(s)
+    if isinstance(s, basestring):
+        iterable = open(s)
+    if hasattr(s, 'next'):
+        iterable = s
+    header = iterable.next().split()
+    results = {}
+    for h in header:
+        results[h] = []
+    for i in iterable:
+        reldist, count, total, fraction = i.split()
+        data = [
+            float(reldist),
+            int(count),
+            int(total),
+            float(fraction)
+        ]
+        for h, d in zip(header, data):
+            results[h].append(d)
+    return results
+
+
 atexit.register(cleanup)

@@ -1961,6 +1961,17 @@ class BedTool(object):
         Returns a dictionary with keys (intersection, union, jaccard).
         """
 
+    @_wraps(prog='reldist', implicit='a', other='b',
+            does_not_return_bedtool=helpers._reldist_output_handler)
+    def reldist(self):
+        """
+        If detail=False, then return a dictionary with keys (reldist, count,
+        total, fraction), which is the summary of the bedtools reldist.
+
+        Otherwise return a BedTool, with the relative distance for each
+        interval in A in the last column.
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.

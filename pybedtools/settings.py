@@ -67,6 +67,8 @@ _prog_names = {
 
     # stats
     'jaccard': 'jaccard',
+    'reldist': 'reldist',
+
     # misc
     'getOverlap': 'overlap',
     'bedToIgv': 'igv',
