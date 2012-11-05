@@ -287,6 +287,16 @@ def cleanup(verbose=False, remove_all=False):
             os.unlink(fn)
 
 
+def _version_2_15_plus_names(prog_name):
+    try:
+        prog_name = settings._prog_names[prog_name]
+    except KeyError:
+        if prog_name in settings._new_names:
+            pass
+        raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
+    return [os.path.join(settings._bedtools_path, 'bedtools'), prog_name]
+
+
 def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
@@ -307,12 +317,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     input_is_stream = stdin is not None
     output_is_stream = tmpfn is None
 
-    if (cmds[0] not in settings._old_names) \
-            and (cmds[0] not in settings._new_names):
-        raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
-
-    # use specifed path, "" by default
-    cmds[0] = os.path.join(settings._bedtools_path, cmds[0])
+    _orig_cmds = cmds[:]
+    cmds = []
+    cmds.extend(_version_2_15_plus_names(_orig_cmds[0]))
+    cmds.extend(_orig_cmds[1:])
 
     try:
         # coming from an iterator, sending as iterator
