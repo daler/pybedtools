@@ -47,6 +47,7 @@ pybedtools.BedTool
       ~BedTool.igv
       ~BedTool.intersect
       ~BedTool.introns
+      ~BedTool.jaccard
       ~BedTool.liftover
       ~BedTool.links
       ~BedTool.map
@@ -55,18 +56,19 @@ pybedtools.BedTool
       ~BedTool.moveto
       ~BedTool.multi_bam_coverage
       ~BedTool.multi_intersect
-      ~BedTool.naive_jaccard
       ~BedTool.nucleotide_content
       ~BedTool.overlap
       ~BedTool.pair_to_bed
       ~BedTool.pair_to_pair
       ~BedTool.print_sequence
       ~BedTool.random
+      ~BedTool.random_jaccard
       ~BedTool.random_op
       ~BedTool.random_subset
       ~BedTool.randomintersection
       ~BedTool.randomstats
       ~BedTool.relative_distance
+      ~BedTool.reldist
       ~BedTool.remove_invalid
       ~BedTool.save_seqs
       ~BedTool.saveas
