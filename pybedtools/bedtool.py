@@ -2274,7 +2274,7 @@ class BedTool(object):
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> results = a.randomintersection(b, 10, debug=True)
             >>> print list(results)
-            [1, 1, 2, 0, 2, 2, 0, 3, 2, 1]
+            [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
 
         """
         if processes is not None:
