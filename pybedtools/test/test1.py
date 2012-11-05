@@ -1237,3 +1237,12 @@ def test_gtf_gff_attrs():
     #   GTF:
     #           class_code "="
 
+
+def test_jaccard():
+    x = pybedtools.example_bedtool('a.bed')
+
+    results = x.jaccard(pybedtools.example_bedtool('b.bed'))
+    assert results == {'intersection': 46, 'union': 649, 'jaccard': 0.0708783}, results
+
+    results2 = x.jaccard(pybedtools.example_bedtool('b.bed'), stream=True)
+    assert results == results2, results2

@@ -1954,6 +1954,13 @@ class BedTool(object):
         The resulting BedTool will have a new attribute, `fastq`.
         """
 
+    @_wraps(prog='jaccard', implicit='a', other='b',
+            does_not_return_bedtool=helpers._jaccard_output_to_dict)
+    def jaccard(self):
+        """
+        Returns a dictionary with keys (intersection, union, jaccard).
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.

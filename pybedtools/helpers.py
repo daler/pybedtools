@@ -519,4 +519,23 @@ def close_or_delete(x):
     elif hasattr(x.fn, 'close'):
         x.fn.close()
 
+
+def _jaccard_output_to_dict(s, **kwargs):
+    """
+    jaccard method doesn't return an interval file, rather, it returns a short
+    summary of results.  Here, we simply parse it into a dict for convenience.
+    """
+    if isinstance(s, basestring):
+        s = open(s).read()
+    if hasattr(s, 'next'):
+        s = ''.join(i for i in s)
+    header, data = s.splitlines()
+    header = header.split()
+    data = data.split()
+    data[0] = int(data[0])
+    data[1] = int(data[1])
+    data[2] = float(data[2])
+    return dict(zip(header, data))
+
+
 atexit.register(cleanup)

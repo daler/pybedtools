@@ -20,6 +20,7 @@ _DEBUG = True
 
 # Check calls against these names to only allow calls to known BEDTools
 # programs (basic security)
+#
 _prog_names = {
 
     # Genome arithmetic
@@ -64,6 +65,8 @@ _prog_names = {
     'multiBamCov': 'multicov',
     'tagBam': 'tag',
 
+    # stats
+    'jaccard': 'jaccard',
     # misc
     'getOverlap': 'overlap',
     'bedToIgv': 'igv',
