@@ -5,7 +5,7 @@ import sys
 import os
 import pybedtools
 from pybedtools import Interval
-from pybedtools.contrib import Classifier
+#from pybedtools.contrib import Classifier
 from tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
 # model for gdc.
@@ -58,7 +58,7 @@ def fix(x):
         s += i
     return s
 
-def test_classifier():
+def _classifier():
 
     c = Classifier(
             bed=pybedtools.example_filename('gdc.bed'),
