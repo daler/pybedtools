@@ -293,7 +293,7 @@ def _version_2_15_plus_names(prog_name):
     except KeyError:
         if prog_name in settings._new_names:
             pass
-        raise BEDToolsError('"%s" not a recognized BEDTools program' % cmds[0])
+        raise BEDToolsError('"%s" not a recognized BEDTools program' % prog_name)
     return [os.path.join(settings._bedtools_path, 'bedtools'), prog_name]
 
 
