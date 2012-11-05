@@ -1899,8 +1899,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowMaker', implicit='b', uses_genome=True,
-            genome_none_if=['b'])
+    @_wraps(prog='windowMaker', uses_genome=True, genome_none_if=['b'])
     def window_maker(self):
         """
         Wraps `windowMaker` (v2.15+: `bedtools makewindows`)
