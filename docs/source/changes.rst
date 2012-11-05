@@ -3,17 +3,73 @@
 Changelog
 =========
 
-Changes since v0.6.1
---------------------
+Changes in v0.6.2
+-----------------
+
+* Wrapped new tools available in BEDTools 2.17: :meth:`BedTool.jaccard` and
+  :meth:`BedTool.reldist` wrap the new `bedtools jaccard` and `bedtools
+  reldist` respectively.
+
+* Initial implementations of building blocks for computing statistics,
+  :meth:`BedTool.absolute_distance` and :meth:`BedTool.relative_distance`
+
+* :func:`pybedtools.featurefuncs.three_prime`,
+  :func:`pybedtools.featurefuncs.five_prime`, and
+  :func:`pybedtools.featurefuncs.TSS` modifier functions that can be passed to
+  :meth:`BedTool.each`
+
+* :func:`pybedtools.contrib.plotting.binary_heatmap` for visualizing results
+  from :meth:`BedTool.multi_intersect`
+
+* Fixed a long-standing issue where streaming :class:`BedTool` objects did not
+  close their open file handles (stdout).  When working with many (i.e. tens
+  of thousands) files, this caused the operating system to hit its open file
+  limit.  This is now fixed.
+
+* :meth:`BedTool.random_op`, a new mechanism for implementing operations that
+  you would like to apply over tens of thousands of shuffled interval files.
+  This makes it easy to extend the existing :mod:`pybedtools` multiprocessing
+  functionality.
+
+* :func:`pybedtools.contrib.bigwig.bam_to_bigwig`, a helper function to create
+  a libary-size-scaled bigWig file from an input BAM file.
+
+* :class:`pybedtools.contrib.plotting.TrackCollection` class, which handles
+  plotting multiple files at once, using a provided "stylesheet" configuration
+  to tweak colors etc.
+
+* :class:`pybedtools.contrib.plotting.BedToolsDemo` and
+  :class:`pybedtools.contrib.plotting.ConfiguredBedToolsDemo`, useful for
+  running many graphical demos of BEDTools operations using the same
+  "stylesheet" configuration.  Run :file:`pybedtools/contrib/plotting.py` for
+  a demo.
+
+* chromsizes dictionaries for common assemblies now have a `default` attribute,
+  which is an OrderedDict of a default set of chromosome.  For example,
+  ``pybedtools.chromsizes('hg19').default`` contains only the entries for the
+  autosomes and X and Y.
+
 * :meth:`BedTool.cat` now works better with multiprocessing
 
-* New generic method for running randomizations in parallel: :meth:`BedTool.random_op`
+* added `include_distribution` kwarg to :meth:`BedTool.randomstats`, which will
+  attach the full distribution of all the randomized files to the results
+  dictionary.
 
 * New method implementing Jaccard statistic (with pvalue using randomizations):
-  :meth:`BedTool.naive_jaccard`
+  :meth:`BedTool.random_jaccard`
 
 * :func:`featurefuncs.extend_fields` helper function to pad fields with `'.'`,
   useful for manipulating features with the :meth:`BedTool.each` method
+
+* Fixed a bug where BAM files, when written to disk via :meth:`BedTool.saveas`,
+  were saved as SAM files.
+
+* Better GTF/GFF detection, and if the input had quoted attribute values, then
+  the output will, too
+
+* various minor bug fixes and improvments as documented in the github commit
+  logs....
+
 
 Changes in v0.6.1
 -----------------
