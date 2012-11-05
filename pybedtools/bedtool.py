@@ -1344,6 +1344,8 @@ class BedTool(object):
         self.fn is in SAM format, then create a header out of the genome file
         and then convert using `samtools`.
         """
+        if self.file_type == 'bam':
+            return self
         if self.file_type in ('bed', 'gff', 'vcf'):
             return self._bed_to_bam(**kwargs)
         if self.file_type == 'sam':
