@@ -1863,10 +1863,22 @@ class BedTool(object):
         """
         Wraps `multiIntersectBed` (v2.15+: `bedtools multiintersect`)
 
-        Provide a list of filenames as the "i" argument, e.g. if you already
-        have BedTool objects then use::
+        Provide a list of filenames as the "i" argument. e.g. if you already
+        have BedTool objects then use their `.fn` attribute, like this::
 
-            x.mulit_intersect(i=[a.fn, b.fn])
+            >>> x = pybedtools.BedTool()
+            >>> a = pybedtools.example_bedtool('a.bed')
+            >>> b = pybedtools.example_bedtool('b.bed')
+            >>> result = x.multi_intersect(i=[a.fn, b.fn])
+            >>> print result   #doctest: +NORMALIZE_WHITESPACE
+            chr1	1	155	1	1	1	0
+            chr1	155	200	2	1,2	1	1
+            chr1	200	500	1	1	1	0
+            chr1	800	900	1	2	0	1
+            chr1	900	901	2	1,2	1	1
+            chr1	901	950	1	1	1	0
+            <BLANKLINE>
+
         """
 
     @_log_to_history
