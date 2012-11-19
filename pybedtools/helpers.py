@@ -105,7 +105,14 @@ class Error(Exception):
 
 
 class BEDToolsError(Error):
-    pass
+    def __init__(self, cmd, msg):
+        self.cmd = str(cmd)
+        self.msg = str(msg)
+
+    def __str__(self):
+        m = '\nCommand was:\n\n\t' + self.cmd + '\n' + \
+            '\nError message was:\n' + self.msg
+        return m
 
 
 def isBGZIP(fn):
@@ -296,7 +303,8 @@ def _version_2_15_plus_names(prog_name):
     except KeyError:
         if prog_name in settings._new_names:
             pass
-        raise BEDToolsError('"%s" not a recognized BEDTools program' % prog_name)
+        raise BEDToolsError(
+            prog_name, prog_name + 'not a recognized BEDTools program')
     return [os.path.join(settings._bedtools_path, 'bedtools'), prog_name]
 
 
@@ -407,12 +415,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 stderr = None
 
         if stderr:
-            sys.stderr.write('\nCommand was:\n\n\t%s\n' %
-                             subprocess.list2cmdline(cmds))
-            sys.stderr.write('\nError message was:\n')
-            sys.stderr.write(stderr)
-            raise BEDToolsError('Error message from BEDTools written to '
-                                'stderr, above', stderr)
+            raise BEDToolsError(subprocess.list2cmdline(cmds), stderr)
 
     except (OSError, IOError) as err:
         print '%s: %s' % (type(err), os.strerror(err.errno))
