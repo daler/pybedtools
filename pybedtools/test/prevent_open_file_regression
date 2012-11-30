@@ -43,15 +43,18 @@ b = pybedtools.example_bedtool('b.bed')
 
 
 if sys.argv[1] == 'randomstats':
-
     results = a.randomstats(b, 10000, report_iterations=True, processes=8,
-            intersect_kwargs={'sorted': True})
+                            intersect_kwargs={'sorted': True})
+
+if sys.argv[1] == 'newrandomstats':
+    results = a.randomstats(b, 10000, processes=8,
+                            new=True, genome_fn=gfn,
+                            intersect_kwargs={'sorted': True})
 
 elif sys.argv[1] == 'jaccard':
-    results = a.random_jaccard(
-                    other=b, iterations=10000, genome_fn=gfn,
-                    processes=8, shuffle_kwargs=dict(chrom=True),
-                    intersect_kwargs=None)
+    results = a.random_jaccard(other=b, iterations=10000, genome_fn=gfn,
+                               processes=8, shuffle_kwargs=dict(chrom=True),
+                               intersect_kwargs=None)
 else:
     print usage
     sys.exit(1)
