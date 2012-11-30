@@ -573,5 +573,14 @@ def _reldist_output_handler(s, **kwargs):
             results[h].append(d)
     return results
 
+def n_open_fds():
+    pid = os.getpid()
+    procs = subprocess.check_output(
+        ['lsof', '-w', '-Ff', '-p', str(pid)])
+    nprocs = 0
+    for i in procs.splitlines():
+        if i[1:].isdigit() and i[0] == 'f':
+            nprocs += 1
+    return nprocs
 
 atexit.register(cleanup)
