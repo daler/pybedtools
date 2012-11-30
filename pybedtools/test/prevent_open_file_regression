@@ -27,9 +27,14 @@ usage = """
 
     """ % locals()
 
+if not os.path.exists('TEMP'):
+    os.makedirs('TEMP')
+
 if len(sys.argv) < 2:
     print usage
     sys.exit(1)
+
+pybedtools.set_tempdir('TEMP')
 
 gfn = pybedtools.chromsizes_to_file({'chr1': (0, 1000)})
 
@@ -43,7 +48,7 @@ if sys.argv[1] == 'randomstats':
             intersect_kwargs={'sorted': True})
 
 elif sys.argv[1] == 'jaccard':
-    results = a.naive_jaccard(
+    results = a.random_jaccard(
                     other=b, iterations=10000, genome_fn=gfn,
                     processes=8, shuffle_kwargs=dict(chrom=True),
                     intersect_kwargs=None)
