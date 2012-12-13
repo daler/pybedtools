@@ -1068,13 +1068,40 @@ def test_extend_fields():
 def test_gff2bed():
     a = pybedtools.example_bedtool('d.gff')
     results = str(a.each(featurefuncs.gff2bed, name_field='Parent'))
-    print results
     assert results == fix("""
     chr1	49	300	.	.	+
     chr1	49	300	gene1	.	+
     chr1	74	150	mRNA1	.	+
     chr1	199	275	mRNA1	.	+
     chr1	1199	1275	.	.	+""")
+
+
+    results = str(a.each(featurefuncs.gff2bed))
+    assert results == fix("""
+    chr1	49	300	gene1	.	+
+    chr1	49	300	mRNA1	.	+
+    chr1	74	150	CDS1	.	+
+    chr1	199	275	CDS2	.	+
+    chr1	1199	1275	rRNA1	.	+
+    """)
+
+    results = str(a.each(featurefuncs.gff2bed, name_field="nonexistent"))
+    assert results == fix("""
+    chr1	49	300	.	.	+
+    chr1	49	300	.	.	+
+    chr1	74	150	.	.	+
+    chr1	199	275	.	.	+
+    chr1	1199	1275	.	.	+
+    """)
+
+    results = str(a.each(featurefuncs.gff2bed, name_field=1))
+    print results
+    assert results == fix("""
+    chr1	49	300	fake	.	+
+    chr1	49	300	fake	.	+
+    chr1	74	150	fake	.	+
+    chr1	199	275	fake	.	+
+    chr1	1199	1275	fake	.	+""")
 
 
 def test_add_color():

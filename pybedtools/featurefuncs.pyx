@@ -183,9 +183,11 @@ cpdef gff2bed(Interval feature, name_field=None):
 
     Converts a GFF feature into a BED6 feature.  By default, the name of the
     new BED will be feature.name, but if `name_field` is provided then the name
-    of the new BED will be feature[name_field].  Note that `name_field` can
-    also be an integer, so if you want the BED name to be the GFF featuretype,
-    then use `name_field=2`.
+    of the new BED will be feature.attrs[name_field].
+
+    `name_field` can also be an integer to index into the fields of the object,
+    so if you want the BED name to be the GFF featuretype, then you can use
+    `name_field=2`.
 
     If the specified field does not exist, then "." will be used for the name.
     """
@@ -193,7 +195,10 @@ cpdef gff2bed(Interval feature, name_field=None):
         name = feature.name
     else:
         try:
-            name = feature.attrs[name_field]
+            if isinstance(name_field, basestring):
+                name = feature.attrs[name_field]
+            if isinstance(name_field, int):
+                name = feature[name_field]
         except (NameError, KeyError):
             name = "."
     return create_interval_from_list([
