@@ -2721,6 +2721,37 @@ class BedTool(object):
         for i in hits:
             yield float(i[-1]) / len(i)
 
+    def colormap_normalize(self, vmin=None, vmax=None, log=False):
+        """
+        Returns a normalization instance for use by featurefuncs.add_color().
+
+        `vmin` and `vmax` set the colormap bounds; if not specified then these
+        will be determined from the scores in the BED file.
+
+        `log`, if True, will put the scores on a log scale; of course be
+        careful if you have negative scores
+        """
+        field_count = self.field_count()
+        if (self.file_type != 'bed') or (field_count < 5):
+            raise ValueError('colorizing only works for BED files with score '
+                             'fields')
+        import matplotlib
+        import numpy as np
+
+        if log:
+            norm = matplotlib.colors.LogNorm()
+        else:
+            norm = matplotlib.colors.Normalize()
+
+        if (vmin is not None) and (vmax is not None):
+            norm.vmin = vmin
+            norm.vmax = vmax
+
+        else:
+            norm.autoscale(np.array([i.score for i in self], dtype=float))
+
+        return norm
+
 
 class BAM(object):
     def __init__(self, stream, header_only=False):
