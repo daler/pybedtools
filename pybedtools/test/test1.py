@@ -1065,6 +1065,43 @@ def test_extend_fields():
     chr1	900	950	feature4	0	+	.	.
     """)
 
+def test_gff2bed():
+    a = pybedtools.example_bedtool('d.gff')
+    results = str(a.each(featurefuncs.gff2bed, name_field='Parent'))
+    print results
+    assert results == fix("""
+    chr1	49	300	.	.	+
+    chr1	49	300	gene1	.	+
+    chr1	74	150	mRNA1	.	+
+    chr1	199	275	mRNA1	.	+
+    chr1	1199	1275	.	.	+""")
+
+
+def test_add_color():
+    try:
+        from matplotlib import cm
+    except ImportError:
+        print "matplotlib not installed; skipping test_add_color"
+        return
+
+    def modify_scores(f):
+        fields = f.fields
+        fields[4] = str(f[2])
+        return pybedtools.create_interval_from_list(fields)
+    a = pybedtools.example_bedtool('a.bed')
+    a = a.each(modify_scores).saveas()
+    cmap = cm.jet
+    norm = a.colormap_normalize()
+    results = str(a.each(featurefuncs.add_color, cmap=cmap, norm=norm))
+    print results
+    assert results == fix("""
+    chr1	1	100	feature1	100	+	1	100	0,0,127
+    chr1	100	200	feature2	200	+	100	200	0,0,255
+    chr1	150	500	feature3	500	-	150	500	99,255,147
+    chr1	900	950	feature4	950	+	900	950	127,0,0""")
+
+
+
 #------------------------------------------------------------------------------
 # Tests for IntervalFile, as accessed by BedTool objects
 #------------------------------------------------------------------------------
