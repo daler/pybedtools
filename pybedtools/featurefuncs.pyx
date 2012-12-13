@@ -154,6 +154,27 @@ cpdef three_prime(Interval feature, int upstream=500, int downstream=500, add_to
             pass
     feature.start, feature.stop = safe_start_stop(start, stop)
     return feature
+
+cpdef add_color(Interval feature, cmap, norm):
+    """
+    Signature:
+
+        add_color(feature, cmap, norm)
+
+    Given the matplotlib colormap `cmap` and the matplotlib Normalize instance
+    `norm`, return a new 9-field feature (extended out if needed) with the RGB
+    tuple set according to the score.
+    """
+    if len(feature.fields) < 9:
+        feature = extend_fields(feature, 9)
+        feature[6] = str(feature.start)
+        feature[7] = str(feature.stop)
+
+    rgb_float = cmap(norm(float(feature.score)))
+    feature[8] = ','.join([str(int(i * 255)) for i in rgb_float[:3]])
+    return feature
+
+
 cpdef gff2bed(Interval feature, name_field=None):
     """
     Signature:
