@@ -154,3 +154,31 @@ cpdef three_prime(Interval feature, int upstream=500, int downstream=500, add_to
             pass
     feature.start, feature.stop = safe_start_stop(start, stop)
     return feature
+cpdef gff2bed(Interval feature, name_field=None):
+    """
+    Signature:
+
+        gff2bed(feature, name_field=None)
+
+    Converts a GFF feature into a BED6 feature.  By default, the name of the
+    new BED will be feature.name, but if `name_field` is provided then the name
+    of the new BED will be feature[name_field].  Note that `name_field` can
+    also be an integer, so if you want the BED name to be the GFF featuretype,
+    then use `name_field=2`.
+
+    If the specified field does not exist, then "." will be used for the name.
+    """
+    if name_field is None:
+        name = feature.name
+    else:
+        try:
+            name = feature.attrs[name_field]
+        except (NameError, KeyError):
+            name = "."
+    return create_interval_from_list([
+        str(feature.chrom),
+        str(feature.start),
+        str(feature.stop),
+        name,
+        feature.score,
+        feature.strand])
