@@ -25,15 +25,16 @@ def bigbed(x, genome, output, blockSize=256, itemsPerSlot=512, bedtype=None, _as
         x = x.saveas()
     chromsizes = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
     if bedtype is None:
-        bedtype = x.field_count()
+        bedtype = 'bed%s' % x.field_count()
     cmds = [
         'bedToBigBed',
         x.fn,
         chromsizes,
         output,
+        '-as=%s' % _as,
         '-blockSize=%s' % blockSize,
         '-itemsPerSlot=%s' % itemsPerSlot,
-        '-type=bed%s' % bedtype
+        '-type=%s' % bedtype
     ]
     if unc:
         cmds.append('-unc')
