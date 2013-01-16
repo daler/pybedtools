@@ -40,9 +40,10 @@ def bigbed(x, genome, output, blockSize=256, itemsPerSlot=512, bedtype=None, _as
         cmds.append('-unc')
     if tab:
         cmds.append('-tab')
-    p = subprocess.Popen(cmds)
+    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if p.returncode:
-        raise ValueError
+        msg = "stdout: %s\nstderr: %s" % (stdout, stderr)
+        raise ValueError(msg)
 
     return output
