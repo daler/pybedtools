@@ -355,9 +355,10 @@ class BedTool(object):
                     raise ValueError('File "%s" does not exist' % fn)
                 self._isbam = isBAM(fn)
 
-            # make an IntervalIterator if tuple or list
+            # If tuple or list, then save as file first
+            # (fixes #73)
             elif isinstance(fn, (list, tuple)):
-                fn = IntervalIterator(iter(fn))
+                fn = BedTool(iter(fn)).saveas().fn
 
             # Otherwise assume iterator, say an open file as from
             # subprocess.PIPE
