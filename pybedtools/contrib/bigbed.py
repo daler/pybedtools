@@ -31,7 +31,6 @@ def bigbed(x, genome, output, blockSize=256, itemsPerSlot=512, bedtype=None, _as
         x.fn,
         chromsizes,
         output,
-        '-as=%s' % _as,
         '-blockSize=%s' % blockSize,
         '-itemsPerSlot=%s' % itemsPerSlot,
         '-type=%s' % bedtype
@@ -40,10 +39,12 @@ def bigbed(x, genome, output, blockSize=256, itemsPerSlot=512, bedtype=None, _as
         cmds.append('-unc')
     if tab:
         cmds.append('-tab')
+    if _as:
+        cmds.append('-as=%s' % _as)
     p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if p.returncode:
-        msg = "stdout: %s\nstderr: %s" % (stdout, stderr)
-        raise ValueError(msg)
+        raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
+                         % (" ".join(cmds), stderr, stdout))
 
     return output
