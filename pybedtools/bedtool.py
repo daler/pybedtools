@@ -160,21 +160,6 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 assert len(args) == 1
                 kwargs[other] = args[0]
 
-            # Should this function handle genome files?
-            check_for_genome = uses_genome
-            if uses_genome:
-                if genome_none_if:
-                    for i in genome_none_if:
-                        if i in kwargs or i == implicit:
-                            check_for_genome = False
-                if genome_if:
-                    check_for_genome = False
-                    for i in genome_if:
-                        if (i in kwargs) or (i == implicit):
-                            check_for_genome = True
-            if check_for_genome:
-                kwargs = self.check_genome(**kwargs)
-
             # Add the implicit values to kwargs.  If the current BedTool is
             # BAM, it will automatically be passed to the appropriate
             # BAM-support arg (like `-abam`).  But this also allows the user to
@@ -198,6 +183,21 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                         raise BEDToolsError(
                             '"%s" currently can\'t handle BAM '
                             'input, please use bam_to_bed() first.' % prog)
+
+            # Should this function handle genome files?
+            check_for_genome = uses_genome
+            if uses_genome:
+                if genome_none_if:
+                    for i in genome_none_if:
+                        if i in kwargs or i == implicit:
+                            check_for_genome = False
+                if genome_if:
+                    check_for_genome = False
+                    for i in genome_if:
+                        if (i in kwargs) or (i == implicit):
+                            check_for_genome = True
+            if check_for_genome:
+                kwargs = self.check_genome(**kwargs)
 
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
@@ -1703,7 +1703,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='genomeCoverageBed', implicit='i', bam='ibam',
-            uses_genome=True, nonbam='ALL')
+            genome_none_if=['ibam'], uses_genome=True, nonbam='ALL')
     def genome_coverage(self):
         """
         Wraps `genomeCoverageBed` (v2.15+: `bedtools genomecov`).
@@ -2219,7 +2219,8 @@ class BedTool(object):
         raise StopIteration
 
     def random_jaccard(self, other, genome_fn=None, iterations=None,
-                      processes=1, shuffle_kwargs=None, intersect_kwargs=None):
+                       processes=1, shuffle_kwargs=None,
+                       intersect_kwargs=None):
         """
         Computes the naive Jaccard statistic (intersection divided by union).
 
