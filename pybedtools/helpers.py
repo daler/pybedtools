@@ -298,6 +298,8 @@ def cleanup(verbose=False, remove_all=False):
 
 
 def _version_2_15_plus_names(prog_name):
+    if not settings._v_2_15_plus:
+        return [prog_name]
     try:
         prog_name = settings._prog_names[prog_name]
     except KeyError:
