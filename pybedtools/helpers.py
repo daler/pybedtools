@@ -298,6 +298,8 @@ def cleanup(verbose=False, remove_all=False):
 
 
 def _version_2_15_plus_names(prog_name):
+    if not settings._bedtools_installed:
+        _check_for_bedtools()
     if not settings._v_2_15_plus:
         return [prog_name]
     try:
@@ -574,6 +576,7 @@ def _reldist_output_handler(s, **kwargs):
         for h, d in zip(header, data):
             results[h].append(d)
     return results
+
 
 def n_open_fds():
     pid = os.getpid()

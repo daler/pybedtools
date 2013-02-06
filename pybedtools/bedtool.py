@@ -330,9 +330,6 @@ class BedTool(object):
         self._isbam = False
         self._bam_header = ""
 
-        if not settings._bedtools_installed:
-            helpers._check_for_bedtools()
-
         if from_string:
             bed_contents = fn
             fn = self._tmp()
