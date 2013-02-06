@@ -1710,12 +1710,26 @@ class BedTool(object):
 
         Example usage:
 
+        BAM file input does not require a genome:
+
         >>> a = pybedtools.example_bedtool('x.bam')
-        >>> b = a.genome_coverage(genome='dm3', bg=True)
+        >>> b = a.genome_coverage(bg=True)
         >>> b.head(3) #doctest: +NORMALIZE_WHITESPACE
         chr2L	9329	9365	1
         chr2L	10212	10248	1
         chr2L	10255	10291	1
+
+        Other input does require a genome:
+
+        >>> a = pybedtools.example_bedtool('x.bed')
+        >>> b = a.genome_coverage(bg=True, genome='dm3')
+        >>> b.head(3) #doctest: +NORMALIZE_WHITESPACE
+        chr2L	9329	9365	1
+        chr2L	10212	10248	1
+        chr2L	10255	10291	1
+
+
+
         """
 
     @_log_to_history

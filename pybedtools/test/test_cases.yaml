@@ -347,7 +347,7 @@
 -   method: genome_coverage
     kwargs:
         ibam: gdc.bam
-        genome: dm3
+        #genome: dm3
         bg: True
     expected: |
         chr2L	10	15	1
@@ -361,7 +361,7 @@
 -   method: genome_coverage
     kwargs:
         i: gdc.bam
-        genome: dm3
+        #genome: dm3
         bg: True
     expected: |
         chr2L	10	15	1
