@@ -28,7 +28,7 @@ _bam_registry = {}
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
            nonbam=None, force_bam=False, genome_none_if=None, genome_if=None,
-           does_not_return_bedtool=None):
+           genome_ok_if=None, does_not_return_bedtool=None):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -79,6 +79,11 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     *genome_none_if* is a list of arguments that will ignore the requirement
     for a genome.  This is needed for window_maker, where -b and -g are
     mutually exclusive.
+
+    *genome_ok_if* is a list of arguments that, if they are in
+    *genome_none_if*, are still OK to pass in.  This is needed for bedtool
+    genomecov, where -g is not needed if -ibam is specified...but it's still OK
+    if the user passes a genome arg.
 
     *genome_if* is a list of arguments that will trigger the requirement for
     a genome; otherwise no genome needs to be specified.
@@ -191,6 +196,15 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     for i in genome_none_if:
                         if i in kwargs or i == implicit:
                             check_for_genome = False
+
+                    # for genomecov, if -ibam then -g is optional.  So it's OK
+                    # for the user to provide genome or g kwargs, even if
+                    # -ibam.
+                    if genome_ok_if:
+                        for i in genome_ok_if:
+                            if i in kwargs or i == implicit:
+                                if ('g' in kwargs) or ('genome' in kwargs):
+                                    check_for_genome = True
                 if genome_if:
                     check_for_genome = False
                     for i in genome_if:
@@ -1236,6 +1250,8 @@ class BedTool(object):
                 except OverflowError:
                     # This can happen if coords are negative
                     continue
+                except IndexError:
+                    continue
                 except StopIteration:
                     break
         return BedTool(_generator())
@@ -1703,7 +1719,8 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog='genomeCoverageBed', implicit='i', bam='ibam',
-            genome_none_if=['ibam'], uses_genome=True, nonbam='ALL')
+            genome_none_if=['ibam'], genome_ok_if=['ibam'], uses_genome=True,
+            nonbam='ALL')
     def genome_coverage(self):
         """
         Wraps `genomeCoverageBed` (v2.15+: `bedtools genomecov`).
