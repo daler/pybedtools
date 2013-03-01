@@ -545,6 +545,7 @@ def _jaccard_output_to_dict(s, **kwargs):
     data[0] = int(data[0])
     data[1] = int(data[1])
     data[2] = float(data[2])
+    data[3] = int(data[3])
     return dict(zip(header, data))
 
 
