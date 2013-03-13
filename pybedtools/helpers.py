@@ -498,6 +498,8 @@ def _check_sequence_stderr(x):
     """
     if x.startswith('index file'):
         return True
+    if x.startswith("WARNING"):
+        return True
     return False
 
 
