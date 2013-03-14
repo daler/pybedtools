@@ -139,7 +139,7 @@ def main():
                     'be "out.png" in current directory.')
     args = ap.parse_args()
 
-    if not (args.bed and args.gff):
+    if not (args.bed and args.gff) and not args.test:
         ap.print_help()
         sys.exit(1)
 
