@@ -10,6 +10,7 @@ an exon in one isoform and an intron in another isoform, the class is "exon,
 intron".
 """
 
+import sys
 import urllib
 import urllib2
 import argparse
@@ -137,6 +138,10 @@ def main():
                     help='Run test, overwriting all other args. Result will '
                     'be "out.png" in current directory.')
     args = ap.parse_args()
+
+    if not (args.bed and args.gff):
+        ap.print_help()
+        sys.exit(1)
 
     if not args.test:
         if args.include and args.exclude:
