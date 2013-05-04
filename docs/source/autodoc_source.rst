@@ -256,6 +256,14 @@ functions help manage these files.
     pybedtools.chromsizes
     pybedtools.chromsizes_to_file
 
+
+Performing operations in parallel (multiprocessing)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.parallel.parallel_apply
+
 :mod:`pybedtools.contrib`
 -------------------------
 The :mod:`pybedtools.contrib` module contains higher-level code that leverages

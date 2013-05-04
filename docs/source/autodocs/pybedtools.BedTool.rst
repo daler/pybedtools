@@ -28,6 +28,7 @@ pybedtools.BedTool
       ~BedTool.check_genome
       ~BedTool.closest
       ~BedTool.cluster
+      ~BedTool.colormap_normalize
       ~BedTool.complement
       ~BedTool.count
       ~BedTool.count_hits
@@ -60,12 +61,14 @@ pybedtools.BedTool
       ~BedTool.overlap
       ~BedTool.pair_to_bed
       ~BedTool.pair_to_pair
+      ~BedTool.parallel_apply
       ~BedTool.print_sequence
       ~BedTool.random
       ~BedTool.random_jaccard
       ~BedTool.random_op
       ~BedTool.random_subset
       ~BedTool.randomintersection
+      ~BedTool.randomintersection_bp
       ~BedTool.randomstats
       ~BedTool.relative_distance
       ~BedTool.reldist
