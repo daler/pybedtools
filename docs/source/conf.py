@@ -39,38 +39,6 @@ from pybedtools import *
 import pybedtools
 """
 
-
-class Mock(object):
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return Mock()
-
-    @classmethod
-    def __getattr__(cls, name):
-        if name in ('__file__', '__path__'):
-            return '/dev/null'
-        elif name[0] == name[0].upper():
-            mockType = type(name, (), {})
-            mockType.__module__ = __name__
-            return mockType
-        else:
-            return Mock()
-
-MOCK_MODULES = ['cbedtools']
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
-
-
-
-
-
-
-
-
-
-
 autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
@@ -147,7 +115,7 @@ html_theme = 'nature'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+#html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
