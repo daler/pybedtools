@@ -521,15 +521,16 @@ def _call_randomintersect(_self, other, iterations, intersect_kwargs,
     )
 
 
-def close_or_delete(x):
+def close_or_delete(*args):
     """
     Single function that can be used to get rid of a BedTool, whether it's a
     streaming or file-based version.
     """
-    if isinstance(x.fn, basestring):
-        os.unlink(x.fn)
-    elif hasattr(x.fn, 'close'):
-        x.fn.close()
+    for x in args:
+        if isinstance(x.fn, basestring):
+            os.unlink(x.fn)
+        elif hasattr(x.fn, 'close'):
+            x.fn.close()
 
 
 def _jaccard_output_to_dict(s, **kwargs):
