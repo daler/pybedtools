@@ -12,6 +12,7 @@
 # serve to show the default.
 
 import sys, os
+import sphinx_bootstrap_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -27,7 +28,9 @@ from pybedtools import __version__ as version
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest', 'sphinx.ext.todo', 'sphinx.ext.coverage','sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
+              'sphinx.ext.doctest', 'sphinx.ext.todo',
+              'sphinx.ext.coverage','sphinx.ext.viewcode', 'numpydoc']
 
 doctest_test_doctest_blocks = 'default'
 
@@ -36,6 +39,38 @@ doctest_global_setup = """
 from pybedtools import *
 import pybedtools
 """
+
+
+class Mock(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return Mock()
+
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            mockType = type(name, (), {})
+            mockType.__module__ = __name__
+            return mockType
+        else:
+            return Mock()
+
+MOCK_MODULES = ['cbedtools']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
+
+
+
+
+
+
+
+
+
 
 autosummary_generate = True
 
