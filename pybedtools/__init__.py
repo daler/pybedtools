@@ -221,7 +221,7 @@ def chromsizes(genome):
         return get_chromsizes_from_ucsc(genome)
 
 
-def chromsizes_to_file(chromsizes, fn=None):
+def chromsizes_to_file(chrom_sizes, fn=None):
     """
     Converts a *chromsizes* dictionary to a file.  If *fn* is None, then a
     tempfile is created (which can be deleted with pybedtools.cleanup()).
@@ -234,8 +234,10 @@ def chromsizes_to_file(chromsizes, fn=None):
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         fn = tmpfn
+    if isinstance(chrom_sizes, basestring):
+        chrom_sizes = chromsizes(chrom_sizes)
     fout = open(fn, 'w')
-    for chrom, bounds in sorted(chromsizes.items()):
+    for chrom, bounds in sorted(chrom_sizes.items()):
         line = chrom + '\t' + str(bounds[1]) + '\n'
         fout.write(line)
     fout.close()
