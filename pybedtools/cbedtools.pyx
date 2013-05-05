@@ -117,6 +117,8 @@ cdef class Attributes(dict):
         else:
             self.sep, self.field_sep = (';', ' ')
 
+        self._quoted = {}
+
         # TODO: pathological case . . . detect this as GFF:
         #
         #   class_code=" "
@@ -129,7 +131,6 @@ cdef class Attributes(dict):
         if attr_str == "":
             return
 
-        self._quoted = {}
         kvs = map(str.strip, attr_str.strip().split(self.sep))
         for field, value in [kv.split(self.field_sep, 1) for kv in kvs if kv]:
             if value.count('"') == 2:
