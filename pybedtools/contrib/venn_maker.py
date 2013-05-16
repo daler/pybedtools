@@ -9,7 +9,7 @@ import string
 import pybedtools
 from pybedtools import helpers
 import subprocess
-
+from collections import OrderedDict
 
 # really just fill in x and filename...leave the rest up to the user.
 #
@@ -205,7 +205,7 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
         _beds.append(bed)
 
     cleaned = cleaned_intersect(_beds)
-    results = dict(zip(names, cleaned))
+    results = OrderedDict(zip(names, cleaned))
 
     s = template.substitute(
             x=_dict_to_R_named_list(results),
