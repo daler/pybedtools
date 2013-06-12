@@ -54,7 +54,7 @@ If this happens, from the command line you can always do a::
 
     rm /tmp/pybedtools.*.tmp
 
-In the middle of a session, you can force a deletion all tempfiles created thus far::
+In the middle of a session, you can force a deletion of all tempfiles created thus far::
 
     >>> # Don't do this yet if you're following the tutorial!
     >>> pybedtools.cleanup()
