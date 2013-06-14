@@ -5,8 +5,8 @@ from collections import defaultdict
 
 
 class MultiClassifier(object):
-    def __init__(self, bed, annotations, sample_name='sample', names=None,
-                 prefix='.', genome=None):
+    def __init__(self, bed, annotations, genome, sample_name='sample', names=None,
+                 prefix='.'):
         """
         Classifies files using bedtools multiinter.
 
@@ -18,11 +18,14 @@ class MultiClassifier(object):
 
             bed = pybedtools.BedTool('reads.bam').bam_to_bed(split=True).fn
 
-        `annotations` will be used to classify the features in `bed`.  If
-        `annotations` is a list, then use those annotations directly.  If it's
-        a BedTool or string, then split the annotations into multiple files
-        based on the featuretype (assumes GFF/GTF format).  Each of these new
-        filenames will get the `prefix` supplied.
+        `annotations` will be used to classify the features in `bed`.
+
+            If `annotations` is a list, then use those annotations directly.
+
+            If `annotations` is a BedTool or string, then split the annotations
+            into multiple files based on the featuretype (assumes GFF/GTF
+            format).  Each of these new filenames will get the `prefix`
+            supplied.
 
         `sample_name` is the name of the sample -- used internally, but it
         needs to be a unique name that is not the name of a featuretype in the
@@ -80,20 +83,28 @@ class MultiClassifier(object):
 
         """
         self.bed = pybedtools.BedTool(bed)
-        self.sample_name = 'sample'
+        self.sample_name = sample_name
         self.genome = genome
 
+        # If a list of annotation files was provided, then use them directly,
+        # ensuring that they are BedTools objects
         if isinstance(annotations, (list, tuple)):
             annotations = [pybedtools.BedTool(i).fn for i in annotations]
+
+            # ... name-munge as necessary
             if names is None:
                 names = annotations
             if hasattr(names, '__call__'):
                 names = [names(i) for i in annotations]
+
+        # Otherwise, split the single annotation file into a form suitible for
+        # use by multiintersect
         else:
             names, files = self.split_annotations(annotations)
             annotations = list(files)
             names = list(names)
 
+        # multiintersect still needs the input file (e.g., peaks)
         self.annotations = [self.bed.fn] + annotations
         self.names = [self.sample_name] + names
 
@@ -101,10 +112,28 @@ class MultiClassifier(object):
         self.class_genome_bp = defaultdict(int)
 
     @classmethod
-    def split_annotations(self, annotations, prefix='split_'):
+    def split_annotations(self, annotations, prefix='split_', name_func=None):
+        """
+        Given an annotation file in GFF format, split into different files --
+        each file containing only one type of feature.
+
+        `prefix` will be added to each featuretype to construct the filenames.
+
+        `name_func`, by default, will use the feature type field of a GTF/GFF
+        file, or the feature.name attribute of another format.  Supply a custom
+        function that accepts a pybedtools.Interval instance for more control.
+        """
+        # dict of open files, one for each featuretype found
         files = {}
-        for feature in pybedtools.BedTool(annotations):
-            featuretype = feature[2]
+        annotations = pybedtools.BedTool(annotations)
+        ft = annotations.file_type
+        if name_func is None:
+            if ft == 'gff':
+                name_func = lambda x: x[2]
+            else:
+                name_func = lambda x: x.name
+        for feature in annotations:
+            featuretype = name_func(feature)
             if featuretype not in files:
                 filename = '%s%s' % (prefix, featuretype)
                 files[featuretype] = open(filename, 'w')
@@ -116,30 +145,54 @@ class MultiClassifier(object):
 
     def classify(self, **kwargs):
         """
-        Classify the features in self.bed.  `kwargs` are passed on to
-        BedTool.multi_intersect.
+        Classify the features in self.bed, populating several dictionaries in
+        self.  `kwargs` are passed on to BedTool.multi_intersect.  The
+        "empty=True" kwarg to multi_intersect is always provided to make sure
+        the classification works correctly.
         """
         self.results = self.bed.multi_intersect(
             i=[self.bed.fn] + self.annotations,
-            cluster=True,
-            names=['sample'] + self.names,
-            genome=self.genome, empty=True)
+            names=[self.sample_name] + self.names,
+            genome=self.genome,
+            empty=True)
 
-        sample = set(self.sample_name)
+        sample = set([self.sample_name])
 
         for i in self.results:
+            # Even if there were multiple annotations, only report *that* there
+            # was a hit, e.g., "exon,exon,exon,5'UTR" -> (exon, 5'UTR)
             full_class = frozenset(i[4].split(','))
+
+            # Including sample name in class name would be redundant, so remove
+            # it
             class_name = full_class.difference(sample)
+
+            # Only report if sample was in the class
             if self.sample_name in full_class:
                 self.class_sample_bp[class_name] += len(i)
 
+            # But always report the presence of the class, regardless of if
+            # there was a hit in the sample or not.
             self.class_genome_bp[class_name] += len(i)
+
+        # Genomic unannotated has the key ["none"]; sample unannotated as the
+        # key [] (because it was set-differenced out)
+        self.class_genome_bp[frozenset(['unannotated'])] = \
+            self.class_genome_bp.pop(frozenset(['none']), 0) \
+            + self.class_genome_bp.pop(frozenset([]), 0)
+
+
+        self.class_sample_bp[frozenset(['unannotated'])] = \
+                             self.class_sample_bp.pop(frozenset([]), 0)
 
     def table(self, include=None):
         """
         If `include` is not None, then return versions of self.class_genome_bp
         and self.class_sample_bp that only look at the featuretypes in
-        `include`.  Otherwise, simply return these dictionaries unchanged.
+        `include`.
+
+        Otherwise, simply return these dictionaries unchanged (and including
+        all available featuretypes)
         """
         if not include:
             return self.class_sample_bp, self.class_genome_bp
