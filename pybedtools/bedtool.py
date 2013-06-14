@@ -2218,7 +2218,14 @@ class BedTool(object):
             del distribution
         return d
 
-    def random_op(self, iterations, func, func_args, func_kwargs, processes=1):
+    def random_op(self, *args, **kwargs):
+        """
+        For backwards compatibility; see BedTool.parallel_apply instead.
+        """
+        return self.parallel_apply(*args, **kwargs)
+
+    def parallel_apply(self, iterations, func, func_args, func_kwargs,
+                       processes=1, _orig_pool=None):
         """
         Generalized method for applying a function in parallel.
 
@@ -2246,10 +2253,28 @@ class BedTool(object):
               process boundaries
 
             * the function can have any signature and have any return value
+
+        `_orig_pool` can be a previously-created multiprocessing.Pool instance;
+        otherwise, a new Pool will be created with `processes`
         """
-        p = multiprocessing.Pool(processes)
+        if processes == 1:
+            for it in range(iterations):
+                yield func(*func_args, **func_kwargs)
+            raise StopIteration
+
+        if _orig_pool:
+            p = _orig_pool
+        else:
+            p = multiprocessing.Pool(processes)
         iterations_each = [iterations / processes] * processes
         iterations_each[-1] += iterations % processes
+
+        # FYI some useful info on apply_async:
+        # http://stackoverflow.com/questions/8533318/
+        #      python-multiprocessing-pool-when-to-use-apply-apply-async-or-map
+        #
+        # Here, we don't care about the order, and don't want the subprocesses
+        # to block.
         results = [
             p.apply_async(func, func_args, func_kwargs)
             for it in range(iterations)]
