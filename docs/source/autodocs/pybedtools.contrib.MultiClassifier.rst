@@ -15,6 +15,7 @@ pybedtools.contrib.MultiClassifier
    
       ~MultiClassifier.__init__
       ~MultiClassifier.classify
+      ~MultiClassifier.hierarchical_table
       ~MultiClassifier.print_table
       ~MultiClassifier.split_annotations
       ~MultiClassifier.table
