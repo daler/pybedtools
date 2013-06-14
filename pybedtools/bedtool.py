@@ -2283,8 +2283,8 @@ class BedTool(object):
         raise StopIteration
 
     def random_jaccard(self, other, genome_fn=None, iterations=None,
-                       processes=1, shuffle_kwargs=None,
-                       intersect_kwargs=None):
+                       processes=1, _orig_pool=None, shuffle_kwargs=None,
+                       jaccard_kwargs=None):
         """
         Computes the naive Jaccard statistic (intersection divided by union).
 
@@ -2307,26 +2307,29 @@ class BedTool(object):
         randomized statistics (which will be an empty list if `iterations` was
         None).
         """
-        if iterations is None:
-            return pybedtools.stats.jaccard(self, other), []
+        if shuffle_kwargs is None:
+            shuffle_kwargs = {}
+        if jaccard_kwargs is None:
+            jaccard_kwargs = {}
         if not genome_fn:
             raise ValueError(
                 "Need a genome filename in order to perform randomization")
-        return pybedtools.stats.jaccard(self, other), \
-            list(
-                self.random_op(
-                    iterations=iterations,
-                    func=pybedtools.stats.random_jaccard,
-                    func_args=(self, other),
-                    func_kwargs=dict(
-                        genome_fn=genome_fn,
-                        shuffle_kwargs=shuffle_kwargs,
-                        intersect_kwargs=intersect_kwargs),
-                    processes=processes)
+        return list(
+            self.parallel_apply(
+                iterations=iterations,
+                func=pybedtools.stats.random_jaccard,
+                func_args=(self, other),
+                func_kwargs=dict(
+                    genome_fn=genome_fn,
+                    shuffle_kwargs=shuffle_kwargs,
+                    jaccard_kwargs=jaccard_kwargs),
+                processes=processes,
+                _orig_pool=_orig_pool,
             )
+        )
 
     def _randomintersection(self, other, iterations, genome_fn,
-                            intersect_kwargs=None, shuffle_kwargs=None,
+                            intersect_kwargs=None, _orig_pool=None, shuffle_kwargs=None,
                             processes=1):
         """
         Re-implementation of BedTool.randomintersection using the new
@@ -2335,12 +2338,12 @@ class BedTool(object):
         if shuffle_kwargs is None:
             shuffle_kwargs = {}
         if intersect_kwargs is None:
-            intersect_kwargs = {}
+            intersect_kwargs = dict(u=True)
         if not genome_fn:
             raise ValueError(
                 "Need a genome filename in order to perform randomization")
         return list(
-            self.random_op(
+            self.parallel_apply(
                 iterations=iterations,
                 func=pybedtools.stats.random_intersection,
                 func_args=(self, other),
@@ -2348,7 +2351,8 @@ class BedTool(object):
                     genome_fn=genome_fn,
                     shuffle_kwargs=shuffle_kwargs,
                     intersect_kwargs=intersect_kwargs),
-                processes=processes
+                processes=processes,
+                _orig_pool=_orig_pool,
             )
         )
 
