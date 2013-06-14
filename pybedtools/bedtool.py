@@ -478,16 +478,24 @@ class BedTool(object):
         """
         Prepare a BedTool for use with Tabix.
 
-        Helper function to return a new BedTool that has been BGZIP compressed
+        Returns a new BedTool that has been BGZIP compressed
         and indexed by tabix.
 
-        If `in_place` is True, then 1) assume the file is already sorted and 2)
-        replace the existing file with the BGZIPed version.
+        Parameters
+        ----------
 
-        `force` will overwrite both the index as well as the BGZIP file.
+        in_place : bool
+            If True (default), then assume the file is already sorted and
+            replace the existing file with the BGZIPed version.
 
-        If `is_sorted`, then assume the file is already sorted so that
-        BedTool.bgzip() doesn't have to do that work.
+        force : bool
+            If True (default is False), then overwrite both the index and the
+            BGZIP file.
+
+        is_sorted : bool
+            If True (default is False), then assume the file is already sorted
+            so that BedTool.bgzip() doesn't have to do that work.
+
         """
         if not settings._tabix_installed:
             helpers._check_for_tabix()
