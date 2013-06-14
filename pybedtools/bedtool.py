@@ -2844,7 +2844,9 @@ class BedTool(object):
             norm.vmax = vmax
 
         else:
-            norm.autoscale(np.array([i.score for i in self], dtype=float))
+            scores = np.array([i.score for i in self], dtype=float)
+            scores = scores[np.isfinite(scores)]
+            norm.autoscale(scores)
 
         return norm
 
