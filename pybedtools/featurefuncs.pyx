@@ -208,3 +208,64 @@ cpdef gff2bed(Interval feature, name_field=None):
         name,
         feature.score,
         feature.strand])
+
+
+cpdef bed2gff(Interval feature):
+    """
+    Signature:
+
+        bed2gff(feature)
+
+    Converts a BED feature (BED3 through BED12) into a GFF format.
+
+    Chrom, start, stop, score, and strand are put directly into the
+    corresponding GFF fields.  Other BED fields are put into the GFF attributes
+    field, named according to the UCSC BED format definition.
+
+    If there are more than 12 BED fields, the additional fields will be added
+    to the GFF attributes using the 0-based index (so starting at "12") as the
+    key.
+
+    GFF fields that do not have a direct mapping to BED format (feature type,
+    source, phase) are set to ".".
+
+    1 bp is added to the start position to finish the conversion to GFF.
+    """
+
+    # Note that Interval.score, .strand, and .name have a default of ".", so no
+    # need to do the extra try/except IndexError for those fields.
+    mapping = (
+        (6, "thickStart"),
+        (7, "thickEnd"),
+        (8, "itemRgb"),
+        (9, "blockCount"),
+        (10, "blockSizes"),
+        (11, "blockStarts")
+    )
+
+    # Add any standard BED fields we might have
+    attributes = ['Name="%s"' % feature.name]
+    for k, v in mapping:
+        try:
+            attributes.append('%s="%s"' % (v, feature.fields[k]))
+        except IndexError:
+            break
+
+    # Add any additional fields, keyed by their index
+    if len(feature.fields) > 12:
+        for i in range(12, len(feature.fields)):
+            attributes.append('%s="%s"' % (i, feature.fields[i]))
+
+    attributes = '; '.join(attributes) + ';'
+
+    return create_interval_from_list([
+        str(feature.chrom),
+        '.',
+        '.',
+        str(feature.start + 1),
+        str(feature.stop),
+        feature.score,
+        feature.strand,
+        '.',
+        attributes])
+
