@@ -2356,6 +2356,35 @@ class BedTool(object):
             )
         )
 
+    def randomintersection_bp(self, other, iterations, genome_fn,
+                              intersect_kwargs=None, shuffle_kwargs=None,
+                              processes=1, _orig_pool=None):
+        """
+        Like randomintersection, but return the bp overlap instead of the
+        number of intersecting intervals.
+        """
+        if shuffle_kwargs is None:
+            shuffle_kwargs = {}
+        if intersect_kwargs is None:
+            intersect_kwargs = {}
+        if not genome_fn:
+            raise ValueError(
+                "Need a genome filename in order to perform randomization")
+        return list(
+            self.parallel_apply(
+                iterations=iterations,
+                func=pybedtools.stats.random_intersection_bp,
+                func_args=(self, other),
+                func_kwargs=dict(
+                    genome_fn=genome_fn,
+                    shuffle_kwargs=shuffle_kwargs,
+                    intersect_kwargs=intersect_kwargs),
+                processes=processes,
+                _orig_pool=_orig_pool,
+            )
+        )
+
+
     def randomintersection(self, other, iterations, intersect_kwargs=None,
                            shuffle_kwargs=None, debug=False,
                            report_iterations=False, processes=None,
