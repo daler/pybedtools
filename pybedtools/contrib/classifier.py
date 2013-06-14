@@ -215,6 +215,64 @@ class MultiClassifier(object):
 
         return d, s
 
+    def hierarchical_table(self, order, include=None, include_unannotated=True):
+        """
+        Returns a hierarchically-ordered table, using the specified `order`.
+
+        For example the order::
+
+                ['TSS', 'five_prime_UTR', 'CDS', 'intron', 'three_prime_UTR', 'TTS']
+
+        would weight the classes from the 5'-most end of the gene.
+
+        This summarizes the classes based on the highest-priority featuretype
+        in the hierarchy.
+
+        For example, using the above hierarchy, the following summary-class
+        assignments will be made::
+
+            (TSS, five_prime_UTR)          -> TSS
+            (intron, CDS, TSS)             -> TSS
+            (intron, CDS, three_prime_UTR) -> CDS
+
+        The table has the following format, where the "classes" list is ordered by sample bp.
+
+            {
+                'TSS': [
+                        (<class name 1>, <sample bp>, <genomic bp>),
+                        (<class name 2>, <sample bp>, <genomic bp>),
+                        ...
+                        ],
+
+                'five_prime_UTR': [
+                        (<class name 1>, <sample bp>, <genomic bp>),
+                        (<class name 2>, <sample bp>, <genomic bp>),
+                        ...
+                        ],
+                ...
+
+            }
+        """
+        sample, genomic = self.table(include=include)
+        sample = sample.copy()
+        genomic = genomic.copy()
+        keys = list(set(sample.keys() + genomic.keys()))
+        table = {}
+        for h in order:
+            classes = []
+            for k in keys:
+                if h in k:
+                    sample_bp = sample.pop(k, 0)
+                    genomic_bp = genomic.pop(k, 0)
+                    classes.append(
+                        (k, sample_bp, genomic_bp)
+                    )
+            table[h] = sorted(classes, key=lambda x: x[1], reverse=True)
+        #if include_unannotated:
+        #    table['unannotated'] = [(frozenset(['unannotated']), sample.pop(frozenset([]), 0), genomic.pop(frozenset([]), 0))]
+        return table
+
+
     def print_table(self, include=None):
         """
         Returns a string containing a tab-delimited table, including header,
