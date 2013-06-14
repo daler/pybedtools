@@ -117,7 +117,7 @@ that relies on a more recent version of BEDTools than you have installed.
 
 Principle 4: Sensible default args
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If we were running the ``mergeBed`` program from the command line, we would
+If we were running the ``mergeBed`` program from the command line, we
 would have to specify the input file with the :option:`mergeBed -i` option.
 
 :mod:`pybedtools` assumes that if we're calling the :meth:`merge` method on
