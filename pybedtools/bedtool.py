@@ -2850,6 +2850,23 @@ class BedTool(object):
 
         return norm
 
+    def at(self, inds):
+        """
+        Returns a new BedTool with only intervals at lines `inds`
+        """
+        length = len(inds)
+        def _gen():
+            k = 0
+            for i, feature in enumerate(self):
+                if i == inds[k]:
+                    yield feature
+                    k += 1
+                    if k == length:
+                        break
+        return BedTool(_gen()).saveas()
+
+
+
 
 class BAM(object):
     def __init__(self, stream, header_only=False):
