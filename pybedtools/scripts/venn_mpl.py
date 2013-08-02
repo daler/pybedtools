@@ -17,7 +17,7 @@ import sys
 import os
 import pybedtools
 
-def venn_mpl(a, b, c, colors=None, outfn=None, labels=None):
+def venn_mpl(a, b, c, colors=None, outfn='out.png', labels=None):
     """
     *a*, *b*, and *c* are filenames to BED-like files.
 
