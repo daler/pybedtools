@@ -1,4 +1,5 @@
 import pybedtools
+from tfuncs import setup, teardown
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises
 import os
@@ -8,10 +9,10 @@ import sys
 def test_annotate_main():
     # exits after printing help when sys.argv is not as it should be.
     orig_stderr = sys.stderr
-    sys.stderr = open('tmp','w')
+    sys.stderr = open('annotmp','w')
     assert_raises(SystemExit, annotate.main)
     sys.stderr = orig_stderr
-    os.unlink('tmp')
+    os.unlink('annotmp')
 
 def test_annotate_closest():
     a = pybedtools.example_bedtool('m1.bed')
@@ -113,17 +114,14 @@ def test_venn_gchart():
 
 def test_venn_mpl_main():
     orig_stderr = sys.stderr
-    sys.stderr = open('tmp','w')
+    sys.stderr = open('mpltmp','w')
     assert_raises(SystemExit, venn_mpl.main)
     sys.stderr = orig_stderr
-    os.unlink('tmp')
+    os.unlink('mpltmp')
 
 def test_venn_gchart_main():
     orig_stderr = sys.stderr
-    sys.stderr = open('tmp','w')
+    sys.stderr = open('gcharttmp','w')
     assert_raises(SystemExit, venn_gchart.main)
     sys.stderr = orig_stderr
-    os.unlink('tmp')
-
-def teardown():
-    pybedtools.cleanup()
+    os.unlink('gcharttmp')

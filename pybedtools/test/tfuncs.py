@@ -13,3 +13,4 @@ def setup():
 def teardown():
     if os.path.exists(test_tempdir):
         os.system('rm -r %s' % test_tempdir)
+    pybedtools.cleanup()
