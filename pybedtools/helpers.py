@@ -592,4 +592,40 @@ def n_open_fds():
             nprocs += 1
     return nprocs
 
+
+import re
+coord_re = re.compile(
+    r"""
+    (?P<chrom>.+):
+    (?P<start>\d+)-
+    (?P<stop>\d+)
+    (?:\[(?P<strand>.)\])?""", re.VERBOSE)
+
+
+def string_to_interval(s):
+    """
+    Convert string of the form "chrom:start-stop" or "chrom:start-stop[strand]" to an interval.
+
+    Assumes zero-based coords.
+
+    If it's already an interval, then return it as-is.
+    """
+    if isinstance(s, basestring):
+        m = coord_re.search(s)
+        if m.group('strand'):
+            return pybedtools.create_interval_from_list([
+                m.group('chrom'),
+                m.group('start'),
+                m.group('stop'),
+                '.',
+                '0',
+                m.group('strand')])
+        else:
+            return pybedtools.create_interval_from_list([
+                m.group('chrom'),
+                m.group('start'),
+                m.group('stop'),
+            ])
+    return s
+
 atexit.register(cleanup)

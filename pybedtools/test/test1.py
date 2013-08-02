@@ -124,7 +124,14 @@ def test_tabix():
         if os.path.exists(fn):
             os.unlink(fn)
 
+def test_tabix_intervals():
+    a = pybedtools.BedTool('chr1 25 30', from_string=True).tabix()
+    assert len(a.tabix_intervals('chr1:30-35')) == 0
+    assert len(a.tabix_intervals('chr1:29-30')) == 1
 
+    # make sure it works OK even if strand was provided
+    assert len(a.tabix_intervals('chr1:30-35[-]')) == 0
+    assert len(a.tabix_intervals('chr1:29-30[-]')) == 1
 
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests

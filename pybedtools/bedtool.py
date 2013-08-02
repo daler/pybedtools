@@ -463,13 +463,14 @@ class BedTool(object):
             raise ValueError(
                 "This BedTool has not been indexed for tabix "
                 "-- please use the .tabix() method")
-        if isinstance(interval_or_string, basestring):
-            coords = interval_or_string
-        else:
-            coords = '%s:%s-%s' % (
-                interval_or_string.chrom,
-                interval_or_string.start,
-                interval_or_string.stop)
+
+        # NOTE: tabix expects 1-based coords, but BEDTools works with
+        # zero-based.
+        interval = helpers.string_to_interval(interval_or_string)
+        coords = '%s:%s-%s' % (
+            interval.chrom,
+            interval.start + 1,  # convert to 1-based coords
+            interval.stop)
         cmds = ['tabix', self.fn, coords]
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
         return BedTool(p.stdout)
@@ -522,13 +523,14 @@ class BedTool(object):
         Verifies that we're working with a tabixed file: a string filename
         pointing to a BGZIPed file with a .tbi file in the same dir.
         """
-        if not isinstance(self.fn, basestring):
-            return False
-        if not isBGZIP(self.fn):
-            return False
-        if not os.path.exists(self.fn + '.tbi'):
-            return False
-        return True
+        if (
+            isinstance(self.fn, basestring)
+            and
+            isBGZIP(self.fn)
+            and
+            os.path.exists(self.fn + '.tbi')
+        ):
+            return True
 
     def bgzip(self, in_place=True, force=False, is_sorted=False):
         """
