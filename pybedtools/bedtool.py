@@ -1253,8 +1253,10 @@ class BedTool(object):
             while True:
                 try:
                     feature = i.next()
-                    if feature.start < feature.stop:
+                    if feature.start <= feature.stop:
                         yield feature
+                    else:
+                        continue
                 except pybedtools.MalformedBedLineError:
                     continue
                 except OverflowError:
