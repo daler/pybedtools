@@ -174,3 +174,18 @@ def test_cleaned_intersect():
 
     if os.path.exists('out.tiff'):
         os.unlink('out.tiff')
+
+
+def test_venn_maker_3way_1empty():
+    # Fix issue #95. The problem was that BedTool.cat() failed when checking
+    # field counts on an empty file.  The fix was to make cat() aware of empty
+    # files when checking field num and field type.
+    a = pybedtools.BedTool("""
+    chr1 10 100
+    chr2 10 100""", from_string=True)
+    b = pybedtools.BedTool("""
+    chr1 12 80""", from_string=True)
+    c = pybedtools.BedTool("""
+    chr2 20 40""", from_string=True)
+    pybedtools.contrib.venn_maker.venn_maker([a, b, c], run=True, figure_filename='t.tiff')
+    #os.unlink('t.tiff')

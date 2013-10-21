@@ -2551,11 +2551,12 @@ class BedTool(object):
         if not force_truncate:
             try:
                 a_type = self.file_type
-                a_field_num = self.field_count()
-                same_type = all(a_type == other.file_type
-                                for other in other_beds)
-                same_field_num = all(a_field_num == other.field_count()
-                                     for other in other_beds)
+
+                files = [self] + other_beds
+                filetypes = set([self.file_type] + [i.file_type for i in other_beds]).difference(['empty'])
+                field_nums = set([i.field_count for i in other_beds]).difference([None])
+                same_field_num = len(field_nums) == 1
+                same_type = len(set(filetypes)) == 1
             except ValueError:
                 raise ValueError(
                     "Can't check filetype or field count -- "
