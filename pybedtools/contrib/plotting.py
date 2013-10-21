@@ -185,7 +185,71 @@ class Track(collections.PolyCollection):
         return self._ybase + (self.ymax - self._ybase) / 2.0
 
 
-def binary_heatmap(bts, names, plot=True):
+class BinaryHeatmap(object):
+    """
+    Class-based version of the `binary_heatmap` function for more flexibility.
+    """
+
+    def __init__(self, bts, names):
+        self.bts = bts
+        self.names = names
+
+        # Be flexible about input types
+        _bts = []
+        for bt in bts:
+            if isinstance(bt, pybedtools.BedTool):
+                if not isinstance(bt.fn, basestring):
+                    bt = bt.saveas()
+                _bts.append(bt.fn)
+            elif isinstance(bt, basestring):
+                _bts.append(bt)
+
+        # Do the multi-intersection.
+        self.results = pybedtools.BedTool().multi_intersect(
+                i=_bts,
+                names=names,
+                cluster=True)
+
+        # If 4 files were provided with labels 'a', 'b', 'c', and 'd, each line
+        # would look something like:
+        #
+        #   chr2L    65716    65765    4    a,b,c,d    1    1    1    1
+        #   chr2L    71986    72326    1    c          0    0    1    0
+        #
+        # The last four columns will become the matrix; save the class labels (5th
+        # column) for a printed out report
+        self.class_counts = defaultdict(int)
+        _classified_intervals = defaultdict(list)
+        self.matrix = []
+        for item in self.results:
+            cls = item[4]
+            self.class_counts[cls] += 1
+            self.matrix.append(item[5:])
+            _classified_intervals[cls].append(item)
+
+        self.classified_intervals = {}
+        for k, v in _classified_intervals.items():
+            self.classified_intervals[k] = pybedtools.BedTool(v)
+
+        self.matrix = np.array(self.matrix, dtype=int)
+        self.sort_ind = sort_binary_matrix(self.matrix)
+
+    def plot(self, ax=None):
+        if ax is None:
+            fig = plt.figure(figsize=(3, 10))
+            ax = fig.add_subplot(111)
+        # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so
+        # that array's [0,0] is in the upper left corner.
+        mappable = ax.imshow(self.matrix[self.sort_ind], aspect='auto', interpolation='nearest',
+                cmap=matplotlib.cm.binary, origin='upper')
+        ax.set_xticks(range(len(self.names)))
+        ax.set_xticklabels(self.names, rotation=90)
+        if ax is None:
+            fig.subplots_adjust(left=0.25)
+        return ax
+
+
+def binary_heatmap(bts, names, plot=True, cluster=True):
     """
     Plots a "binary heatmap", showing the results of a multi-intersection.
 
@@ -202,54 +266,11 @@ def binary_heatmap(bts, names, plot=True):
     Returns (summary, m) where `summary` is a dictionary summarizing the
     results and `m` is the sorted NumPy array.  See source for further details.
     """
-    # Be flexible about input types
-    _bts = []
-    for bt in bts:
-        if isinstance(bt, pybedtools.BedTool):
-            if not isinstance(bt.fn, basestring):
-                bt = bt.saveas()
-            _bts.append(bt.fn)
-        elif isinstance(bt, basestring):
-            _bts.append(bt)
-
-    # Do the multi-intersection.
-    results = pybedtools.BedTool().multi_intersect(
-            i=_bts,
-            names=names,
-            cluster=True)
-
-    # If 4 files were provided with labels 'a', 'b', 'c', and 'd, each line
-    # would look something like:
-    #
-    #   chr2L    65716    65765    4    a,b,c,d    1    1    1    1
-    #   chr2L    71986    72326    1    c          0    0    1    0
-    #
-    # The last four columns will become the matrix; save the class labels (5th
-    # column) for a printed out report
-    d = defaultdict(int)
-    m = []
-    for item in results:
-        cls = item[4]
-        d[cls] += 1
-        m.append(item[5:])
-
-    m = np.array(m, dtype=int)
-    ind = sort_binary_matrix(m)
-
+    bh = BinaryHeatmap(bts=bts, names=names)
     if plot:
-        # Plot and label it
-        fig = plt.figure(figsize=(3, 10))
-        ax = fig.add_subplot(111)
+        bh.plot()
 
-        # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so
-        # that array's [0,0] is in the upper left corner.
-        mappable = ax.imshow(m[ind], aspect='auto', interpolation='nearest',
-                cmap=matplotlib.cm.binary, origin='upper')
-        ax.set_xticks(range(len(names)))
-        ax.set_xticklabels(names, rotation=90)
-        fig.subplots_adjust(left=0.25)
-
-    return d, m
+    return bh.class_counts, bh.matrix
 
 
 def sort_binary_matrix(m):
