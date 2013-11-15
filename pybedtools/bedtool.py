@@ -302,7 +302,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 class BedTool(object):
     TEMPFILES = []
 
-    def __init__(self, fn=None, from_string=False):
+    def __init__(self, fn=None, from_string=False, remote=False):
         """
         Wrapper around Aaron Quinlan's ``BEDtools`` suite of programs
         (https://github.com/arq5x/bedtools); also contains many useful
@@ -341,6 +341,7 @@ class BedTool(object):
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """
+        self.remote = remote
         self._isbam = False
         self._bam_header = ""
 
@@ -362,9 +363,12 @@ class BedTool(object):
 
             # from_string=False, so assume it's a filename
             elif isinstance(fn, basestring):
-                if not os.path.exists(fn):
-                    raise ValueError('File "%s" does not exist' % fn)
-                self._isbam = isBAM(fn)
+                if remote:
+                    self._isbam = True
+                else:
+                    if not os.path.exists(fn):
+                        raise ValueError('File "%s" does not exist' % fn)
+                    self._isbam = isBAM(fn)
 
             # If tuple or list, then save as file first
             # (fixes #73)
@@ -382,14 +386,15 @@ class BedTool(object):
         self.fn = fn
 
         if self._isbam and isinstance(self.fn, basestring):
-            try:
-                self._bam_header = ''.join(BAM(self.fn, header_only=True))
+            if not self.remote:
+                try:
+                    self._bam_header = ''.join(BAM(self.fn, header_only=True))
 
-            # BAM reader will raise ValueError for BGZIPed files that are not
-            # BAM format (e.g., plain BED files that have been BGZIPed for
-            # tabix)
-            except ValueError:
-                self._isbam = False
+                # BAM reader will raise ValueError for BGZIPed files that are not
+                # BAM format (e.g., plain BED files that have been BGZIPed for
+                # tabix)
+                except ValueError:
+                    self._isbam = False
         else:
             self._bam_header = ""
 
@@ -919,7 +924,7 @@ class BedTool(object):
         if isinstance(self.fn, file):
             return '<BedTool(stream)>'
         if isinstance(self.fn, basestring):
-            if os.path.exists(self.fn):
+            if os.path.exists(self.fn) or self.remote:
                 return '<BedTool(%s)>' % self.fn
             else:
                 return '<BedTool(MISSING FILE: %s)>' % self.fn

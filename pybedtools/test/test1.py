@@ -1329,3 +1329,28 @@ def test_reldist():
     chr1	1	100	feature1	0	+	0.282
     chr1	100	200	feature2	0	+	0.153
     chr1	150	500	feature3	0	-	0.220""")
+
+def test_remote_bam():
+    x = pybedtools.BedTool(
+        ('ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/HG00096/'
+         'exome_alignment/HG00096.chrom11.ILLUMINA.bwa.GBR.exome.'
+         '20120522.bam'),
+        remote=True)
+    def gen():
+        for i, f in enumerate(x.bam_to_bed(stream=True)):
+            yield f
+            if i == 9:
+                break
+    results = pybedtools.BedTool(gen()).saveas()
+    assert results == fix("""
+11	60636	60736	SRR081241.13799221/1	0	+
+11	60674	60774	SRR077487.5548889/1	0	+
+11	60684	60784	SRR077487.12853301/1	0	+
+11	60789	60889	SRR077487.5548889/2	0	-
+11	60950	61050	SRR077487.13826494/1	0	+
+11	60959	61059	SRR081241.13799221/2	0	-
+11	61052	61152	SRR077487.12853301/2	0	-
+11	61548	61648	SRR081241.16743804/2	0	+
+11	61665	61765	SRR081241.16743804/1	0	-
+11	61989	62089	SRR077487.167173/2	0	+"""), results
+
