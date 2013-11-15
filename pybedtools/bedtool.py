@@ -2334,8 +2334,8 @@ class BedTool(object):
         )
 
     def _randomintersection(self, other, iterations, genome_fn,
-                            intersect_kwargs=None, _orig_pool=None, shuffle_kwargs=None,
-                            processes=1):
+                            intersect_kwargs=None, _orig_pool=None,
+                            shuffle_kwargs=None, processes=1):
         """
         Re-implementation of BedTool.randomintersection using the new
         `random_op` method
@@ -2388,7 +2388,6 @@ class BedTool(object):
                 _orig_pool=_orig_pool,
             )
         )
-
 
     def randomintersection(self, other, iterations, intersect_kwargs=None,
                            shuffle_kwargs=None, debug=False,
@@ -2554,8 +2553,11 @@ class BedTool(object):
                 a_type = self.file_type
 
                 files = [self] + other_beds
-                filetypes = set([self.file_type] + [i.file_type for i in other_beds]).difference(['empty'])
-                field_nums = set([i.field_count for i in other_beds]).difference([None])
+                filetypes = set(
+                    [self.file_type]
+                    + [i.file_type for i in other_beds]).difference(['empty'])
+                field_nums = set(
+                    [i.field_count for i in other_beds]).difference([None])
                 same_field_num = len(field_nums) == 1
                 same_type = len(set(filetypes)) == 1
             except ValueError:
@@ -2861,6 +2863,7 @@ class BedTool(object):
         Returns a new BedTool with only intervals at lines `inds`
         """
         length = len(inds)
+
         def _gen():
             k = 0
             for i, feature in enumerate(self):
@@ -2870,8 +2873,6 @@ class BedTool(object):
                     if k == length:
                         break
         return BedTool(_gen()).saveas()
-
-
 
 
 class BAM(object):

@@ -604,7 +604,8 @@ coord_re = re.compile(
 
 def string_to_interval(s):
     """
-    Convert string of the form "chrom:start-stop" or "chrom:start-stop[strand]" to an interval.
+    Convert string of the form "chrom:start-stop" or "chrom:start-stop[strand]"
+    to an interval.
 
     Assumes zero-based coords.
 

@@ -4,8 +4,9 @@ import helpers
 import pybedtools
 
 
-def _parallel_wrap(orig_bedtool, shuffle_kwargs, genome_fn, method, method_args,
-                 method_kwargs, sort=False, shuffle=True, reduce_func=None):
+def _parallel_wrap(orig_bedtool, shuffle_kwargs, genome_fn, method,
+                   method_args, method_kwargs, sort=False, shuffle=True,
+                   reduce_func=None):
     """
     Given a BedTool object `orig_bedtool`, call its `method` with `args` and
     `kwargs` and then call `reduce_func` on the results.
@@ -209,6 +210,6 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     for i, r in enumerate(results):
         yield r.get()
         if report_iterations:
-            sys.stderr.write('%s\r'%i)
+            sys.stderr.write('%s\r' % i)
             sys.stderr.flush()
     raise StopIteration
