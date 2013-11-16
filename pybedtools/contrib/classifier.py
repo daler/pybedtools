@@ -4,17 +4,22 @@ import itertools
 from collections import defaultdict
 
 
-class MultiClassifier(object):
-    def __init__(self, bed, annotations, genome, sample_name='sample', names=None,
-                 prefix='.'):
+class BasePairClassifier(object):
+    def __init__(self, bed, annotations, genome, sample_name='sample',
+                 names=None, prefix='split_'):
         """
         Classifies files using bedtools multiinter.
 
-        An example use case is to classify reads as intronic or exonic.
+        The results from this class split up the bp in `bed` in to classes as
+        annotated in `annotations`.  Note that this is different from counting
+        the number of features in `bed` that fall within `annotations`; for
+        this latter functionality, see the FeatureClassifier class in this same
+        module.
 
         `bed` must be a BED/VCF/GFF/GTF BedTool object or filename -- not
-        a BAM.  If you want to use reads from a BAM file, first convert to
-        bed::
+        a BAM.  This is because `bedtools multiinter`, the program called here,
+        does not accept BAM as input. If you want to use reads from a BAM file,
+        first convert to bed, i.e.,::
 
             bed = pybedtools.BedTool('reads.bam').bam_to_bed(split=True).fn
 
@@ -27,7 +32,7 @@ class MultiClassifier(object):
             format).  Each of these new filenames will get the `prefix`
             supplied.
 
-        `sample_name` is the name of the sample -- used internally, but it
+        `sample_name` is the name of the sample. It is used internally, but it
         needs to be a unique name that is not the name of a featuretype in the
         annotations file (i.e., sample_name="exon" would not be a good choice).
 
@@ -41,11 +46,11 @@ class MultiClassifier(object):
         stop)} coordinates for each chromosome.  It is used to determine the
         "unannotated" space of the genome.
 
-        After running the `classify()` method, the results are available as
-        self.results, and these are parsed into two dictionaries,
-        self.class_genome_bp, which holds the total number of annotated genomic
-        bp for each class, and self.class_sample_bp, which holds the total
-        number of bp in the sample that overlapped each class.
+        After running the `classify()` method, the results BedTool is available
+        as self.results, and these are parsed into two dictionaries,
+        1) self.class_genome_bp, which holds the total number of annotated
+        genomic bp for each class, and 2) self.class_sample_bp, which holds the
+        total number of bp in the sample that overlapped each class.
 
         The table() method offers a means to filter/merge these
         fully-classified dictionaries such that they only contain featuretypes
@@ -63,19 +68,19 @@ class MultiClassifier(object):
 
             >>> # Example method of making a name converter.
             >>> # (note that the split `fns` have the form 'split_exon.gff')
-            >>> def name_converter(x):
+            >>> def f(x):
             ...     return x.split('_')[-1]
 
-            >>> c = MultiClassifier(bed, fns, names=name_converter, genome='dm3')
+            >>> c = MultiClassifier(bed, fns, names=f, genome='dm3')
             >>> c.classify()
             >>> inc = ['exon', 'intron']
             >>> table = c.print_table(include=inc)
             >>> print table #doctest: +NORMALIZE_WHITESPACE
             class	sample	genome
-            exon	337580	618147
-            unannotated	16424	18105002
-            exon, intron	12882	118826
-            intron	9949	375417
+            exon	361971	1188410
+            unannotated	19103	19841604
+            exon, intron	14250	177913
+            intron	10657	1803617
 
             >>> # Clean up the split files.
             >>> for fn in fns:
@@ -151,8 +156,8 @@ class MultiClassifier(object):
         the classification works correctly.
         """
         self.results = self.bed.multi_intersect(
-            i=[self.bed.fn] + self.annotations,
-            names=[self.sample_name] + self.names,
+            i=self.annotations,
+            names=self.names,
             genome=self.genome,
             empty=True)
 
@@ -181,9 +186,8 @@ class MultiClassifier(object):
             self.class_genome_bp.pop(frozenset(['none']), 0) \
             + self.class_genome_bp.pop(frozenset([]), 0)
 
-
         self.class_sample_bp[frozenset(['unannotated'])] = \
-                             self.class_sample_bp.pop(frozenset([]), 0)
+            self.class_sample_bp.pop(frozenset([]), 0)
 
     def table(self, include=None):
         """
@@ -215,13 +219,15 @@ class MultiClassifier(object):
 
         return d, s
 
-    def hierarchical_table(self, order, include=None, include_unannotated=True):
+    def hierarchical_table(self, order, include=None,
+                           include_unannotated=True):
         """
         Returns a hierarchically-ordered table, using the specified `order`.
 
         For example the order::
 
-                ['TSS', 'five_prime_UTR', 'CDS', 'intron', 'three_prime_UTR', 'TTS']
+                ['TSS', 'five_prime_UTR', 'CDS', 'intron', 'three_prime_UTR',
+                'TTS']
 
         would weight the classes from the 5'-most end of the gene.
 
@@ -235,7 +241,8 @@ class MultiClassifier(object):
             (intron, CDS, TSS)             -> TSS
             (intron, CDS, three_prime_UTR) -> CDS
 
-        The table has the following format, where the "classes" list is ordered by sample bp.
+        The table has the following format, where the "classes" list is ordered
+        by sample bp.
 
             {
                 'TSS': [
@@ -262,16 +269,21 @@ class MultiClassifier(object):
             classes = []
             for k in keys:
                 if h in k:
-                    sample_bp = sample.pop(k, 0)
-                    genomic_bp = genomic.pop(k, 0)
-                    classes.append(
-                        (k, sample_bp, genomic_bp)
-                    )
+                    try:
+                        sample_bp = sample.pop(k, 0)
+                        genomic_bp = genomic.pop(k, 0)
+                        classes.append(
+                            (k, sample_bp, genomic_bp)
+                        )
+                    except KeyError:
+                        # already popped
+                        continue
             table[h] = sorted(classes, key=lambda x: x[1], reverse=True)
-        #if include_unannotated:
-        #    table['unannotated'] = [(frozenset(['unannotated']), sample.pop(frozenset([]), 0), genomic.pop(frozenset([]), 0))]
+        if include_unannotated:
+            table['unannotated'] = [(frozenset(['unannotated']),
+                                     sum(sample.values()),
+                                     sum(genomic.values()))]
         return table
-
 
     def print_table(self, include=None):
         """
@@ -289,3 +301,302 @@ class MultiClassifier(object):
 
             out.append('%s\t%s\t%s' % (label, d[cls], s[cls]))
         return '\n'.join(out)
+
+MultiClassifier = BasePairClassifier
+
+
+class Classifier(object):
+    """
+    Classify intervals in one file by featuretypes in another.
+    """
+    def __init__(self, bed, annotations):
+        """
+        Classify features in `bed` -- typically a BED or SAM/BAM but can be any
+        format supported by BedTools -- into classes based on the featuretypes
+        in the GFF/GTF file, `annotations`.
+
+        For example, you can classify ChIP-seq peaks in a BED file by intron,
+        exon, or whatever is annotated in the GFF file.  If you want to
+        consider promoter regions, you'll have to add these features yourself.
+
+        The `class_counts` dictionary has its keys as sets of featuretypes
+        (each one can be considered a "class" of features) and the value is the
+        number of features in that class.  The special empty set class contains
+        features that did not fall in an annotated region.
+
+        You can access the individual features in the `class_features`
+        dictionary, which contains the same keys but instead of counts, it
+        contains the features themselves.  This is nice for saving the features
+        in a separate BED file, e.g.,
+
+        Furthermore, you can look up the class of any feature in the original
+        BED file using the `feature_classes` dictionary::
+
+
+        Example usage::
+
+            >>> bed = pybedtools.example_filename('gdc.bed')
+            >>> gff = pybedtools.example_filename('gdc.gff')
+            >>> c = pybedtools.contrib.classifier.Classifier(bed, gff)
+            >>> c.classify(include=['intron', 'exon'])
+            >>> results = c.class_counts
+            >>> results == {
+            ... frozenset([]): 1,
+            ... frozenset(['exon']): 3,
+            ... frozenset(['intron']): 3,
+            ... frozenset(['intron', 'exon']): 1}
+            True
+            >>> key = frozenset(['intron'])
+            >>> features = c.class_features[key]
+            >>> pybedtools.BedTool(iter(features)).saveas() #doctest: +ELLIPSIS
+            <BedTool(...)>
+            >>> feature = pybedtools.BedTool(bed)[2]
+            >>> c.feature_classes[feature] == set(['intron', '.'])
+            True
+
+        """
+        self.bed = pybedtools.BedTool(bed)
+        self.annotations = pybedtools.BedTool(annotations)
+        if self.annotations.file_type != 'gff':
+            raise ValueError('Annotations file must be a GFF or GTF file; '
+                             '%s appears to be a %s file' % (
+                                 annotations,
+                                 self.annotations.file_type))
+
+    def available_featuretypes(self):
+        """
+        List the featuretypes available in the annotations file.
+        """
+        featuretypes = set()
+        for i in self.annotations:
+            featuretypes.update([i[2]])
+        return list(featuretypes)
+
+    def classify(self, include=None, exclude=None, stranded=False):
+        """
+        Perform classification, populating dictionaries in `self`.
+
+        Intersect the BED file with the annotations file and return
+        a dictionary where keys are BED features and values are the set of
+        featuretypes that BED feature was found in.
+
+
+        `include` is an optional list of featuretypes to restrict the
+        classification to
+
+        `exclude` is an optional list of featuretypes to exclude from
+        classification (all other featuretypes will be used).
+
+        To see what's available, use available_featuretypes().
+
+        When run, this method creates the following dictionaries as attributes
+        of this object:
+
+         :feature_classes:
+            keys are Intervals from `bed`; values are sets of featuretypes from
+            `annotations`
+
+         :class_features:
+            keys are frozensets of featuretypes from `annotations`; values are
+            lists of Intervals from `bed`;
+
+         :class_counts:
+            keys are frozensets of featuretypes from annotations`; values are
+            number of features -- so the length of values in the class_features
+            dictionary.
+
+        """
+        if include and exclude:
+            raise ValueError('Can only specify one of `include` or `exclude`')
+        if exclude:
+            exclude = set(exclude)
+        if include:
+            include = set(include)
+
+        # Figure out the index of the featuretype field in the output
+        bed_fields = self.bed.field_count()
+        featuretype_idx = bed_fields + 2
+
+        self.feature_classes = defaultdict(set)
+
+        x = self.bed.intersect(self.annotations,
+                               wao=True,
+                               s=stranded,
+                               stream=True)
+        for feature in x:
+            featuretype = feature[featuretype_idx]
+
+            # If we're not supposed to consider this featuretype, then reset to
+            # the standard GFF empty field string of "."
+            if (include and featuretype not in include) \
+                    or (exclude and featuretype in exclude):
+                featuretype = '.'
+
+            # the original query is in the first `bed_fields` items.  Construct
+            # a new feature out of this and use it as the key.
+            key = pybedtools.create_interval_from_list(
+                feature.fields[:bed_fields])
+            self.feature_classes[key].update([featuretype])
+
+        self.class_features = defaultdict(list)
+        self.class_counts = defaultdict(int)
+
+        for feature, featuretypes in self.feature_classes.items():
+            # get rid of "unannotated"
+            ft = featuretypes.difference(['.'])
+            key = frozenset(ft)
+            self.class_features[key].append(feature)
+            self.class_counts[key] += 1
+
+        # convert defaultdicts to regular dicts
+        self.class_features = dict(self.class_features)
+        self.class_counts = dict(self.class_counts)
+        self.feature_classes = dict(self.feature_classes)
+
+    def features_to_file(self, prefix="", suffix=""):
+        """
+        Writes a set of files, one for each class.
+
+        The filenames will be constructed based on the class names, track lines
+        will be added to indicate classes, and `prefix` and `suffix` will be
+        added to the filenames.
+        """
+        def make_filename(klass):
+            return prefix + '_'.join(sorted(list(klass))) + suffix
+
+        def make_trackline(klass):
+            return 'track name="%s"' % (' '.join(sorted(list(klass))))
+
+        for klass, features in self.class_features.iteritems():
+            pybedtools.BedTool(features)\
+                .saveas(make_filename(klass), make_trackline(klass))
+
+    def hierarchical_table(self, order, include=None,
+                           include_unannotated=True):
+        """
+        Returns a hierarchically-ordered table, using the specified `order`.
+
+        For example the order::
+
+            ['TSS', 'five_prime_UTR', 'CDS', 'intron', 'three_prime_UTR',
+            'TTS']
+
+        would weight the classes from the 5'-most end of the gene.
+
+        This summarizes the classes based on the highest-priority featuretype
+        in the hierarchy.
+
+        For example, using the above hierarchy, the following summary-class
+        assignments will be made::
+
+            (TSS, five_prime_UTR)          -> TSS
+            (intron, CDS, TSS)             -> TSS
+            (intron, CDS, three_prime_UTR) -> CDS
+
+        The table has the following format, where the "classes" list is ordered
+        by sample bp.
+
+            {
+                'TSS': [
+                        (<class name 1>, count),
+                        (<class name 2>, count),
+                        ...
+                        ],
+
+                'five_prime_UTR': [
+                        (<class name 1>, count),
+                        (<class name 2>, count),
+                        ...
+                        ],
+                ...
+
+            }
+        """
+        counts = self.table(include=include)
+        counts = counts.copy()
+        keys = counts.keys()
+        table = {}
+        for h in order:
+            classes = []
+            for k in keys:
+                if h in k:
+                    try:
+                        count = counts.pop(k)
+                        classes.append((k, count))
+                    except KeyError:
+                        # i.e., already popped off
+                        continue
+            table[h] = sorted(classes, key=lambda x: x[1], reverse=True)
+        if include_unannotated:
+            table['unannotated'] = [(frozenset(['unannotated']), sum(counts.values()))]
+        return table
+
+    def table(self, include=None):
+        """
+        If `include` is not None, then return a copy of self.class_counts that
+        only have at the featuretypes in `include`.
+
+        Otherwise, return a simple copy.
+        """
+        if not include:
+            return self.class_counts.copy()
+
+        d = defaultdict(int)
+        s = defaultdict(int)
+        include = set(include)
+        for key in self.class_counts:
+            # orig data
+            c = self.class_counts[key]
+
+            # create a merged class name by keeping only featuretypes in
+            # `include`.  If none of the members were in `include`, then the
+            # counts are appended to entry keyed by set().
+            merged_class = frozenset(set(key).intersection(include))
+
+            # update the new dictionaries
+            d[merged_class] += c
+
+        return d
+
+
+    def pie(self, hierarchical_table, ax=None, order=None, **kwargs):
+        """
+        `hierarchical_table` is the result of calling self.hierarchical_table()`.
+
+        `ax` is an optional Axes object to plot onto, otherwise a new figure and axes will be created.
+
+        `order`, if None, will sort the items from largest to smallest.
+        Otherwise, `order` is the order of keys in `hierarchical_table` in
+        which they should be plotted, counter-clockwise from the positive
+        x axis.
+
+        Additional args are passed to ax.pie.
+        """
+        from matplotlib import pyplot as plt
+
+        # restructure the table so that it's a dict of class sums (rather than
+        # having every class)
+        d = {}
+        for k, v in hierarchical_table.items():
+            d[k] = sum(i[1] for i in v)
+
+        total = float(sum(d.values()))
+        if ax is None:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
+            ax.axis('equal')
+
+        if order:
+            items = [(k, d[k]) for k in order]
+        else:
+            items = sorted(d.items(), key=lambda x: x[1])
+
+        newlabels, labels, counts = [], [], []
+        for label, count in items:
+            labels.append(label)
+            counts.append(count)
+            frac = count / total * 100.
+            newlabels.append('{label}: {count} ({frac:.1f}%)'.format(**locals()))
+        ax.pie(
+            x=counts, labels=newlabels, labeldistance=1.2, **kwargs)
+        return ax
