@@ -17,6 +17,12 @@ pybedtools.contrib.venn_maker
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      OrderedDict
+   
    
 
    

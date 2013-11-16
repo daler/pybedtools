@@ -19,6 +19,7 @@ pybedtools.BedTool
       ~BedTool.annotate
       ~BedTool.any_hits
       ~BedTool.as_intervalfile
+      ~BedTool.at
       ~BedTool.bam_to_bed
       ~BedTool.bam_to_fastq
       ~BedTool.bed6

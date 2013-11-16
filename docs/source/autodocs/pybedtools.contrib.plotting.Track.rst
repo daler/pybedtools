@@ -45,11 +45,14 @@ pybedtools.contrib.plotting.Track
       ~Track.get_facecolors
       ~Track.get_figure
       ~Track.get_gid
+      ~Track.get_hatch
       ~Track.get_label
       ~Track.get_linestyle
       ~Track.get_linestyles
       ~Track.get_linewidth
       ~Track.get_linewidths
+      ~Track.get_offset_position
+      ~Track.get_offset_transform
       ~Track.get_offsets
       ~Track.get_paths
       ~Track.get_picker
@@ -98,6 +101,7 @@ pybedtools.contrib.plotting.Track
       ~Track.set_facecolors
       ~Track.set_figure
       ~Track.set_gid
+      ~Track.set_hatch
       ~Track.set_label
       ~Track.set_linestyle
       ~Track.set_linestyles
@@ -106,6 +110,7 @@ pybedtools.contrib.plotting.Track
       ~Track.set_lod
       ~Track.set_lw
       ~Track.set_norm
+      ~Track.set_offset_position
       ~Track.set_offsets
       ~Track.set_paths
       ~Track.set_picker
