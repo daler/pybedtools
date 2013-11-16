@@ -2,6 +2,57 @@
 
 Changelog
 =========
+Changes in v0.6.3
+-----------------
+
+* New :mod:`pybedtools.parallel` module for working with many operations in
+  parallel.  See the docs for :func:`pybedtools.parallel.parallel_apply` for
+  details.
+
+* :func:`pybedtools.contrib.bigbed.bigbed` for converting to bigBed format,
+  along with auto-SQL creation as needed.
+
+* New function :func:`pybedtools.contrib.bigbed.bigbed_to_bed`, so now bigBed
+  -> BED and BED -> bigBed interconversions are trivial.
+
+* Support for remote BAMs by passing `remote=True` when creating
+  a :class:`BedTool` object
+
+* New method :meth:`BedTool.at` for subsetting a BedTool by a set of (sorted)
+  indexes.
+
+* New functions :func:`featurefuncs.gff2bed` and :func:`featurefuncs.bed2gff`
+  for use with :meth:`BedTool.each`, for easy converting GFF/GTF to BED
+
+* New function :func:`add_color` for applying matplotlib colormaps to BED
+  files.
+
+* :class:`pybedtools.plotting.BinaryHeatmap` class for working with results
+  from :meth:`BedTool.multi_intersect`.
+
+* Better detection for samtools (thanks Luca Beltrame)
+
+* Expand BEDToolsError (thanks Ryan Layer)
+
+* Creating a BedTool from a list of intervals now saves to temp file instead of treating
+  like a consume-once iterator (#73)
+
+* Various fixes to keyword arg handling to match semantics of BEDTools.
+
+* Command line help and improved docs for the `peak_pie.py` script.
+
+* Fix to GFF attributes (thanks Libor Mořkovský)
+
+* Fix to labels in :mod:`pybedtools.contrib.venn_maker.py` (thanks Luca
+  Pinello)
+
+* Make the naive scaling (to million mapped reads) in
+  :func:`pybedtools.contrib.bigwig.bam_to_bigwiq` optional.
+
+* Fix for :meth:`BedTool.cat` to handle cases where at least one input is an
+  empty file
+
+
 
 Changes in v0.6.2
 -----------------
