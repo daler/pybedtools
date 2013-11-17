@@ -120,6 +120,15 @@ that can be passed to :meth:`BedTool.each`:
     pybedtools.featurefuncs.midpoint
     pybedtools.featurefuncs.normalized_to_length
     pybedtools.featurefuncs.rename
+    pybedtools.featurefuncs.greater_than
+    pybedtools.featurefuncs.less_than
+    pybedtools.featurefuncs.normalized_to_length
+    pybedtools.featurefuncs.rename
+    pybedtools.featurefuncs.bedgraph_scale
+    pybedtools.featurefuncs.add_color
+    pybedtools.featurefuncs.gff2bed
+    pybedtools.featurefuncs.bed2gff
+
 
 
 Searching for features
@@ -155,6 +164,7 @@ If using :meth:`BedTool.head`, don't forget that you can index into
     pybedtools.BedTool.head
     pybedtools.BedTool.count
     pybedtools.BedTool.field_count
+    pybedtools.BedTool.file_type
 
 
 Randomization helpers
@@ -165,11 +175,13 @@ distributions between interval files.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.random_op
+    pybedtools.BedTool.parallel_apply
     pybedtools.BedTool.randomstats
     pybedtools.BedTool.randomintersection
+    pybedtools.BedTool.randomintersection_bp
     pybedtools.BedTool.random_subset
     pybedtools.BedTool.random_jaccard
+    pybedtools.BedTool.random_op
 
 Managing :class:`BedTool` objects on disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,6 +203,8 @@ Methods that can't quite be categorized into the above sections.
     :toctree: autodocs
 
     pybedtools.BedTool.cat
+    pybedtools.BedTool.at
+    pybedtools.BedTool.absolute_distance
     pybedtools.BedTool.cut
     pybedtools.BedTool.total_coverage
     pybedtools.BedTool.with_attrs
@@ -199,7 +213,10 @@ Methods that can't quite be categorized into the above sections.
     pybedtools.BedTool.set_chromsizes
     pybedtools.BedTool.print_sequence
     pybedtools.BedTool.save_seqs
+    pybedtools.BedTool.seq
     pybedtools.BedTool.liftover
+    pybedtools.BedTool.colormap_normalize
+    pybedtools.BedTool.relative_distance
 
 Module-level functions
 ----------------------
@@ -288,12 +305,25 @@ exploring and understanding the tools as well as for teaching purposes.
 
 
 
-Creating a bigWig file
-~~~~~~~~~~~~~~~~~~~~~~
+Working with bigWig files
+~~~~~~~~~~~~~~~~~~~~~~~~~
+At this time, :mod:`pybedtools` does not support reading bigWig files, only
+creating them via UCSC utilities.
+
 .. autosummary::
     :toctree: autodocs
 
     pybedtools.contrib.bigwig.bam_to_bigwig
+    pybedtools.contrib.bigwig.bedgraph_to_bigwig
+    pybedtoold.contrib.bigwig.wig_to_bigwig
+
+Working with bigBed files
+~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.contrib.bigbed.bigbed
+    pybedtools.contrib.bigbed.bigbed_to_bed
 
 :class:`MultiClassifier`
 ~~~~~~~~~~~~~~~~~~~~~~~~
