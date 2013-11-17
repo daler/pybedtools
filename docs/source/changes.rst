@@ -25,7 +25,7 @@ Changes in v0.6.3
   for use with :meth:`BedTool.each`, for easy converting GFF/GTF to BED
 
 * New function :func:`add_color` for applying matplotlib colormaps to BED
-  files.
+  files; see also new method :meth:`pybedtools.BedTool.colormap_normalize`.
 
 * :class:`pybedtools.plotting.BinaryHeatmap` class for working with results
   from :meth:`BedTool.multi_intersect`.
