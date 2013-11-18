@@ -1,10 +1,10 @@
 Overview
 --------
-`pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs, which
-are widely used for genomic interval manipulation or "genome algebra".
-`pybedtools` extends `BEDTools` by offering feature-level manipulations from
-with Python. See full online documentation, including installation
-instructions, at http://packages.python.org/pybedtools/.
+`pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs
+(https://github.com/arq5x/bedtools), which are widely used for genomic interval
+manipulation or "genome algebra".  `pybedtools` extends `BEDTools` by offering
+feature-level manipulations from with Python. See full online documentation,
+including installation instructions, at http://packages.python.org/pybedtools/.
 
 Why `pybedtools`?
 -----------------
