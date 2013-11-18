@@ -176,6 +176,8 @@ The very latest code is available from GitHub, at
 http://github.com/daler/pybedtools.  You'll need to have `git
 <http://git-scm.com/>`_ installed.
 
+#. Get the latest git version of BEDTools, from https://github.com/arq5x/bedtools
+
 #. Get the source by cloning the git repository at
    http://github.com/daler/pybedtools, which will create a new `pybedtools`
    directory
