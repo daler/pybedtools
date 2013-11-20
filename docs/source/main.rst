@@ -88,7 +88,7 @@ Notes on supported systems
 
 :Linux:
 
-    Routinely tested on Ubuntu 10.04 and 11.10, but should run on any GNU/Linux
+    Routinely tested on Ubuntu 12.04, but should run on any GNU/Linux
     distribution with the above pre-requisites satisfied.
 
 
@@ -172,15 +172,26 @@ You should now be able to run the "quick test" above.
 
 More detailed developer installation instructions
 +++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. note::
+
+    The program `bedtools shuffle` may return different results depending on
+    your platform and/or version of C++ stdlib installed (even when using the
+    same seed).  :mod:`pybedtools` is regularly tested on Ubuntu 12.04 using
+    gcc 4.6.3.  Using another platform or stdlib version may result in test
+    failures similar to those reported in `issue #93
+    <https://github.com/daler/pybedtools/issues/93>`.
+
 The very latest code is available from GitHub, at
 http://github.com/daler/pybedtools.  You'll need to have `git
 <http://git-scm.com/>`_ installed.
 
-#. Get the latest git version of BEDTools, from https://github.com/arq5x/bedtools
+#. :mod:`pybedtools` tests are written using the latest git version of
+   BEDTools. You can get the latest git version of BEDTools from
+   https://github.com/arq5x/bedtools
 
-#. Get the source by cloning the git repository at
-   http://github.com/daler/pybedtools, which will create a new `pybedtools`
-   directory
+#. Use the latest git version of `pybedtools` from
+   http://github.com/daler/pybedtools
 
 #. Move to the newly created directory
 
