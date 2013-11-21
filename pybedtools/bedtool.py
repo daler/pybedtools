@@ -744,7 +744,7 @@ class BedTool(object):
         <BLANKLINE>
 
         """
-        def _gen():
+        def _generator():
             for f in self:
                 result = func(f, *args, **kwargs)
                 if result:
