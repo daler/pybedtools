@@ -390,9 +390,9 @@ class BedTool(object):
                 try:
                     self._bam_header = ''.join(BAM(self.fn, header_only=True))
 
-                # BAM reader will raise ValueError for BGZIPed files that are not
-                # BAM format (e.g., plain BED files that have been BGZIPed for
-                # tabix)
+                # BAM reader will raise ValueError for BGZIPed files that are
+                # not BAM format (e.g., plain BED files that have been BGZIPed
+                # for tabix)
                 except ValueError:
                     self._isbam = False
         else:
@@ -723,7 +723,9 @@ class BedTool(object):
         accept an Interval as its first argument; *args and **kwargs will be
         passed to *func*.
 
-        *func* must return an Interval object.
+        *func* must return an Interval object OR a value that evaluates to
+        False, in which case the original feature will be removed from the
+        output.  This way, an additional "filter" call is not necessary.
 
         >>> def truncate_feature(feature, limit=0):
         ...     feature.score = str(len(feature))
@@ -742,7 +744,13 @@ class BedTool(object):
         <BLANKLINE>
 
         """
-        return BedTool((func(f, *args, **kwargs) for f in self))
+        def _gen():
+            for f in self:
+                result = func(f, *args, **kwargs)
+                if result:
+                    yield result
+
+        return BedTool(_generator())
 
     def introns(self, gene="gene", exon="exon"):
         """
