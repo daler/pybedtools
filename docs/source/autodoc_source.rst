@@ -315,7 +315,7 @@ creating them via UCSC utilities.
 
     pybedtools.contrib.bigwig.bam_to_bigwig
     pybedtools.contrib.bigwig.bedgraph_to_bigwig
-    pybedtoold.contrib.bigwig.wig_to_bigwig
+    pybedtools.contrib.bigwig.wig_to_bigwig
 
 Working with bigBed files
 ~~~~~~~~~~~~~~~~~~~~~~~~~
