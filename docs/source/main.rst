@@ -4,25 +4,40 @@
 
 Installation
 ------------
+Notes on supported systems
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+:Windows:
+
+    Windows does not support command line programs easily, so **BEDTools and
+    pybedtools are only supported via Cygwin on Windows**.
+
+:OSX:
+
+    Should run on any system with the below pre-requisites satisfied.
+
+:Linux:
+
+    Routinely tested on Ubuntu 12.04, but should run on any GNU/Linux
+    distribution with the below pre-requisites satisfied.
 
 Pre-installation requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-First, make sure you have the following requirements installed before
-attempting to install :mod:`pybedtools`.
-
 Many of these requirements are used by other genomics and bioinformatics
 software, so you may already have them installed:
 
-#. BEDTools_
-        The version is not important, but later versions will have more
-        features so it's a good idea to get the latest.  Follow the
-        instructions at https://github.com/arq5x/bedtools to install, and make
-        sure the programs are on your path. That is, you should be able to call
-        `intersectBed` from any directory
+Required
+++++++++
 
-#. Python_ 2.5 or greater (Python 3 support is coming soon)
+:BEDTools_:
+    The version is not important, but later versions will have more features so
+    it's a good idea to get the latest.  Follow the instructions at
+    https://github.com/arq5x/bedtools to install, and make sure the programs
+    are on your path. That is, you should be able to call `intersectBed` from
+    any directory
 
-#. A C/C++ compiler
+:Python_: version 2.5 or greater (Python 3 support is coming soon)
+
+:A C/C++ compiler:
     * **On Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
       all of the 'Devel" group items to be installed.  In addition, ensure the
       `zlib` items are selected for installation as well (using the search
@@ -31,107 +46,137 @@ software, so you may already have them installed:
     * **On Linux:** `gcc`, usually already installed; on Ubuntu, install with `sudo apt-get install
       build-essentials`
 
-#. **Optional.** samtools_ [`download page`_]
-        Required for BAM support.   Like BEDTools, the version is not
-        important.  You will get a warning if you try to run :mod:`pybedtools`
-        functions that require `samtools`.  The `samtools` programs must be
-        available on the path, so you should be able to call `samtools view`
-        from any directory.
-
-#. **Optional.** Tabix_ [`download page`_].  
-        Required for fast, random access to BED/GFF/GTF/VCF files by providing
-        a chrom:start-stop coordinate.  Similar to the above, you should be
-        able to call `tabix` from any directory.
-
-#. Python modules: these are the modules that :mod:`pybedtools` uses.  All but
-   argparse_ are optional.
-
-    * argparse_:
-            installed automatically if using Python <2.7 (it comes with Python
-            2.7); used for command line scripts like the Venn diagram scripts
-
-    * **Optional.** nose_
-            used for automated testing, not necessary for working with
-            :mod:`pybedtools`
-
-    * **Optional.** scipy_
-            used for computing statistics for randomization procedures
-
-    * **Optional.** matplotlib_
-            used plotting code (:mod:`pybedtools.contrib.plotting` and by the
-            `venn_mpl.py` script for making a Venn diagram with annotated
-            counts. You can use `venn_gchart.py` to use the Google Charts API
-            to make a Venn diagram or the :mod:`pybedtools.contrib.venn_maker`
-            if you don't want to install `matplotlib`.
+:Cython_:
+    Cython is used to compile C++ and `.pyx` files for :mod:`pybedtools`.
 
 
-#. pip_ or easy_install_:
-        these are used for automated installation of Python packages.  If you
-        don't already have these installed,  you can use these commands to get
-        `pip`::
+Optional
+++++++++
+The following external tools are **optional**:
 
-            $ curl -O http://python-distribute.org/distribute_setup.py
-            $ python distribute_setup.py
-            $ curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-            $ python get-pip.py
 
-Notes on supported systems
-++++++++++++++++++++++++++
-:Windows:
+:samtools_ [`download page`_]:
+    Required for BAM support.   Like BEDTools, the version is not important.
+    You will get a warning if you try to run :mod:`pybedtools` functions that
+    require `samtools`.  The `samtools` programs must be available on the path,
+    so you should be able to call `samtools view` from any directory.
 
-    Windows does not support command line programs easily, so **BEDTools and
-    pybedtools are only supported via Cygwin on Windows**.
+:Tabix_ [`download page`_]:
+    Required for fast, random access to BED/GFF/GTF/VCF files by providing
+    a chrom:start-stop coordinate.  Similar to the above, you should be able to
+    call `tabix` from any directory.
 
-:OSX:
+The following extra Python modules are **optional**:
 
-    Should run on any system with the above pre-requisites satisfied.
+:nose_:
+    used for automated testing, not necessary for working with
+    :mod:`pybedtools`
 
-:Linux:
+:scipy_:
+    used for computing statistics for randomization procedures
 
-    Routinely tested on Ubuntu 12.04, but should run on any GNU/Linux
-    distribution with the above pre-requisites satisfied.
+:matplotlib_:
+    Used by plotting code (:mod:`pybedtools.contrib.plotting` and by the
+    `venn_mpl.py` script for making a Venn diagram with annotated counts. You
+    can use `venn_gchart.py` to use the Google Charts API to make a Venn
+    diagram or the :mod:`pybedtools.contrib.venn_maker` if you don't want to
+    install `matplotlib`.
+
+
 
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Simple installation
-+++++++++++++++++++
-For most users, the latest stable version will be most appropriate.  To
-install, use `pip`_ or `easy_install`_ to automatically download the code from
-the `Python Package Index`_.  As long as you have pip_ or easy_install_, the
-following commands should work on Linux, Windows (under Cygwin_), and OSX::
 
-    pip install pybedtools
+Root access
++++++++++++
+If you have root access to your machine, it's straightforward to install
+:mod:`pybedtools`.
 
-or::
+From PyPI, with `easy_install`::
 
-    easy_install pybedtools
+    $ sudo easy_install cython
+    $ sudo easy_install pybedtools
 
-Done! You can now run a quick test of your installation:
+From PyPI, with `pip`::
 
-Note that you may need to be root in order to install.  If you do not have root
-privileges (e.g., if you are installing in your user directory on a cluster), then
-use the following options::
+    $ sudo pip install cython
+    $ sudo pip install pybedtools
 
-    pip install pybedtools --user
 
-or::
+Latest development version from git (assumes Cython is installed via one of the
+above methods)::
 
-    easy_install pybedtools --prefix /dir_you_can_write_to
+    $ git clone https://github.com/daler/pybedtools.git
+    $ cd pybedtools
+    $ git pull
+    $ sudo python setup.py develop
 
+Then, after any updates on github::
+
+    $ cd pybedtools
+    $ git pull
+    $ sudo python setup.py develop
+
+No root access
+++++++++++++++
+
+If you do not have root access to your machine, there are two alternatives,
+Anaconda and virtualenv.
+
+:Anaconda:
+
+    If you do not already have a scientific Python installation, perhaps the
+    easiest way to get one is with the `Anaconda distribution
+    <http://continuum.io/downloads>`_.  This includes SciPy, matplotlib, and
+    all :mod:`pybedtools` dependencies.  Upon installing Anaconda, you can
+    install :mod:`pybedtools` with::
+
+        $ pip install pybedtools
+
+:virtualenv:
+
+    The second alternative is to create a virtual environment using the
+    `virtualenv` package. The following commands will download, unpack, and
+    create a new virtual environment called `myEnv` in your home directory (see
+    `virtualenv <https://pypi.python.org/pypi/virtualenv>`_ for more)::
+
+        $ wget https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
+        $ tar -xzvf virtualenv-1.10.1.tar.gz
+        $ cd virtualenv-1.10.1/
+        $ python virtualenv.py ~/myEnv
+
+    From PyPI, install :mod:`pybedtools` using the new virtualenv `~/myEnv`
+    (this also installs Cython)::
+
+        $ ~/myEnv/bin/pip install cython
+        $ ~/myEnv/bin/pip install pybedtools
+
+
+    Latest development version rom git, using the new virtualenv `~/myEnv`
+    (this also installs Cython)::
+
+        $ git clone https://github.com/daler/pybedtools.git
+        $ cd pybedtools
+        $ ~/myEnv/bin/pip install cython
+        $ ~/myEnv/bin/python setup.py develop
+
+
+    From now on, in order to use :mod:`pybedtools`, any time you would normally
+    call `python`, instead call `~/myEnv/bin/python`.
 
 Quick test
-``````````
-A quick functional test is to create a new script with the following
-contents, which uses example data shipped with :mod:`pybedtools`::
+~~~~~~~~~~
+Paste the following into a new file called `mytest.py`::
 
     import pybedtools
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
     print a.intersect(b)
 
-If this script is called `test.py`, then running it with `python test.py`
-should print out::
+Run the script with `python mytest.py` or, if you used the virtualenv method of
+installation described above, run the script with `~/myEnv/bin/python
+mytest.py`.  You should get the results::
 
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-
@@ -140,99 +185,73 @@ should print out::
 
 Installation for developers or for running tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Clone the repository::
-
-    git clone git@github.com:daler/pybedtools.git
-
-
-Developer installation depends on the version.
-
-**Version <= 0.6:**  The first command compiles the Cython code and the second is the typical Python
-install command::
-
-    python build.py
-    sudo python setup.py develop
-
-
-**Version > 0.6:** After version 0.6, the developer installation was
-streamlined, auto-detecting whether you have Cython installed or not::
-
-    sudo python setup.py develop
+For development work, it's best to use the virtualenv and git method described
+above.  The latest code is always available at
+https://github.com/daler/pybedtools
 
 The `develop` option means that any changes you make to the code will be
 reflected system-wide.  However, if you make changes to any of the `.pyx`
 files, you will need to again run the command::
 
-
-    # make changes to a .pyx file....
     $ sudo python setup.py develop
 
+This will recompile the Cython files.
 
-You should now be able to run the "quick test" above.
 
-More detailed developer installation instructions
-+++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. note::
 
+    :mod:`pybedtools` tests are written using the latest git version of
+    BEDTools. You can get the latest git version of BEDTools from
+    https://github.com/arq5x/bedtools
+
+
+Running tests, compiling docs
++++++++++++++++++++++++++++++
+There are two sets of tests: unit tests and doctests.  The unit tests need
+nosetests_ and PyYAML_ installed, and the doctests need `sphinx`_ and
+`numpydoc` installed::
+
+    $ pip install nose
+    $ pip install PyYAML
+    $ pip install sphinx
+    $ pip install numpydoc
+
+For the full tests, you'll also need SciPy and matplotlib installed.  These are
+only used for a small part of :mod:`pybedtools`, and can be difficult to
+install if not using the Anaconda distribution described above.  If you don't
+have SciPy and matplotlib, you can ignore the tests that fail because these
+libraries can't be found.
+
+.. warning::
+
     The program `bedtools shuffle` may return different results depending on
     your platform and/or version of C++ stdlib installed (even when using the
-    same seed).  :mod:`pybedtools` is regularly tested on Ubuntu 12.04 using
-    gcc 4.6.3.  Using another platform or stdlib version may result in test
-    failures similar to those reported in `issue #93
-    <https://github.com/daler/pybedtools/issues/93>`.
+    same seed).  The tests for :mod:`pybedtools` are written using Ubuntu 12.04
+    with gcc 4.6.3.  Using another platform or stdlib version may result in
+    test failures just for tests that use `bedtools shuffle`, similar to those
+    reported in `issue #93 <https://github.com/daler/pybedtools/issues/93>`_.
 
-The very latest code is available from GitHub, at
-http://github.com/daler/pybedtools.  You'll need to have `git
-<http://git-scm.com/>`_ installed.
+Unit tests
+``````````
+For the unit tests, in the top-level `pybedtools` directory, run::
 
-#. :mod:`pybedtools` tests are written using the latest git version of
-   BEDTools. You can get the latest git version of BEDTools from
-   https://github.com/arq5x/bedtools
+    $ sh test.sh
 
-#. Use the latest git version of `pybedtools` from
-   http://github.com/daler/pybedtools
+Doctests
+````````
+For the doctests::
 
-#. Move to the newly created directory
+    $ cd docs && make doctests
 
-#. *[optional]* Re-compile the extensions by running Cython_.  Typically, only
-   developers making changes to the `.pyx`, `.h`, or `.cpp` code will need to
-   do this.  Cython needs to be installed for this step.
+Compile docs
+````````````
+To compile the docs, from the top-level `pybedtools` directory::
 
-   ::
-
-        python build.py
-
-#. *[optional]* Run the tests.  nosetests_  and PyYAML_ will be installed if they
-   are not already available::
-
-        python setup.py nosetests
-
-        # or to test with a specific version of Python:
-        python2.5 setup.py nosetests
-        python2.6 setup.py nosetests
+    $ cd docs && make html
 
 
-#. **Install** :mod:`pybedtools`::
-
-        python setup.py install
-
-#. *[optional]* Install `sphinx`_ if needed (`easy_install sphinx`), then run the
-   Sphinx doctests::
-
-        cd docs && make doctest
-
-#. *[optional]* Compile the HTML documentation in the `docs` directory of the
-   source tree (this also needs `sphinx`_), then point your browser to
-   `docs/build/html/index.html`::
-
-        cd docs && make html
-
-#. *[optional]* Compile the PDF version of the documentation (needs `sphinx_`
-   and LaTeX installed), then view `docs/build/latex/pybedtools.pdf` (or the
-   copy at `docs/build/html/pybedtools_manual.pdf`)::
-
-        cd docs && make latexpdf
+Then point a browser to `docs/build/html/index.html`.
 
 Contributing
 ~~~~~~~~~~~~
