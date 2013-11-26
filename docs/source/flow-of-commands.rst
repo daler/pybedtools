@@ -1,4 +1,12 @@
-Three kinds of sources/sinks for BedTool objects:
+Under the hood
+==============
+
+This section documents some details about what happens when a :class:`BedTool`
+object is created and exactly what happens when a BEDTools command is called.
+It's mostly useful for developers or for debugging.
+
+
+There are three kinds of sources/sinks for BedTool objects:
 
 * filename
 * open file object

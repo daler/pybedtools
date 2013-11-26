@@ -22,3 +22,4 @@ This section contains additional documentation not covered in the tutorial.
     topical-comparisons
     sh-comparison
     pybedtools-dev-history
+    flow-of-commands
