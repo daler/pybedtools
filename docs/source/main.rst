@@ -28,12 +28,18 @@ software, so you may already have them installed:
 Required
 ++++++++
 
+.. warning::
+
+    BEDTools 2.18 implements changes that make some parts of pybedtools work
+    sub-optimally.  Please see :ref:`bedtools218` for details.
+
 :BEDTools_:
     The version is not important, but later versions will have more features so
     it's a good idea to get the latest.  Follow the instructions at
     https://github.com/arq5x/bedtools to install, and make sure the programs
     are on your path. That is, you should be able to call `intersectBed` from
     any directory
+
 
 :Python_: version 2.5 or greater (Python 3 support is coming soon)
 

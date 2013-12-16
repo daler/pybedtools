@@ -10,6 +10,11 @@
 Chaining methods together (pipe)
 --------------------------------
 
+.. warning::
+
+   BEDTools 2.18 implements changes that make some parts of pybedtools work
+   sub-optimally.  Please see :ref:`bedtools218` for details.
+
 One useful thing about :class:`BedTool` methods is that they often return a
 new :class:`BedTool`.  In practice, this means that we can chain together
 multiple method calls all in one line, similar to piping on the command

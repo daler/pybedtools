@@ -5,6 +5,12 @@
 Using BedTool objects as iterators/generators
 =============================================
 
+.. warning::
+
+   BEDTools 2.18 implements changes that make some parts of pybedtools work
+   sub-optimally.  Please see :ref:`bedtools218` for details.
+
+
 Typically, :mod:`BedTool` objects are used somewhat like handles to individual
 files on disk that contain BED lines.  To save disk space, :mod:`BedTool`
 objects also have the ability to "stream", much like piping in Unix.  That
