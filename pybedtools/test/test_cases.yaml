@@ -207,9 +207,9 @@
         i: a.bed
         s: True
     expected: |
-        chr1	1	200	+
-        chr1	900	950	+
-        chr1	150	500	-
+        chr1	1	200			+
+        chr1	900	950			+
+        chr1	150	500			-
 
 -   method: merge
     kwargs:
