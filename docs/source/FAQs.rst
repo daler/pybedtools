@@ -3,6 +3,79 @@
 FAQs
 ====
 
+.. note::
+
+    More detailed answers to these questions can often be found on the `Issues
+    <https://github.com/daler/pybedtools/issues/>`_ page.
+
+
+"Can I create a BedTool object from an existing list?"
+------------------------------------------------------
+
+Sure, the :class:`BedTool` constructor will figure it out::
+
+    items = [
+        ('chr1', 100, 200),
+        ('chr1', 500, 600),
+    ]
+
+    x = pybedtools.BedTool(items)
+
+
+"I'm getting an empty BedTool"
+------------------------------
+Check to make sure you're not consuming a BedTool generator.  Note that
+:meth:`BedTool.filter` and :meth:`BedTool.each` return generator BedTool
+object. Keep in mind that checking the length of a generator BedTool will
+completely consume it.
+
+It's probably best to save intermediate versions to file using
+:meth:`BedTool.saveas`.  If you don't provide a filename, it'll save to an
+automatically cleaned up tempfile::
+
+    my_bedtool\
+     .filter(my_filter_func)\
+     .saveas()\
+     .intersect(y)\
+     .filter(lambda x: len(x) > 1000)\
+     .saveas('filtered-intersected-large.bed')
+
+
+"I'm getting a MalformedBedLineError"
+-------------------------------------
+This error can be raised by BEDTools itself.  Typical reasons are that start
+> end, or the fields are not tab-delimited.
+
+You can try the :func:`pybedtools.remove_invalid` function to clean up your
+file, or manually edit the offending lines.
+
+
+"I get a segfault when iterating over a BedTool object"
+-------------------------------------------------------
+
+`Issue #88 <https://github.com/daler/pybedtools/issues/88>`_ which
+addresses this issue -- in summary, Cython's handling of iterators works
+unexpectedly.  It's best to call the `next()` method explicitly when doing
+complex manipulations on an iterating :class:`BedTool`.
+
+
+"Can I add extra information to FASTA headers when using BedTool.sequence()?"
+-----------------------------------------------------------------------------
+
+Since BEDTools adds the feature name to the FASTA header, you can manipulate
+the feature name on the fly with a custom modifier function::
+
+    def fields2name(f):
+        "replace GFF featuretype field with the attributes field"
+        f[2] = f[-1]
+        return f
+
+    import pybedtools
+    g = pybedtools.BedTool("my.gff").each(fields2name).sequence(fi='my.fasta')
+
+    print open(g.seqfn).readline()
+
+
 "Too many files open" error
 ---------------------------
 
