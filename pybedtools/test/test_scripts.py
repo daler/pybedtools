@@ -66,7 +66,8 @@ def test_venn_mpl():
     e = matplotlib.image.imread(expected_fn)
 
     TOLERANCE = 25
-    assert abs((o - e).sum()) < TOLERANCE
+    SUM = abs((o - e).sum())
+    assert SUM < TOLERANCE, SUM
 
     os.unlink(outfn)
 
