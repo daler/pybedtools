@@ -5,3 +5,5 @@ cd bedtools
 make
 BIN=$(pwd)/bin
 export PATH=$PATH:$BIN
+echo $PATH
+
