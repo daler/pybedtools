@@ -3,7 +3,5 @@ install:
     - "pip install -r requirements.txt --use-mirrors"
     - "pip install sphinx"
     - "pip install matplotlib"
-    - ./.install-bedtools.sh
-    - ./.install-tabix.sh
 
-script: ./test.sh
+script: ./.travis-test.sh
