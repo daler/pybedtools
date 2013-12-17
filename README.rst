@@ -60,4 +60,5 @@ See the `Shell script comparison <http://pythonhosted.org/pybedtools/sh-comparis
 for more details on this comparison, or keep reading the full documentation at
 http://pythonhosted.org/pybedtools/index.html.
 
-.. |build| image:: https://travis-ci.org/daler/pybedtools.png   :target: https://travis-ci.org/daler/pybedtools
+.. |build| image:: https://travis-ci.org/daler/pybedtools.png
+    :target: https://travis-ci.org/daler/pybedtools
