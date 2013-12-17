@@ -1,6 +1,7 @@
 language: python
 install:
     - "pip install -r requirements.txt --use-mirrors"
+    - "pip install sphinx"
     - ./.install-bedtools.sh
 
 script: ./test.sh
