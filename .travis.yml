@@ -3,5 +3,6 @@ install:
     - "pip install -r requirements.txt --use-mirrors"
     - "pip install sphinx"
     - "pip install matplotlib"
+    - "pip install ."
 
 script: ./.travis-test.sh
