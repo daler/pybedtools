@@ -1,5 +1,5 @@
 #!/bin/bash
-
-git clone https://github.com/arq5x/bedtools.git
-cd bedtools
+DIR=$1
+git clone https://github.com/arq5x/bedtools.git ${DIR}/bedtools
+cd ${DIR}/bedtools
 make
