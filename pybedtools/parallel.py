@@ -95,6 +95,7 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     to be sorted.  Here, we specify `sort=True` to sort each shuffled BedTool
     before calling its `jaccard` method.
 
+        >>> from pybedtools.parallel import parallel_apply
         >>> results = parallel_apply(a, method='jaccard', method_args=(b,),
         ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
         >>> for i in results:
