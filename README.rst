@@ -1,5 +1,8 @@
 Overview
 --------
+
+Build status: |build|
+
 `pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs
 (https://github.com/arq5x/bedtools), which are widely used for genomic interval
 manipulation or "genome algebra".  `pybedtools` extends `BEDTools` by offering
@@ -56,3 +59,5 @@ requires knowledge in Perl, bash, and awk.  The run time is identical to the
 See the `Shell script comparison <http://pythonhosted.org/pybedtools/sh-comparison.html>`_ in the docs
 for more details on this comparison, or keep reading the full documentation at
 http://pythonhosted.org/pybedtools/index.html.
+
+.. |build| image:: https://travis-ci.org/daler/pybedtools
