@@ -5,6 +5,7 @@ Changelog
 Changes in v0.6.3
 -----------------
 
+
 * New :mod:`pybedtools.parallel` module for working with many operations in
   parallel.  See the docs for :func:`pybedtools.parallel.parallel_apply` for
   details.
@@ -30,6 +31,9 @@ Changes in v0.6.3
 * :class:`pybedtools.plotting.BinaryHeatmap` class for working with results
   from :meth:`BedTool.multi_intersect`.
 
+* :meth:`BedTool.each` now also has some filter capabilities (if provided
+  function's return value evaluates to False, feature will be skipped)
+
 * Better detection for samtools (thanks Luca Beltrame)
 
 * Expand BEDToolsError (thanks Ryan Layer)
@@ -53,6 +57,7 @@ Changes in v0.6.3
   empty file
 
 
+* Removed SciPy dependency
 
 Changes in v0.6.2
 -----------------
