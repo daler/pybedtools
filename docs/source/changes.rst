@@ -5,7 +5,6 @@ Changelog
 Changes in v0.6.3
 -----------------
 
-
 * New :mod:`pybedtools.parallel` module for working with many operations in
   parallel.  See the docs for :func:`pybedtools.parallel.parallel_apply` for
   details.
@@ -58,6 +57,9 @@ Changes in v0.6.3
 
 
 * Removed SciPy dependency
+
+* Integration with Travis-CI for continuous integration testing of changes to
+  source code.
 
 Changes in v0.6.2
 -----------------
