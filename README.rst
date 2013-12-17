@@ -1,7 +1,8 @@
 Overview
 --------
 
-Build status: |build|
+.. image:: https://travis-ci.org/daler/pybedtools.png
+    :target: https://travis-ci.org/daler/pybedtools
 
 `pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs
 (https://github.com/arq5x/bedtools), which are widely used for genomic interval
@@ -13,7 +14,9 @@ Why `pybedtools`?
 -----------------
 
 Here is an example to get the names of genes that are <5 kb away from
-intergenic SNPs::
+intergenic SNPs:
+
+.. code-block:: python
 
     from pybedtools import BedTool
 
@@ -38,7 +41,9 @@ Useful features shown here include:
 
 In contrast, here is the same analysis using shell scripting.  Note that this
 requires knowledge in Perl, bash, and awk.  The run time is identical to the
-`pybedtools` version above::
+`pybedtools` version above:
+
+.. code-block:: bash
 
     snps=snps.bed.gz
     genes=hg19.gff
@@ -60,5 +65,4 @@ See the `Shell script comparison <http://pythonhosted.org/pybedtools/sh-comparis
 for more details on this comparison, or keep reading the full documentation at
 http://pythonhosted.org/pybedtools/index.html.
 
-.. |build| image:: https://travis-ci.org/daler/pybedtools.png
-    :target: https://travis-ci.org/daler/pybedtools
+
