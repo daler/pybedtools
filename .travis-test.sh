@@ -12,4 +12,4 @@ export PATH=$PATH:${TRAVIS_BUILD_DIR}/samtools-${SAMTOOLS_VERSION}
 export PATH=$PATH:${TRAVIS_BUILD_DIR}/bedtools/bin
 echo $PATH
 nosetests -v
-cd docs && make doctest
+cd docs && make clean && make doctest
