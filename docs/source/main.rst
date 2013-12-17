@@ -78,9 +78,6 @@ The following extra Python modules are **optional**:
     used for automated testing, not necessary for working with
     :mod:`pybedtools`
 
-:scipy_:
-    used for computing statistics for randomization procedures
-
 :matplotlib_:
     Used by plotting code (:mod:`pybedtools.contrib.plotting` and by the
     `venn_mpl.py` script for making a Venn diagram with annotated counts. You
@@ -134,7 +131,7 @@ Anaconda and virtualenv.
 
     If you do not already have a scientific Python installation, perhaps the
     easiest way to get one is with the `Anaconda distribution
-    <http://continuum.io/downloads>`_.  This includes SciPy, matplotlib, and
+    <http://continuum.io/downloads>`_.  This includes NumPy, matplotlib, and
     all :mod:`pybedtools` dependencies.  Upon installing Anaconda, you can
     install :mod:`pybedtools` with::
 
@@ -223,11 +220,11 @@ nosetests_ and PyYAML_ installed, and the doctests need `sphinx`_ and
     $ pip install sphinx
     $ pip install numpydoc
 
-For the full tests, you'll also need SciPy and matplotlib installed.  These are
-only used for a small part of :mod:`pybedtools`, and can be difficult to
-install if not using the Anaconda distribution described above.  If you don't
-have SciPy and matplotlib, you can ignore the tests that fail because these
-libraries can't be found.
+For the full tests, you'll also need NumPy and matplotlib (which depends on
+NumPy) installed.  These are only used for a small part of :mod:`pybedtools`,
+and can be difficult to install if not using the Anaconda distribution
+described above.  If you don't have matplotlib, you can ignore the
+tests that fail because these libraries can't be found.
 
 .. warning::
 

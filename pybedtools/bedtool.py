@@ -2113,8 +2113,8 @@ class BedTool(object):
         Dictionary of results from many randomly shuffled intersections.
 
         Sends args and kwargs to :meth:`BedTool.randomintersection` and
-        compiles results into a dictionary with useful stats.  Requires scipy
-        and numpy.
+        compiles results into a dictionary with useful stats.  Requires 
+        numpy.
 
         If `include_distribution` is True, then the dictionary will include the
         full distribution; otherwise, the distribution is deleted and cleaned
@@ -2137,13 +2137,12 @@ class BedTool(object):
         >>> try:
         ...     results = a.randomstats(b, 100, debug=True)
         ... except ImportError:
-        ...     # allow doctests to pass if SciPy not installed
         ...     pass
 
         *results* is a dictionary that you can inspect.
 
         (Note that the following examples are not run as part of the doctests
-        to avoid forcing users to install SciPy just to pass tests)
+        to avoid forcing users to install NumPy just to pass tests)
 
         The actual overlap::
 
@@ -2165,10 +2164,30 @@ class BedTool(object):
                 (kwargs['intersect_kwargs'] is None):
             kwargs['intersect_kwargs'] = {'u': True}
         try:
-            from scipy import stats
             import numpy as np
         except ImportError:
-            raise ImportError("Need to install NumPy and SciPy for stats...")
+            raise ImportError("Need to install NumPy for stats...")
+
+
+        def percentileofscore(a, score):
+            """
+            copied from scipy.stats.percentileofscore, to avoid dependency on
+            scipy.
+            """
+            a = np.array(a)
+            n = len(a)
+
+            if not(np.any(a == score)):
+                a = np.append(a, score)
+                a_len = np.array(range(len(a)))
+            else:
+                a_len = np.array(range(len(a))) + 1.0
+
+            a = np.sort(a)
+            idx = [a == score]
+            pct = (np.mean(a_len[idx]) / n) * 100.0
+            return pct
+
 
         if isinstance(other, basestring):
             other = BedTool(other)
@@ -2209,10 +2228,9 @@ class BedTool(object):
 
         lower_thresh = 2.5
         upper_thresh = 97.5
-        lower = stats.scoreatpercentile(distribution, lower_thresh)
-        upper = stats.scoreatpercentile(distribution, upper_thresh)
+        lower, upper = np.percentile(distribution, [lower_thresh, upper_thresh])
 
-        actual_percentile = stats.percentileofscore(distribution, actual)
+        actual_percentile = percentileofscore(distribution, actual)
         d = {
             'iterations': iterations,
             'actual': actual,
