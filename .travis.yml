@@ -6,3 +6,7 @@ install:
     - "python setup.py develop"
 
 script: ./.travis-test.sh
+
+branches:
+    only:
+        - master
