@@ -1151,9 +1151,13 @@ class BedTool(object):
         except KeyError:
             pass
 
+        cmds = [prog]
+
         # If stream not specified, then a tempfile will be created
         if kwargs.pop('stream', None):
-                tmp = None
+            tmp = None
+            if helpers._at_least_version(2, 18) and prog == 'intersectBed':
+                cmds.append('-nobuf')
         else:
             output = kwargs.pop('output', None)
             if output:
@@ -1164,7 +1168,6 @@ class BedTool(object):
         additional_args = kwargs.pop('additional_args', None)
 
         # Parse the kwargs into BEDTools-ready args
-        cmds = [prog]
         for key, value in kwargs.items():
             if isinstance(value, bool):
                 if value:
