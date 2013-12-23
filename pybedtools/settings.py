@@ -18,6 +18,8 @@ _v_2_15_plus = False
 KEEP_TEMPFILES = False
 _DEBUG = True
 
+_version = None
+
 # Check calls against these names to only allow calls to known BEDTools
 # programs (basic security)
 #

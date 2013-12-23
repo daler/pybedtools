@@ -7,12 +7,67 @@ import string
 import glob
 import struct
 import atexit
-import pybedtools
+import re
 
+import pybedtools
 import settings
 
 
 _tags = {}
+_version_regexp = re.compile(
+    r"bedtools v(?P<major>\d+)\.(?P<minor>\d+)\.(?P<rev>\d+)")
+
+
+def _bedtools_version():
+    try:
+        # Easy case: -version option is supported
+        cmds = [os.path.join(settings._bedtools_path, 'bedtools'), '-version']
+        p = subprocess.Popen(
+            cmds, stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+
+        # store the version string for future debugging....
+        settings._version_str = stdout.strip()
+        _version = _version_regexp.search(settings._version_str).groupdict()
+
+        # _version might be None if `bedtools` works, but `bedtools -version`
+        # does not (that is, no OSError is raised); or there's some version
+        # string parsing error.  BEDTools v2.15 was the first version to
+        # support the `bedtools program_name` syntax.  If we got here and no
+        # OSError but _version is None, assume it's v2.15.
+        if _version is None:
+            _version = {'major': 2, 'minor': 15, 'rev': 0}
+
+        # Otherwise use the parsed version string
+        else:
+            for k, v in _version.items():
+                _version[k] = int(v)
+
+    except OSError:
+        # Maybe the reason we can't find bedtools is because version <2.15 is
+        # installed, and so the command `bedtools` doesn't work.  Then try the
+        # other calling syntax, here using intersectBed.
+        cmds = [os.path.join(settings._bedtools_path, 'intersectBed')]
+        p = subprocess.Popen(
+            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+
+        # Should be more exact, but all that really matters is that
+        # _at_least_version(2, 15) will return False.
+        _version = {'major': 2, 'minor': 0, 'rev': 0}
+
+    settings._version = _version
+
+
+def _at_least_version(major=2, minor=15, rev=0):
+    """
+    Easy version checking function
+    """
+    if settings._version['major'] >= major:
+        if settings._version['minor'] >= minor:
+            if settings._version['rev'] >= rev:
+                return True
 
 
 def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
@@ -20,35 +75,26 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     Checks installation as well as version (based on whether or not "bedtools
     intersect" works, or just "intersectBed")
     """
-    if settings._bedtools_installed and not force_check:
+
+    if settings._bedtools_installed and not force_check and settings._version:
         return True
 
+    # first try the -version flag to the main bedtools program
     try:
-        p = subprocess.Popen(
-            [os.path.join(settings._bedtools_path, 'bedtools'),
-             settings._prog_names[program_to_check]],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        _bedtools_version()
+        if _at_least_version(major=2, minor=15):
+            settings._v_2_15_plus = True
         settings._bedtools_installed = True
-        settings._v_2_15_plus = True
 
-    except (OSError, KeyError) as err:
-
-        try:
-            p = subprocess.Popen(
-                [os.path.join(settings._bedtools_path, program_to_check)],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            settings._bedtools_installed = True
-            settings._v_2_15_plus = False
-
-        except OSError as err:
-            if err.errno == 2:
-                if settings._bedtools_path:
-                    add_msg = "(tried path '%s')" % settings._bedtools_path
-                else:
-                    add_msg = ""
-                raise OSError("Please make sure you have installed BEDTools"
-                              "(https://github.com/arq5x/bedtools) and that "
-                              "it's on the path. %s" % add_msg)
+    except OSError as err:
+        if err.errno == 2:
+            if settings._bedtools_path:
+                add_msg = "(tried path '%s')" % settings._bedtools_path
+            else:
+                add_msg = ""
+            raise OSError("Please make sure you have installed BEDTools"
+                          "(https://github.com/arq5x/bedtools) and that "
+                          "it's on the path. %s" % add_msg)
 
 
 def _check_for_tabix():
