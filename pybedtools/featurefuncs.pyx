@@ -39,7 +39,7 @@ cpdef midpoint(Interval feature):
     Specialized version of `center()` that just returns the single-bp midpoint
     """
     start = feature.start + (feature.stop - feature.start) / 2
-    stop = start
+    stop = start + 1
     feature.start = start
     feature.stop = stop
     return feature
