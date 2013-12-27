@@ -1,7 +1,7 @@
 Overview
 --------
 
-.. image:: https://travis-ci.org/daler/pybedtools.png
+.. image:: https://travis-ci.org/daler/pybedtools.png?branch=master
     :target: https://travis-ci.org/daler/pybedtools
 
 `pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs
