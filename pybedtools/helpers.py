@@ -11,6 +11,7 @@ import pybedtools
 
 import settings
 
+BUFSIZE = 1
 
 _tags = {}
 
@@ -349,7 +350,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
-                                 bufsize=1)
+                                 bufsize=BUFSIZE)
             for line in stdin:
                 p.stdin.write(line)
 
@@ -370,7 +371,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stdout=outfile,
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
-                                 bufsize=1)
+                                 bufsize=BUFSIZE)
             if isinstance(stdin, file):
                 stdout, stderr = p.communicate(stdin.read())
             else:
@@ -390,7 +391,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
-                                 bufsize=1)
+                                 bufsize=BUFSIZE)
             output = p.stdout
             stderr = None
 
@@ -405,7 +406,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
                                  stderr=subprocess.PIPE,
-                                 bufsize=1)
+                                 bufsize=BUFSIZE)
             stdout, stderr = p.communicate()
             output = tmpfn
             outfile.close()
