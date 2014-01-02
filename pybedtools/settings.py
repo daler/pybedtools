@@ -76,6 +76,7 @@ _prog_names = {
     'windowMaker': 'makewindows',
     'groupBy': 'groupby',
     'expandCols': 'expand',
+    'sample': 'sample',
 }
 
 _old_names = _prog_names.keys()

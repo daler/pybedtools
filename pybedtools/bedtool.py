@@ -2039,6 +2039,12 @@ class BedTool(object):
         interval in A in the last column.
         """
 
+    @_wraps(prog='sample', implicit='i', bam='i')
+    def sample(self):
+        """
+        Wraps 'sample'.
+        """
+
     def count(self):
         """
         Count the number features in this BedTool.
