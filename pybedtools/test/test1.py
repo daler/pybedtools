@@ -1354,3 +1354,13 @@ def test_remote_bam():
 11	61665	61765	SRR081241.16743804/1	0	-
 11	61989	62089	SRR077487.167173/2	0	+"""), results
 
+
+def test_empty_overloaded_ops():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.BedTool("", from_string=True)
+    assert b.file_type == 'empty'
+    assert (a + b) == a
+    assert (b + a) == b
+    assert (a - b) == a
+    assert (b - a) == a
+    assert (b - b) == b

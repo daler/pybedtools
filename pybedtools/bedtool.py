@@ -979,10 +979,23 @@ class BedTool(object):
                              'into a BedTool')
 
     def __add__(self, other):
-        return self.intersect(other, u=True)
+        try:
+            return self.intersect(other, u=True)
+        except BEDToolsError:
+            if (self.file_type == 'empty') or (other.file_type == 'empty'):
+                return self.saveas()
 
     def __sub__(self, other):
-        return self.intersect(other, v=True)
+        try:
+            return self.intersect(other, v=True)
+        except BEDToolsError:
+            if (self.file_type == 'empty') and (other.file_type == 'empty'):
+                # doesn't matter which one we saveas since they're both empty
+                return other.saveas()
+            elif other.file_type == 'empty':
+                return self.saveas()
+            elif self.file_type == 'empty':
+                return other.saveas()
 
     def head(self, n=10, as_string=False):
         """
@@ -2119,7 +2132,7 @@ class BedTool(object):
         Dictionary of results from many randomly shuffled intersections.
 
         Sends args and kwargs to :meth:`BedTool.randomintersection` and
-        compiles results into a dictionary with useful stats.  Requires 
+        compiles results into a dictionary with useful stats.  Requires
         numpy.
 
         If `include_distribution` is True, then the dictionary will include the
@@ -2174,7 +2187,6 @@ class BedTool(object):
         except ImportError:
             raise ImportError("Need to install NumPy for stats...")
 
-
         def percentileofscore(a, score):
             """
             copied from scipy.stats.percentileofscore, to avoid dependency on
@@ -2193,7 +2205,6 @@ class BedTool(object):
             idx = [a == score]
             pct = (np.mean(a_len[idx]) / n) * 100.0
             return pct
-
 
         if isinstance(other, basestring):
             other = BedTool(other)
@@ -2234,7 +2245,8 @@ class BedTool(object):
 
         lower_thresh = 2.5
         upper_thresh = 97.5
-        lower, upper = np.percentile(distribution, [lower_thresh, upper_thresh])
+        lower, upper = np.percentile(
+            distribution, [lower_thresh, upper_thresh])
 
         actual_percentile = percentileofscore(distribution, actual)
         d = {
