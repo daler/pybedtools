@@ -5,7 +5,7 @@ install:
     - "pip install matplotlib"
     - "python setup.py develop"
 
-script: ./.travis-test.sh
+script: ./.travis-test-2.18.sh
 
 branches:
     only:
