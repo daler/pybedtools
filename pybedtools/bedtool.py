@@ -2227,8 +2227,8 @@ class BedTool(object):
 
         n = float(len(distribution))
 
-        frac_above = sum(distribution >= actual) / n
-        frac_below = sum(distribution <= actual) / n
+        frac_above = sum(distribution > actual) / n
+        frac_below = sum(distribution < actual) / n
 
         normalized = actual / med_count
 
