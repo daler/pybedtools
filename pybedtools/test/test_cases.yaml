@@ -655,11 +655,11 @@
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
 # sample
 #
--   method: sample
-    kwargs:
-            i: gdc.bed
-            seed: 1
-            n: 2
-    expected: |
-        chr2L	70	75	None	255	+
-        chr2L	140	145	None	255	+
+#-   method: sample
+#    kwargs:
+#            i: gdc.bed
+#            seed: 1
+#            n: 2
+#    expected: |
+#        chr2L	70	75	None	255	+
+#        chr2L	140	145	None	255	+
