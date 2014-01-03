@@ -74,6 +74,7 @@ pybedtools.BedTool
       ~BedTool.relative_distance
       ~BedTool.reldist
       ~BedTool.remove_invalid
+      ~BedTool.sample
       ~BedTool.save_seqs
       ~BedTool.saveas
       ~BedTool.seq
