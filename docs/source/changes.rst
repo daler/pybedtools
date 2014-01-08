@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Changes in v0.6.3b
-------------------
+Changes in v0.6.4
+-----------------
 
 * Full integration with BEDTools v2.18.  This includes some compatibility fixes
   for the new buffered output capabilities of BEDTool `intersect` and wrapping
