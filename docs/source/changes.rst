@@ -2,6 +2,24 @@
 
 Changelog
 =========
+
+Changes in v0.6.3b
+------------------
+
+* Full integration with BEDTools v2.18.  This includes some compatibility fixes
+  for the new buffered output capabilities of BEDTool `intersect` and wrapping
+  the new `bedtools sample` tool.
+
+* Overloaded operators (`+` and `-`) allow empty files as input, even using
+  BEDTools v2.18+.
+
+* Travis-CI builds now use BEDTools v2.18+ for tests.
+
+* Fix for :func:`pybedtools.featurefuncs.midpoint` (thanks ny-shao)
+
+* Fix to :meth:`BedTool.randomstats` (thanks Michael Reschen)
+
+
 Changes in v0.6.3
 -----------------
 
@@ -55,11 +73,10 @@ Changes in v0.6.3
 * Fix for :meth:`BedTool.cat` to handle cases where at least one input is an
   empty file
 
-
 * Removed SciPy dependency
 
-* Integration with Travis-CI for continuous integration testing of changes to
-  source code.
+* Every commit is built with Travis-CI for continuous integration testing of
+  changes to source code.
 
 Changes in v0.6.2
 -----------------
