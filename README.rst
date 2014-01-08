@@ -8,7 +8,7 @@ Overview
 (https://github.com/arq5x/bedtools), which are widely used for genomic interval
 manipulation or "genome algebra".  `pybedtools` extends `BEDTools` by offering
 feature-level manipulations from with Python. See full online documentation,
-including installation instructions, at http://packages.python.org/pybedtools/.
+including installation instructions, at http://pythonhosted.org/pybedtools/.
 
 Why `pybedtools`?
 -----------------
