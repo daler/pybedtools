@@ -58,7 +58,6 @@ Contents:
    tutorial-contents
    topical-documentation-contents
    FAQs
-   bedtools-2.18
    scripts
    autodoc_source
    changes
