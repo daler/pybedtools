@@ -25,8 +25,8 @@ bool isRegularFile(const string& filename) {
 
        i = stat(filename.c_str(), &buf);
        if (i!=0) {
-               cerr << "Error: can't determine file type of '" << filename << "': " << strerror(errno) << endl;
-               exit(1);
+               cerr << "BEDTools Error: can't determine file type of '" << filename << "': " << strerror(errno) << endl;
+               return false;
        }
        if (S_ISREG(buf.st_mode))
                return true;

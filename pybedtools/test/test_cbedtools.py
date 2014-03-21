@@ -347,6 +347,20 @@ def test_zero_length_regression():
     assert len(m.all_hits(i2, same_strand=True)) == 0
 
 
+def test_missing_files():
+    """
+    previously this would crash the interpreter due to an exit(1) call in
+    bedFile.cpp
+    """
+    a = pybedtools.BedTool('chrA 1 10', from_string=True).saveas("this_file_should_raise_BEDTools_Error")
+    result = list(iter(a))
+    os.unlink(a.fn)
+    from pybedtools.cbedtools import BedToolsFileError
+    def crashes():
+        list(iter(a))
+
+    assert_raises(BedToolsFileError, crashes)
+
 if __name__ == "__main__":
     unittest.main()
     pybedtools.cleanup(remove_all=True)

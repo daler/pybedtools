@@ -27,7 +27,7 @@ BedFile::~BedFile(void) {
 }
 
 
-void BedFile::Open(void) {
+int BedFile::Open(void) {
     if (bedFile == "stdin") {
         _bedStream = &cin;
     }
@@ -38,8 +38,8 @@ void BedFile::Open(void) {
 
         // can we open the file?
         if ( !beds ) {
-            cerr << "Error: The requested bed file (" << bedFile << ") could not be opened. Exiting!" << endl;
-            exit (1);
+            cerr << "BEDTools Error: The requested bed file (" << bedFile << ") could not be opened. Exiting!" << endl;
+            return -1;
         }
         else {
             // if so, close it (this was just a test)
@@ -51,8 +51,8 @@ void BedFile::Open(void) {
     else if ((isGzipFile(bedFile) == true) && (isRegularFile(bedFile) == true)) {        
         igzstream beds(bedFile.c_str(), ios::in);
         if ( !beds ) {
-            cerr << "Error: The requested bed file (" << bedFile << ") could not be opened. Exiting!" << endl;
-            exit (1);
+            cerr << "BEDTools Error: The requested bed file (" << bedFile << ") could not be opened. Exiting!" << endl;
+            return -1;
         }
         else {
             // if so, close it (this was just a test)
@@ -62,9 +62,10 @@ void BedFile::Open(void) {
         }
     }
     else {
-        cerr << "Error: Unexpected file type (" << bedFile << "). Exiting!" << endl;
-        exit(1);
+        cerr << "BEDTools Error: Unexpected file type (" << bedFile << "). Exiting!" << endl;
+        return -1;
     }
+    return 1;
 }
 
 // Rewind the pointer back to the beginning of the file

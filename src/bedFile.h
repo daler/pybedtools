@@ -273,7 +273,7 @@ public:
     ~BedFile(void);
     
     // Open a BED file for reading (creates an istream pointer)
-    void Open(void);
+    int Open(void);
 
     // Rewind the pointer back to the beginning of the file
     void Rewind(void);

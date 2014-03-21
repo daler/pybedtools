@@ -96,6 +96,10 @@ class MalformedBedLineError(Exception):
     pass
 
 
+class BedToolsFileError(Exception):
+    pass
+
+
 cdef class Attributes(dict):
     """
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
@@ -662,7 +666,9 @@ cdef class IntervalFile:
 
     def __next__(self):
         if not self._open:
-            self.intervalFile_ptr.Open()
+            result = self.intervalFile_ptr.Open()
+            if result == -1:
+                raise BedToolsFileError("Error opening file")
             self._open = 1
         cdef BED b = self.intervalFile_ptr.GetNextBed()
         if b.status == BED_VALID:
