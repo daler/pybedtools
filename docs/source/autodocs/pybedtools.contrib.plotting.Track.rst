@@ -54,10 +54,12 @@ pybedtools.contrib.plotting.Track
       ~Track.get_offset_position
       ~Track.get_offset_transform
       ~Track.get_offsets
+      ~Track.get_path_effects
       ~Track.get_paths
       ~Track.get_picker
       ~Track.get_pickradius
       ~Track.get_rasterized
+      ~Track.get_sketch_params
       ~Track.get_snap
       ~Track.get_transform
       ~Track.get_transformed_clip_path_and_affine
@@ -112,10 +114,12 @@ pybedtools.contrib.plotting.Track
       ~Track.set_norm
       ~Track.set_offset_position
       ~Track.set_offsets
+      ~Track.set_path_effects
       ~Track.set_paths
       ~Track.set_picker
       ~Track.set_pickradius
       ~Track.set_rasterized
+      ~Track.set_sketch_params
       ~Track.set_snap
       ~Track.set_transform
       ~Track.set_url
