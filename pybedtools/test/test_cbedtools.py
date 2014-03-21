@@ -3,6 +3,8 @@
 import unittest
 import os
 from pybedtools import Interval, IntervalFile
+import pybedtools
+
 PATH = os.path.dirname(__file__)
 
 class IntervalFileTest(unittest.TestCase):
@@ -140,7 +142,6 @@ class IntervalFileTest(unittest.TestCase):
         self.assertRaises(NotImplementedError, a.__ge__, b)
         self.assertRaises(NotImplementedError, a.__lt__, b)
         self.assertRaises(NotImplementedError, a.__gt__, b)
-
 
 
 class IntervalTest(unittest.TestCase):
@@ -318,6 +319,29 @@ class IntervalFileGFFTest(IntervalTest):
         self.assert_(orig_start == second_start == iv.start)
         self.assert_(orig_string == second_string == str(iv))
 
+
+def test_zero_length_regression():
+    i = Interval(chrom='chrA', start=1, end=10, name='.', score='0', strand='+')
+    iminus = Interval(chrom='chrA', start=1, end=10, name='.', score='0', strand='-')
+    m = pybedtools.BedTool('chrA 2 2 . 0 +', from_string=True).intervals
+
+    assert len(m.all_hits(i)) == 1
+    assert len(m.all_hits(iminus)) == 1
+    assert len(m.all_hits(i, same_strand=False)) == 1
+    assert len(m.all_hits(iminus, same_strand=False)) == 1
+    assert len(m.all_hits(i, same_strand=True)) == 1
+    assert len(m.all_hits(iminus, same_strand=True)) == 0
+
+    assert m.any_hits(i) == 1
+    assert m.any_hits(iminus) == 1
+    assert m.any_hits(i, same_strand=True) == 1
+    assert m.any_hits(i, same_strand=False) == 1
+    assert m.any_hits(iminus, same_strand=True) == 0
+    assert m.any_hits(iminus, same_strand=False) == 1
+
+    i2 = Interval(chrom='chrA', start=999, end=9999)
+    assert len(m.all_hits(i2)) == 0
+    assert len(m.all_hits(i2, same_strand=True)) == 0
 
 
 if __name__ == "__main__":
