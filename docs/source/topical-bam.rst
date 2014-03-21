@@ -80,7 +80,7 @@ plain text format are considered SAM features, so these SAM features are
 .. doctest::
 
     >>> bam_results[0].start
-    9329L
+    9329
 
     >>> bam_results[0][3]
     '9330'
