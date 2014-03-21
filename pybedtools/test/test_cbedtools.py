@@ -4,6 +4,9 @@ import unittest
 import os
 from pybedtools import Interval, IntervalFile
 import pybedtools
+from nose.tools import assert_raises, raises
+from tfuncs import setup, teardown
+
 
 PATH = os.path.dirname(__file__)
 
