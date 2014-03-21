@@ -1236,6 +1236,10 @@ def test_window_maker():
     chr1	450	500
     chr1	900	950
     """)
+    x = pybedtools.BedTool()
+    z = x.window_maker(genome='hg19', w=100000)
+    assert str(z[0]) == "chr1\t0\t100000\n"
+    assert str(z[10000]) == 'chr16\t20800000\t20900000\n'
 
 def test_random():
     a = pybedtools.BedTool()
@@ -1281,11 +1285,6 @@ def test_bam_to_fastq():
     y = x.bam_to_fastq(fq=tmpfn)
     assert open(y.fastq).read() == open(pybedtools.example_filename('small.fastq')).read()
 
-def test_window():
-    x = pybedtools.BedTool()
-    z = x.window_maker(genome='hg19', w=100000)
-    assert str(z[0]) == "chr1\t0\t100000\n"
-    assert str(z[10000]) == 'chr16\t20800000\t20900000\n'
 
 def test_gtf_gff_attrs():
     # smoke test.
@@ -1364,3 +1363,4 @@ def test_empty_overloaded_ops():
     assert (a - b) == a
     assert (b - a) == a
     assert (b - b) == b
+
