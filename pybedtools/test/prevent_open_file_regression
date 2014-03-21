@@ -46,7 +46,7 @@ if sys.argv[1] == 'randomstats':
     results = a.randomstats(b, 10000, report_iterations=True, processes=8,
                             intersect_kwargs={'sorted': True})
 
-if sys.argv[1] == 'newrandomstats':
+elif sys.argv[1] == 'newrandomstats':
     results = a.randomstats(b, 10000, processes=8,
                             new=True, genome_fn=gfn,
                             intersect_kwargs={'sorted': True})
