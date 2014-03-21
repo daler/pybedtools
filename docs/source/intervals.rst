@@ -52,10 +52,10 @@ long integers, while everything else (including `score`) is a string.
     'chr1'
 
     >>> feature.start
-    1L
+    1
 
     >>> feature.stop
-    100L
+    100
 
     >>> feature.name
     'feature1'
@@ -82,10 +82,10 @@ Let's make another feature that only has chrom, start, and stop to see how
     'chrX'
 
     >>> feature2.start
-    500L
+    500
 
     >>> feature2.stop
-    1000L
+    1000
 
     >>> feature2.name
     ''
@@ -122,7 +122,7 @@ line (like a list) or indexed by name of attribute (like a dictionary).
     '1'
 
     >>> feature['start']
-    1L
+    1
 
 
 Fields
@@ -262,7 +262,7 @@ other is a string) . . .
     :options: +NORMALIZE_WHITESPACE
 
     >>> bed.start
-    50L
+    50
     >>> bed[1]
     '50'
 
@@ -274,7 +274,7 @@ remains in one-based GFF coords:
     :options: +NORMALIZE_WHITESPACE
 
     >>> gff.start
-    50L
+    50
     >>> gff[3]
     '51'
 
