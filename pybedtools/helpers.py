@@ -532,7 +532,8 @@ def close_or_delete(*args):
             os.unlink(x.fn)
         elif hasattr(x.fn, 'close'):
             x.fn.close()
-
+        if hasattr(x.fn, 'throw'):
+            x.fn.throw(StopIteration)
 
 def _jaccard_output_to_dict(s, **kwargs):
     """
