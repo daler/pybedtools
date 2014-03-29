@@ -100,9 +100,9 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
         ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
         >>> for i in results:
         ...     print sorted(i.items())
-        [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union', 630)]
-        [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union', 630)]
-        [('intersection', 45), ('jaccard', 0.0818182), ('n_intersections', 1), ('union', 550)]
+        [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
+        [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
+        [('intersection', 45), ('jaccard', 0.0818182), ('n_intersections', 1), ('union-intersection', 550)]
 
     Parameters
     ----------
