@@ -2,6 +2,17 @@
 
 Changelog
 =========
+Changes in v0.6.5
+-----------------
+This is a minor bug-fix release:
+
+* Fix for BedTool.all_hits() and any_hits() which will now show hits for
+  zero-length features with the same coordinates, like the rest of BEDTools.
+
+* Improved error-handling to avoid Python interpreter crashing in cases when
+  a BED file on the filesystem becomes unavailable after a BedTool object has
+  been created for it.
+
 
 Changes in v0.6.4
 -----------------
