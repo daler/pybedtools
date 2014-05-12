@@ -149,9 +149,22 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         _add_doc = []
         if implicit:
             _add_doc.append(
-                "\n\tFor convenience, the file or stream this "
-                "BedTool points to is implicitly passed as the `-%s` "
-                "argument to `%s`" % (implicit, prog))
+        """
+        For convenience, the file or stream this BedTool points to is
+        implicitly passed as the `-%s` argument to `%s`""" % (implicit, prog))
+
+        if uses_genome:
+            _add_doc.append(
+        """
+        There are two alternatives for supplying a genome.  Use
+        `g="genome.filename"` if you have a genome's chrom sizes saved
+        as a file. This is the what BEDTools expects when using it from
+        the command line. Alternatively, use the `genome="assembly.name"`
+        (for example, `genome="hg19"`) to use chrom sizes for that 
+        assembly without having to manage a separate file.  The `genome`
+        argument triggers a call `pybedtools.chromsizes`, so see that method
+        for more details.
+        """)
 
         def wrapped(self, *args, **kwargs):
             """
