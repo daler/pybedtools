@@ -1627,14 +1627,6 @@ class BedTool(object):
 
             >>> c = a.merge(d=500)
 
-            Report number of merged features:
-
-            >>> c = a.merge(n=True)
-
-            Report names of merged features:
-
-            >>> c = a.merge(nms=True)
-
         """
 
     @_log_to_history
