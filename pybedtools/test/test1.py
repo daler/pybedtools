@@ -1358,9 +1358,12 @@ def test_empty_overloaded_ops():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.BedTool("", from_string=True)
     assert b.file_type == 'empty'
-    assert (a + b) == a
+
+    # NOTE: change in semantics.  Previously, intersecting a BED file with an
+    # empty file would return the original BED file.
+    assert (a + b) == b
     assert (b + a) == b
     assert (a - b) == a
-    assert (b - a) == a
+    assert (b - a) == b
     assert (b - b) == b
 

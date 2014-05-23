@@ -994,22 +994,27 @@ class BedTool(object):
 
     def __add__(self, other):
         try:
-            return self.intersect(other, u=True)
+            result = self.intersect(other, u=True)
         except BEDToolsError:
+            # BEDTools versions <2.20 would raise BEDToolsError
             if (self.file_type == 'empty') or (other.file_type == 'empty'):
-                return self.saveas()
+                result = pybedtools.BedTool("", from_string=True)
+        return result
+
 
     def __sub__(self, other):
         try:
-            return self.intersect(other, v=True)
+            result = self.intersect(other, v=True)
         except BEDToolsError:
+            # BEDTools versions <2.20 would raise BEDToolsError
+
             if (self.file_type == 'empty') and (other.file_type == 'empty'):
-                # doesn't matter which one we saveas since they're both empty
-                return other.saveas()
+                result = pybedtools.BedTool("", from_string=True)
             elif other.file_type == 'empty':
-                return self.saveas()
+                result = self.saveas()
             elif self.file_type == 'empty':
-                return other.saveas()
+                result = pybedtools.BedTool("", from_string=True)
+        return result
 
     def head(self, n=10, as_string=False):
         """
@@ -1114,7 +1119,8 @@ class BedTool(object):
             'annotateBed': ' ',
             'getOverlap': ',',
             'groupBy': ',',
-            'multiIntersectBed': ' '
+            'multiIntersectBed': ' ',
+            'mergeBed': ',',
         }
         stdin = None
 
