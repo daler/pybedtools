@@ -2,6 +2,34 @@
 
 Changelog
 =========
+Changes in v0.6.6
+-----------------
+This is a compatibility release, updated for BEDTools v2.20.0.
+
+There is one API change that affects the behavior of overloaded operators (that
+is, using `+` and `-` with BedTool objects) when one of the BedTool objects
+represents an empty file.
+
+Assume `a` is a BedTool object representing a regular BED file but `b` is
+empty.  Previously:
+
+    * a + b = a
+    * b + a = b
+    * a - b = a
+    * b - a = a
+    * b - b = b
+    * a + a = a
+
+The following changes have been made (indicated in **bold**), which hopefully
+make more logical sense:
+
+    * **a + b = b**
+    * b + a = b
+    * a - b = a
+    * **b - a = b**
+    * b - b = b
+    * a + a = a
+
 Changes in v0.6.5
 -----------------
 This is a minor bug-fix release:
