@@ -2,8 +2,11 @@ language: python
 
 notifications:
     email:
-        - ryankdale@gmail.com
+        recipients:
+            - ryankdale@gmail.com
+            - dalerr@niddk.nih.gov
         on_success: always
+        on_failure: always
 
 # See http://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-GUI-(e.g.-a-Web-browser)
 before_install:
