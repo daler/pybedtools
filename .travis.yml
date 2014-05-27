@@ -1,5 +1,10 @@
 language: python
 
+notifications:
+    email:
+        - ryankdale@gmail.com
+        on_success: always
+
 # See http://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-GUI-(e.g.-a-Web-browser)
 before_install:
   - "export DISPLAY=:99.0"
