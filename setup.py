@@ -8,6 +8,7 @@ from setuptools import setup
 from distutils.extension import Extension
 try:
     from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
 
 except ImportError:
     sys.stderr.write("""
@@ -93,7 +94,7 @@ tests_require = ['nose>=0.11', 'pyyaml']
 setup(
         name="pybedtools",
         version=version,
-        ext_modules=exts,
+        ext_modules=cythonize(exts, language="c++"),
         cmdclass = {'build_ext': build_ext},
         tests_require=tests_require,
         install_requires=install_requires,
