@@ -132,7 +132,8 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
 
     genome : string or dict
         If string, then assume it is the assembly name (e.g., hg19) and get
-        a dictionary of chromsizes for that assembly, then converts to a filename.
+        a dictionary of chromsizes for that assembly, then converts to
+        a filename.
 
     genome_fn : str
         Mutually exclusive with `genome`; `genome_fn` must be an existing
@@ -166,6 +167,9 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
 
     shuffle_kwargs = shuffle_kwargs or {}
     method_args = method_args or ()
+    if not isinstance(method_args, list) or not isinstance(method_args, tuple):
+        raise ValueError(
+            "method_args must be a list or tuple, got %s" % type(method_args))
     method_kwargs = method_kwargs or {}
 
     if genome_fn and genome:
