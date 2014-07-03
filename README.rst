@@ -4,6 +4,12 @@ Overview
 .. image:: https://travis-ci.org/daler/pybedtools.png?branch=master
     :target: https://travis-ci.org/daler/pybedtools
 
+.. image:: https://badge.fury.io/py/pybedtools.svg
+    :target: http://badge.fury.io/py/pybedtools
+
+.. image:: https://pypip.in/d/pybedtools/badge.png
+    :target: https://pypi.python.org/pypi/pybedtools
+
 `pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs
 (https://github.com/arq5x/bedtools), which are widely used for genomic interval
 manipulation or "genome algebra".  `pybedtools` extends `BEDTools` by offering
