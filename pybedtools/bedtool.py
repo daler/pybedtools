@@ -1198,7 +1198,9 @@ class BedTool(object):
 
         # Parse the kwargs into BEDTools-ready args
         cmds = [prog]
-        for key, value in kwargs.items():
+
+        # FIXME: the reverse-sort is a temp fix for issue #81.
+        for key, value in sorted(kwargs.items(), reverse=True):
             if isinstance(value, bool):
                 if value:
                     cmds.append('-' + key)

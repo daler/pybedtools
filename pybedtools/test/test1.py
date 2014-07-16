@@ -1367,3 +1367,19 @@ def test_empty_overloaded_ops():
     assert (b - a) == b
     assert (b - b) == b
 
+def test_issue_81():
+    genome = {'chr1': (0, 5000)}
+    result = pybedtools.BedTool().window_maker(genome=genome, w=1000, s=500)
+    assert result == fix(
+        """
+        chr1	0	1000
+        chr1	500	1500
+        chr1	1000	2000
+        chr1	1500	2500
+        chr1	2000	3000
+        chr1	2500	3500
+        chr1	3000	4000
+        chr1	3500	4500
+        chr1	4000	5000
+        chr1	4500	5000
+        """), result
