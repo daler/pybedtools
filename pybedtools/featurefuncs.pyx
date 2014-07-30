@@ -11,7 +11,18 @@ cpdef extend_fields(Interval feature, int n):
     fields = feature.fields[:]
     while len(fields) < n:
         fields.append('.')
-    return create_interval_from_list(fields)
+    i = create_interval_from_list(fields)
+
+    if n > 4 and (i[4] == '.'):
+        i[4] = '0'
+    if n > 6 and (i[6] == '.'):
+        i[6] = str(i.start)
+    if n > 7 and (i[7] == '.'):
+        i[7] = str(i.start)
+    if n > 8 and (i[8] == '.'):
+        i[8] = '0,0,0'
+    return i
+
 
 
 cpdef center(Interval feature, int width=100):
