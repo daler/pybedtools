@@ -18,7 +18,7 @@ cpdef extend_fields(Interval feature, int n):
     if n > 6 and (i[6] == '.'):
         i[6] = str(i.start)
     if n > 7 and (i[7] == '.'):
-        i[7] = str(i.start)
+        i[7] = str(i.stop)
     if n > 8 and (i[8] == '.'):
         i[8] = '0,0,0'
     return i

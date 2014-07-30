@@ -1066,10 +1066,10 @@ def test_extend_fields():
     results = str(a.each(featurefuncs.extend_fields, 8))
     print results
     assert results == fix("""
-    chr1	1	100	feature1	0	+	.	.
-    chr1	100	200	feature2	0	+	.	.
-    chr1	150	500	feature3	0	-	.	.
-    chr1	900	950	feature4	0	+	.	.
+    chr1	1	100	feature1	0	+	1	100
+    chr1	100	200	feature2	0	+	100	200
+    chr1	150	500	feature3	0	-	150	500
+    chr1	900	950	feature4	0	+	900	950
     """)
 
 def test_gff2bed():
