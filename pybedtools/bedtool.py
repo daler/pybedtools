@@ -2888,15 +2888,23 @@ class BedTool(object):
         for i in hits:
             yield float(i[-1]) / len(i)
 
-    def colormap_normalize(self, vmin=None, vmax=None, log=False):
+    def colormap_normalize(self, vmin=None, vmax=None, percentile=False, log=False):
         """
         Returns a normalization instance for use by featurefuncs.add_color().
 
-        `vmin` and `vmax` set the colormap bounds; if not specified then these
-        will be determined from the scores in the BED file.
+        Parameters
+        ----------
+        vmin, vmax : float, int, or None
+            `vmin` and `vmax` set the colormap bounds; if None then
+            these will be determined from the scores in the BED file.
 
-        `log`, if True, will put the scores on a log scale; of course be
-        careful if you have negative scores
+        log : bool
+            If True, put the scores on a log scale; of course be careful
+            if you have negative scores
+
+        percentile : bool
+            If True, interpret vmin and vmax as a percentile in the range
+            [0,100] rather than absolute values.
         """
         field_count = self.field_count()
         if (self.file_type != 'bed') or (field_count < 5):
@@ -2910,14 +2918,19 @@ class BedTool(object):
         else:
             norm = matplotlib.colors.Normalize()
 
-        if (vmin is not None) and (vmax is not None):
+        scores = np.array([i.score for i in self], dtype=float)
+        scores = scores[np.isfinite(scores)]
+        norm.autoscale(scores)
+
+        if vmin is not None:
+            if percentile:
+                vmin = np.percentile(scores, vmin)
             norm.vmin = vmin
+        if vmax is not None:
+            if percentile:
+                vmax = np.percentile(scores, vmax)
             norm.vmax = vmax
 
-        else:
-            scores = np.array([i.score for i in self], dtype=float)
-            scores = scores[np.isfinite(scores)]
-            norm.autoscale(scores)
 
         return norm
 
