@@ -32,14 +32,14 @@ dm3 = OrderedDict((
 
 # No chrUextra or chrM
 dm3.default = OrderedDict()
-for chrom, size in dm3.items():
+for chrom, size in list(dm3.items()):
     if chrom in ['chrUextra', 'chrM']:
         continue
     dm3.default[chrom] = size
 
 # No chrU*, chr*Het, or chrM
 dm3.euchromatic = OrderedDict()
-for chrom, size in dm3.default.items():
+for chrom, size in list(dm3.default.items()):
     if 'chrU' in chrom:
         continue
     if 'Het' in chrom:
@@ -86,7 +86,7 @@ mm9 = OrderedDict((
 ))
 
 mm9.default = OrderedDict()
-for chrom, size in mm9.items():
+for chrom, size in list(mm9.items()):
     if '_random' in chrom:
         continue
     if chrom == 'chrM':
@@ -147,7 +147,7 @@ hg18 = OrderedDict((
 ))
 
 hg18.default = OrderedDict()
-for chrom, size in hg18.items():
+for chrom, size in list(hg18.items()):
     if '_' in chrom:
         continue
     if chrom == 'chrM':
@@ -252,7 +252,7 @@ hg19 = OrderedDict((
 ))
 
 hg19.default = OrderedDict()
-for chrom, size in hg19.items():
+for chrom, size in list(hg19.items()):
     if '_' in chrom:
         continue
     if chrom == 'chrM':

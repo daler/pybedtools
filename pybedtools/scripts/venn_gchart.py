@@ -12,8 +12,7 @@ The values in the diagram assume:
 import argparse
 import sys
 import pybedtools
-import urllib
-import urllib2
+from six import urllib.request, urllib.parse, urllib.error
 
 
 def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
@@ -69,14 +68,14 @@ def gchart(data, outfn='out.png'):
     """
     Sends data to Google Chart API
     """
-    data = urllib.urlencode(data)
+    data = urllib.parse.urlencode(data)
 
     url = 'https://chart.googleapis.com/chart?'
 
     # Request and get the PNG
-    req = urllib2.Request(url, data)
-    print url + data
-    response = urllib2.urlopen(req)
+    req = urllib.request.Request(url, data)
+    print(url + data)
+    response = urllib.request.urlopen(req)
     f = open(outfn, 'w')
     f.write(response.read())
     f.close()

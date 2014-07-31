@@ -10,6 +10,7 @@ import argparse
 import os
 import sys
 import multiprocessing
+from __future__ import print_function
 
 
 def featuretype_filter(feature, featuretype):
@@ -92,7 +93,7 @@ def main():
               'intron and exon:')
 
     for label, reads in zip(labels, results):
-        print '%s %s' % (label, reads)
+        print('%s %s' % (label, reads))
 
     pybedtools.cleanup(verbose=False)
 

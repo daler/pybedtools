@@ -64,7 +64,7 @@ def add_closest(aname, bname):
         key = "\t".join(feat[:afields])
         seen_by_line[key].append([feat[-1], get_name(feat)])
 
-    for key, dist_names in seen_by_line.iteritems():
+    for key, dist_names in seen_by_line.items():
         if len(dist_names) > 0:
             assert len(set([d[0] for d in dist_names])) == 1
         names = ",".join(sorted(set(d[1] for d in dist_names)))

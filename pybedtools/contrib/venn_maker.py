@@ -10,6 +10,7 @@ import pybedtools
 from pybedtools import helpers
 import subprocess
 from collections import OrderedDict
+from __future__ import print_function
 
 # really just fill in x and filename...leave the rest up to the user.
 #
@@ -43,7 +44,7 @@ def _dict_to_R_named_list(d):
     Calls _list_to_R_syntax for each item.  Returns one big string.
     """
     items = []
-    for key, val in d.items():
+    for key, val in list(d.items()):
         items.append('"%s" = %s' % (key, _list_to_R_syntax(val)))
     return 'list(%s)' % ', '.join(items)
 
@@ -205,7 +206,7 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
         _beds.append(bed)
 
     cleaned = cleaned_intersect(_beds)
-    results = OrderedDict(zip(names, cleaned))
+    results = OrderedDict(list(zip(names, cleaned)))
 
     s = template.substitute(
             x=_dict_to_R_named_list(results),
@@ -238,8 +239,8 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
 
         stdout, stderr = p.communicate()
         if stdout or stderr:
-            print "stdout:", stdout
-            print "stderr:", stderr
+            print("stdout:", stdout)
+            print("stderr:", stderr)
 
     if not script_filename:
         return s

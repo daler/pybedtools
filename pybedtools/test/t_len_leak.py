@@ -4,11 +4,11 @@ fn = pybedtools.example_filename('a.bed')
 
 def show_open_fds(func):
     doc = func.__doc__
-    print
-    print doc
-    print "." * len(doc)
+    print()
+    print(doc)
+    print("." * len(doc))
     orig_fds = pybedtools.helpers.n_open_fds()
-    print '\t', max(func(fn)) - orig_fds, 'file-based'
+    print('\t', max(func(fn)) - orig_fds, 'file-based')
 
 
 def func1(src):

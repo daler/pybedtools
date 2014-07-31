@@ -79,5 +79,5 @@ _prog_names = {
     'sample': 'sample',
 }
 
-_old_names = _prog_names.keys()
-_new_names = _prog_names.values()
+_old_names = list(_prog_names.keys())
+_new_names = list(_prog_names.values())

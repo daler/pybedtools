@@ -11,8 +11,7 @@ intron".
 """
 
 import sys
-import urllib
-import urllib2
+from six import urllib.request, urllib.parse, urllib.error
 import argparse
 import pybedtools
 from collections import defaultdict
@@ -78,16 +77,16 @@ def make_pie(bed, gff, stranded=False, out='out.png',
     # Prepare results for Google Charts API
     npeaks = float(len(d))
     count_d = defaultdict(int)
-    for peak, featuretypes in d.items():
+    for peak, featuretypes in list(d.items()):
         if featuretypes == set('.'):
             featuretype = 'unannotated'
         else:
             featuretype = labelmaker(featuretypes)
         count_d[featuretype] += 1
 
-    results = count_d.items()
+    results = list(count_d.items())
     results.sort(key=lambda x: x[1])
-    labels, counts = zip(*results)
+    labels, counts = list(zip(*results))
 
     labels = []
     counts_to_use = []
@@ -106,12 +105,12 @@ def make_pie(bed, gff, stranded=False, out='out.png',
             'chl': '|'.join(labels)}
 
     # Encode it correctly
-    encoded_data = urllib.urlencode(data)
+    encoded_data = urllib.parse.urlencode(data)
 
     # Send request and get data; write to file
     url = 'https://chart.googleapis.com/chart?'
-    req = urllib2.Request(url, encoded_data)
-    response = urllib2.urlopen(req)
+    req = urllib.request.Request(url, encoded_data)
+    response = urllib.request.urlopen(req)
     f = open(out, 'w')
     f.write(response.read())
     f.close()

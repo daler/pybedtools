@@ -2,25 +2,26 @@ import os
 import sys
 import subprocess
 import tempfile
-import urllib2
-import copy_reg
-import logging
-import scripts
-from cbedtools import Interval, IntervalFile, overlap, \
+from six import urllib.request, urllib.error, urllib.parse
+from six import copyreg
+import lopython sigging
+from . import scripts
+from .cbedtools import Interval, IntervalFile, overlap, \
     create_interval_from_list, Attributes, \
     MalformedBedLineError, IntervalIterator
-import contrib
-from _Window import Window
-from helpers import get_tempdir, set_tempdir, cleanup, \
+from . import contrib
+from ._Window import Window
+from .helpers import get_tempdir, set_tempdir, cleanup, \
     find_tagged, set_bedtools_path, set_samtools_path
-import helpers
-from bedtool import BedTool
-import genome_registry
-import stats
-from __main__ import main
-from version import __version__
+from . import helpers
+from .bedtool import BedTool
+from . import genome_registry
+from . import stats
+from .__main__ import main
+from .version import __version__
+from __future__ import print_function
 
-import settings
+from . import settings
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
@@ -77,7 +78,7 @@ def interval_constructor(fields):
 def interval_reducer(interval):
     return interval_constructor, (tuple(interval.fields), )
 
-copy_reg.pickle(Interval, interval_reducer, interval_constructor)
+copyreg.pickle(Interval, interval_reducer, interval_constructor)
 
 
 def load_path_config(fn):
@@ -111,26 +112,26 @@ def load_path_config(fn):
         tabix=helpers.set_tabix_path)
 
     if isinstance(fn, dict):
-        for prog, setter in setters.items():
+        for prog, setter in list(setters.items()):
             try:
                 path = fn[prog]
                 setter(path)
             except KeyError:
                 pass
 
-    if isinstance(fn, basestring):
-        import ConfigParser
-        c = ConfigParser.SafeConfigParser()
+    if isinstance(fn, str):
+        from six import configparser
+        c = configparser.SafeConfigParser()
         c.read(fn)
         if c.sections() != ['paths']:
             raise ValueError("Invalid path config -- must have "
                              "only one section, [paths].")
-        for prog, setter in setters.items():
+        for prog, setter in list(setters.items()):
             try:
                 path = c.get('paths', prog)
                 setter(path)
 
-            except ConfigParser.NoOptionError:
+            except configparser.NoOptionError:
                 pass
 
 
@@ -235,7 +236,7 @@ def chromsizes_to_file(chrom_sizes, fn=None):
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         fn = tmpfn
-    if isinstance(chrom_sizes, basestring):
+    if isinstance(chrom_sizes, str):
         chrom_sizes = chromsizes(chrom_sizes)
     fout = open(fn, 'w')
     for chrom, bounds in sorted(chrom_sizes.items()):
@@ -297,7 +298,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
         if stderr:
             print(stderr)
             print('Commands were:\n')
-            print(subprocess.list2cmdline(cmds))
+            print((subprocess.list2cmdline(cmds)))
 
         lines = stdout.splitlines()[1:]
         d = {}
@@ -322,8 +323,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
 
 def internet_on(timeout=1):
     try:
-        response = urllib2.urlopen('http://google.com', timeout=timeout)
+        response = urllib.request.urlopen('http://google.com', timeout=timeout)
         return True
-    except urllib2.URLError as err:
+    except urllib.error.URLError as err:
         pass
     return False

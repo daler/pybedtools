@@ -67,34 +67,34 @@ def run(method, bedtool, expected, **kwargs):
         assert res == expected
 
     except AssertionError:
-        print result.fn
-        print 'Method call:'
+        print(result.fn)
+        print('Method call:')
         args = []
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             args.append(('%s=%s' % (key, val)).strip())
 
         args = ', '.join(args)
-        print 'BedTool.%(method)s(%(args)s)' % locals()
-        print 'Got:'
-        print res
-        print 'Expected:'
-        print expected
-        print 'Diff:'
+        print('BedTool.%(method)s(%(args)s)' % locals())
+        print('Got:')
+        print(res)
+        print('Expected:')
+        print(expected)
+        print('Diff:')
         for i in difflib.unified_diff(res.splitlines(1), expected.splitlines(1)):
-            print i,
+            print(i, end=' ')
 
         # Make tabs and newlines visible
         spec_res = res.replace('\t', '\\t').replace('\n', '\\n\n')
         spec_expected = expected.replace('\t', '\\t').replace('\n', '\\n\n')
 
-        print 'Showing special characters:'
-        print 'Got:'
-        print spec_res
-        print 'Expected:'
-        print spec_expected
-        print 'Diff:'
+        print('Showing special characters:')
+        print('Got:')
+        print(spec_res)
+        print('Expected:')
+        print(spec_expected)
+        print('Diff:')
         for i in difflib.unified_diff(spec_res.splitlines(1), spec_expected.splitlines(1)):
-            print i,
+            print(i, end=' ')
         raise
 
 

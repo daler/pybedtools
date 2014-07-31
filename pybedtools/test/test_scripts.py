@@ -1,5 +1,5 @@
 import pybedtools
-from tfuncs import setup, teardown
+from .tfuncs import setup, teardown
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises
 import os
@@ -22,7 +22,7 @@ def test_annotate_closest():
     assert a.field_count() == c.field_count() - 2
     # in this test-case, the final column should be exon;intron
     # since m1 completely contains both an exon and an intron.
-    f = iter(c).next()
+    f = next(iter(c))
     # waiting for fix to bedtools:
     #assert f.fields[-1] == "exon;intron", f.fields[-1]
 
@@ -99,13 +99,13 @@ def test_venn_gchart():
                             labels=labels.split(','),
                             size='300x300')
 
-    print data
-    for key in expected_data.keys():
+    print(data)
+    for key in list(expected_data.keys()):
         e = expected_data[key]
         o = data[key]
-        print 'key:', key
-        print 'expected:', e
-        print 'observed:', o
+        print('key:', key)
+        print('expected:', e)
+        print('observed:', o)
         assert e == o
 
     venn_gchart.gchart(data, outfn)
