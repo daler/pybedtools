@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import os
 import tempfile
@@ -8,10 +9,10 @@ import glob
 import struct
 import atexit
 import six
-import pybedtools
-from __future__ import print_function
-
+from . import cbedtools
 from . import settings
+from . import filenames
+from .logger import logger
 
 BUFSIZE = 1
 
@@ -221,7 +222,7 @@ class HistoryStep(object):
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
-        tag = ''.join(random.choice(string.lowercase) for _ in range(8))
+        tag = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
         self.parent_tag = parent_tag
         self.result_tag = result_tag
 
@@ -292,7 +293,7 @@ def cleanup(verbose=False, remove_all=False):
     """
     if settings.KEEP_TEMPFILES:
         return
-    for fn in pybedtools.BedTool.TEMPFILES:
+    for fn in filenames.TEMPFILES:
         if verbose:
             print('removing', fn)
         if os.path.exists(fn):
@@ -346,10 +347,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     try:
         # coming from an iterator, sending as iterator
         if input_is_stream and output_is_stream:
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): input is stream, output is '
                 'stream')
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
@@ -367,9 +368,9 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from an iterator, writing to file
         if input_is_stream and not output_is_stream:
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): input is stream, output is file')
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
@@ -388,10 +389,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # coming from a file, sending as iterator
         if not input_is_stream and output_is_stream:
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): input is filename, '
                 'output is stream')
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             p = subprocess.Popen(cmds,
                                  stdout=subprocess.PIPE,
@@ -402,10 +403,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
 
         # file-to-file
         if not input_is_stream and not output_is_stream:
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): input is filename, output '
                 'is filename (%s)', tmpfn)
-            pybedtools.logger.debug(
+            logger.debug(
                 'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
             outfile = open(tmpfn, 'w')
             p = subprocess.Popen(cmds,
@@ -540,54 +541,6 @@ def close_or_delete(*args):
         if hasattr(x.fn, 'throw'):
             x.fn.throw(StopIteration)
 
-def _jaccard_output_to_dict(s, **kwargs):
-    """
-    jaccard method doesn't return an interval file, rather, it returns a short
-    summary of results.  Here, we simply parse it into a dict for convenience.
-    """
-    if isinstance(s, six.string_types):
-        s = open(s).read()
-    if hasattr(s, 'next'):
-        s = ''.join(i for i in s)
-    header, data = s.splitlines()
-    header = header.split()
-    data = data.split()
-    data[0] = int(data[0])
-    data[1] = int(data[1])
-    data[2] = float(data[2])
-    data[3] = int(data[3])
-    return dict(list(zip(header, data)))
-
-
-def _reldist_output_handler(s, **kwargs):
-    """
-    reldist, if called with -detail, returns a valid BED file with the relative
-    distance as the last field.  In that case, return the BedTool immediately.
-    If not -detail, then the results are a table, in which case here we parse
-    into a dict for convenience.
-    """
-    if 'detail' in kwargs:
-        return pybedtools.BedTool(s)
-    if isinstance(s, six.string_types):
-        iterable = open(s)
-    if hasattr(s, 'next'):
-        iterable = s
-    header = iterable.next().split()
-    results = {}
-    for h in header:
-        results[h] = []
-    for i in iterable:
-        reldist, count, total, fraction = i.split()
-        data = [
-            float(reldist),
-            int(count),
-            int(total),
-            float(fraction)
-        ]
-        for h, d in zip(header, data):
-            results[h].append(d)
-    return results
-
 
 def n_open_fds():
     pid = os.getpid()
@@ -621,7 +574,7 @@ def string_to_interval(s):
     if isinstance(s, six.string_types):
         m = coord_re.search(s)
         if m.group('strand'):
-            return pybedtools.create_interval_from_list([
+            return cbedtools.create_interval_from_list([
                 m.group('chrom'),
                 m.group('start'),
                 m.group('stop'),
@@ -629,11 +582,157 @@ def string_to_interval(s):
                 '0',
                 m.group('strand')])
         else:
-            return pybedtools.create_interval_from_list([
+            return cbedtools.create_interval_from_list([
                 m.group('chrom'),
                 m.group('start'),
                 m.group('stop'),
             ])
     return s
+
+
+def internet_on(timeout=1):
+    try:
+        response = urllib.request.urlopen('http://google.com', timeout=timeout)
+        return True
+    except urllib.error.URLError as err:
+        pass
+    return False
+
+
+def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
+    """
+    Download chrom size info for *genome* from UCSC and returns the dictionary.
+
+    If you need the file, then specify a filename with *saveas* (the dictionary
+    will still be returned as well).
+
+    If ``mysql`` is not on your path, specify where to find it with
+    *mysql=<path to mysql executable>*.
+
+    *timeout* is how long to wait for a response; mostly used for testing.
+
+    Example usage:
+
+        >>> dm3_chromsizes = get_chromsizes_from_ucsc('dm3')
+        >>> for i in sorted(dm3_chromsizes.items()):
+        ...     print i
+        ('chr2L', (0, 23011544))
+        ('chr2LHet', (0, 368872))
+        ('chr2R', (0, 21146708))
+        ('chr2RHet', (0, 3288761))
+        ('chr3L', (0, 24543557))
+        ('chr3LHet', (0, 2555491))
+        ('chr3R', (0, 27905053))
+        ('chr3RHet', (0, 2517507))
+        ('chr4', (0, 1351857))
+        ('chrM', (0, 19517))
+        ('chrU', (0, 10049037))
+        ('chrUextra', (0, 29004656))
+        ('chrX', (0, 22422827))
+        ('chrXHet', (0, 204112))
+        ('chrYHet', (0, 347038))
+
+    """
+    if not internet_on(timeout=timeout):
+        raise ValueError('It appears you don\'t have an internet connection '
+                         '-- unable to get chromsizes from UCSC')
+    cmds = [mysql,
+            '--user=genome',
+            '--host=genome-mysql.cse.ucsc.edu',
+            '-A',
+            '-e',
+            'select chrom, size from %s.chromInfo' % genome]
+    try:
+        p = subprocess.Popen(cmds,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             bufsize=1)
+        stdout, stderr = p.communicate()
+        if stderr:
+            print(stderr)
+            print('Commands were:\n')
+            print((subprocess.list2cmdline(cmds)))
+
+        lines = stdout.splitlines()[1:]
+        d = {}
+        for line in lines:
+            chrom, size = line.split()
+            d[chrom] = (0, int(size))
+
+        if saveas is not None:
+            chromsizes_to_file(d, saveas)
+
+        return d
+
+    except OSError as err:
+        if err.errno == 2:
+            raise OSError("Can't find mysql -- if you don't have it "
+                          "installed, you'll have to get chromsizes "
+                          " manually, or "
+                          "specify the path with the 'mysql' kwarg.")
+        else:
+            raise
+
+
+def chromsizes_to_file(chrom_sizes, fn=None):
+    """
+    Converts a *chromsizes* dictionary to a file.  If *fn* is None, then a
+    tempfile is created (which can be deleted with pybedtools.cleanup()).
+
+    Returns the filename.
+    """
+    if fn is None:
+        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',
+                                            suffix='.tmp', delete=False)
+        tmpfn = tmpfn.name
+        BedTool.TEMPFILES.append(tmpfn)
+        fn = tmpfn
+    if isinstance(chrom_sizes, str):
+        chrom_sizes = chromsizes(chrom_sizes)
+    fout = open(fn, 'w')
+    for chrom, bounds in sorted(chrom_sizes.items()):
+        line = chrom + '\t' + str(bounds[1]) + '\n'
+        fout.write(line)
+    fout.close()
+    return fn
+
+
+def chromsizes(genome):
+    """
+    Looks for a *genome* already included in the genome registry; if not found
+    then it looks it up on UCSC.  Returns the dictionary of chromsize tuples
+    where each tuple has (start,stop).
+
+    Chromsizes are described as (start, stop) tuples to allow randomization
+    within specified regions; e. g., you can make a chromsizes dictionary that
+    represents the extent of a tiling array.
+
+    Example usage:
+
+        >>> dm3_chromsizes = chromsizes('dm3')
+        >>> for i in sorted(dm3_chromsizes.items()):
+        ...     print i
+        ('chr2L', (0, 23011544))
+        ('chr2LHet', (0, 368872))
+        ('chr2R', (0, 21146708))
+        ('chr2RHet', (0, 3288761))
+        ('chr3L', (0, 24543557))
+        ('chr3LHet', (0, 2555491))
+        ('chr3R', (0, 27905053))
+        ('chr3RHet', (0, 2517507))
+        ('chr4', (0, 1351857))
+        ('chrM', (0, 19517))
+        ('chrU', (0, 10049037))
+        ('chrUextra', (0, 29004656))
+        ('chrX', (0, 22422827))
+        ('chrXHet', (0, 204112))
+        ('chrYHet', (0, 347038))
+
+
+    """
+    try:
+        return getattr(genome_registry, genome)
+    except AttributeError:
+        return get_chromsizes_from_ucsc(genome)
 
 atexit.register(cleanup)

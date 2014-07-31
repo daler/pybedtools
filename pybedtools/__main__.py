@@ -3,9 +3,9 @@
 pybedtools utility scripts:
 
 """
+from __future__ import print_function
 import sys
 import textwrap
-from __future__ import print_function
 
 
 def import_module(name):

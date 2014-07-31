@@ -1,3 +1,4 @@
+from __future__ import print_function
 import tempfile
 import shutil
 import subprocess
@@ -9,7 +10,6 @@ import string
 import pprint
 from itertools import islice
 import multiprocessing
-from __future__ import print_function
 import six
 
 from pybedtools.helpers import get_tempdir, _tags,\
@@ -18,13 +18,65 @@ from pybedtools.helpers import get_tempdir, _tags,\
     _call_randomintersect
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator
+from . import filenames
 import pybedtools
 from . import settings
+
 
 
 _implicit_registry = {}
 _other_registry = {}
 _bam_registry = {}
+
+
+def _jaccard_output_to_dict(s, **kwargs):
+    """
+    jaccard method doesn't return an interval file, rather, it returns a short
+    summary of results.  Here, we simply parse it into a dict for convenience.
+    """
+    if isinstance(s, six.string_types):
+        s = open(s).read()
+    if hasattr(s, 'next'):
+        s = ''.join(i for i in s)
+    header, data = s.splitlines()
+    header = header.split()
+    data = data.split()
+    data[0] = int(data[0])
+    data[1] = int(data[1])
+    data[2] = float(data[2])
+    data[3] = int(data[3])
+    return dict(list(zip(header, data)))
+
+
+def _reldist_output_handler(s, **kwargs):
+    """
+    reldist, if called with -detail, returns a valid BED file with the relative
+    distance as the last field.  In that case, return the BedTool immediately.
+    If not -detail, then the results are a table, in which case here we parse
+    into a dict for convenience.
+    """
+    if 'detail' in kwargs:
+        return BedTool(s)
+    if isinstance(s, six.string_types):
+        iterable = open(s)
+    if hasattr(s, 'next'):
+        iterable = s
+    header = iterable.next().split()
+    results = {}
+    for h in header:
+        results[h] = []
+    for i in iterable:
+        reldist, count, total, fraction = i.split()
+        data = [
+            float(reldist),
+            int(count),
+            int(total),
+            float(fraction)
+        ]
+        for h, d in zip(header, data):
+            results[h].append(d)
+    return results
+
 
 
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
@@ -103,7 +155,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         p = subprocess.Popen(helpers._version_2_15_plus_names(prog) + ['-h'],
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-        help_str = p.communicate()[1]
+        help_str = str(p.communicate()[1])
 
         # underscores throw off ReStructuredText syntax of docstrings, so
         # replace 'em
@@ -414,7 +466,7 @@ class BedTool(object):
         else:
             self._bam_header = ""
 
-        tag = ''.join([random.choice(string.lowercase) for _ in range(8)])
+        tag = ''.join([random.choice(string.ascii_lowercase) for _ in range(8)])
         self._tag = tag
         _tags[tag] = self
         self._hascounts = False
@@ -460,7 +512,7 @@ class BedTool(object):
             chromdict = genome
         else:
             assert isinstance(genome, six.string_types)
-            chromdict = pybedtools.chromsizes(genome)
+            chromdict = helpers.chromsizes(genome)
 
         tmp = self._tmp()
         fout = open(tmp, 'w')
@@ -945,15 +997,15 @@ class BedTool(object):
         return iter(self)
 
     def __repr__(self):
-        if isinstance(self.fn, file):
-            return '<BedTool(stream)>'
         if isinstance(self.fn, six.string_types):
             if os.path.exists(self.fn) or self.remote:
                 return '<BedTool(%s)>' % self.fn
             else:
                 return '<BedTool(MISSING FILE: %s)>' % self.fn
-        else:
+        elif isinstance(self.fn, BedTool):
             return repr(self.fn)
+        else:
+            return '<BedTool(%s)>' % repr(self.fn)
 
     def __str__(self):
         """
@@ -2051,14 +2103,14 @@ class BedTool(object):
         """
 
     @_wraps(prog='jaccard', implicit='a', other='b',
-            does_not_return_bedtool=helpers._jaccard_output_to_dict)
+            does_not_return_bedtool=_jaccard_output_to_dict)
     def jaccard(self):
         """
         Returns a dictionary with keys (intersection, union, jaccard).
         """
 
     @_wraps(prog='reldist', implicit='a', other='b',
-            does_not_return_bedtool=helpers._reldist_output_handler)
+            does_not_return_bedtool=_reldist_output_handler)
     def reldist(self):
         """
         If detail=False, then return a dictionary with keys (reldist, count,
@@ -3003,6 +3055,21 @@ class BAM(object):
 
     def next(self):
         return self.__next__()
+
+
+
+
+
+
+def example_bedtool(fn):
+    """
+    Return a bedtool using a bed file from the pybedtools examples directory.
+    Use :func:`list_example_files` to see a list of files that are included.
+    """
+    fn = os.path.join(filenames.data_dir(), fn)
+    if not os.path.exists(fn):
+        raise ValueError("%s does not exist" % fn)
+    return BedTool(fn)
 
 if __name__ == "__main__":
     import doctest

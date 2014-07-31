@@ -18,8 +18,8 @@ cdef dict LOOKUPS = {
     "vcf":  {"chrom": 0, "start": 1},
     "bed":  {"chrom": 0, "start": 1, "end": 2, "stop": 2, "score": 4, "strand": 5}
 }
-for ktype, kdict in LOOKUPS.items():
-    for k, v in kdict.items():
+for ktype, kdict in list(LOOKUPS.items()):
+    for k, v in list(kdict.items()):
         kdict[v] = k
 
 # Keys are tuples of start/start, stop/stop, start/stop, stop/start.
@@ -233,6 +233,8 @@ cdef class Interval:
     # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
     def __richcmp__(self, other, int op):
 
+        raise NotImplementedError("Still working on Python 3 support for comparisons")
+        """
         if (self.chrom != other.chrom) or (self.strand != other.strand):
             if op == 3: return True
             return False
@@ -258,6 +260,7 @@ cdef class Interval:
         except KeyError:
             raise ValueError('Currently unsupported comparison -- please '
                              'submit a bug report')
+        """
 
     property start:
         """The 0-based start of the feature."""

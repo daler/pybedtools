@@ -1,47 +1,44 @@
-import ez_setup
-ez_setup.use_setuptools()
-
 import glob
 import os
 import sys
 from setuptools import setup
+#from distutils.core import setup
 from distutils.extension import Extension
+
+import os.path
+
+def no_cythonize(extensions, **_ignore):
+    for extension in extensions:
+        sources = []
+        for sfile in extension.sources:
+            path, ext = os.path.splitext(sfile)
+            if ext in ('.pyx', '.py'):
+                if extension.language == 'c++':
+                    ext = '.cpp'
+                else:
+                    ext = '.c'
+                sfile = path + ext
+            sources.append(sfile)
+        extension.sources[:] = sources
+    return extensions
+
+
 try:
-    from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
+    USE_CYTHON = True
 
 except ImportError:
-    sys.stderr.write("""
-    ==================================================
+    USE_CYTHON = False
 
-    Please install Cython (http://cython.org/),
-    which is required to build pybedtools. Usually
-    you can do:
+ext = '.pyx' if USE_CYTHON else '.cpp'
 
-        pip install -U cython
-
-    or
-
-        easy_install -U cython
-
-    ==================================================
-    """)
-    sys.exit(1)
-
-if 'setuptools.extension' in sys.modules:
-    m = sys.modules['setuptools.extension']
-    m.Extension.__dict__ = m._Extension.__dict__
 
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','')
-sources=["src/bedFile.pyx",
-         "src/fileType.pxi",
-         "src/gzstream.pxd",
-         "pybedtools/cbedtools.cpp"]
 
-exts = [ Extension("pybedtools.cbedtools",
+extensions = [ Extension("pybedtools.cbedtools",
                    sources=["pybedtools/cbedtools.pyx",
-                            "pybedtools/cbedtools.pxi",
-                            "pybedtools/cbedtools.pxd"] \
+                            ] \
                             + glob.glob("src/*.cpp"),
                    libraries=["stdc++", 'z'],
                    include_dirs=["src/"],
@@ -51,8 +48,7 @@ exts = [ Extension("pybedtools.cbedtools",
          Extension('pybedtools.featurefuncs',
                    sources=["pybedtools/featurefuncs.pyx",
                             "pybedtools/cbedtools.pyx",
-                            "pybedtools/cbedtools.pxi",
-                            "pybedtools/cbedtools.pxd"] \
+                            ] \
                             + glob.glob("src/*.cpp"),
                    libraries=["stdc++", 'z'],
                    include_dirs=["src/"],
@@ -64,7 +60,10 @@ exts = [ Extension("pybedtools.cbedtools",
         ]
 
 
-
+if USE_CYTHON:
+    extensions = cythonize(extensions)
+else:
+    extensions = no_cythonize(extensions)
 
 long_description = """
 ``pybedtools`` is a Python extension of Aaron Quinlan's BEDtools suite
@@ -93,8 +92,7 @@ tests_require = ['nose>=0.11', 'pyyaml']
 setup(
         name="pybedtools",
         version=version,
-        ext_modules=exts,
-        cmdclass = {'build_ext': build_ext},
+        ext_modules=extensions,
         tests_require=tests_require,
         install_requires=install_requires,
         extras_require={'test': tests_require},
