@@ -378,7 +378,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
                                  bufsize=BUFSIZE)
-            if isinstance(stdin, file):
+            if hasattr(stdin, 'read'):
                 stdout, stderr = p.communicate(stdin.read())
             else:
                 for item in stdin:

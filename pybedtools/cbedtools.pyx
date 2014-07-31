@@ -1,4 +1,5 @@
-# cython: profile=True
+# cython: c_string_type=unicode, c_string_encoding=utf8
+# distutils: language = c++
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
@@ -12,6 +13,7 @@ from cython.operator cimport dereference as deref
 import sys
 import subprocess
 from collections import defaultdict
+
 
 cdef dict LOOKUPS = {
     "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4, "strand": 6},

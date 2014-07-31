@@ -449,7 +449,7 @@ class BedTool(object):
                 fn = fn
 
         if isinstance(fn, six.string_types):
-            fn = str(fn)
+            fn = fn.encode('UTF-8')
 
         self.fn = fn
 
