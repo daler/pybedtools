@@ -423,12 +423,12 @@ class BedTool(object):
         if from_string:
             bed_contents = fn
             fn = self._tmp()
-            fout = open(fn, 'w')
+            fout = open(fn, 'wb')
             for line in bed_contents.splitlines():
                 if len(line.strip()) == 0:
                     continue
                 line = '\t'.join(line.split()) + '\n'
-                fout.write(line)
+                fout.write(line.encode("UTF-8"))
             fout.close()
 
         else:
@@ -455,8 +455,8 @@ class BedTool(object):
             else:
                 fn = fn
 
-        if isinstance(fn, six.string_types):
-            fn = fn.encode('UTF-8')
+        #if isinstance(fn, six.string_types):
+        #    fn = fn.encode('UTF-8')
 
         self.fn = fn
 
@@ -522,7 +522,7 @@ class BedTool(object):
             chromdict = helpers.chromsizes(genome)
 
         tmp = self._tmp()
-        fout = open(tmp, 'w')
+        fout = open(tmp, 'wb')
         for chrom, coords in list(chromdict.items()):
             start, stop = coords
             start = str(start)
@@ -553,7 +553,7 @@ class BedTool(object):
             interval.stop)
         cmds = ['tabix', self.fn, coords]
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
-        return BedTool(p.stdout)
+        return BedTool((i.decode() for i in p.stdout))
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
@@ -911,11 +911,11 @@ class BedTool(object):
                 self._file_type = 'bam'
             else:
                 try:
-                    self._file_type = IntervalFile(self.fn).file_type
+                    self._file_type = IntervalFile(self.fn.encode('UTF-8')).file_type
                 except StopIteration:
                     self._file_type = 'empty'
                 except ValueError:
-                    self._file_type = IntervalIterator(open(self.fn))\
+                    self._file_type = IntervalIterator(open(self.fn, 'rb'))\
                         .next().file_type
         return self._file_type
 
@@ -969,30 +969,28 @@ class BedTool(object):
         Dispatches the right iterator depending on how this BedTool was
         created
         """
+        if self._isbam:
+            # Note: BAM class takes filename or stream, so self.fn is OK
+            # here
+            return IntervalIterator(BAM(self.fn))
+
         # Plain ol' filename
         if isinstance(self.fn, six.string_types):
-            if self._isbam:
-                # Note: BAM class takes filename or stream, so self.fn is OK
-                # here
-                return IntervalIterator(BAM(self.fn))
 
             # TODO: Sort of a hack, cause we can't use IntervalFile as a SAM
             # iterator [yet]
-            elif self.file_type == 'sam':
-                return IntervalIterator(open(self.fn))
+            if self.file_type == 'sam':
+                return IntervalIterator(open(self.fn, 'r'))
 
             # Easy case: BED/GFF/VCF, as a file
             else:
-                return IntervalFile(self.fn)
+                return IntervalFile(self.fn.encode('UTF-8'))
 
         # Open file, like subprocess.PIPE.
-        if isinstance(self.fn, file):
-            if self._isbam:
-                return IntervalIterator(BAM(self.fn))
-            else:
-                # Note: even if this is a SAM, the filetype handling eventually
-                # gets passed to create_interval_from_fields.
-                return IntervalIterator(self.fn)
+        if hasattr(self.fn, 'read'):
+            # Note: even if this is a SAM, the filetype handling eventually
+            # gets passed to create_interval_from_fields.
+            return IntervalIterator(self.fn)
 
         if isinstance(self.fn, (IntervalIterator, IntervalFile)):
             return self.fn
@@ -1021,9 +1019,15 @@ class BedTool(object):
         will be consumed.
         """
         if isinstance(self.fn, six.string_types) and not self._isbam:
-            return open(self.fn).read()
+            return open(self.fn, 'r').read()
 
-        return ''.join(str(i) for i in iter(self))
+        items = []
+        for i in iter(self):
+            i = str(i)
+            if isinstance(i, bytes):
+                i = i.decode('UTF-8')
+            items.append(i)
+        return ''.join(items)
 
     def __len__(self):
         return self.count()
@@ -1061,7 +1065,6 @@ class BedTool(object):
             if (self.file_type == 'empty') or (other.file_type == 'empty'):
                 result = pybedtools.BedTool("", from_string=True)
         return result
-
 
     def __sub__(self, other):
         try:
@@ -1136,7 +1139,7 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        fout = open(fn, 'w')
+        fout = open(fn, 'wb')
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -1144,7 +1147,7 @@ class BedTool(object):
             if trackline:
                 raise ValueError("trackline provided, but input is a BAM "
                                  "file, which takes no track line")
-            fout.write(open(self.fn).read())
+            fout.write(open(self.fn, 'rb').read())
             fout.close()
             return fn
 
@@ -1152,7 +1155,7 @@ class BedTool(object):
             fout.write(trackline.strip() + '\n')
 
         for i in iterable:
-            fout.write(str(i))
+            fout.write(str(i).encode('UTF-8'))
         fout.close()
         return fn
 
@@ -1209,9 +1212,9 @@ class BedTool(object):
                 stdin = None
 
             # Open file? Pipe it
-            elif isinstance(instream1, file):
-                kwargs[inarg1] = 'stdin'
-                stdin = instream1
+            #elif isinstance(instream1, file):
+            #    kwargs[inarg1] = 'stdin'
+            #    stdin = instream1
 
             # A generator or iterator: pipe it as a generator of lines
             else:
@@ -1349,12 +1352,12 @@ class BedTool(object):
 
         """
         tmp = self._tmp()
-        fout = open(tmp, 'w')
+        fout = open(tmp,'w')
 
         # If it's a file-based BedTool -- which is likely, if we're trying to
         # remove invalid features -- then we need to parse it line by line.
         if isinstance(self.fn, six.string_types):
-            i = IntervalIterator(open(self.fn))
+            i = IntervalIterator(open(self.fn, 'r'))
         else:
             i = IntervalIterator(self.fn)
 
@@ -1506,7 +1509,7 @@ class BedTool(object):
                     '-']
             tmp = self._tmp()
             p = subprocess.Popen(cmds,
-                                 stdout=open(tmp, 'w'),
+                                 stdout=open(tmp, 'wb'),
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
                                  bufsize=1)
@@ -1576,7 +1579,7 @@ class BedTool(object):
 
         loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
         lseq = loc.sequence(fi=fasta)
-        return "".join([l.rstrip() for l in open(lseq.seqfn) if l[0] != ">"])
+        return "".join([l.rstrip() for l in open(lseq.seqfn, 'rb') if l[0] != ">"])
 
     @_log_to_history
     @_wraps(prog='nucBed', implicit='bed', other='fi')
@@ -2681,7 +2684,7 @@ class BedTool(object):
                     [self.file_type]
                     + [i.file_type for i in other_beds]).difference(['empty'])
                 field_nums = set(
-                    [i.field_count for i in other_beds]).difference([None])
+                    [i.field_count() for i in other_beds]).difference([None])
                 same_field_num = len(field_nums) == 1
                 same_type = len(set(filetypes)) == 1
             except ValueError:
@@ -3044,14 +3047,16 @@ class BAM(object):
                                       bufsize=0)
             # Can't iterate (for i in stream) cause we're dealing with a binary
             # BAM file here.  So read the whole thing in at once.
-            self.p.stdin.write(stream.read())
+            for i in self.stream:
+                self.p.stdin.write(i)
 
     def __iter__(self):
         return self
 
     def __next__(self):
         line = six.advance_iterator(self.p.stdout)
-
+        if isinstance(line, bytes):
+            line = line.decode('UTF-8')
         # If we only want the header, then short-circuit once we're out of
         # header lines
         if self.header_only:

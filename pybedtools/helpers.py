@@ -132,7 +132,7 @@ def isBGZIP(fn):
     """
     Reads a filename to see if it's a BGZIPed file or not.
     """
-    header_str = open(fn).read(15)
+    header_str = open(fn, 'rb').read(15)
     if len(header_str) < 15:
         return False
 
@@ -158,7 +158,7 @@ def isBAM(fn):
     try:
 
         # Silence the output, we want to check the return code
-        with open(os.devnull, "w") as out:
+        with open(os.devnull, "wb") as out:
             subprocess.check_call(cmds, stdout=out, stderr=out)
         return True
 
@@ -458,9 +458,11 @@ def set_R_path(path=""):
 
 def _check_sequence_stderr(x):
     """
-    If stderr created by fastaFromBed starst with 'index file', then don't
+    If stderr created by fastaFromBed starts with 'index file', then don't
     consider it an error.
     """
+    if isinstance(x, bytes):
+        x = x.decode('UTF-8')
     if x.startswith('index file'):
         return True
     if x.startswith("WARNING"):
@@ -614,6 +616,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
         lines = stdout.splitlines()[1:]
         d = {}
         for line in lines:
+            if isinstance(line, bytes):
+                line = line.decode('UTF-8')
             chrom, size = line.split()
             d[chrom] = (0, int(size))
 
@@ -643,11 +647,11 @@ def chromsizes_to_file(chrom_sizes, fn=None):
         tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',
                                             suffix='.tmp', delete=False)
         tmpfn = tmpfn.name
-        BedTool.TEMPFILES.append(tmpfn)
+        filenames.TEMPFILES.append(tmpfn)
         fn = tmpfn
     if isinstance(chrom_sizes, str):
         chrom_sizes = chromsizes(chrom_sizes)
-    fout = open(fn, 'w')
+    fout = open(fn, 'wt')
     for chrom, bounds in sorted(chrom_sizes.items()):
         line = chrom + '\t' + str(bounds[1]) + '\n'
         fout.write(line)
