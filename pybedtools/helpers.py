@@ -13,11 +13,18 @@ from . import cbedtools
 from . import settings
 from . import filenames
 from .logger import logger
+from .cbedtools import create_interval_from_list as _create_interval_from_list
+
 
 BUFSIZE = 1
 
 _tags = {}
 
+def create_interval_from_list(x):
+    y = [i.encode('UTF-8') for i in x]
+    for i in y:
+        assert type(i) == bytes
+    return _create_interval_from_list(y)
 
 def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     """
