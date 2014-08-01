@@ -79,7 +79,6 @@ def _reldist_output_handler(s, **kwargs):
     return results
 
 
-
 def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
            make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
            nonbam=None, force_bam=False, genome_none_if=None, genome_if=None,
@@ -293,26 +292,6 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # tempfiles if needed, and return all the goodies
             cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
 
-            # Do the actual call
-            stream = call_bedtools(cmds, tmp, stdin=stdin,
-                                   check_stderr=check_stderr)
-
-            if does_not_return_bedtool:
-                return does_not_return_bedtool(stream, **kwargs)
-
-            # Post-hoc editing of the BedTool -- for example, this is used for
-            # the sequence methods to add a `seqfn` attribute to the resulting
-            # BedTool.
-            if add_to_bedtool is not None:
-                for kw, attr in list(add_to_bedtool.items()):
-                    if kw == 'stdout':
-                        value = stream
-                    else:
-                        value = kwargs[kw]
-                    setattr(self, attr, value)
-                    result = self
-            else:
-                result = BedTool(stream)
 
             # Decide whether the output is BAM format or not.
             result_is_bam = False
@@ -343,6 +322,33 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
             if force_bam:
                 result_is_bam = True
+
+            decode_output = not result_is_bam
+            encode_input = not self._isbam
+
+            # Do the actual call
+            stream = call_bedtools(cmds, tmp, stdin=stdin,
+                                   check_stderr=check_stderr,
+                                   decode_output=decode_output,
+                                   )
+
+            if does_not_return_bedtool:
+                return does_not_return_bedtool(stream, **kwargs)
+
+            # Post-hoc editing of the BedTool -- for example, this is used for
+            # the sequence methods to add a `seqfn` attribute to the resulting
+            # BedTool.
+            if add_to_bedtool is not None:
+                for kw, attr in list(add_to_bedtool.items()):
+                    if kw == 'stdout':
+                        value = stream
+                    else:
+                        value = kwargs[kw]
+                    setattr(self, attr, value)
+                    result = self
+            else:
+                result = BedTool(stream)
+
 
             result._isbam = result_is_bam
             result._cmds = cmds

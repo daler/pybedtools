@@ -261,7 +261,7 @@ def _version_2_15_plus_names(prog_name):
     return [os.path.join(settings._bedtools_path, 'bedtools'), prog_name]
 
 
-def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
+def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output=True, encode_input=True):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
 
@@ -277,6 +277,9 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
     returns True if it's OK (that is, it's not really an error).  This is
     needed, e.g., for calling fastaFromBed which will report that it has to
     make a .fai for a fasta file.
+
+    *decode_output* should be set to False when you are iterating over a BAM
+    file, where the data represent binary rather than text data.
     """
     input_is_stream = stdin is not None
     output_is_stream = tmpfn is None
@@ -299,13 +302,21 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE,
                                  bufsize=BUFSIZE)
-            for line in stdin:
-                p.stdin.write(line)
+            if encode_input:
+                for line in stdin:
+                    p.stdin.write(line.encode())
+            else:
+                for line in stdin:
+                    p.stdin.write(line)
 
             # This is important to prevent deadlocks
             p.stdin.close()
 
-            output = p.stdout
+            if decode_output:
+                output = (i.decode('UTF-8') for i in p.stdout)
+            else:
+                output = (i for i in p.stdout)
+
             stderr = None
 
         # coming from an iterator, writing to file
@@ -314,7 +325,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 'helpers.call_bedtools(): input is stream, output is file')
             logger.debug(
                 'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
-            outfile = open(tmpfn, 'w')
+            outfile = open(tmpfn, 'wb')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
                                  stderr=subprocess.PIPE,
@@ -324,7 +335,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 stdout, stderr = p.communicate(stdin.read())
             else:
                 for item in stdin:
-                    p.stdin.write(item)
+                    p.stdin.write(item.encode())
                 stdout, stderr = p.communicate()
             output = tmpfn
             outfile.close()
@@ -340,7 +351,10 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  bufsize=BUFSIZE)
-            output = p.stdout
+            if decode_output:
+                output = (i.decode('UTF-8') for i in p.stdout)
+            else:
+                output = (i for i in p.stdout)
             stderr = None
 
         # file-to-file
@@ -350,7 +364,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
                 'is filename (%s)', tmpfn)
             logger.debug(
                 'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
-            outfile = open(tmpfn, 'w')
+            outfile = open(tmpfn, 'wb')
             p = subprocess.Popen(cmds,
                                  stdout=outfile,
                                  stderr=subprocess.PIPE,
@@ -363,6 +377,8 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None):
         # OK, dump it to sys.stderr so it's printed, and reset it to None so we
         # don't raise an exception
         if check_stderr is not None:
+            if isinstance(stderr, bytes):
+                stderr = stderr.decode('UTF_8')
             if check_stderr(stderr):
                 sys.stderr.write(stderr)
                 stderr = None
