@@ -516,7 +516,7 @@ def string_to_interval(s):
     if isinstance(s, six.string_types):
         m = coord_re.search(s)
         if m.group('strand'):
-            return cbedtools.create_interval_from_list([
+            return create_interval_from_list([
                 m.group('chrom'),
                 m.group('start'),
                 m.group('stop'),
@@ -524,7 +524,7 @@ def string_to_interval(s):
                 '0',
                 m.group('strand')])
         else:
-            return cbedtools.create_interval_from_list([
+            return create_interval_from_list([
                 m.group('chrom'),
                 m.group('start'),
                 m.group('stop'),
