@@ -3,6 +3,7 @@ import os
 import sys
 import subprocess
 import tempfile
+import logging
 from six.moves import urllib
 from six.moves import copyreg
 from . import scripts
@@ -27,7 +28,7 @@ from . import settings
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
-from .logger import logger
+from .logger import logger, ch
 
 
 def debug_mode(x):
