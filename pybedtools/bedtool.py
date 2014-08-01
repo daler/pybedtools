@@ -3058,6 +3058,71 @@ class BAM(object):
         return self.__next__()
 
 
+class History(list):
+    def __init__(self):
+        """
+        Represents one or many HistorySteps.  Mostly used for nicely formatting
+        a series of HistorySteps.
+        """
+        list.__init__(self)
+
+
+class HistoryStep(object):
+    def __init__(self, method, args, kwargs, bedtool_instance,
+                 parent_tag, result_tag):
+        """
+        Class to represent one step in the history.
+
+        Mostly used for its __repr__ method, to try and exactly replicate code
+        that can be pasted to re-do history steps
+        """
+        try:
+            self.method = method._name
+        except AttributeError:
+            if six.PY3:
+                self.method = method.__name__
+            else:
+                self.method = method.func_name
+        self.args = args
+        self.kwargs = kwargs
+        self.fn = bedtool_instance.fn
+        tag = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+        self.parent_tag = parent_tag
+        self.result_tag = result_tag
+
+    def _clean_arg(self, arg):
+        """
+        Wrap strings in quotes and convert bedtool instances to filenames.
+        """
+        if isinstance(arg, pybedtools.BedTool):
+            arg = arg.fn
+        if isinstance(arg, six.string_types):
+            arg = '"%s"' % arg
+        return arg
+
+    def __repr__(self):
+        # Still not sure whether to use pybedtools.bedtool() or bedtool()
+        s = ''
+        s += '<HistoryStep> '
+        if os.path.exists(self.fn):
+            s += 'BedTool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
+        else:
+            s += 'BedTool("MISSING FILE: %(fn)s")' % self.__dict__
+            s += '.%(method)s(%%s%%s)' % self.__dict__
+
+        # Format args and kwargs
+        args_string = ','.join(map(self._clean_arg, self.args))
+        kwargs_string = ','.join(
+            ['%s=%s' % (i[0], self._clean_arg(i[1]))
+             for i in list(self.kwargs.items())])
+        # stick a comma on the end if there's something here
+        if len(args_string) > 0:
+            args_string += ', '
+
+        s = s % (args_string, kwargs_string)
+        s += ', parent tag: %s' % self.parent_tag
+        s += ', result tag: %s' % self.result_tag
+        return s
 
 
 
