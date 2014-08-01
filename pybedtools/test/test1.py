@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybedtools
 import os, difflib, sys
 from nose import with_setup
@@ -5,7 +6,6 @@ from nose.tools import assert_raises, raises
 from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
 import six
-from __future__ import print_function
 from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
 

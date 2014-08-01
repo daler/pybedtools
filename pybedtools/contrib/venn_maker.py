@@ -8,6 +8,7 @@ from __future__ import print_function
 import os
 import string
 import pybedtools
+import six
 from pybedtools import helpers
 import subprocess
 from collections import OrderedDict

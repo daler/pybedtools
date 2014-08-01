@@ -9,9 +9,11 @@ import glob
 import struct
 import atexit
 import six
+from six.moves import urllib
 from . import cbedtools
 from . import settings
 from . import filenames
+from . import genome_registry
 from .logger import logger
 from .cbedtools import create_interval_from_list as _create_interval_from_list
 

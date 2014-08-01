@@ -21,6 +21,7 @@ from .cbedtools import IntervalFile, IntervalIterator
 from . import filenames
 import pybedtools
 from . import settings
+from . import filenames
 
 
 
