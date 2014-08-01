@@ -324,7 +324,6 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                 result_is_bam = True
 
             decode_output = not result_is_bam
-            encode_input = not self._isbam
 
             # Do the actual call
             stream = call_bedtools(cmds, tmp, stdin=stdin,
@@ -423,12 +422,12 @@ class BedTool(object):
         if from_string:
             bed_contents = fn
             fn = self._tmp()
-            fout = open(fn, 'wb')
+            fout = open(fn, 'w')
             for line in bed_contents.splitlines():
                 if len(line.strip()) == 0:
                     continue
                 line = '\t'.join(line.split()) + '\n'
-                fout.write(line.encode("UTF-8"))
+                fout.write(line)
             fout.close()
 
         else:
@@ -454,9 +453,6 @@ class BedTool(object):
             # subprocess.PIPE
             else:
                 fn = fn
-
-        #if isinstance(fn, six.string_types):
-        #    fn = fn.encode('UTF-8')
 
         self.fn = fn
 
@@ -911,7 +907,7 @@ class BedTool(object):
                 self._file_type = 'bam'
             else:
                 try:
-                    self._file_type = IntervalFile(self.fn.encode('UTF-8')).file_type
+                    self._file_type = IntervalFile(self.fn).file_type
                 except StopIteration:
                     self._file_type = 'empty'
                 except ValueError:
@@ -984,7 +980,7 @@ class BedTool(object):
 
             # Easy case: BED/GFF/VCF, as a file
             else:
-                return IntervalFile(self.fn.encode('UTF-8'))
+                return IntervalFile(self.fn)
 
         # Open file, like subprocess.PIPE.
         if hasattr(self.fn, 'read'):
@@ -1139,7 +1135,7 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        fout = open(fn, 'wb')
+        fout = open(fn, 'w')
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -1155,7 +1151,7 @@ class BedTool(object):
             fout.write(trackline.strip() + '\n')
 
         for i in iterable:
-            fout.write(str(i).encode('UTF-8'))
+            fout.write(str(i))
         fout.close()
         return fn
 
