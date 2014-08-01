@@ -13,7 +13,7 @@ import multiprocessing
 import six
 
 from pybedtools.helpers import get_tempdir, _tags,\
-    History, HistoryStep, call_bedtools, _flatten_list, \
+    call_bedtools, _flatten_list, \
     _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, \
     _call_randomintersect
 from . import helpers

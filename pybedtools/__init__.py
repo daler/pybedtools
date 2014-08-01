@@ -29,6 +29,7 @@ example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
 
 from .logger import logger
 
+
 def debug_mode(x):
     """
     Enable debug mode.
