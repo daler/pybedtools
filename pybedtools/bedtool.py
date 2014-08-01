@@ -691,7 +691,7 @@ class BedTool(object):
                     to_delete.append(fn)
 
         if raw_input_func is None:
-            raw_input_func = raw_input
+            raw_input_func = input
 
         str_fns = '\n\t'.join(to_delete)
         if ask:
