@@ -369,7 +369,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
 
 class BedTool(object):
-    TEMPFILES = []
+    TEMPFILES = filenames.TEMPFILES
 
     def __init__(self, fn=None, from_string=False, remote=False):
         """
