@@ -156,7 +156,16 @@ cdef class Attributes(dict):
             except KeyError:
                 pass
             items.append((field, val))
-        return self.sep.join([self.field_sep.join(kvs) for kvs in items])
+
+        pairs = []
+        for k, v in items:
+            if isinstance(k, bytes):
+                k = k.decode('UTF-8')
+            if isinstance(v, bytes):
+                v = v.decode('UTF-8')
+            pairs.append(self.field_sep.join([k, v]))
+
+        return self.sep.join(pairs)
 
 cdef class Interval:
     """
@@ -201,19 +210,29 @@ cdef class Interval:
         (22L, 44L, '-', 22L)
 
     """
-    def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
+    def __init__(self, chrom, start, end, name=".".encode("UTF-8"), score=".".encode("UTF-8"), strand=".".encode("UTF-8"), otherfields=None):
         if otherfields is None:
             otherfields = []
         self._bed = new BED()
+
+        if isinstance(chrom, str):
+            chrom = chrom.encode('UTF-8')
+        if isinstance(name, str):
+            name = name.encode('UTF-8')
+        if isinstance(score, str):
+            score = score.encode('UTF-8')
+        if isinstance(strand, str):
+            strand = strand.encode('UTF-8')
+
         self._bed.chrom = string(chrom)
         self._bed.start = start
         self._bed.end = end
         self._bed.name = string(name)
         self._bed.score = string(score)
         self._bed.strand = string(strand)
-        fields = [chrom, str(start), str(end), name, score, strand]
+        fields = [chrom, str(start).encode('UTF-8'), str(end).encode('UTF-8'), name, score, strand]
         fields.extend(otherfields)
-        self._bed.fields = list_to_vector(fields)
+        self._bed.fields = fields
         self._attrs = None
 
     def __copy__(self):
@@ -227,19 +246,27 @@ cdef class Interval:
         def __get__(self):
             return self._bed.chrom.c_str()
 
-        def __set__(self, char* chrom):
+        def __set__(self, chrom):
+            if isinstance(chrom, str):
+                chrom = chrom.encode('UTF-8')
             self._bed.chrom = string(chrom)
             idx = LOOKUPS[self.file_type]["chrom"]
             self._bed.fields[idx] = string(chrom)
 
     # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
     def __richcmp__(self, other, int op):
-
-        raise NotImplementedError("Still working on Python 3 support for comparisons")
-        """
         if (self.chrom != other.chrom) or (self.strand != other.strand):
             if op == 3: return True
             return False
+
+        def cmp(x, y):
+            if x < y:
+                return -1
+            if x == y:
+                return 0
+            if x > y:
+                return 1
+
 
         # check all 4 so that we can handle nesting and partial overlaps.
         profile = (cmp(self.start, other.start),
@@ -262,7 +289,6 @@ cdef class Interval:
         except KeyError:
             raise ValueError('Currently unsupported comparison -- please '
                              'submit a bug report')
-        """
 
     property start:
         """The 0-based start of the feature."""
@@ -277,7 +303,7 @@ cdef class Interval:
             if self.file_type != 'bed':
                 start += 1
 
-            s = str(start)
+            s = str(start).encode('UTF-8')
             self._bed.fields[idx] = string(s)
 
     property end:
@@ -287,7 +313,7 @@ cdef class Interval:
 
         def __set__(self, int end):
             self._bed.end = end
-            e = str(end)
+            e = str(end).encode('UTF-8')
             idx = LOOKUPS[self.file_type]["stop"]
             self._bed.fields[idx] = string(e)
 
@@ -298,7 +324,7 @@ cdef class Interval:
 
         def __set__(self, int end):
             idx = LOOKUPS[self.file_type]["stop"]
-            e = str(end)
+            e = str(end).encode('UTF-8')
             self._bed.fields[idx] = string(e)
             self._bed.end = end
 
@@ -308,6 +334,8 @@ cdef class Interval:
             return self._bed.strand.c_str()
 
         def __set__(self, strand):
+            if isinstance(strand, str):
+                strand = strand.encode('UTF-8')
             idx = LOOKUPS[self.file_type]["strand"]
             self._bed.fields[idx] = string(strand)
             self._bed.strand = string(strand)
@@ -326,13 +354,20 @@ cdef class Interval:
 
         cdef char *cstr
         tmp = self._attrs.__str__()
+        if isinstance(tmp, str):
+            tmp = tmp.encode('UTF-8')
         cstr = tmp
         self._bed.fields[8] = string(cstr)
 
     property fields:
         def __get__(self):
             self.deparse_attrs()
-            return string_vec2list(self._bed.fields)
+            items = []
+            for i in self._bed.fields:
+                if isinstance(i, bytes):
+                    i = i.decode('UTF-8')
+                items.append(i)
+            return items
 
 
     property attrs:
@@ -363,6 +398,7 @@ cdef class Interval:
         """
         def __get__(self):
             cdef string ftype = self._bed.file_type
+            value = None
             if ftype == <char *>"gff":
                 """
                 # TODO. allow setting a name_key in the BedTool constructor?
@@ -372,17 +408,25 @@ cdef class Interval:
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
                     if key in self.attrs:
-                        return self.attrs[key]
+                        value = self.attrs[key]
+
 
             elif ftype == <char *>"vcf":
                 s = self.fields[2]
                 if s in ("", "."):
-                    return "%s:%i" % (self.chrom, self.start)
-                return s
+                    value = "%s:%i" % (self.chrom, self.start)
+                else:
+                    value = s
             elif ftype == <char *>"bed":
-                return self._bed.name.c_str()
+                value = self._bed.name
+
+            if isinstance(value, bytes):
+                value = value.decode('UTF-8')
+            return value
 
         def __set__(self, value):
+            if isinstance(value, str):
+                value = value.encode('UTF-8')
             cdef string ftype = self._bed.file_type
             if ftype == <char *>"gff":
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
@@ -404,6 +448,8 @@ cdef class Interval:
             return self._bed.score.c_str()
 
         def __set__(self, value):
+            if isinstance(value, str):
+                value = value.encode('UTF-8')
             self._bed.score = string(value)
             idx = LOOKUPS[self.file_type]["score"]
             self._bed.fields[idx] = string(value)
@@ -414,6 +460,8 @@ cdef class Interval:
             return self._bed.file_type.c_str()
 
         def __set__(self, value):
+            if isinstance(value, str):
+                value = value.encode('UTF-8')
             self._bed.file_type = string(value)
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
@@ -434,7 +482,15 @@ cdef class Interval:
         Interval objects always print with a newline to mimic a line in a
         BED/GFF/VCF file
         """
-        return "\t".join(self.fields) + "\n"
+        items = []
+        for i in self.fields:
+            if isinstance(i, bytes):
+                i = i.decode('UTF-8')
+            else:
+                i = str(i)
+            items.append(i)
+
+        return '\t'.join(items) + '\n'
 
     def __repr__(self):
         return "Interval(%s:%i-%i)" % (self.chrom, self.start, self.end)
@@ -491,6 +547,8 @@ cdef class Interval:
             setattr(self, key, value)
 
     cpdef append(self, object value):
+        if isinstance(value, str):
+            value = value.encode('UTF-8')
         self._bed.fields.push_back(string(value))
 
 
@@ -534,39 +592,39 @@ cpdef Interval create_interval_from_list(list fields):
     if (fields[1] + fields[2]).isdigit():
         # if it's too short, just add some empty fields.
         if len(fields) < 7:
-            fields.extend(["."] * (6 - len(fields)))
+            fields.extend([".".encode('UTF-8')] * (6 - len(fields)))
             other_fields = []
         else:
             other_fields = fields[6:]
 
         pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
                 string(fields[4]), string(fields[5]), list_to_vector(other_fields))
-        pyb.file_type = 'bed'
+        pyb.file_type = 'bed'.encode('UTF-8')
 
     # VCF
     elif fields[1].isdigit() and not fields[3].isdigit() and len(fields) >= 8:
         pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[1]) + 1,
                            string(fields[2]), string(fields[5]), string('.'),
                            list_to_vector(fields))
-        pyb.file_type = 'vcf'
+        pyb.file_type = 'vcf'.encode('UTF-8')
 
     # SAM
     elif ( len(fields) >= 13) and (fields[1] + fields[3]).isdigit():
-        strand = '+'
+        strand = '+'.encode('UTF-8')
         if int(fields[1]) & 0x10:
-            strand = '-'
+            strand = '-'.encode('UTF-8')
 
         # TODO: what should the stop position be?  Here, it's just the start
         # plus the length of the sequence, but perhaps this should eventually
         # do CIGAR string parsing.
         pyb._bed = new BED(string(fields[2]), int(fields[3])-1, int(fields[3]) + len(fields[9]) - 1,
                            string(strand), string(fields[0]), string(fields[1]), list_to_vector(fields))
-        pyb.file_type = 'sam'
+        pyb.file_type = 'sam'.encode('UTF-8')
     # GFF
     elif len(fields) >= 9 and (fields[3] + fields[4]).isdigit():
         pyb._bed = new BED(string(fields[0]), int(fields[3])-1, int(fields[4]), string(fields[2]),
                            string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
-        pyb.file_type = 'gff'
+        pyb.file_type = 'gff'.encode('UTF-8')
     else:
         raise MalformedBedLineError('Unable to detect format from %s' % fields)
     pyb._bed.fields = list_to_vector(orig_fields)
@@ -576,12 +634,15 @@ cdef vector[string] list_to_vector(list li):
     cdef vector[string] s
     cdef int i
     for i in range(len(li)):
-        s.push_back(string(li[i]))
+        _s = li[i]
+        if isinstance(_s, str):
+            _s = _s.encode('UTF-8')
+        s.push_back(string(_s))
     return s
 
 cdef list string_vec2list(vector[string] sv):
     cdef size_t size = sv.size(), i
-    return [sv.at(i).c_str() for i in range(size)]
+    return [str(sv.at(i).c_str()) for i in range(size)]
 
 cdef list bed_vec2list(vector[BED] bv):
     cdef size_t size = bv.size(), i
@@ -615,7 +676,7 @@ cdef class IntervalIterator:
     def __next__(self):
         while True:
             try:
-                line = self.stream.next()
+                line = next(self.stream)
                 if self._isstring < 0:
                     self._isstring = int(isinstance(line, basestring))
 
@@ -640,7 +701,10 @@ cdef class IntervalIterator:
         if self._isstring:
             fields = line.rstrip('\r\n').split('\t')
         else:
-            fields = map(str, line)
+            fields = list(line)
+
+        # ensure everything is bytes
+        fields = [str(b).encode('UTF-8') for b in fields]
         return create_interval_from_list(fields)
 
 
@@ -649,7 +713,7 @@ cdef class IntervalFile:
     cdef BedFile *intervalFile_ptr
     cdef bint _loaded
     cdef bint _open
-    cdef str fn
+    cdef string _fn
     """
     An IntervalFile provides low-level access to the BEDTools API.
 
@@ -658,10 +722,12 @@ cdef class IntervalFile:
 
     """
     def __init__(self, intervalFile):
+        if isinstance(intervalFile, str):
+            intervalFile = intervalFile.encode('UTF-8')
         self.intervalFile_ptr = new BedFile(string(intervalFile))
         self._loaded = 0
         self._open = 0
-        self.fn = intervalFile
+        self._fn = intervalFile
 
     def __dealloc__(self):
         del self.intervalFile_ptr
@@ -684,18 +750,22 @@ cdef class IntervalFile:
         elif b.status == BED_MALFORMED:
             raise MalformedBedLineError("malformed line: %s" % string_vec2list(b.fields))
         else:
-            return self.next()
+            return next(self)
+
+    @property
+    def fn(self):
+        return self._fn.decode()
 
     @property
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             try:
-                a = iter(self).next()
+                a = next(iter(self))
                 return self.intervalFile_ptr.file_type.c_str()
 
             except MalformedBedLineError:
                 # If it's a SAM, raise a meaningful exception.  If not, fail.
-                interval = create_interval_from_list(open(self.fn).readline().strip().split())
+                interval = create_interval_from_list(open(self._fn).readline().strip().split())
                 if interval.file_type == 'sam':
                     raise ValueError('IntervalFile objects do not yet natively support SAM. '
                                      'Please convert to BED/GFF/VCF first if you want to '
