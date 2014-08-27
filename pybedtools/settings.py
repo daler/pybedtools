@@ -81,3 +81,9 @@ _prog_names = {
 
 _old_names = _prog_names.keys()
 _new_names = _prog_names.values()
+
+_column_names = {
+    'bed': ['chrom', 'start', 'end', 'name', 'score', 'strand', 'thickStart',
+            'thickEnd', 'itemRgb', 'blockCount', 'blockSizes', 'blockStarts'],
+    'gff': ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attributes'],
+}

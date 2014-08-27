@@ -1,5 +1,6 @@
 import pybedtools
 import os, difflib, sys
+from textwrap import dedent
 from nose import with_setup
 from nose.tools import assert_raises, raises
 from pybedtools.helpers import BEDToolsError
@@ -1383,3 +1384,42 @@ def test_issue_81():
         chr1	4000	5000
         chr1	4500	5000
         """), result
+
+def test_to_dataframe():
+    def fix_dataframe(df): 
+        return ''.join(df.splitlines(True)[1:])
+    try:
+        import pandas
+    except ImportError:
+        print("pandas not installed; skipping test")
+
+    a = pybedtools.example_bedtool('a.bed')
+    results = str(a.to_dataframe())
+
+
+    expected = fix_dataframe("""
+  chrom  start  end      name  score strand
+0  chr1      1  100  feature1      0      +
+1  chr1    100  200  feature2      0      +
+2  chr1    150  500  feature3      0      -
+3  chr1    900  950  feature4      0      +""")
+    assert results == expected
+
+    d = pybedtools.example_bedtool('d.gff')
+    results = str(d.to_dataframe())
+    expected = fix_dataframe("""
+  seqname source feature  start   end score strand frame  \\
+0    chr1   fake    gene     50   300     .      +     .   
+1    chr1   fake    mRNA     50   300     .      +     .   
+2    chr1   fake     CDS     75   150     .      +     .   
+3    chr1   fake     CDS    200   275     .      +     .   
+4    chr1   fake    rRNA   1200  1275     .      +     .   
+
+               attributes  
+0                ID=gene1  
+1  ID=mRNA1;Parent=gene1;  
+2   ID=CDS1;Parent=mRNA1;  
+3   ID=CDS2;Parent=mRNA1;  
+4               ID=rRNA1;  """)
+    assert results == expected
+
