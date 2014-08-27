@@ -3010,6 +3010,27 @@ class BedTool(object):
                         break
         return BedTool(_gen()).saveas()
 
+    def to_dataframe(self, *args, **kwargs):
+        """
+        create a pandas.DataFrame, passing args and kwargs to pandas.read_table
+        """
+        # Complain if BAM or if not a file
+        if self._isbam:
+            raise ValueError("BAM not supported for converting to DataFrame")
+        if not isinstance(self.fn, basestring):
+            raise ValueError("use .saveas() to make sure self.fn is a file")
+
+        try:
+            import pandas
+        except ImportError:
+            raise ImportError("pandas must be installed to convert to pandas.DataFrame")
+        # Otherwise we're good:
+        try: 
+            _names = settings._column_names[self.file_type][:self.field_count()]
+        except KeyError:
+            _names = None
+        names = kwargs.get('names', _names)
+        return pandas.read_table(self.fn, names=names, *args, **kwargs)
 
 class BAM(object):
     def __init__(self, stream, header_only=False):
