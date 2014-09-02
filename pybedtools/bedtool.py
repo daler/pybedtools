@@ -3032,6 +3032,45 @@ class BedTool(object):
         names = kwargs.get('names', _names)
         return pandas.read_table(self.fn, names=names, *args, **kwargs)
 
+    def tail(self, lines=10, as_string=False):
+        """
+        Like `head`, but prints last 10 lines of the file by default.
+
+        To avoid consuming iterables, this only works with file-based, non-BAM
+        BedTool objects.
+
+        Use `as_string=True` to return a string.
+        """
+        if self._isbam:
+            raise ValueError('tail() not yet implemented for BAM files')
+        if not isinstance(self.fn, basestring):
+            raise ValueError('tail() not implemented for non-file-based '
+                             'BedTool objects.  Please use saveas() first.')
+        bufsize = 8192
+        offset = bufsize
+        f = open(self.fn)
+        f.seek(0, 2)  # whence=2 arg means relative to end (i.e., go to the end)
+        file_size = f.tell()
+        data = []
+        while True:
+            if file_size < bufsize:
+                offset = file_size
+            f.seek(-offset, 2)
+            chunk = f.read(offset)
+            data.extend(chunk.splitlines(True))
+            if len(data) >= lines or offset == file_size:
+                break
+            offset += bufsize
+
+        result = ''.join(data[-lines:])
+        if as_string:
+            return result
+        else:
+            print(result)
+
+
+
+
 class BAM(object):
     def __init__(self, stream, header_only=False):
         """
