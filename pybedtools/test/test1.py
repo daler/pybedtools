@@ -1423,3 +1423,36 @@ def test_to_dataframe():
 4               ID=rRNA1;  """)
     assert results == expected
 
+def test_tail():
+    a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
+    observed = a.tail(as_string=True)
+    expected = fix(
+        """
+        chr21	13355834	13356047	MER58A	892	-
+        chr21	13356250	13356290	AT_rich	26	+
+        chr21	13356358	13356381	AT_rich	23	+
+        chr21	13356571	13356910	L2	333	-
+        chr21	13357179	13357987	L1MEc	1264	-
+        chr21	13358003	13358300	L1MEc	379	-
+        chr21	13358304	13358952	L1MEc	1271	-
+        chr21	13358960	13359288	L2	336	+
+        chr21	13359444	13359751	AluY	2337	+
+        chr21	13360044	13360225	L1M5	284	-""")
+    assert observed == expected
+
+
+    # only ask for 3 lines
+    observed = a.tail(3, as_string=True)
+    expected = fix(
+        """
+        chr21	13358960	13359288	L2	336	+
+        chr21	13359444	13359751	AluY	2337	+
+        chr21	13360044	13360225	L1M5	284	-""")
+    assert observed == expected
+
+
+    # For short files, whole thing should be returned
+    a = pybedtools.example_bedtool('a.bed')
+    expected = str(a)
+    obs = a.tail(as_string=True)
+    assert obs == expected
