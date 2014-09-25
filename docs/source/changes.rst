@@ -2,6 +2,45 @@
 
 Changelog
 =========
+Changes in v0.6.7
+-----------------
+Now compatible with BEDTools v2.21.0.
+
+The one exception is that the new `bedtools intersect` functionality that
+allows multiple `-b` files is not yet implemented in `pybedtools`.
+
+New features:
+
+* `BedTool.fisher()` wraps the new BEDTools `fisher` tool.  The result is
+  an object containing parsed results.
+
+* `BedTool.colormap_normalize()` accepts a `percentile` argument, useful when
+  applying colormaps to data with a handful of extreme outliers
+
+* `BedTool.to_datafame()` converts a `BedTool` object into a `pandas.DataFrame`
+  with columns named after the appropriate fields for the filetype (thanks
+  Radhouane Aniba for the suggestion)
+
+* `BedTool.tail()` to complement `BedTool.head()` (thanks Radhouane Aniba for
+  the suggestion)
+
+* Add hg38 and hg38.default chromsizes
+
+Minor bug fixes:
+
+* Ensure tuple-like args to `parallel_apply` (fixes #109)
+
+* Temp fix for BEDTools v2.20.0 which required the `-w` arg to come before the
+  `-s` arg in `bedtools makewindows` (#81)
+
+* Better (i.e., UCSC Genome Browser-compliant) defaults for `featurefuncs.expand_fields`.
+
+* Fix for BedTool.all_hits() and any_hits() which will now show hits for
+  zero-length features intersecting with other zero-length features with the
+  same coordinates.
+
+
+
 Changes in v0.6.6
 -----------------
 This is a compatibility release, updated for BEDTools v2.20.0.
