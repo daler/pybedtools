@@ -1388,7 +1388,7 @@ def test_issue_81():
         """), result
 
 def test_to_dataframe():
-    def fix_dataframe(df): 
+    def fix_dataframe(df):
         return ''.join(df.splitlines(True)[1:])
     try:
         import pandas
@@ -1458,3 +1458,20 @@ def test_tail():
     expected = str(a)
     obs = a.tail(as_string=True)
     assert obs == expected
+
+def test_fisher():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = a.fisher(b, genome='hg19')
+    assert str(c) == \
+"""# Contingency Table
+#_________________________________________
+#           | not in -b    | in -b        |
+# not in -a | 3137160615   | 503          |
+#     in -a | 100          | 46           |
+#_________________________________________
+# p-values for fisher's exact test
+left	right	two-tail	ratio
+1.00000	0.00000	0.00000	2868973.922
+""", c
+

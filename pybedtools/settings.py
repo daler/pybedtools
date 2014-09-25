@@ -77,6 +77,7 @@ _prog_names = {
     'groupBy': 'groupby',
     'expandCols': 'expand',
     'sample': 'sample',
+    'fisher': 'fisher',
 }
 
 _old_names = list(_prog_names.keys())

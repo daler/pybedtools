@@ -2132,6 +2132,37 @@ class BedTool(object):
         Wraps 'sample'.
         """
 
+
+    @_wraps(prog='fisher', implicit='a', other='b', uses_genome=True,
+            does_not_return_bedtool=helpers.FisherOutput)
+    def fisher(self):
+        """
+        Wraps 'fisher'. Returns an object representing the output.
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> f = a.fisher(b, genome='hg19')
+        >>> print f  # doctest: +NORMALIZE_WHITESPACE
+        # Contingency Table
+        #_________________________________________
+        #           | not in -b    | in -b        |
+        # not in -a | 3137160615   | 503          |
+        #     in -a | 100          | 46           |
+        #_________________________________________
+        # p-values for fisher's exact test
+        left	right	two-tail	ratio
+        1.00000	0.00000	0.00000	2868973.922
+        <BLANKLINE>
+
+
+        >>> f.table['not in -a']['in -b']
+        503
+
+        >>> f.two_tail
+        0.0
+        """
+
+
     def count(self):
         """
         Count the number features in this BedTool.

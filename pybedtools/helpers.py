@@ -549,6 +549,62 @@ def string_to_interval(s):
             ])
     return s
 
+class FisherOutput(object):
+    def __init__(self, s, **kwargs):
+        """
+        fisher returns text results like::
+
+            # Contingency Table
+            #_________________________________________
+            #           | not in -b    | in -b        |
+            # not in -a | 3137160615   | 503          |
+            #     in -a | 100          | 46           |
+            #_________________________________________
+            # p-values for fisher's exact test
+            left	right	two-tail	ratio
+            1.00000	0.00000	0.00000	2868973.922
+
+        """
+        if isinstance(s, str):
+            s = open(s).read()
+        if hasattr(s, 'next'):
+            s = ''.join(i for i in s)
+        table = {
+            'not in -a': {
+                'not in -b': None,
+                'in -b': None
+            },
+            'in -a': {
+                'not in -b': None,
+                'in -b': None,
+            },
+        }
+        self.text = s
+        lines = s.splitlines()
+        for i in lines:
+            if 'not in -a' in i:
+                _, not_in_b, in_b, _= i.strip().split('|')
+                table['not in -a']['not in -b'] = int(not_in_b)
+                table['not in -a']['in -b'] = int(in_b)
+
+            if '    in -a' in i:
+                _, not_in_b, in_b, _ = i.strip().split('|')
+                table['in -a']['not in -b'] = int(not_in_b)
+                table['in -a']['in -b'] = int(in_b)
+        self.table = table
+        left, right, two_tail, ratio = lines[-1].split()
+        self.left_tail = float(left)
+        self.right_tail = float(right)
+        self.two_tail = float(two_tail)
+        self.ratio = float(ratio)
+
+    def __str__(self):
+        return self.text
+
+    def __repr__(self):
+        return '<%s at %s>\n%s' % (self.__class__.__name__, id(self), self.text)
+
+
 
 def internet_on(timeout=1):
     try:
