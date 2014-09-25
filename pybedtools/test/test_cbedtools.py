@@ -346,6 +346,10 @@ def test_zero_length_regression():
     assert len(m.all_hits(i2)) == 0
     assert len(m.all_hits(i2, same_strand=True)) == 0
 
+    a = pybedtools.BedTool('chr1 3 3', from_string=True)
+    print [len(i) for i in a.intervals]
+    result = a.intervals.all_hits(Interval('chr1', 3, 3))
+    assert len(result) == 1, result
 
 def test_missing_files():
     """
