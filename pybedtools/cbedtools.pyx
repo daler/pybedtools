@@ -765,7 +765,8 @@ cdef class IntervalFile:
 
             except MalformedBedLineError:
                 # If it's a SAM, raise a meaningful exception.  If not, fail.
-                interval = create_interval_from_list(open(self._fn).readline().strip().split())
+                with open(self.fn) as fn:
+                    interval = create_interval_from_list(fn.readline().strip().split())
                 if interval.file_type == 'sam':
                     raise ValueError('IntervalFile objects do not yet natively support SAM. '
                                      'Please convert to BED/GFF/VCF first if you want to '
