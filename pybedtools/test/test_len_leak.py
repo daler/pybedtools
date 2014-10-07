@@ -8,7 +8,7 @@ def show_open_fds(func):
     print(doc)
     print("." * len(doc))
     orig_fds = pybedtools.helpers.n_open_fds()
-    print('\t', max(func(fn)) - orig_fds, 'file-based')
+    assert (max(func(fn)) - orig_fds) == 0
 
 
 def func1(src):
