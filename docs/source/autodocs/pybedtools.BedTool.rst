@@ -41,6 +41,7 @@ pybedtools.BedTool
       ~BedTool.features
       ~BedTool.field_count
       ~BedTool.filter
+      ~BedTool.fisher
       ~BedTool.flank
       ~BedTool.genome_coverage
       ~BedTool.groupby
@@ -88,7 +89,9 @@ pybedtools.BedTool
       ~BedTool.tabix
       ~BedTool.tabix_intervals
       ~BedTool.tag_bam
+      ~BedTool.tail
       ~BedTool.to_bam
+      ~BedTool.to_dataframe
       ~BedTool.total_coverage
       ~BedTool.truncate_to_chrom
       ~BedTool.union_bedgraphs
