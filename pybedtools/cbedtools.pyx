@@ -760,9 +760,10 @@ cdef class IntervalFile:
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             try:
-                a = next(iter(self))
-                return self.intervalFile_ptr.file_type.c_str()
-
+                a = iter(self).next()
+                file_type = self.intervalFile_ptr.file_type.c_str()
+                self.intervalFile_ptr.Close()
+                return file_type
             except MalformedBedLineError:
                 # If it's a SAM, raise a meaningful exception.  If not, fail.
                 with open(self.fn) as fn:
