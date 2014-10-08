@@ -2,6 +2,12 @@
 
 Changelog
 =========
+Changes in v0.6.8
+-----------------
+
+Bugfix: Thanks to Gabriel Pratt, `pybedtools` is no longer plagued by open filehandles
+in the C code causing the notorious "Too many files open" error.
+
 Changes in v0.6.7
 -----------------
 Now compatible with BEDTools v2.21.0.
