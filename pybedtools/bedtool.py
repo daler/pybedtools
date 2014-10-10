@@ -15,7 +15,7 @@ from pybedtools.helpers import get_tempdir, _tags,\
     _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, \
     _call_randomintersect
 import helpers
-from cbedtools import IntervalFile, IntervalIterator
+from cbedtools import IntervalFile, IntervalIterator, Interval
 import pybedtools
 import settings
 
@@ -1334,6 +1334,8 @@ class BedTool(object):
                 don't want this to happen, please convert to BED first before
                 using this method.
         """
+        if not isinstance(interval, Interval):
+            raise ValueError("Need an Interval instance")
         fn = self.fn
         if not isinstance(fn, basestring):
             fn = self.saveas().fn
@@ -1360,6 +1362,8 @@ class BedTool(object):
                 don't want this to happen, please convert to BED first before
                 using this method.
         """
+        if not isinstance(interval, Interval):
+            raise ValueError("Need an Interval instance")
         fn = self.fn
         if not isinstance(fn, basestring):
             fn = self.saveas().fn
@@ -1386,6 +1390,8 @@ class BedTool(object):
                 don't want this to happen, please convert to BED first before
                 using this method.
         """
+        if not isinstance(interval, Interval):
+            raise ValueError("Need an Interval instance")
         fn = self.fn
         if not isinstance(fn, basestring):
             fn = self.saveas().fn
