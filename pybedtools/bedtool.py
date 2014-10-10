@@ -1394,6 +1394,8 @@ class BedTool(object):
                 don't want this to happen, please convert to BED first before
                 using this method.
         """
+        if not isinstance(interval, Interval):
+            raise ValueError("Need an Interval instance")
         fn = self.fn
         if not isinstance(fn, six.string_types):
             fn = self.saveas().fn
@@ -1420,6 +1422,8 @@ class BedTool(object):
                 don't want this to happen, please convert to BED first before
                 using this method.
         """
+        if not isinstance(interval, Interval):
+            raise ValueError("Need an Interval instance")
         fn = self.fn
         if not isinstance(fn, six.string_types):
             fn = self.saveas().fn
@@ -1446,6 +1450,8 @@ class BedTool(object):
                 don't want this to happen, please convert to BED first before
                 using this method.
         """
+        if not isinstance(interval, Interval):
+            raise ValueError("Need an Interval instance")
         fn = self.fn
         if not isinstance(fn, six.string_types):
             fn = self.saveas().fn
