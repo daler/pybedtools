@@ -1396,7 +1396,9 @@ def test_to_dataframe():
         print("pandas not installed; skipping test")
 
     a = pybedtools.example_bedtool('a.bed')
+
     results = str(a.to_dataframe())
+
 
 
     expected = fix_dataframe("""
@@ -1424,6 +1426,52 @@ def test_to_dataframe():
 3   ID=CDS2;Parent=mRNA1;  
 4               ID=rRNA1;  """)
     assert results == expected
+
+
+    # get a gff file with too many fields...
+    x = pybedtools.example_bedtool('c.gff')
+    x = x.intersect(x, c=True)
+    assert_raises(ValueError, x.to_dataframe)
+
+    names = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand',
+             'frame', 'attributes', 'count']
+    results = str(x.to_dataframe(names=names))
+    expected = fix_dataframe("""
+   seqname source feature  start   end score strand frame  \\
+0     chr1    ucb    gene    465   805     .      +     .   
+1     chr1    ucb    gene    631   899     .      +     .   
+2     chr1    ucb    mRNA    631   913     .      +     .   
+3     chr1    ucb     CDS    760   913     .      +     .   
+4     chr1    ucb     CDS    486   605     .      +     .   
+5     chr1    ucb     CDS    706  1095     .      +     .   
+6     chr1    ucb     CDS    174   326     .      +     .   
+7     chr1    ucb     CDS    439   630     .      +     .   
+8     chr1    ucb    mRNA    496   576     .      +     .   
+9     chr1    ucb    mRNA    486   605     .      +     .   
+10    chr1    ucb    mRNA    706   895     .      +     .   
+11    chr1    ucb    mRNA    174   326     .      +     .   
+12    chr1    ucb    mRNA    439   899     .      +     .   
+13    chr1    ucb    gene     60   269     .      -     .   
+
+                                           attributes  count  
+0   ID=thaliana_1_465_805;match=scaffold_801404.1;...     11  
+1         ID=AT1G01010;Name=AT1G01010;rname=AT1G01010      7  
+2   ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      7  
+3               Parent=AT1G01010.mRNA;rname=AT1G01010      7  
+4               Parent=AT1G01010.mRNA;rname=AT1G01010      6  
+5               Parent=AT1G01010.mRNA;rname=AT1G01010      7  
+6               Parent=AT1G01010.mRNA;rname=AT1G01010      3  
+7               Parent=AT1G01010.mRNA;rname=AT1G01010      6  
+8   ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      6  
+9   ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      6  
+10  ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      7  
+11  ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      3  
+12  ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...     11  
+13  ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_sc...      3  """)
+    assert results == expected
+
+
+
 
 def test_tail():
     a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
