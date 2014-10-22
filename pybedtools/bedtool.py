@@ -3002,12 +3002,19 @@ class BedTool(object):
         except ImportError:
             raise ImportError("pandas must be installed to convert to pandas.DataFrame")
         # Otherwise we're good:
-        try: 
-            _names = settings._column_names[self.file_type][:self.field_count()]
-        except KeyError:
-            _names = None
-        names = kwargs.get('names', _names)
-        return pandas.read_table(self.fn, names=names, *args, **kwargs)
+        _names = kwargs.pop('names', None)
+        if _names is None:
+            try:
+                _names = settings._column_names[self.file_type][:self.field_count()]
+                if len(_names) < self.field_count():
+                    raise ValueError(
+                        'Default names for filetype %s are:\n%s\nbut file has %s fields; '
+                        'please supply custom names with the `names` kwarg'
+                        % (self.file_type, _names, self.field_count()))
+            except KeyError:
+                _names = None
+
+        return pandas.read_table(self.fn, names=_names, *args, **kwargs)
 
     def tail(self, lines=10, as_string=False):
         """
