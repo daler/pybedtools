@@ -328,7 +328,7 @@ def test_zero_length_regression():
     iminus = Interval(chrom='chrA', start=1, end=10, name='.', score='0', strand='-')
     m = pybedtools.BedTool('chrA 2 2 . 0 +', from_string=True).intervals
 
-    assert len(m.all_hits(i)) == 1
+    assert len(m.all_hits(i)) == 1, m.all_hits(i)
     assert len(m.all_hits(iminus)) == 1
     assert len(m.all_hits(i, same_strand=False)) == 1
     assert len(m.all_hits(iminus, same_strand=False)) == 1
@@ -350,6 +350,19 @@ def test_zero_length_regression():
     print [len(i) for i in a.intervals]
     result = a.intervals.all_hits(Interval('chr1', 3, 3))
     assert len(result) == 1, result
+
+def test_issue_123():
+    bed = """\
+chr1    1       1       Region_A        2       +
+chr1    2       2       Region_B        1       +
+chr1    3       3       Region_C        3       +
+chr1    4       5
+""".strip()
+
+    b = pybedtools.BedTool(bed, from_string=True).intervals
+
+    result = b.all_hits(Interval('chr1', 3, 3))
+    assert len(result) == 1, len(result)
 
 def test_missing_files():
     """
