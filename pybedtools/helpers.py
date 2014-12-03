@@ -69,6 +69,23 @@ def _check_for_tabix():
             % add_msg)
 
 
+def _check_for_bgzip():
+    try:
+        p = subprocess.Popen(
+            [os.path.join(settings._tabix_path, 'bgzip')],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        settings._bgzip_installed = True
+    except OSError:
+        if settings._tabix_path:
+            add_msg = "(tried path '%s')" % settings._tabix_path
+        else:
+            add_msg = ""
+        raise ValueError(
+            'Please install tabix and ensure bgzip is on your path %s'
+            % add_msg)
+
+
 def _check_for_samtools():
     try:
         p = subprocess.Popen(
