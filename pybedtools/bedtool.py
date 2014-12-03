@@ -576,6 +576,8 @@ class BedTool(object):
         """
         if not settings._tabix_installed:
             helpers._check_for_tabix()
+        if not settings._bgzip_installed:
+            helpers._check_for_bgzip()
         if force:
             force_arg = "-f"
         else:
