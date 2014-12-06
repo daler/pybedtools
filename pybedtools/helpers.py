@@ -84,13 +84,13 @@ def _check_for_tabix():
 def _check_for_bgzip():
     try:
         p = subprocess.Popen(
-            [os.path.join(settings._tabix_path, 'bgzip')],
+            [os.path.join(settings._bgzip_path, 'bgzip'), '-h'],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         settings._bgzip_installed = True
     except OSError:
-        if settings._tabix_path:
-            add_msg = "(tried path '%s')" % settings._tabix_path
+        if settings._bgzip_path:
+            add_msg = "(tried path '%s')" % settings._bgzip_path
         else:
             add_msg = ""
         raise ValueError(
@@ -459,6 +459,18 @@ def set_tabix_path(path=""):
     Use path="" to reset to default system path.
     """
     settings._tabix_path = path
+
+
+def set_bgzip_path(path=""):
+    """
+    Explicitly set path to `bgzip` installation dir.
+
+    If bgzip is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    settings._bgzip_path = path
 
 
 def set_R_path(path=""):

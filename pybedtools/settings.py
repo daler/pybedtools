@@ -1,6 +1,7 @@
 _bedtools_path = ""
 _samtools_path = ""
 _tabix_path = ""
+_bgzip_path = ""
 _R_path = ""
 
 tempfile_prefix = 'pybedtools.'
