@@ -519,6 +519,8 @@ class BedTool(object):
         """
         if not settings._tabix_installed:
             helpers._check_for_tabix()
+        if not settings._bgzip_installed:
+            helpers._check_for_bgzip()
         if force:
             force_arg = "-f"
         else:
@@ -589,7 +591,8 @@ class BedTool(object):
             BedTool.TEMPFILES.append(outfn)
 
             # Creates tempfile.gz
-            cmds = ['bgzip', force_arg, fn]
+            cmds = [os.path.join(settings._bgzip_path, 'bgzip'),
+                    force_arg, fn]
             os.system(' '.join(cmds))
             return outfn
 
@@ -601,7 +604,8 @@ class BedTool(object):
             else:
                 fn = self.fn
             outfn = self.fn + '.gz'
-            cmds = ['bgzip', '-c', force_arg, fn, '>', outfn]
+            cmds = [os.path.join(settings._bgzip_path, 'bgzip'),
+                    '-c', force_arg, fn, '>', outfn]
             os.system(' '.join(cmds))
             return outfn
 

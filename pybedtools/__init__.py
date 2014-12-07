@@ -94,6 +94,7 @@ def load_path_config(fn):
         samtools=
         r=
         tabix=
+        bgzip=
 
     You only need to specify paths you need to change, so this is a valid file
     that will only specify the path to use for R::
@@ -108,7 +109,8 @@ def load_path_config(fn):
         bedtools=helpers.set_bedtools_path,
         samtools=helpers.set_samtools_path,
         r=helpers.set_R_path,
-        tabix=helpers.set_tabix_path)
+        tabix=helpers.set_tabix_path,
+        bgzip=helpers.set_bgzip_path)
 
     if isinstance(fn, dict):
         for prog, setter in setters.items():
