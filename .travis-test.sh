@@ -14,3 +14,4 @@ export PATH=${TRAVIS_BUILD_DIR}/bedtools2/bin:$PATH
 echo $PATH
 nosetests -v
 cd docs && make clean && make doctest
+
