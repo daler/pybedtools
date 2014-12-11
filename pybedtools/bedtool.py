@@ -3149,10 +3149,7 @@ class BAM(object):
                                       stdin=subprocess.PIPE,
                                       stderr=subprocess.PIPE,
                                       bufsize=0)
-            # Can't iterate (for i in stream) cause we're dealing with a binary
-            # BAM file here.  So read the whole thing in at once.
-            for i in self.stream:
-                self.p.stdin.write(i)
+
 
     def __iter__(self):
         return self
