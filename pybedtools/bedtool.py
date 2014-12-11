@@ -3086,12 +3086,9 @@ class BAM(object):
                 self.cmds.append('-H')
             self.p = subprocess.Popen(self.cmds,
                                       stdout=subprocess.PIPE,
-                                      stdin=subprocess.PIPE,
+                                      stdin=stream,
                                       stderr=subprocess.PIPE,
                                       bufsize=0)
-            # Can't iterate (for i in stream) cause we're dealing with a binary
-            # BAM file here.  So read the whole thing in at once.
-            self.p.stdin.write(stream.read())
 
     def __iter__(self):
         return self
