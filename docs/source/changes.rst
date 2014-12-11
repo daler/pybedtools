@@ -2,6 +2,19 @@
 
 Changelog
 =========
+Changes in v0.6.9
+-----------------
+Minor bug fix release.
+
+* improved the automatic field name handling when converting an interval file to
+  a `pandas DataFrame`.
+* fixed a bug in `IntervalFile` methods `all_hits`, `any_hits` and `count_hits`
+  where zero-length features were being counted multiple times (thanks Brent
+  Pedersen and Kyle Smith)
+* bgzip and tabix paths can now be configured separately (thanks Rob Beagrie)
+* fixed a bug where streaming BAM files were read fully into memory (thanks
+  Alexey Sergushichev)
+
 Changes in v0.6.8
 -----------------
 
