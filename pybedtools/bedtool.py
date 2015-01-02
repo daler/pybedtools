@@ -2093,23 +2093,28 @@ class BedTool(object):
         >>> b = pybedtools.example_bedtool('b.bed')
         >>> f = a.fisher(b, genome='hg19')
         >>> print f  # doctest: +NORMALIZE_WHITESPACE
-        # Contingency Table
+        # Number of query intervals: 4
+        # Number of db intervals: 2
+        # Number of overlaps: 3
+        # Number of possible intervals (estimated): 13958448
+        # phyper(3 - 1, 4, 13958448 - 4, 2, lower.tail=F)
+        # Contingency Table Of Counts
         #_________________________________________
-        #           | not in -b    | in -b        |
-        # not in -a | 3137160615   | 503          |
-        #     in -a | 100          | 46           |
+        #           |  in -b       | not in -b    |
+        #     in -a | 3            | 1            |
+        # not in -a | 0            | 13958444     |
         #_________________________________________
         # p-values for fisher's exact test
         left	right	two-tail	ratio
-        1.00000	0.00000	0.00000	2868973.922
+        1	8.8247e-21	8.8247e-21	inf
         <BLANKLINE>
 
 
         >>> f.table['not in -a']['in -b']
-        503
+        13958444
 
         >>> f.two_tail
-        0.0
+        8.8247e-21
         """
 
 
