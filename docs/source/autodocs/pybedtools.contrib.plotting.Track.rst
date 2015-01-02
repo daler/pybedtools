@@ -59,6 +59,7 @@ pybedtools.contrib.plotting.Track
       ~Track.get_picker
       ~Track.get_pickradius
       ~Track.get_rasterized
+      ~Track.get_sizes
       ~Track.get_sketch_params
       ~Track.get_snap
       ~Track.get_transform
@@ -119,6 +120,7 @@ pybedtools.contrib.plotting.Track
       ~Track.set_picker
       ~Track.set_pickradius
       ~Track.set_rasterized
+      ~Track.set_sizes
       ~Track.set_sketch_params
       ~Track.set_snap
       ~Track.set_transform
