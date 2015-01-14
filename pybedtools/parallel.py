@@ -49,60 +49,60 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     Call an arbitrary BedTool method many times in parallel.
 
     An example use-case is to generate a null distribution of intersections,
-    and then compare this to the actual intersections::
-
-        >>> # set up example BedTools
-        >>> a = pybedtools.example_bedtool('a.bed')
-        >>> b = pybedtools.example_bedtool('b.bed')
-
-        >>> #Method of `a` to call:
-        >>> method = 'intersect'
-
-        >>> # Kwargs provided to `a.intersect` each iteration
-        >>> method_kwargs = dict(b=b, u=True)
-
-        >>> # Function that will be called on the results of
-        >>> # `a.intersect(**method_kwargs)`.
-        >>> def reduce_func(x):
-        ...     return sum(1 for _ in open(x.fn))
+    and then compare this to the actual intersections.
 
     **Important:** due to a known file handle leak in BedTool.__len__, it's
-    best to simply check the number of lines in the file, as in the above
+    best to simply check the number of lines in the file, as in the below
     function. This works because BEDTools programs strip any non-interval lines
     in the results.
 
-        >>> # Create a small artificial genome for this test (generally you'd
-        >>> # use an assembly name, like "hg19"):
-        >>> genome = dict(chr1=(0, 1000))
+    >>> # set up example BedTools
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> b = pybedtools.example_bedtool('b.bed')
 
-        >>> # Do 10 iterations using 1 process for this test (generally you'd
-        >>> # use 1000+ iterations, and as many processes as you have CPUs)
-        >>> results = parallel_apply(a, method, genome=genome,
-        ... method_kwargs=method_kwargs, iterations=10, processes=1,
-        ... reduce_func=reduce_func, debug=True, report_iterations=True)
+    >>> # Method of `a` to call:
+    >>> method = 'intersect'
 
-        >>> # get results
-        >>> print list(results)
-        [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
+    >>> # Kwargs provided to `a.intersect` each iteration
+    >>> method_kwargs = dict(b=b, u=True)
 
-    We can compare this to the actual intersection:
+    >>> # Function that will be called on the results of
+    >>> # `a.intersect(**method_kwargs)`.
+    >>> def reduce_func(x):
+    ...     return sum(1 for _ in open(x.fn))
 
-        >>> reduce_func(a.intersect(**method_kwargs))
-        3
+    >>> # Create a small artificial genome for this test (generally you'd
+    >>> # use an assembly name, like "hg19"):
+    >>> genome = dict(chr1=(0, 1000))
+
+    >>> # Do 10 iterations using 1 process for this test (generally you'd
+    >>> # use 1000+ iterations, and as many processes as you have CPUs)
+    >>> results = pybedtools.parallel.parallel_apply(a, method, genome=genome,
+    ... method_kwargs=method_kwargs, iterations=10, processes=1,
+    ... reduce_func=reduce_func, debug=True, report_iterations=True)
+
+    >>> # get results
+    >>> print list(results)
+    [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
+
+    >>> # We can compare this to the actual intersection:
+    >>> reduce_func(a.intersect(**method_kwargs))
+    3
 
     Alternatively, we could use the `a.jaccard` method, which already does the
     reduction to a dictionary.  However, the Jaccard method requires the input
     to be sorted.  Here, we specify `sort=True` to sort each shuffled BedTool
     before calling its `jaccard` method.
 
-        >>> from pybedtools.parallel import parallel_apply
-        >>> results = parallel_apply(a, method='jaccard', method_args=(b,),
-        ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
-        >>> for i in results:
-        ...     print sorted(i.items())
-        [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
-        [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
-        [('intersection', 45), ('jaccard', 0.0818182), ('n_intersections', 1), ('union-intersection', 550)]
+    >>> from pybedtools.parallel import parallel_apply
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> results = parallel_apply(a, method='jaccard', method_args=(b,),
+    ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
+    >>> for i in results:
+    ...     print sorted(i.items())
+    [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
+    [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
+    [('intersection', 45), ('jaccard', 0.0818182), ('n_intersections', 1), ('union-intersection', 550)]
 
     Parameters
     ----------
