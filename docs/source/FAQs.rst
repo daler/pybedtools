@@ -8,6 +8,51 @@ FAQs
     More detailed answers to these questions can often be found on the `Issues
     <https://github.com/daler/pybedtools/issues/>`_ page.
 
+"Does pybedtools have a simple reader/writer for BED files?"
+------------------------------------------------------------
+While `pybedtools` designed to work with BEDTools, the reading/writing/parsing
+function can be easily used for other things.
+
+Simply iterating over a :class:`BedTool` object will parse each line into
+a :class:`Interval` object.  You can then manipulate this or access the fields
+as needed.
+
+For example::
+
+    x = pybedtools.example_bedtool('a.bed')
+    for interval in x:
+        # do something with interval
+
+However, if you're planning on writing the results out to file, it may be more
+useful to write a transformation function along with the :meth:`BedTool.each`
+method.  This allows you to read, transform, and write all in one command::
+
+    def my_func(f):
+        """
+        adds 10 bp to the stop
+        """
+        f.stop += 1
+        return f
+
+    pybedtools.example_bedtool('a.bed')\
+        .each(my_func)\
+        .saveas('out.bed')
+
+Another useful idiom is creating a generator function.  For example, here we
+change the name field to reflect the value of a counter.  We create a BedTool
+from the iterator and then save it::
+
+    def gen():
+        counter = 0
+        for i in pybedtools.example_bedtool('a.bed'):
+            i.name = str(counter)
+            counter += 1
+            yield i
+
+    pybedtools.BedTool(gen()).saveas('counted.bed')
+
+
+See :ref:`saveresults` for more on saving the results.
 
 "Can I create a BedTool object from an existing list?"
 ------------------------------------------------------
@@ -25,7 +70,7 @@ Sure, the :class:`BedTool` constructor will figure it out::
 "I'm getting an empty BedTool"
 ------------------------------
 Check to make sure you're not consuming a BedTool generator.  Note that
-:meth:`BedTool.filter` and :meth:`BedTool.each` return generator BedTool
+:meth:`BedTool.filter` and :meth:`BedTool.each` will return a generator BedTool
 object. Keep in mind that checking the length of a generator BedTool will
 completely consume it.
 
