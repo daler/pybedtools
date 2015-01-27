@@ -11,6 +11,7 @@ import pprint
 from itertools import islice
 import multiprocessing
 import six
+import gzip
 
 from pybedtools.helpers import get_tempdir, _tags,\
     call_bedtools, _flatten_list, \
@@ -2762,11 +2763,13 @@ class BedTool(object):
             return c
 
     @_log_to_history
-    def saveas(self, fn=None, trackline=None):
+    def saveas(self, fn=None, trackline=None, compressed=False):
         """
         Make a copy of the BedTool.
 
         Optionally adds `trackline` to the beginning of the file.
+
+        Optionally compresses output using gzip.
 
         Returns a new BedTool for the newly saved file.
 
@@ -2791,7 +2794,8 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        fn = self._collapse(self, fn=fn, trackline=trackline)
+        fn = self._collapse(self, fn=fn, trackline=trackline,
+                            compressed=compressed)
         return BedTool(fn)
 
     @_log_to_history
