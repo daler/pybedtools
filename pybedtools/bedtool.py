@@ -1,5 +1,6 @@
 from __future__ import print_function
 import tempfile
+from textwrap import dedent
 import shutil
 import subprocess
 import operator
@@ -203,23 +204,26 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
         _add_doc = []
         if implicit:
-            _add_doc.append(
-        """
-        For convenience, the file or stream this BedTool points to is
-        implicitly passed as the `-%s` argument to `%s`""" % (implicit, prog))
+            _add_doc.append(dedent(
+                """
+                    For convenience, the file or stream this BedTool points to
+                    is implicitly passed as the `-%s` argument to `%s`
+                """
+                % (implicit, prog)))
 
         if uses_genome:
-            _add_doc.append(
-        """
-        There are two alternatives for supplying a genome.  Use
-        `g="genome.filename"` if you have a genome's chrom sizes saved
-        as a file. This is the what BEDTools expects when using it from
-        the command line. Alternatively, use the `genome="assembly.name"`
-        (for example, `genome="hg19"`) to use chrom sizes for that 
-        assembly without having to manage a separate file.  The `genome`
-        argument triggers a call `pybedtools.chromsizes`, so see that method
-        for more details.
-        """)
+            _add_doc.append(dedent(
+                """
+                    There are two alternatives for supplying a genome.  Use
+                    `g="genome.filename"` if you have a genome's chrom sizes
+                    saved as a file. This is the what BEDTools expects when
+                    using it from the command line. Alternatively, use the
+                    `genome="assembly.name"` (for example, `genome="hg19"`) to
+                    use chrom sizes for that assembly without having to manage
+                    a separate file.  The `genome` argument triggers a call
+                    `pybedtools.chromsizes`, so see that method for more
+                    details.
+                """))
 
         def wrapped(self, *args, **kwargs):
             """
@@ -352,7 +356,6 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
             result._isbam = result_is_bam
             result._cmds = cmds
-            #result._kwargs = kwargs
             del kwargs
             return result
 
@@ -2143,7 +2146,6 @@ class BedTool(object):
         Wraps 'sample'.
         """
 
-
     @_wraps(prog='fisher', implicit='a', other='b', uses_genome=True,
             does_not_return_bedtool=helpers.FisherOutput)
     def fisher(self):
@@ -2177,7 +2179,6 @@ class BedTool(object):
         >>> f.two_tail
         8.8247e-21
         """
-
 
     def count(self):
         """
@@ -2618,7 +2619,7 @@ class BedTool(object):
         if intersect_kwargs is None:
             intersect_kwargs = {'u': True}
 
-        if not 'u' in intersect_kwargs:
+        if 'u' not in intersect_kwargs:
             intersect_kwargs['u'] = True
 
         resort = intersect_kwargs.get('sorted', False)
@@ -2649,9 +2650,9 @@ class BedTool(object):
             # Close the open stdouts from subprocess.Popen calls.  Note: doing
             # this in self.__del__ doesn't fix the open file limit bug; it
             # needs to be done here.
-            #if resort:
-            #    tmp0.fn.close()
-            #tmp.fn.close()
+            # if resort:
+            #     tmp0.fn.close()
+            # tmp.fn.close()
             tmp2.fn.close()
             del(tmp)
             del(tmp2)
@@ -2998,7 +2999,8 @@ class BedTool(object):
         for i in hits:
             yield float(i[-1]) / len(i)
 
-    def colormap_normalize(self, vmin=None, vmax=None, percentile=False, log=False):
+    def colormap_normalize(self, vmin=None, vmax=None, percentile=False,
+                           log=False):
         """
         Returns a normalization instance for use by featurefuncs.add_color().
 
@@ -3041,7 +3043,6 @@ class BedTool(object):
                 vmax = np.percentile(scores, vmax)
             norm.vmax = vmax
 
-
         return norm
 
     def at(self, inds):
@@ -3073,16 +3074,19 @@ class BedTool(object):
         try:
             import pandas
         except ImportError:
-            raise ImportError("pandas must be installed to convert to pandas.DataFrame")
+            raise ImportError(
+                "pandas must be installed to convert to pandas.DataFrame")
         # Otherwise we're good:
         _names = kwargs.pop('names', None)
         if _names is None:
             try:
-                _names = settings._column_names[self.file_type][:self.field_count()]
+                _names = \
+                    settings._column_names[self.file_type][:self.field_count()]
                 if len(_names) < self.field_count():
                     raise ValueError(
-                        'Default names for filetype %s are:\n%s\nbut file has %s fields; '
-                        'please supply custom names with the `names` kwarg'
+                        'Default names for filetype %s are:\n%s\nbut file has '
+                        '%s fields; please supply custom names with the '
+                        '`names` kwarg'
                         % (self.file_type, _names, self.field_count()))
             except KeyError:
                 _names = None
@@ -3106,7 +3110,9 @@ class BedTool(object):
         bufsize = 8192
         offset = bufsize
         f = open(self.fn)
-        f.seek(0, 2)  # whence=2 arg means relative to end (i.e., go to the end)
+
+        # whence=2 arg means relative to end (i.e., go to the end)
+        f.seek(0, 2)
         file_size = f.tell()
         data = []
         while True:
@@ -3124,8 +3130,6 @@ class BedTool(object):
             return result
         else:
             print(result)
-
-
 
 
 class BAM(object):
