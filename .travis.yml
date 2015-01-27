@@ -1,3 +1,5 @@
+# make edits to this line to trigger a new travis build.
+# (sometimes it errors out trying to download from PyPI)
 language: python
 
 notifications:
