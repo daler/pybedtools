@@ -9,6 +9,7 @@ import string
 import pprint
 from itertools import islice
 import multiprocessing
+import gzip
 
 from pybedtools.helpers import get_tempdir, _tags,\
     History, HistoryStep, call_bedtools, _flatten_list, \
@@ -1069,7 +1070,7 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
-    def _collapse(self, iterable, fn=None, trackline=None):
+    def _collapse(self, iterable, fn=None, trackline=None, compressed=False):
         """
         Collapses an iterable into file *fn* (or a new tempfile if *fn* is
         None).
@@ -1079,7 +1080,10 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        fout = open(fn, 'w')
+        if compressed:
+            fout = gzip.open(fn, 'w')
+        else:
+            fout = open(fn, 'w')
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -2702,11 +2706,13 @@ class BedTool(object):
             return c
 
     @_log_to_history
-    def saveas(self, fn=None, trackline=None):
+    def saveas(self, fn=None, trackline=None, compressed=False):
         """
         Make a copy of the BedTool.
 
         Optionally adds `trackline` to the beginning of the file.
+
+        Optionally compresses output using gzip.
 
         Returns a new BedTool for the newly saved file.
 
@@ -2731,7 +2737,8 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        fn = self._collapse(self, fn=fn, trackline=trackline)
+        fn = self._collapse(self, fn=fn, trackline=trackline,
+                            compressed=compressed)
         return BedTool(fn)
 
     @_log_to_history
