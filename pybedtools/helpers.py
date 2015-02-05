@@ -695,12 +695,12 @@ class FisherOutput(object):
         lines = s.splitlines()
         for i in lines:
             if 'not in -a' in i:
-                _, not_in_b, in_b, _= i.strip().split('|')
+                _, in_b, not_in_b, _= i.strip().split('|')
                 table['not in -a']['not in -b'] = int(not_in_b)
                 table['not in -a']['in -b'] = int(in_b)
 
             if '    in -a' in i:
-                _, not_in_b, in_b, _ = i.strip().split('|')
+                _, in_b, not_in_b, _ = i.strip().split('|')
                 table['in -a']['not in -b'] = int(not_in_b)
                 table['in -a']['in -b'] = int(in_b)
         self.table = table

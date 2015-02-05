@@ -2116,7 +2116,16 @@ class BedTool(object):
 
 
         >>> f.table['not in -a']['in -b']
+        0
+
+        >>> f.table['not in -a']['not in -b']
         13958444
+
+        >>> f.table['in -a']['in -b']
+        3
+
+        >>> f.table['in -a']['not in -b']
+        1
 
         >>> f.two_tail
         8.8247e-21
