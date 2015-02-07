@@ -64,7 +64,7 @@ def _reldist_output_handler(s, **kwargs):
         iterable = open(s)
     if hasattr(s, 'next'):
         iterable = s
-    header = iterable.next().split()
+    header = six.advance_iterator(iterable).split()
     results = {}
     for h in header:
         results[h] = []
@@ -3077,7 +3077,7 @@ class BedTool(object):
         # Complain if BAM or if not a file
         if self._isbam:
             raise ValueError("BAM not supported for converting to DataFrame")
-        if not isinstance(self.fn, basestring):
+        if not isinstance(self.fn, six.string_types):
             raise ValueError("use .saveas() to make sure self.fn is a file")
 
         try:
@@ -3113,7 +3113,7 @@ class BedTool(object):
         """
         if self._isbam:
             raise ValueError('tail() not yet implemented for BAM files')
-        if not isinstance(self.fn, basestring):
+        if not isinstance(self.fn, six.string_types):
             raise ValueError('tail() not implemented for non-file-based '
                              'BedTool objects.  Please use saveas() first.')
         bufsize = 8192
