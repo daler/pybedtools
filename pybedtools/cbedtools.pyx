@@ -11,6 +11,7 @@
 """
 from cython.operator cimport dereference as deref
 import sys
+import six
 import subprocess
 from collections import defaultdict
 
@@ -760,7 +761,7 @@ cdef class IntervalFile:
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             try:
-                a = iter(self).next()
+                a = six.advance_iterator(iter(self))
                 file_type = self.intervalFile_ptr.file_type.c_str()
                 self.intervalFile_ptr.Close()
                 return file_type
