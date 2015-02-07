@@ -19,7 +19,7 @@ from pybedtools.helpers import get_tempdir, _tags,\
     _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, \
     _call_randomintersect
 from . import helpers
-from .cbedtools import IntervalFile, IntervalIterator
+from .cbedtools import IntervalFile, IntervalIterator, Interval
 from . import filenames
 import pybedtools
 from . import settings
