@@ -3121,7 +3121,7 @@ class BedTool(object):
                              'BedTool objects.  Please use saveas() first.')
         bufsize = 8192
         offset = bufsize
-        f = open(self.fn)
+        f = open(self.fn, 'rb')
 
         # whence=2 arg means relative to end (i.e., go to the end)
         f.seek(0, 2)
@@ -3137,7 +3137,7 @@ class BedTool(object):
                 break
             offset += bufsize
 
-        result = ''.join(data[-lines:])
+        result = ''.join([i.decode() for i in data[-lines:]])
         if as_string:
             return result
         else:
