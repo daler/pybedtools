@@ -307,7 +307,7 @@ def test_create_from_list_long_features():
     d = a.intersect(b, wao=True, stream=True)
 
     # as of BEDTools v2.22.1, closest assumes sorted input by default.
-    print b.sort().closest(a)
+    print(b.sort().closest(a))
 
     for i in d:
         print(i)
