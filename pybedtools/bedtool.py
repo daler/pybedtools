@@ -1133,7 +1133,7 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
-    def _collapse(self, iterable, fn=None, trackline=None):
+    def _collapse(self, iterable, fn=None, trackline=None, compressed=False):
         """
         Collapses an iterable into file *fn* (or a new tempfile if *fn* is
         None).
@@ -1143,7 +1143,10 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        fout = open(fn, 'w')
+        if compressed:
+            fout = gzip.open(fn, 'w')
+        else:
+            fout = open(fn, 'w')
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
