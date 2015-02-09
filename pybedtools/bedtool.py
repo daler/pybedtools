@@ -919,8 +919,8 @@ class BedTool(object):
                 except StopIteration:
                     self._file_type = 'empty'
                 except ValueError:
-                    self._file_type = IntervalIterator(open(self.fn, 'rb'))\
-                        .next().file_type
+                    self._file_type = six.advance_iterator(
+                        IntervalIterator(open(self.fn, 'rb'))).file_type
         return self._file_type
 
     def cut(self, indexes, stream=False):
