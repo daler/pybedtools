@@ -423,11 +423,11 @@ cdef class Interval:
                 if s in ("", "."):
                     value = "%s:%i" % (self.chrom, self.start)
                 else:
-                    value = s
+                    value = _pystr(s)
             elif ftype == <string>"bed":
-                value = self._bed.name
+                value = _pystr(self._bed.name)
 
-            return _pystr(value)
+            return value
 
         def __set__(self, value):
             value = _cppstr(value)
@@ -520,9 +520,9 @@ cdef class Interval:
         elif isinstance(key, str):
             if ftype == "gff":
                 try:
-                    return _pystr(self.attrs[key])
-                except:
-                    pass
+                    return self.attrs[key]
+                except KeyError:
+                    raise ValueError("No key %s in attributes (%s)" % (key, self.attrs.keys()))
             return _pystr(getattr(self, key))
 
     def __setitem__(self, object key, object value):
