@@ -157,7 +157,8 @@ def test_stream():
     d = a.intersect(b, stream=True)
 
     assert_raises(NotImplementedError, c.__eq__, d)
-    d_contents = d.fn.read()
+    d = d.saveas()
+    d_contents = open(d.fn).read()
     c_contents = open(c.fn).read()
     assert d_contents == c_contents
 
