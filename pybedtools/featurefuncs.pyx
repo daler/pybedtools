@@ -1,5 +1,3 @@
-# cython: profile=True
-#
 from cbedtools cimport Interval
 from cbedtools import create_interval_from_list
 
@@ -102,69 +100,107 @@ cpdef bedgraph_scale(Interval feature, float scalar):
     return feature
 
 
-cdef safe_start_stop(start, stop):
+cpdef TSS(Interval feature, int upstream=500, int downstream=500, add_to_name=None, genome=None):
     """
-    Ensures that feature start/stop coords are non-negative and that start <
-    stop.
-
-    If start is negative, reset to zero.
-
-    If start > stop make start and stop equal to the original start.
+    Alias for five_prime.
     """
+    return star_prime(feature, upstream, downstream, prime=5,
+                      add_to_name=add_to_name, genome=genome)
+
+
+cdef star_prime(Interval feature, int upstream=500, int downstream=500, int prime=5,
+                 add_to_name=None, genome=None):
+
+    if prime == 5:
+        if feature.strand == '-':
+            start = feature.stop - downstream
+            stop = feature.stop + upstream
+        else:
+            start = feature.start - upstream
+            stop = feature.start + downstream
+    elif prime == 3:
+        if feature.strand == '-':
+            start = feature.start - downstream
+            stop = feature.start + upstream
+        else:
+            start = feature.stop - upstream
+            stop = feature.stop + downstream
+    if add_to_name:
+        try:
+            feature.name += add_to_name
+        except AttributeError:
+            pass
+    if genome is not None:
+        gstart, gstop = genome[feature.chrom]
+        stop = min(stop, gstop)
+        start = max(start, gstart)
     if start < 0:
         start = 0
     if start > stop:
-        stop = start
-    return start, stop
-
-
-cpdef TSS(Interval feature, int upstream=500, int downstream=500, add_to_name=None):
-    """
-    Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
-    the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
-    """
-    return five_prime(feature, upstream, downstream, add_to_name)
-
-
-cpdef five_prime(Interval feature, int upstream=500, int downstream=500, add_to_name=None):
-    """
-    Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
-    the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
-    """
-    if feature.strand == '-':
-        start = feature.stop - downstream
-        stop = feature.stop + upstream
-    else:
-        start = feature.start - upstream
-        stop = feature.start + downstream
-    if add_to_name:
-        try:
-            feature.name += add_to_name
-        except AttributeError:
-            pass
-    feature.start, feature.stop = safe_start_stop(start, stop)
+        start = stop
+    feature.start = start
+    feature.stop = stop
     return feature
 
+cpdef five_prime(Interval feature, int upstream=500, int downstream=500,
+                 add_to_name=None, genome=None):
+    """
+    Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
+    the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
 
-cpdef three_prime(Interval feature, int upstream=500, int downstream=500, add_to_name=None):
+    Parameters
+    ----------
+    feature : pybedtools.Interval instance
+
+    upstream, downstream : int
+        Number of bp upstream or downstream of the strand-specific start
+        position of the feature to include. Default is 500 for both upstream
+        and downstream so that the returned feature is 1kb centered on the 5'
+        end of the feature. Unstranded features (where strand=".") are treated
+        as plus-strand features.
+
+    add_to_name : str or None
+        If not None, append the string suffix to the name field of the feature (for
+        example "_TSS").
+
+    genome : dict or None
+        If not None, then ensure that the start/stop positions are within the
+        boundaries of the chromosome.
+    """
+    return star_prime(feature, upstream, downstream, prime=5,
+                      add_to_name=add_to_name, genome=genome)
+
+
+cpdef three_prime(Interval feature, int upstream=500, int downstream=500,
+                  add_to_name=None, genome=None):
     """
     Returns the 3'-most coordinate, plus `upstream` and `downstream` bp; adds
     the string `add_to_name` to the feature's name if provided (e.g.,
-    "_polyA-site")
+    "_polyA_site")
+
+    Parameters
+    ----------
+    feature : pybedtools.Interval instance
+
+    upstream, downstrea : int
+        Number of bp upstream or downstream of the strand-specific stop
+        position of the feature to include. Default is 500 for both upstream
+        and downstream so that the returned feature is 1kb centered on the 5'
+        end of the feature. Unstranded features (where strand=".") are treated
+        as plus-strand features.
+
+    add_to_name : str or None
+        If not None, append the string suffix to the name field of the feature (for
+        example "_TSS").
+
+    genome : dict or None
+        If not None, then ensure that the start/stop positions are within the
+        boundaries of the chromosome.
+
+
     """
-    if feature.strand == '-':
-        start = feature.start - downstream
-        stop = feature.start + upstream
-    else:
-        start = feature.stop - upstream
-        stop = feature.stop + downstream
-    if add_to_name:
-        try:
-            feature.name += add_to_name
-        except AttributeError:
-            pass
-    feature.start, feature.stop = safe_start_stop(start, stop)
-    return feature
+    return star_prime(feature, upstream, downstream, prime=3,
+                      add_to_name=add_to_name, genome=genome)
 
 cpdef add_color(Interval feature, cmap, norm):
     """
@@ -279,4 +315,3 @@ cpdef bed2gff(Interval feature):
         feature.strand,
         '.',
         attributes])
-
