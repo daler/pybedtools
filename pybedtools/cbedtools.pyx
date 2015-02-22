@@ -488,6 +488,9 @@ cdef class Interval:
     cpdef append(self, object value):
         self._bed.fields.push_back(string(value))
 
+    def __nonzero__(self):
+        return True
+
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)

@@ -1536,3 +1536,11 @@ def test_gzipped_output():
     obs = pybedtools.example_bedtool('a.bed').saveas(compressed=True)
     assert gzip.open(obs.fn).read() == gzip.open(expected).read()
 
+
+def test_zero_len_boolean():
+    # regression test: with no __nonzero__ method, __len__ is used. This means
+    # that `if interval` evaluates to False when length is zero.
+    i = pybedtools.create_interval_from_list(['chr1', '1', '1'])
+    assert len(i) == 0
+    assert i
+
