@@ -1399,8 +1399,6 @@ def test_to_dataframe():
 
     results = str(a.to_dataframe())
 
-
-
     expected = fix_dataframe("""
   chrom  start  end      name  score strand
 0  chr1      1  100  feature1      0      +
@@ -1408,6 +1406,21 @@ def test_to_dataframe():
 2  chr1    150  500  feature3      0      -
 3  chr1    900  950  feature4      0      +""")
     assert results == expected
+
+
+    # reverse should work, too:
+    df = a.to_dataframe()
+    a2 = pybedtools.BedTool.from_dataframe(df)
+    assert a2 == a
+
+    # try only part of the dataframe
+    a3 = pybedtools.BedTool.from_dataframe(
+        df.ix[df.start < 100, ['chrom', 'start', 'end', 'name']]
+    )
+    assert a3 == fix(
+        """
+        chr1	1	100	feature1
+        """), str(a3)
 
     d = pybedtools.example_bedtool('d.gff')
     results = str(d.to_dataframe())
