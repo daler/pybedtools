@@ -161,11 +161,11 @@ def isBAM(fn):
 
     cmds = ['samtools', 'view', '-H', fn]
     try:
-
-        # Silence the output, we want to check the return code
-        with open(os.devnull, "w") as out:
-            subprocess.check_call(cmds, stdout=out, stderr=out)
-        return True
+        stdout, stderr = subprocess.Popen(
+            cmds, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()
+        if stdout:
+            return True
+        return False
 
     except subprocess.CalledProcessError:
         # Non-0 return code, it means we have an error
