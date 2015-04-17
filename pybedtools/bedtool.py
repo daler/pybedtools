@@ -1144,6 +1144,7 @@ class BedTool(object):
             'groupBy': ',',
             'multiIntersectBed': ' ',
             'mergeBed': ',',
+            'intersectBed': ' ',
         }
         stdin = None
 
