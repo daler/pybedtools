@@ -471,20 +471,6 @@ class BedTool(object):
                 fn = fn
 
         self.fn = fn
-
-        if self._isbam and isinstance(self.fn, six.string_types):
-            if not self.remote:
-                try:
-                    self._bam_header = ''.join(BAM(self.fn, header_only=True))
-
-                # BAM reader will raise ValueError for BGZIPed files that are
-                # not BAM format (e.g., plain BED files that have been BGZIPed
-                # for tabix)
-                except ValueError:
-                    self._isbam = False
-        else:
-            self._bam_header = ""
-
         tag = ''.join(
             [random.choice(string.ascii_lowercase) for _ in range(8)])
         self._tag = tag
@@ -991,7 +977,7 @@ class BedTool(object):
         if self._isbam:
             # Note: BAM class takes filename or stream, so self.fn is OK
             # here
-            return IntervalIterator(BAM(self.fn))
+            return BAM(self.fn)
 
         # Plain ol' filename
         if isinstance(self.fn, six.string_types):
