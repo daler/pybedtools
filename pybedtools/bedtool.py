@@ -2859,7 +2859,7 @@ class BedTool(object):
         tmp = open(tmpfn, 'w')
         for i, f in enumerate(self):
             if i in idxs:
-                tmp.write(str(f) + '\n')
+                tmp.write(str(f))
         tmp.close()
         return BedTool(tmpfn)
 
