@@ -1,3 +1,7 @@
+"""
+Provides access to example files and keeps track of all temp files created
+during a Python session.
+"""
 import os
 
 TEMPFILES = []
@@ -39,5 +43,3 @@ def list_example_files():
     exts = ('.bed', '.gff', '.gtf', '.bed.gz', '.bam', '.gff.gz')
     valid_fns = [f for f in candidate_fns if f.endswith(exts)]
     return sorted(valid_fns)
-
-

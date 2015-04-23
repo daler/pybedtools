@@ -34,7 +34,7 @@ ext = '.pyx' if USE_CYTHON else '.cpp'
 
 
 version_py = os.path.join(os.path.dirname(__file__), 'pybedtools', 'version.py')
-version = open(version_py).read().strip().split('=')[-1].replace('"','')
+version = open(version_py).read().strip().split(' = ')[-1].replace('"','')
 
 extensions = [ Extension("pybedtools.cbedtools",
                    sources=["pybedtools/cbedtools.pyx",

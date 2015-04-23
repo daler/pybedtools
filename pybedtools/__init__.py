@@ -25,10 +25,9 @@ from .filenames import data_dir, example_filename, list_example_files
 from .bedtool import example_bedtool
 
 from . import settings
+from .logger import logger, ch
 
 example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
-
-from .logger import logger, ch
 
 
 def debug_mode(x):
@@ -132,6 +131,3 @@ def load_path_config(fn):
 
             except configparser.NoOptionError:
                 pass
-
-
-

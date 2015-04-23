@@ -14,17 +14,15 @@ import multiprocessing
 import six
 import gzip
 
-from pybedtools.helpers import get_tempdir, _tags,\
-    call_bedtools, _flatten_list, \
-    _check_sequence_stderr, isBAM, isBGZIP, BEDToolsError, \
-    _call_randomintersect
+from .helpers import (
+    get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
+    isBAM, isBGZIP, BEDToolsError, _call_randomintersect)
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator, Interval
 from . import filenames
 import pybedtools
 from . import settings
 from . import filenames
-
 
 
 _implicit_registry = {}
@@ -297,7 +295,6 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # tempfiles if needed, and return all the goodies
             cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
 
-
             # Decide whether the output is BAM format or not.
             result_is_bam = False
 
@@ -352,7 +349,6 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     result = self
             else:
                 result = BedTool(stream)
-
 
             result._isbam = result_is_bam
             result._cmds = cmds
@@ -473,7 +469,8 @@ class BedTool(object):
         else:
             self._bam_header = ""
 
-        tag = ''.join([random.choice(string.ascii_lowercase) for _ in range(8)])
+        tag = ''.join(
+            [random.choice(string.ascii_lowercase) for _ in range(8)])
         self._tag = tag
         _tags[tag] = self
         self._hascounts = False
@@ -606,10 +603,8 @@ class BedTool(object):
         pointing to a BGZIPed file with a .tbi file in the same dir.
         """
         if (
-            isinstance(self.fn, six.string_types)
-            and
-            isBGZIP(self.fn)
-            and
+            isinstance(self.fn, six.string_types) and
+            isBGZIP(self.fn) and
             os.path.exists(self.fn + '.tbi')
         ):
             return True
@@ -876,17 +871,19 @@ class BedTool(object):
                 # 5' utr between gene start and first intron
                 if i == 0 and exon.start > g.start:
                     utr = {"+": "utr5", "-": "utr3"}[g.strand]
-                    print("%s\t%i\t%i\t%s\t%s\t%s" \
-                        % (g.chrom, g.start, exon.start, g.name, utr, g.strand), file=fh)
+                    print("%s\t%i\t%i\t%s\t%s\t%s"
+                          % (g.chrom, g.start, exon.start, g.name, utr,
+                             g.strand), file=fh)
                 elif i == len(exons) - 1 and exon.end < g.end:
                     utr = {"+": "utr3", "-": "utr5"}[g.strand]
-                    print("%s\t%i\t%i\t%s\t%s\t%s" \
-                        % (g.chrom, exon.end, g.end, g.name, utr, g.strand), file=fh)
+                    print("%s\t%i\t%i\t%s\t%s\t%s"
+                          % (g.chrom, exon.end, g.end, g.name, utr, g.strand),
+                          file=fh)
                 elif i != len(exons) - 1:
                     istart = exon.end
                     iend = exons[i + 1].start
-                    print("%s\t%i\t%i\t%s\tintron\t%s" \
-                        % (g.chrom, istart, iend, g.name, g.strand), file=fh)
+                    print("%s\t%i\t%i\t%s\tintron\t%s"
+                          % (g.chrom, istart, iend, g.name, g.strand), file=fh)
         fh.close()
         return BedTool(fh.name)
 
@@ -950,7 +947,9 @@ class BedTool(object):
         else:
             fh = open(self._tmp(), "w")
             for f in self:
-                print("\t".join(map(str, [f[attr] for attr in indexes])), file=fh)
+                print(
+                    "\t".join(map(str, [f[attr] for attr in indexes])),
+                    file=fh)
             fh.close()
             return BedTool(fh.name)
 
@@ -1219,9 +1218,9 @@ class BedTool(object):
                 stdin = None
 
             # Open file? Pipe it
-            #elif isinstance(instream1, file):
-            #    kwargs[inarg1] = 'stdin'
-            #    stdin = instream1
+            # elif isinstance(instream1, file):
+            #     kwargs[inarg1] = 'stdin'
+            #     stdin = instream1
 
             # A generator or iterator: pipe it as a generator of lines
             else:
@@ -1359,7 +1358,7 @@ class BedTool(object):
 
         """
         tmp = self._tmp()
-        fout = open(tmp,'w')
+        fout = open(tmp, 'w')
 
         # If it's a file-based BedTool -- which is likely, if we're trying to
         # remove invalid features -- then we need to parse it line by line.
@@ -1592,7 +1591,9 @@ class BedTool(object):
 
         loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
         lseq = loc.sequence(fi=fasta)
-        return "".join([l.rstrip() for l in open(lseq.seqfn, 'rb') if l[0] != ">"])
+        return "".join(
+            [l.rstrip() for l in open(lseq.seqfn, 'rb')
+             if l[0] != ">"])
 
     @_log_to_history
     @_wraps(prog='nucBed', implicit='bed', other='fi')
@@ -2737,8 +2738,8 @@ class BedTool(object):
 
                 files = [self] + other_beds
                 filetypes = set(
-                    [self.file_type]
-                    + [i.file_type for i in other_beds]).difference(['empty'])
+                    [self.file_type] +
+                    [i.file_type for i in other_beds]).difference(['empty'])
                 field_nums = set(
                     [i.field_count() for i in other_beds]).difference([None])
                 same_field_num = len(field_nums) == 1
@@ -3175,7 +3176,6 @@ class BAM(object):
                                       stderr=subprocess.PIPE,
                                       bufsize=0)
 
-
     def __iter__(self):
         return self
 
@@ -3260,8 +3260,6 @@ class HistoryStep(object):
         s += ', parent tag: %s' % self.parent_tag
         s += ', result tag: %s' % self.result_tag
         return s
-
-
 
 
 def example_bedtool(fn):
