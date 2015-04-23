@@ -83,7 +83,7 @@ and see full documentation and tutorial at:
 
 """
 
-install_requires = []
+install_requires = ['pysam']
 if sys.version_info[0] == 2:
     if sys.version_info[1] < 7:
         install_requires = ['argparse', 'ordereddict']
