@@ -36,10 +36,12 @@ def _jaccard_output_to_dict(s, **kwargs):
     summary of results.  Here, we simply parse it into a dict for convenience.
     """
     if isinstance(s, six.string_types):
-        s = open(s).read()
-    if hasattr(s, 'next'):
-        s = ''.join(i for i in s)
-    header, data = s.splitlines()
+        _s = open(s).read()
+    elif hasattr(s, 'next') or hasattr(s, '__next__'):
+        _s = ''.join([i for i in s])
+    else:
+        raise ValueError("Unexpected object %r" % s)
+    header, data = _s.splitlines()
     header = header.split()
     data = data.split()
     data[0] = int(data[0])
