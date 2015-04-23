@@ -13,6 +13,7 @@ from itertools import islice
 import multiprocessing
 import six
 import gzip
+import pysam
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
@@ -3148,50 +3149,29 @@ class BedTool(object):
 
 
 class BAM(object):
-    def __init__(self, stream, header_only=False):
+    def __init__(self, stream):
         """
-        Wraps samtools to iterate over a BAM, yielding lines.
+        Wraps pysam.Samfile so that it yields pybedtools.Interval objects when
+        iterated over.
+
+        The pysam.Samfile can be accessed via the .pysam_bamfile attribute.
         """
         self.stream = stream
-        self.header_only = header_only
-        if not settings._samtools_installed:
-            helpers._check_for_samtools()
-
-        if isinstance(self.stream, six.string_types):
-            self.cmds = [os.path.join(settings._samtools_path, 'samtools'),
-                         'view', stream]
-            if header_only:
-                self.cmds.append('-H')
-            self.p = subprocess.Popen(self.cmds,
-                                      stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE,
-                                      bufsize=1)
-        else:
-            # Streaming . . .
-            self.cmds = [os.path.join(settings._samtools_path, 'samtools'),
-                         'view', '-']
-            if header_only:
-                self.cmds.append('-H')
-            self.p = subprocess.Popen(self.cmds,
-                                      stdout=subprocess.PIPE,
-                                      stdin=subprocess.PIPE,
-                                      stderr=subprocess.PIPE,
-                                      bufsize=0)
+        if not isinstance(self.stream, six.string_types):
+            raise ValueError("Only files are supported, not streams")
+        self.pysam_bamfile = pysam.Samfile(self.stream)
 
     def __iter__(self):
         return self
 
+    # TODO: this is PAINFUL but it ensures that existing tests work.  Once all
+    # tests work, the new behavior will be to yield pysam AlignedSegment
+    # objects directly.
     def __next__(self):
-        line = six.advance_iterator(self.p.stdout)
-        if isinstance(line, bytes):
-            line = line.decode('UTF-8')
-        # If we only want the header, then short-circuit once we're out of
-        # header lines
-        if self.header_only:
-            if line[0] != '@':
-                raise StopIteration
-
-        return line
+        s = pysam.Samfile(BedTool._tmp(), 'w', template=self.pysam_bamfile)
+        s.write(next(self.pysam_bamfile))
+        s.close()
+        return create_interval_from_list(open(s.filename).read().strip().split('\t'))
 
     def next(self):
         return self.__next__()

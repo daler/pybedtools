@@ -9,6 +9,7 @@ import glob
 import struct
 import atexit
 import six
+import pysam
 from six.moves import urllib
 from . import cbedtools
 from . import settings
@@ -93,22 +94,6 @@ def _check_for_bgzip():
             % add_msg)
 
 
-def _check_for_samtools():
-    try:
-        p = subprocess.Popen(
-            [os.path.join(settings._samtools_path, 'samtools')],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        settings._samtools_installed = True
-    except OSError:
-        if settings._samtools_path:
-            add_msg = "(tried path '%s')" % settings._samtools_path
-        else:
-            add_msg = ""
-        raise ValueError(
-            'Please install samtools and ensure it is on your path %s'
-            % add_msg)
-
-
 def _check_for_R():
     try:
         p = subprocess.Popen(
@@ -163,25 +148,11 @@ def isBAM(fn):
 
     # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header
     # . . .
-    if not settings._samtools_installed:
-        _check_for_samtools()
-
-    cmds = ['samtools', 'view', '-H', fn]
     try:
-
-        # Silence the output, we want to check the return code
-        with open(os.devnull, "wb") as out:
-            subprocess.check_call(cmds, stdout=out, stderr=out)
+        pysam.Samfile(fn, 'rb')
         return True
-
-    except subprocess.CalledProcessError:
-        # Non-0 return code, it means we have an error
+    except ValueError:
         return False
-
-    except OSError:
-        raise OSError(
-            'SAMtools (http://samtools.sourceforge.net/) '
-            'needs to be installed for BAM support')
 
 
 def find_tagged(tag):
@@ -430,18 +401,6 @@ def set_bedtools_path(path=""):
     arguments or use path="".
     """
     settings._bedtools_path = path
-
-
-def set_samtools_path(path=""):
-    """
-    Explicitly set path to `samtools` installation dir.
-
-    If samtools is not available on the path, then it can be explicitly
-    specified here.
-
-    Use path="" to reset to default system path.
-    """
-    settings._samtools_path = path
 
 
 def set_tabix_path(path=""):

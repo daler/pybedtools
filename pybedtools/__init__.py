@@ -12,9 +12,8 @@ from .cbedtools import (Interval, IntervalFile, overlap, Attributes,
 from . import contrib
 from ._Window import Window
 from .helpers import (get_tempdir, set_tempdir, cleanup, find_tagged,
-                      set_bedtools_path, set_samtools_path, chromsizes,
-                      get_chromsizes_from_ucsc, chromsizes_to_file,
-                      create_interval_from_list)
+                      set_bedtools_path, chromsizes, get_chromsizes_from_ucsc,
+                      chromsizes_to_file, create_interval_from_list)
 from . import helpers
 from .bedtool import BedTool
 from . import genome_registry
@@ -88,7 +87,6 @@ def load_path_config(fn):
 
         [paths]
         bedtools=/tools/BEDTools/bin
-        samtools=
         r=
         tabix=
         bgzip=
@@ -104,7 +102,6 @@ def load_path_config(fn):
     """
     setters = dict(
         bedtools=helpers.set_bedtools_path,
-        samtools=helpers.set_samtools_path,
         r=helpers.set_R_path,
         tabix=helpers.set_tabix_path,
         bgzip=helpers.set_bgzip_path)
