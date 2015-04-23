@@ -447,6 +447,19 @@ class BedTool(object):
                         raise ValueError('File "%s" does not exist' % fn)
                     self._isbam = isBAM(fn)
 
+                # TODO: we dont' really need this, but it's added here for
+                # compatibility with existing tests
+                if self._isbam:
+                    header = pysam.Samfile(fn).header
+                    txt_header = []
+                    for k, v in header.items():
+                        for i in v:
+                            txt_header.append(
+                                '\t'.join(
+                                    ['@' + k] +
+                                    [':'.join(map(str, j)) for j in i.items()]))
+                    self._bam_header = '\n'.join(txt_header) + '\n'
+
             # If tuple or list, then save as file first
             # (fixes #73)
             elif isinstance(fn, (list, tuple)):
