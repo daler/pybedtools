@@ -2,6 +2,28 @@
 #
 from cbedtools cimport Interval
 from cbedtools import create_interval_from_list
+from libcpp.string cimport string
+
+
+# Python byte strings automatically coerce to/from C++ strings.
+
+cdef _cppstr(s):
+    # Use this to handle incoming strings from Python.
+    #
+    # C++ uses bytestrings. PY2 strings need no conversion; bare PY3 strings
+    # are unicode and so must be encoded to bytestring.
+    if isinstance(s, int):
+        s = str(s)
+    if isinstance(s, unicode):
+        s = s.encode('UTF-8')
+    return <string> s
+
+cdef _pystr(string s):
+    # Use this to prepare a string for sending to Python.
+    #
+    # Always returns unicode.
+    return s.decode('UTF-8', 'strict')
+
 
 
 cpdef extend_fields(Interval feature, int n):
@@ -131,7 +153,7 @@ cpdef five_prime(Interval feature, int upstream=500, int downstream=500, add_to_
     Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
     the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
     """
-    if feature.strand == '-':
+    if feature.strand == _cppstr('-'):
         start = feature.stop - downstream
         stop = feature.stop + upstream
     else:
@@ -152,7 +174,7 @@ cpdef three_prime(Interval feature, int upstream=500, int downstream=500, add_to
     the string `add_to_name` to the feature's name if provided (e.g.,
     "_polyA-site")
     """
-    if feature.strand == '-':
+    if feature.strand == _cppstr('-'):
         start = feature.start - downstream
         stop = feature.start + upstream
     else:
