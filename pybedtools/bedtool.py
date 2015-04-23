@@ -19,7 +19,7 @@ from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
     isBAM, isBGZIP, BEDToolsError, _call_randomintersect)
 from . import helpers
-from .cbedtools import IntervalFile, IntervalIterator, Interval
+from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list
 from . import filenames
 import pybedtools
 from . import settings
@@ -421,7 +421,6 @@ class BedTool(object):
         self.remote = remote
         self._isbam = False
         self._bam_header = ""
-
         if from_string:
             bed_contents = fn
             fn = self._tmp()
@@ -893,6 +892,8 @@ class BedTool(object):
         """
         Returns an iterable of features
         """
+        if hasattr(self, 'next') or hasattr(self, '__next__'):
+            return self
         return iter(self)
 
     @property
@@ -977,15 +978,7 @@ class BedTool(object):
 
         # Plain ol' filename
         if isinstance(self.fn, six.string_types):
-
-            # TODO: Sort of a hack, cause we can't use IntervalFile as a SAM
-            # iterator [yet]
-            if self.file_type == 'sam':
                 return IntervalIterator(open(self.fn, 'r'))
-
-            # Easy case: BED/GFF/VCF, as a file
-            else:
-                return IntervalFile(self.fn)
 
         # Open file, like subprocess.PIPE.
         if hasattr(self.fn, 'read'):
@@ -993,10 +986,10 @@ class BedTool(object):
             # gets passed to create_interval_from_fields.
             return IntervalIterator(self.fn)
 
-        if isinstance(self.fn, (IntervalIterator, IntervalFile)):
+        #if isinstance(self.fn, (IntervalIterator, IntervalFile)) or hasattr(self.fn, 'next') or hasattr(self.fn, '__next__'):
+        #    return self.fn
+        else:
             return self.fn
-
-        return IntervalIterator(self.fn)
 
     @property
     def intervals(self):
@@ -1158,9 +1151,15 @@ class BedTool(object):
         if trackline:
             fout.write(trackline.strip() + '\n')
 
-        for i in iterable:
-            fout.write(str(i))
-        fout.close()
+        if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
+            fout.write(open(iterable.fn).read())
+            fout.close()
+        else:
+            for i in iterable:
+                if not isinstance(i, Interval):
+                    i = create_interval_from_list(list(i))
+                fout.write(str(i))
+            fout.close()
         return fn
 
     def handle_kwargs(self, prog, **kwargs):
@@ -2207,7 +2206,9 @@ class BedTool(object):
         >>> a.count()
         4
         """
-        return sum(1 for _ in self)
+        if hasattr(self, 'next') or hasattr(self, '__next__'):
+            return sum(1 for _ in self)
+        return sum(1 for _ in iter(self))
 
     def print_sequence(self):
         """
