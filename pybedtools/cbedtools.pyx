@@ -625,21 +625,31 @@ cpdef Interval create_interval_from_list(list fields):
         pyb.file_type = b'vcf'
 
     # SAM
-    elif (len(fields) >= 13) and isdigit(fields[1]) and isdigit(fields[3]):
-        strand = _cppstr('+')
-        if int(fields[1]) & 0x10:
-            strand = _cppstr('-')
+    elif (len(fields) >= 11) and isdigit(fields[1]) and isdigit(fields[3]):
 
         # TODO: what should the stop position be?  Here, it's just the start
         # plus the length of the sequence, but perhaps this should eventually
         # do CIGAR string parsing.
+        chrom = _cppstr(fields[2])
+        start = int(fields[3]) - 1
+        stop = int(fields[3]) + len(fields[9]) - 1
+        name = _cppstr(fields[0])
+        score = _cppstr(fields[1])
+        if int(fields[1]) & 0x10:
+            strand = _cppstr('-')
+        else:
+            strand = _cppstr('+')
+
+        # Fields is in SAM format
+        fields[3] = str(start + 1)
+
         pyb._bed = new BED(
-            _cppstr(fields[2]),
-            int(fields[3])-1,
-            int(fields[3]) + len(fields[9]) - 1,
+            chrom,
+            start,
+            stop,
             strand,
-            _cppstr(fields[0]),
-            _cppstr(fields[1]),
+            name,
+            score,
             list_to_vector(fields))
         pyb.file_type = _cppstr('sam')
 
