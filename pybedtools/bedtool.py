@@ -905,21 +905,17 @@ class BedTool(object):
         >>> a.file_type
         'bed'
         """
-        if self._file_type is None:
-            if not isinstance(self.fn, six.string_types):
-                raise ValueError('Checking file_type not supported for '
-                                 'non-file BedTools. Use .saveas() to '
-                                 'save as a temp file first.')
-            if self._isbam:
-                self._file_type = 'bam'
-            else:
-                try:
-                    self._file_type = IntervalFile(self.fn).file_type
-                except StopIteration:
-                    self._file_type = 'empty'
-                except ValueError:
-                    self._file_type = six.advance_iterator(
-                        IntervalIterator(open(self.fn, 'rb'))).file_type
+        if not isinstance(self.fn, six.string_types):
+            raise ValueError('Checking file_type not supported for '
+                             'non-file BedTools. Use .saveas() to '
+                             'save as a temp file first.')
+        if self._isbam:
+            self._file_type = 'bam'
+        try:
+            self._file_type = six.advance_iterator(iter(self)).file_type
+        except StopIteration:
+            self._file_type = 'empty'
+
         return self._file_type
 
     def cut(self, indexes, stream=False):
