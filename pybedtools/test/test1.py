@@ -996,30 +996,32 @@ def test_pickleable():
         ['chr1', '1', '100', 'asdf'])
     fn = pybedtools.BedTool._tmp()
     import pickle
-    out = open(fn, 'w')
+    out = open(fn, 'wb')
+    print([type(i) for i in interval.fields])
+    print(type(str(interval)))
     pickle.dump(interval, out)
     out.close()
-    new_interval = pickle.load(open(fn))
+    new_interval = pickle.load(open(fn, 'rb'))
     assert str(interval) == str(new_interval)
 
     interval = pybedtools.create_interval_from_list(
         ['chr1', '1', '100'])
     fn = pybedtools.BedTool._tmp()
     import pickle
-    out = open(fn, 'w')
+    out = open(fn, 'wb')
     pickle.dump(interval, out)
     out.close()
-    new_interval = pickle.load(open(fn))
+    new_interval = pickle.load(open(fn, 'rb'))
     assert str(interval) == str(new_interval)
 
     interval = pybedtools.create_interval_from_list(
         "chr2L	.	UTR	41	70	0	+	.	ID=mRNA:xs2:UTR:41-70;Parent=mRNA:xs2;".split('\t'))
     fn = pybedtools.BedTool._tmp()
     import pickle
-    out = open(fn, 'w')
+    out = open(fn, 'wb')
     pickle.dump(interval, out)
     out.close()
-    new_interval = pickle.load(open(fn))
+    new_interval = pickle.load(open(fn, 'rb'))
     assert str(interval) == str(new_interval)
 
 def test_split():
