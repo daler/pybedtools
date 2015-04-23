@@ -417,6 +417,7 @@ cdef class Interval:
                             "gene_id", "Parent"):
                     if key in self.attrs:
                         value = self.attrs[key]
+                        break
 
             elif ftype == <string>"vcf":
                 s = self.fields[2]
