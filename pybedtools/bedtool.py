@@ -1145,7 +1145,7 @@ class BedTool(object):
             fn = self._tmp()
 
         if compressed:
-            fout = gzip.open(fn, 'w')
+            fout = gzip.open(fn, 'wt')
         else:
             fout = open(fn, 'w')
 
