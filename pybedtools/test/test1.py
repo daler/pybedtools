@@ -9,6 +9,7 @@ from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
 import six
 from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
+from nose.plugins.attrib import attr
 
 
 def fix(x):
@@ -241,6 +242,7 @@ def test_stream_of_generator():
     print(sb2)
     assert sb1 == sb2
 
+@attr('slow')
 def test_many_files():
     """regression test to make sure many files can be created
     """
@@ -371,6 +373,7 @@ def test_repr_and_printing():
     assert 'MISSING FILE' in repr(c)
     assert 'stream' in repr(d)
 
+@attr('slow')
 def test_file_type():
     """
     Regression test on file_type checks
@@ -707,6 +710,7 @@ def test_cat():
     chr1	800	901	feature6	0	+
     """)
 
+@attr('slow')
 def test_randomstats():
     chromsizes = {'chr1':(1,1000)}
     a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
