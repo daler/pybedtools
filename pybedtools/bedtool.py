@@ -450,13 +450,44 @@ class BedTool(object):
                 # compatibility with existing tests
                 if self._isbam:
                     header = pysam.Samfile(fn).header
+
+
+                    # For example:
+                    # {
+                    #     'HD': {'VN': '1.0', 'SO': 'coordinate'},
+                    #     'SQ': [
+                    #         {'LN': 23011544,
+                    #          'SN': 'chr2L'},
+                    #         {'LN': 21146708,
+                    #          'SN': 'chr2R'},
+                    #         {'LN': 24543557,
+                    #          'SN': 'chr3L'}, 
+                    #         {'LN': 27905053,
+                    #          'SN': 'chr3R'},
+                    #         {'LN': 1351857,
+                    #          'SN': 'chr4'},
+                    #         {'LN': 22422827,
+                    #          'SN': 'chrX'}
+                    #     ]
+                    # }
+
+
+
                     txt_header = []
                     for k, v in header.items():
-                        for i in v:
+                        if isinstance(v, list):
+                            for i in v:
+                                txt_header.append(
+                                    '\t'.join(
+                                        ['@' + k] +
+                                        [':'.join(map(str, j)) for j in i.items()]))
+                        elif isinstance(v, dict):
                             txt_header.append(
                                 '\t'.join(
                                     ['@' + k] +
-                                    [':'.join(map(str, j)) for j in i.items()]))
+                                    [':'.join(map(str, j)) for j in v.items()]))
+                        else:
+                            raise ValueError("unhandled type in BAM header")
                     self._bam_header = '\n'.join(txt_header) + '\n'
 
             # If tuple or list, then save as file first
