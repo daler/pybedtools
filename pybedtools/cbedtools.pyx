@@ -665,6 +665,9 @@ cpdef Interval create_interval_from_list(list fields):
         pyb.file_type = _cppstr('gff')
     else:
         raise MalformedBedLineError('Unable to detect format from %s' % fields)
+
+    if pyb.start > pyb.end:
+        raise MalformedBedLineError("Start is greater than stop")
     pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 
