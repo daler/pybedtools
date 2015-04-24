@@ -17,7 +17,7 @@ import pysam
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
-    isBAM, isBGZIP, BEDToolsError, _call_randomintersect)
+    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect)
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list
 from . import filenames
@@ -978,6 +978,9 @@ class BedTool(object):
 
         # Plain ol' filename
         if isinstance(self.fn, six.string_types):
+            if isGZIP(self.fn):
+                return IntervalIterator(gzip.open(self.fn, 'r'))
+            else:
                 return IntervalIterator(open(self.fn, 'r'))
 
         # Open file, like subprocess.PIPE.
