@@ -1156,7 +1156,7 @@ class BedTool(object):
             fout.close()
         else:
             for i in iterable:
-                if not isinstance(i, Interval):
+                if isinstance(i, (list, tuple)):
                     i = create_interval_from_list(list(i))
                 fout.write(str(i))
             fout.close()
