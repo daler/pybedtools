@@ -860,7 +860,7 @@ class BedTool(object):
         fh = open(BedTool._tmp(), "w")
 
         # group on the name.
-        exon_intervals = exon_iter.intervals
+        exon_intervals = IntervalFile(exon_iter.fn)
         for g in gene_iter:
             # search finds all, but we just want the ones that completely
             # overlap this gene.
