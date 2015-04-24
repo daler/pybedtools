@@ -125,6 +125,14 @@ class BEDToolsError(Error):
         return m
 
 
+def isGZIP(fn):
+    with open(fn, 'rb') as f:
+        start = f.read(3)
+        if start == b"\x1f\x8b\x08":
+            return True
+    return False
+
+
 def isBGZIP(fn):
     """
     Reads a filename to see if it's a BGZIPed file or not.

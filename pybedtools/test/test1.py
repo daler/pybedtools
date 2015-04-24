@@ -799,6 +799,12 @@ def test_kwargs():
 # gzip support tests
 # ----------------------------------------------------------------------------
 
+def test_is_gzip():
+    gzfn = pybedtools.example_filename('snps.bed.gz')
+    fn = pybedtools.example_filename('a.bed')
+    assert pybedtools.helpers.isGZIP(gzfn)
+    assert not pybedtools.helpers.isGZIP(fn)
+
 def test_gzip():
     # make new gzipped files on the fly
     agz = pybedtools.BedTool._tmp()
