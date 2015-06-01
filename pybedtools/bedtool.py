@@ -2724,13 +2724,14 @@ class BedTool(object):
             return c
 
     @_log_to_history
-    def saveas(self, fn=None, trackline=None, compressed=False):
+    def saveas(self, fn=None, trackline=None, compressed=None):
         """
         Make a copy of the BedTool.
 
         Optionally adds `trackline` to the beginning of the file.
 
-        Optionally compresses output using gzip.
+        if the filename extension is .gz, or compressed=True,
+        the output is compressed using gzip
 
         Returns a new BedTool for the newly saved file.
 
@@ -2754,6 +2755,14 @@ class BedTool(object):
         """
         if fn is None:
             fn = self._tmp()
+
+        # Default to compressed if extension is .gz
+        if compressed is None:
+            __, extension = os.path.splitext(fn)
+            if extension == '.gz':
+                compressed = True
+            else:
+                compressed = False
 
         fn = self._collapse(self, fn=fn, trackline=trackline,
                             compressed=compressed)
