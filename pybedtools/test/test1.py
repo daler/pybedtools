@@ -1,5 +1,4 @@
 import pybedtools
-import gzip
 import os, difflib, sys
 from textwrap import dedent
 from nose import with_setup
@@ -791,24 +790,6 @@ def test_kwargs():
     c = a.intersect(a)
     assert str(b) == str(c)
 
-
-# ----------------------------------------------------------------------------
-# gzip support tests
-# ----------------------------------------------------------------------------
-
-def test_gzip():
-    # make new gzipped files on the fly
-    agz = pybedtools.BedTool._tmp()
-    bgz = pybedtools.BedTool._tmp()
-    os.system('gzip -c %s > %s' % (pybedtools.example_filename('a.bed'), agz))
-    os.system('gzip -c %s > %s' % (pybedtools.example_filename('b.bed'), bgz))
-    agz = pybedtools.BedTool(agz)
-    bgz = pybedtools.BedTool(bgz)
-    assert agz.file_type == bgz.file_type == 'bed'
-    a = pybedtools.example_bedtool('a.bed')
-    b = pybedtools.example_bedtool('b.bed')
-    assert a.intersect(b) == agz.intersect(bgz) == a.intersect(bgz) == agz.intersect(b)
-
 # ----------------------------------------------------------------------------
 # BAM support tests
 # ----------------------------------------------------------------------------
@@ -1545,14 +1526,6 @@ def test_fisher():
 left	right	two-tail	ratio
 1	8.8247e-21	8.8247e-21	inf
 """, c
-
-
-def test_gzipped_output():
-    expected = pybedtools.BedTool._tmp()
-    fn = pybedtools.example_filename('a.bed')
-    os.system('gzip -c {fn} > {expected}'.format(**locals()))
-    obs = pybedtools.example_bedtool('a.bed').saveas(compressed=True)
-    assert gzip.open(obs.fn).read() == gzip.open(expected).read()
 
 
 def test_zero_len_boolean():
