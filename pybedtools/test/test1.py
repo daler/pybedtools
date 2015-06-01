@@ -1393,7 +1393,8 @@ def test_to_dataframe():
     try:
         import pandas
     except ImportError:
-        print("pandas not installed; skipping test")
+        from nose.plugins.skip import SkipTest
+        raise SkipTest("pandas not installed; skipping test")
 
     a = pybedtools.example_bedtool('a.bed')
 
