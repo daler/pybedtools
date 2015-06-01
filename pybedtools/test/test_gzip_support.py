@@ -12,12 +12,18 @@ import gzip
 setup = tfuncs.setup
 teardown = tfuncs.teardown
 
+def _make_temporary_gzip(bed_filename):
+    gz_filename = pybedtools.BedTool._tmp()
+    with gzip.open(gz_filename, 'w') as out_:
+        with open(bed_filename, 'r') as in_:
+            out_.writelines(in_)
+    return gz_filename
+
 def test_gzip():
     # make new gzipped files on the fly
-    agz = pybedtools.BedTool._tmp()
-    bgz = pybedtools.BedTool._tmp()
-    os.system('gzip -c %s > %s' % (pybedtools.example_filename('a.bed'), agz))
-    os.system('gzip -c %s > %s' % (pybedtools.example_filename('b.bed'), bgz))
+    agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
+    bgz = _make_temporary_gzip(pybedtools.example_filename('b.bed'))
+
     agz = pybedtools.BedTool(agz)
     bgz = pybedtools.BedTool(bgz)
     assert agz.file_type == bgz.file_type == 'bed'
