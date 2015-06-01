@@ -40,6 +40,12 @@ def test_gzipped_files_can_be_intersected():
     b = pybedtools.example_bedtool('b.bed')
     assert a.intersect(b) == agz.intersect(bgz) == a.intersect(bgz) == agz.intersect(b)
 
+def test_str_representation_of_gzipped_files_is_the_same_as_normal():
+    agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
+    agz = pybedtools.BedTool(agz)
+    a = pybedtools.example_bedtool('a.bed')
+
+    assert_equal(str(a), str(agz))
 
 def test_gzipped_output():
     _filename = pybedtools.example_filename('a.bed')
