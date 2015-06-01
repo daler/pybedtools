@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
-from nose.tools import assert_equal
+from nose.tools import assert_equal, assert_list_equal
 import pybedtools.test.tfuncs as tfuncs
 
 import pybedtools
@@ -39,6 +39,13 @@ def test_gzipped_files_can_be_intersected():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
     assert a.intersect(b) == agz.intersect(bgz) == a.intersect(bgz) == agz.intersect(b)
+
+def test_gzipped_files_are_iterable_as_normal():
+    agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
+    agz = pybedtools.BedTool(agz)
+    a = pybedtools.example_bedtool('a.bed')
+
+    assert_list_equal(list(a), list(agz))
 
 def test_str_representation_of_gzipped_files_is_the_same_as_normal():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
