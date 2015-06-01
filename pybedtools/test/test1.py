@@ -1333,6 +1333,10 @@ def test_reldist():
     chr1	150	500	feature3	0	-	0.220""")
 
 def test_remote_bam():
+    from nose.plugins.skip import SkipTest
+    raise SkipTest('Known failure: The URL ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/HG00096/'
+                   'exome_alignment/HG00096.chrom11.ILLUMINA.bwa.GBR.exome.'
+                   '20120522.bam does not exist')
     x = pybedtools.BedTool(
         ('ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/HG00096/'
          'exome_alignment/HG00096.chrom11.ILLUMINA.bwa.GBR.exome.'
