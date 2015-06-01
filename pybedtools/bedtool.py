@@ -976,13 +976,8 @@ class BedTool(object):
 
     def __str__(self):
         """
-        Different methods to return the string, depending on how the BedTool
-        was created.  If self.fn is anything but a basestring, the iterable
-        will be consumed.
+        Returns the string representation of the whole `BedTool`
         """
-        if isinstance(self.fn, basestring) and not self._isbam:
-            return open(self.fn).read()
-
         return ''.join(str(i) for i in iter(self))
 
     def __len__(self):

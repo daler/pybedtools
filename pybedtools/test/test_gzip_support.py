@@ -51,8 +51,13 @@ def test_str_representation_of_gzipped_files_is_the_same_as_normal():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
     agz = pybedtools.BedTool(agz)
     a = pybedtools.example_bedtool('a.bed')
-
     assert_equal(str(a), str(agz))
+
+def test_head_of_gzipped_files_is_the_same_as_normal():
+    agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
+    agz = pybedtools.BedTool(agz)
+    a = pybedtools.example_bedtool('a.bed')
+    assert_equal(agz.head(), a.head())
 
 def test_gzipped_output():
     _filename = pybedtools.example_filename('a.bed')
