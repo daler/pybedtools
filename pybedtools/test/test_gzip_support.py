@@ -2,7 +2,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
+import os
 from nose.tools import assert_equal, assert_list_equal
+import tempfile
 import pybedtools.test.tfuncs as tfuncs
 
 import pybedtools
@@ -70,3 +72,42 @@ def test_gzipped_output():
         original_content = f.read()
 
     assert_equal(original_content, uncompressed_content)
+
+def test_gzipping_is_default_when_extension_is_dot_gz():
+    _filename = pybedtools.example_filename('a.bed')
+    with open(_filename) as f:
+        expected_content = f.read()
+
+    __, temp_filename = tempfile.mkstemp(suffix='.gz')
+    try:
+        bedtool = pybedtools.BedTool(_filename)
+        bedtool.saveas(fn=temp_filename)
+
+        with gzip.open(temp_filename) as gf:
+            # gzip will fail next line if file is not gzipped
+            actual_content = gf.read()
+
+        assert_equal(expected_content, actual_content)
+    finally:
+        if os.path.isfile(temp_filename):
+            os.unlink(temp_filename)
+
+def test_gzipping_can_be_turned_off_even_for_dot_gz():
+    _filename = pybedtools.example_filename('a.bed')
+    with open(_filename) as f:
+        expected_content = f.read()
+
+    __, temp_filename = tempfile.mkstemp(suffix='.gz')
+    try:
+        bedtool = pybedtools.BedTool(_filename)
+        bedtool.saveas(fn=temp_filename, compressed=False)
+
+        with open(temp_filename) as non_gz_f:
+            # actual content will be jumbled if non_gz_f is unset
+            actual_content = non_gz_f.read()
+
+        assert_equal(expected_content, actual_content)
+    finally:
+        if os.path.isfile(temp_filename):
+            os.unlink(temp_filename)
+
