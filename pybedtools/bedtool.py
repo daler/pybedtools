@@ -976,13 +976,8 @@ class BedTool(object):
 
     def __str__(self):
         """
-        Different methods to return the string, depending on how the BedTool
-        was created.  If self.fn is anything but a basestring, the iterable
-        will be consumed.
+        Returns the string representation of the whole `BedTool`
         """
-        if isinstance(self.fn, basestring) and not self._isbam:
-            return open(self.fn).read()
-
         return ''.join(str(i) for i in iter(self))
 
     def __len__(self):
@@ -2729,13 +2724,14 @@ class BedTool(object):
             return c
 
     @_log_to_history
-    def saveas(self, fn=None, trackline=None, compressed=False):
+    def saveas(self, fn=None, trackline=None, compressed=None):
         """
         Make a copy of the BedTool.
 
         Optionally adds `trackline` to the beginning of the file.
 
-        Optionally compresses output using gzip.
+        if the filename extension is .gz, or compressed=True,
+        the output is compressed using gzip
 
         Returns a new BedTool for the newly saved file.
 
@@ -2759,6 +2755,14 @@ class BedTool(object):
         """
         if fn is None:
             fn = self._tmp()
+
+        # Default to compressed if extension is .gz
+        if compressed is None:
+            __, extension = os.path.splitext(fn)
+            if extension == '.gz':
+                compressed = True
+            else:
+                compressed = False
 
         fn = self._collapse(self, fn=fn, trackline=trackline,
                             compressed=compressed)
