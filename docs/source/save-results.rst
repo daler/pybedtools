@@ -34,9 +34,9 @@ opening up the files afterward and manually adding a trackline:
     chr1	900	901	feature4	0	+
     <BLANKLINE>
 
-    >>> # printing file-based BedTool objects will also print the track line
+    >>> # printing file-based BedTool objects will not print the track line
+    >>> # since it is treated like a comment by the parser
     >>> print c
-    track name="a and b"
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-
     chr1	900	901	feature4	0	+
