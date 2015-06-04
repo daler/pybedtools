@@ -43,6 +43,7 @@ pybedtools.BedTool
       ~BedTool.filter
       ~BedTool.fisher
       ~BedTool.flank
+      ~BedTool.from_dataframe
       ~BedTool.genome_coverage
       ~BedTool.groupby
       ~BedTool.handle_kwargs
