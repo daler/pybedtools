@@ -1840,8 +1840,8 @@ class BedTool(object):
 
         Example usage:
 
-        >>> a = pybedtools.example_bedtool('a.bed')
-        >>> b = pybedtools.example_bedtool('b.bed')
+        >>> b = pybedtools.example_bedtool('a.bed')
+        >>> a = pybedtools.example_bedtool('b.bed')
         >>> c = a.coverage(b)
         >>> c.head(3) #doctest: +NORMALIZE_WHITESPACE
         chr1	155	200	feature5	0	-	2	45	45	1.0000000
