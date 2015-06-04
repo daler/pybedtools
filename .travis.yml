@@ -36,7 +36,7 @@ install:
 
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION matplotlib pandas sphinx cython pyyaml numpydoc pyyaml nose
     - source activate test-environment
-    - python setup.py develop
+    - python setup.py install
 
 script: ./.travis-test.sh
 
