@@ -1546,12 +1546,3 @@ def test_fisher():
 left	right	two-tail	ratio
 1	8.8247e-21	8.8247e-21	inf
 """, c
-
-
-def test_gzipped_output():
-    expected = pybedtools.BedTool._tmp()
-    fn = pybedtools.example_filename('a.bed')
-    os.system('gzip -c {fn} > {expected}'.format(**locals()))
-    obs = pybedtools.example_bedtool('a.bed').saveas(compressed=True)
-    assert gzip.open(obs.fn).read() == gzip.open(expected).read()
-
