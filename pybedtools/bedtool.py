@@ -1009,7 +1009,7 @@ class BedTool(object):
         # Plain ol' filename
         if isinstance(self.fn, six.string_types):
             if isGZIP(self.fn):
-                return IntervalIterator(gzip.open(self.fn, 'r'))
+                return IntervalIterator(gzip.open(self.fn, 'rt'))
             else:
                 return IntervalIterator(open(self.fn, 'r'))
 
@@ -1163,35 +1163,37 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-        if compressed:
-            fout = gzip.open(fn, 'wt')
-        if self._isbam:
-            fout = open(fn, 'wb')
-        else:
-            fout = open(fn, 'w')
-
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
         if isinstance(iterable, BedTool) and iterable._isbam:
             if trackline:
                 raise ValueError("trackline provided, but input is a BAM "
                                  "file, which takes no track line")
-            fout.write(open(self.fn, 'rb').read())
-            fout.close()
+            with open(fn, 'wb') as out_:
+                out_.write(open(self.fn, 'rb').read())
             return fn
 
-        if trackline:
-            fout.write(trackline.strip() + '\n')
 
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
-            fout.write(open(iterable.fn).read())
-            fout.close()
+            if compressed:
+                with gzip.open(fn, 'wb') as out_:
+                    with open(iterable.fn, 'rb') as in_:
+                        if trackline:
+                            out_.write(trackline.strip() + '\n')
+                        out_.writelines(in_)
+            else:
+                with open(fn, 'w') as out_:
+                    with open(iterable.fn) as in_:
+                        if trackline:
+                            out_.write(trackline.strip() + '\n')
+                        out_.writelines(in_)
+
         else:
-            for i in iterable:
-                if isinstance(i, (list, tuple)):
-                    i = create_interval_from_list(list(i))
-                fout.write(str(i))
-            fout.close()
+            with open(fn, 'w') as out_:
+                for i in iterable:
+                    if isinstance(i, (list, tuple)):
+                        i = create_interval_from_list(list(i))
+                    out_.write(str(i))
         return fn
 
     def handle_kwargs(self, prog, **kwargs):
