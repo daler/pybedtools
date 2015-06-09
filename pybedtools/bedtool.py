@@ -451,7 +451,6 @@ class BedTool(object):
                 if self._isbam:
                     header = pysam.Samfile(fn).header
 
-
                     # For example:
                     # {
                     #     'HD': {'VN': '1.0', 'SO': 'coordinate'},
@@ -461,7 +460,7 @@ class BedTool(object):
                     #         {'LN': 21146708,
                     #          'SN': 'chr2R'},
                     #         {'LN': 24543557,
-                    #          'SN': 'chr3L'}, 
+                    #          'SN': 'chr3L'},
                     #         {'LN': 27905053,
                     #          'SN': 'chr3R'},
                     #         {'LN': 1351857,
