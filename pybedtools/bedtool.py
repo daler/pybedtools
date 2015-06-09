@@ -1536,30 +1536,56 @@ class BedTool(object):
             return self
         if self.file_type in ('bed', 'gff', 'vcf'):
             return self._bed_to_bam(**kwargs)
+
+        # TODO: to maintain backwards compatibility we go from Interval to
+        # AlignedSegment.
         if self.file_type == 'sam':
 
-            if not settings._samtools_installed:
-                helpers._check_for_samtools()
+            # Use pysam, but construct the header out of a provided genome
+            # file.
 
             # construct a genome out of whatever kwargs were passed in
             kwargs = self.check_genome(**kwargs)
 
-            cmds = [os.path.join(settings._samtools_path, 'samtools'),
-                    'view',
-                    '-S',
-                    '-b',
-                    '-t', kwargs['g'],
-                    '-']
-            tmp = self._tmp()
-            p = subprocess.Popen(cmds,
-                                 stdout=open(tmp, 'wb'),
-                                 stderr=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 bufsize=1)
-            for line in self:
-                p.stdin.write(str(line) + '\n')
-            stdout, stderr = p.communicate()
-            new_bedtool = BedTool(tmp)
+            # Build a header that we can use for the output BAM file.
+            genome = dict(i.split() for i in open(kwargs['g']))
+            SQ = []
+            ref_ids = {}
+            text_header = ['@HD\tVN:1.0']
+
+            for i, (k, v) in enumerate(genome.items()):
+                SQ.append(dict(SN=k, LN=int(v)))
+                ref_ids[k] = i
+                text_header.append('@SQ\tSN:{0}\tLN:{1}'.format(k, v))
+
+
+            # Here's the pysam-formatted header
+            header = {'HD': {'VN': '1.0'},
+                      'SQ': SQ}
+
+            # And the text-format header
+            text_header = '\n'.join(text_header) + '\n'
+
+            # The strategy is to write an actual SAM file to disk, along with
+            # a header, and then read that back in. 
+            #
+            # Painfully inefficient, but this will change once all py2 tests
+            # pass.
+            sam_tmp = self._tmp()
+            bam_tmp = self._tmp()
+            with open(sam_tmp, 'w') as fout:
+                fout.write(text_header)
+                for interval in self:
+                    fout.write('\t'.join(map(str, interval.fields)) + '\n')
+
+            samfile = pysam.AlignmentFile(sam_tmp, 'r')
+            bamfile = pysam.AlignmentFile(bam_tmp, 'wb', template=samfile)
+            for alignment in samfile:
+                bamfile.write(alignment)
+
+            samfile.close()
+            bamfile.close()
+            new_bedtool = BedTool(bam_tmp)
             new_bedtool._isbam = True
             return new_bedtool
 
