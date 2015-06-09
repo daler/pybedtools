@@ -942,10 +942,11 @@ class BedTool(object):
                              'save as a temp file first.')
         if self._isbam:
             self._file_type = 'bam'
-        try:
-            self._file_type = six.advance_iterator(iter(self)).file_type
-        except StopIteration:
-            self._file_type = 'empty'
+        else:
+            try:
+                self._file_type = six.advance_iterator(iter(self)).file_type
+            except StopIteration:
+                self._file_type = 'empty'
 
         return self._file_type
 
