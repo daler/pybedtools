@@ -480,12 +480,12 @@ class BedTool(object):
                                 txt_header.append(
                                     '\t'.join(
                                         ['@' + k] +
-                                        [':'.join(map(str, j)) for j in i.items()]))
+                                        [':'.join(map(str, j)) for j in sorted(i.items(), reverse=True)]))
                         elif isinstance(v, dict):
                             txt_header.append(
                                 '\t'.join(
                                     ['@' + k] +
-                                    [':'.join(map(str, j)) for j in v.items()]))
+                                    [':'.join(map(str, j)) for j in sorted(v.items(), reverse=True)]))
                         else:
                             raise ValueError("unhandled type in BAM header")
                     self._bam_header = '\n'.join(txt_header) + '\n'
