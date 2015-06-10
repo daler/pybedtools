@@ -8,6 +8,10 @@
 #
 #   Any Python accessor methods (Interval.fields, Interval.__getitem__) should
 #   then be converted to Python strings using the _pystr() function.
+#
+#   Cython uses the `str` type as whatever the native Python version uses as
+#   str.
+
 
 from cpython.version cimport PY_MAJOR_VERSION
 from libcpp.string cimport string
@@ -142,6 +146,7 @@ cdef class Attributes(dict):
     cdef dict _quoted
 
     def __init__(self, attr_str=""):
+        attr_str = str(attr_str)
         self._attr_str = attr_str
 
         # in general, GFF files will have either as many '=' as ';'
