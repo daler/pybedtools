@@ -19,10 +19,9 @@ def gz(x):
     """
     fin = open(x.fn)
     gzfn = pybedtools.BedTool._tmp()
-    fout = gzip.open(gzfn, 'wb')
-    fout.writelines(fin)
-    fout.close()
-    fin.close()
+    with gzip.open(gzfn, 'wb') as out_:
+        with open(x.fn, 'rb') as in_:
+            out_.writelines(in_)
     return pybedtools.BedTool(gzfn)
 
 def fix(x):
