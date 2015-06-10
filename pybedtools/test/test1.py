@@ -1356,7 +1356,7 @@ def test_reldist():
     chr1	100	200	feature2	0	+	0.153
     chr1	150	500	feature3	0	-	0.220""")
 
-@attr('slow')
+@attr('url')
 def test_remote_bam():
     x = pybedtools.BedTool(
         ('ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/data/HG00096/'

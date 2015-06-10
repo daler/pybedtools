@@ -2,6 +2,7 @@ import pybedtools
 import sys
 import os, difflib
 from nose.tools import assert_raises
+from nose.plugins.attrib import attr
 from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
 def fix(x):
@@ -90,6 +91,7 @@ def test_call():
     assert a.intersect(a,u=True) == a
 
 
+@attr('url')
 def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')
     assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc, 'dm3', timeout=0)
