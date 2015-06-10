@@ -1,9 +1,11 @@
+from __future__ import print_function 
 import difflib
 import itertools
 import yaml
 import os
 import gzip
 import pybedtools
+
 # The functools.partial trick to get descriptions to be valid is from:
 #
 #   http://code.google.com/p/python-nose/issues/detail?id=244#c1
