@@ -345,7 +345,7 @@ cdef class Interval:
     property strand:
         """ the strand of the feature"""
         def __get__(self):
-            return self._bed.strand.c_str()
+            return _pystr(self._bed.strand)
 
         def __set__(self, strand):
             idx = LOOKUPS[self.file_type]["strand"]
