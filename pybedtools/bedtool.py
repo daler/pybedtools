@@ -19,7 +19,7 @@ from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
     isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect)
 from . import helpers
-from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list
+from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list, BedToolsFileError
 from . import filenames
 import pybedtools
 from . import settings
@@ -1008,6 +1008,8 @@ class BedTool(object):
 
         # Plain ol' filename
         if isinstance(self.fn, six.string_types):
+            if not os.path.exists(self.fn):
+                raise BedToolsFileError("{0} does not exist".format(self.fn))
             if isGZIP(self.fn):
                 return IntervalIterator(gzip.open(self.fn, 'rt'))
             else:
