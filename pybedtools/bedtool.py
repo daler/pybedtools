@@ -1026,7 +1026,10 @@ class BedTool(object):
 
     @property
     def intervals(self):
-        return iter(self)
+        if isinstance(self.fn, six.string_types):
+            return IntervalFile(self.fn)
+        else:
+            raise ValueError("Please convert to a file-based BedTool using saveas")
 
     def __repr__(self):
         if isinstance(self.fn, six.string_types):
