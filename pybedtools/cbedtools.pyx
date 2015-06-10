@@ -175,9 +175,6 @@ cdef class Attributes(dict):
                 self._quoted[field] = True
             self[field] = value.replace('"', '')
 
-    def __setitem__(self, key, value):
-        dict.__setitem__(self, key, value)
-
     def __str__(self):
         # stringify all items first
         items = []
