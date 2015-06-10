@@ -816,6 +816,9 @@ class BedTool(object):
             i += 1
             # TODO: make this more efficient.
             fields.update([len(feat.fields)])
+
+        if len(fields) == 0:
+            return 0
         assert len(fields) == 1, fields
         return list(fields)[0]
 
