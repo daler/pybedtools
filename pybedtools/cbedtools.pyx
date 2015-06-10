@@ -2,11 +2,11 @@
 
 # String notes:
 #
-#   anything that goes in C++ objects should be converted to a C++ <string>
-#   type, using the _cppstr() function.  For example, Interval._bed.file_type,
-#   or the entries in Interval._bed.fields)
+#   Anything that goes in C++ objects should be converted to a C++ <string>
+#   type, using the _cppstr() function.  For example: Interval._bed.file_type,
+#   or the entries in Interval._bed.fields.
 #
-#   any Python accessor methods (Interval.fields, Interval.__getitem__) should
+#   Any Python accessor methods (Interval.fields, Interval.__getitem__) should
 #   then be converted to Python strings using the _pystr() function.
 
 from cpython.version cimport PY_MAJOR_VERSION
@@ -431,22 +431,26 @@ cdef class Interval:
             return value
 
         def __set__(self, value):
-            value = _cppstr(value)
             cdef string ftype = self._bed.file_type
+
             if ftype == <string>"gff":
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
                     if not key in self.attrs:
                         continue
 
+                    # If it's incoming from Python it's unicode, so store that directly
+                    # in the attributes (since an Attribute object works on
+                    # unicode)...
                     self.attrs[key] = value
                     break
 
+            # Otherwise use _cppstr() because we're storing it in _bed.fields.
             elif ftype == <string>"vcf":
-                self._bed.fields[2] = value
+                self._bed.fields[2] = _cppstr(value)
             else:
-                self._bed.name = value
-                self._bed.fields[3] = value
+                self._bed.name = _cppstr(value)
+                self._bed.fields[3] = _cppstr(value)
 
     property score:
         def __get__(self):
@@ -523,8 +527,10 @@ cdef class Interval:
                 try:
                     return self.attrs[key]
                 except KeyError:
-                    raise ValueError("No key %s in attributes (%s)" % (key, self.attrs.keys()))
-            return _pystr(getattr(self, key))
+                    pass
+            # We don't have to convert using _pystr() because the __get__
+            # methods do that already.
+            return getattr(self, key)
 
     def __setitem__(self, object key, object value):
         if isinstance(key, (int, long)):

@@ -153,7 +153,7 @@ cpdef five_prime(Interval feature, int upstream=500, int downstream=500, add_to_
     Returns the 5'-most coordinate, plus `upstream` and `downstream` bp; adds
     the string `add_to_name` to the feature's name if provided (e.g., "_TSS")
     """
-    if feature.strand == _cppstr('-'):
+    if feature.strand == '-':
         start = feature.stop - downstream
         stop = feature.stop + upstream
     else:
@@ -174,7 +174,7 @@ cpdef three_prime(Interval feature, int upstream=500, int downstream=500, add_to
     the string `add_to_name` to the feature's name if provided (e.g.,
     "_polyA-site")
     """
-    if feature.strand == _cppstr('-'):
+    if feature.strand == '-':
         start = feature.start - downstream
         stop = feature.start + upstream
     else:
