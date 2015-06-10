@@ -49,7 +49,7 @@ def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
     # API doesn't seem to like large numbers, so get fractions instead, then
     # join make a comma-separated list of values.
     mx = float(max(vals))
-    vals = [i / mx for i in vals]
+    vals = [round(i / mx, 4) for i in vals]
     valstr = ','.join(map(str, vals))
 
     data = {'cht': 'v',

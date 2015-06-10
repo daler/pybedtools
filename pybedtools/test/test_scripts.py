@@ -2,6 +2,7 @@ import pybedtools
 from .tfuncs import setup, teardown
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises
+from nose.plugins.attrib import attr
 import os
 import sys
 
@@ -72,10 +73,10 @@ def test_venn_mpl():
     os.unlink(outfn)
 
 
-
+@attr('url')
 def test_venn_gchart():
     here = os.path.dirname(__file__)
-    expected = open(os.path.join(here, 'gchart-expected.png')).read()
+    expected = open(os.path.join(here, 'gchart-expected.png'), 'rb').read()
 
     original = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed').sort().merge()
     a = pybedtools.BedTool(original[:300]).saveas()
@@ -87,7 +88,7 @@ def test_venn_gchart():
     labels = 'a,b,c'
 
     expected_data = {'chco': '00FF00,FF0000,0000FF',
-                     'chd': 't:1.0,0.4,0.716666666667,0.0666666666667,0.05,0.183333333333,0.0166666666667',
+                     'chd': 't:1.0,0.4,0.7167,0.0667,0.05,0.1833,0.0167',
                      'chs': '300x300',
                      'cht': 'v',
                      'chdl': 'a|b|c'}
