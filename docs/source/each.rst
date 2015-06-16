@@ -46,7 +46,7 @@ And we apply it like this:
     :options: +NORMALIZE_WHITESPACE
 
     >>> normalized = with_counts.each(normalize_count)
-    >>> print normalized
+    >>> print(normalized)
     chr1	1	100	feature1	0.0	+	0
     chr1	100	200	feature2	1e-05	+	1
     chr1	150	500	feature3	2.85714285714e-06	-	1

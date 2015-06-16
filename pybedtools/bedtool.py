@@ -843,7 +843,7 @@ class BedTool(object):
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = a.each(truncate_feature, limit=100)
-        >>> print b #doctest: +NORMALIZE_WHITESPACE
+        >>> print(b) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	100	feature1	99	+
         chr1	100	200	feature2	100	+
         chr1	150	250	feature3.short	350	-
@@ -1148,7 +1148,7 @@ class BedTool(object):
             >>> hg19 = pybedtools.chromsizes('hg19')
             >>> a = pybedtools.example_bedtool('a.bed')
             >>> a = a.set_chromsizes(hg19)
-            >>> print a.chromsizes['chr1']
+            >>> print(a.chromsizes['chr1'])
             (0, 249250621)
 
         """
@@ -1627,7 +1627,7 @@ class BedTool(object):
         ... chr1 50 55""", from_string=True)
         >>> fasta = pybedtools.example_filename('test.fa')
         >>> a = a.sequence(fi=fasta)
-        >>> print open(a.seqfn).read()
+        >>> print(open(a.seqfn).read())
         >chr1:1-10
         GATGAGTCT
         >chr1:50-55
@@ -1874,7 +1874,7 @@ class BedTool(object):
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b_fn = pybedtools.example_filename('b.bed')
-        >>> print a.annotate(files=b_fn) #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.annotate(files=b_fn)) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	100	feature1	0	+	0.000000
         chr1	100	200	feature2	0	+	0.450000
         chr1	150	500	feature3	0	-	0.128571
@@ -1977,7 +1977,7 @@ class BedTool(object):
         >>> a = a.mask_fasta(fi=fasta_fn, fo='masked.fa.example')
         >>> b = a.slop(b=2, genome='hg19')
         >>> b = b.sequence(fi=a.seqfn)
-        >>> print open(b.seqfn).read()
+        >>> print(open(b.seqfn).read())
         >chr1:98-112
         TTNNNNNNNNNNAT
         <BLANKLINE>
@@ -2014,7 +2014,7 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
         >>> c = a.window(b, w=10).overlap(cols=[2,3,8,9])
-        >>> print c #doctest: +NORMALIZE_WHITESPACE
+        >>> print(c) #doctest: +NORMALIZE_WHITESPACE
         chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-	45
         chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-	45
         chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+	1
@@ -2049,7 +2049,7 @@ class BedTool(object):
         >>> b = pybedtools.example_bedtool('gdc.bed')
         >>> c = a.intersect(b, c=True)
         >>> d = c.groupby(g=[1, 4, 5], c=10, ops=['sum'])
-        >>> print d #doctest: +NORMALIZE_WHITESPACE
+        >>> print(d) #doctest: +NORMALIZE_WHITESPACE
         chr2L	41	70	0
         chr2L	71	130	2
         chr2L	131	170	4
@@ -2670,7 +2670,7 @@ class BedTool(object):
             >>> a = a.set_chromsizes(chromsizes)
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> results = a.randomintersection(b, 10, debug=True)
-            >>> print list(results)
+            >>> print(list(results))
             [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
 
         """
@@ -2758,12 +2758,12 @@ class BedTool(object):
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
-        >>> print a.cat(b) #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.cat(b)) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	500
         chr1	800	950
         <BLANKLINE>
-        >>> print a.cat(*[b,b],
-        ...   postmerge=False) #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.cat(*[b,b],
+        ...   postmerge=False)) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	100	feature1	0	+
         chr1	100	200	feature2	0	+
         chr1	150	500	feature3	0	-
@@ -2866,7 +2866,7 @@ class BedTool(object):
         >>> b = a.saveas('other.bed')
         >>> b.fn
         'other.bed'
-        >>> print b == a
+        >>> print(b == a)
         True
 
         >>> b = a.saveas('other.bed', trackline="name='test run' color=0,55,0")
@@ -2988,7 +2988,7 @@ class BedTool(object):
         >>> b = pybedtools.example_bedtool('b.bed')\
                                    .with_attrs(label='transcription factor 2')
         >>> for i in [a, b]:
-        ...     print i.count(), 'features for', i.label
+        ...     print('{0} features for {1}'.format(i.count(), i.label))
         4 features for transcription factor 1
         2 features for transcription factor 2
 

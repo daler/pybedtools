@@ -35,7 +35,7 @@ Printing a feature converts it into the original line from the file:
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> print feature
+    >>> print(feature)
     chr1	1	100	feature1	0	+
 
 The string representation of an :class:`Interval` object is simply a valid line,
@@ -74,7 +74,7 @@ Let's make another feature that only has chrom, start, and stop to see how
 
     >>> feature2 = iter(pybedtools.BedTool('chrX 500 1000', from_string=True)).next()
 
-    >>> print feature2
+    >>> print(feature2)
     chrX	500	1000
 
 
@@ -108,7 +108,7 @@ line (like a list) or indexed by name of attribute (like a dictionary).
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> print feature
+    >>> print(feature)
     chr1	1	100	feature1	0	+
 
 
@@ -233,6 +233,7 @@ the provided field list:
 Printing the :class:`Intervals` shows that the strings are in the appropriate
 coordinates:
 
+
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
@@ -242,7 +243,7 @@ coordinates:
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> print bed
+    >>> print(bed)
     chr1	50	300	mRNA1	.	+
 
 Since `start` attributes are always zero-based, the GFF and BED `start` values
@@ -301,7 +302,7 @@ dictionary.
     :options: +NORMALIZE_WHITESPACE
 
     >>> # original feature
-    >>> print gff
+    >>> print(gff)
     chr1	fake	mRNA	51	300	.	+	.	ID=mRNA1;Parent=gene1;
 
     >>> # original attributes

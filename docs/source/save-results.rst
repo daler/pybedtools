@@ -22,12 +22,12 @@ opening up the files afterward and manually adding a trackline:
     :options: +NORMALIZE_WHITESPACE
 
     >>> c = a_with_b.saveas('intersection-of-a-and-b.bed', trackline='track name="a and b"')
-    >>> print c.fn
+    >>> print(c.fn)
     intersection-of-a-and-b.bed
 
 
     >>> # opening the underlying file shows the track line
-    >>> print open(c.fn).read()
+    >>> print(open(c.fn).read())
     track name="a and b"
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-

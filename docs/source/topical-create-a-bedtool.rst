@@ -55,7 +55,7 @@ the fly:
     
     >>> # an "inline" example:
     >>> fromscratch1 = pybedtools.BedTool('chrX 1 100', from_string=True)
-    >>> print fromscratch1
+    >>> print(fromscratch1)
     chrX    1   100
     <BLANKLINE>
 
@@ -69,7 +69,7 @@ the fly:
     ... """
 
     >>> fromscratch2 = BedTool(larger_string, from_string=True)
-    >>> print fromscratch2
+    >>> print(fromscratch2)
     chrX    1   100 feature1    0   +
     chrX    50  350 feature2    0   -
     chr2    5000    10000   another_feature 0   +

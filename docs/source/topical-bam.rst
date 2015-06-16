@@ -59,7 +59,7 @@ iterating over BED or GFF files.  Indexing works, too:
     :options: +ELLIPSIS +NORMALIZE_WHITESPACE
 
     >>> for i in bam_results[:2]:
-    ...     print i
+    ...     print(i)
     HWUSI-NAME:2:69:512:1017#0	16	chr2L	9330	3	36M	*	0	0	TACAAATCTTACGTAAACACTCCAAGCATGAATTCG	Y`V_a_TM[\_V`abb`^^Q]QZaaaaa_aaaaaaa	NM:i:0	NH:i:2	CC:Z:chrX	CP:i:19096815
     HWUSI-NAME:2:91:1201:1113#0	16	chr2L	10213	255	36M	*	0	0	TGTAGAATGCAAAAATTACATTTGTGAGTATCATCA	UV[aY`]\VZ`baaaZa`_aab_`_`a`ab``b`aa	NM:i:0	NH:i:1
 

@@ -16,7 +16,7 @@ that are more than 100 bp long:
 
     >>> a = pybedtools.example_bedtool('a.bed')
     >>> b = a.filter(lambda x: len(x) > 100)
-    >>> print b
+    >>> print(b)
     chr1	150	500	feature3	0	-
     <BLANKLINE>
 
@@ -39,19 +39,19 @@ length of interest, like this:
 
     >>> a = pybedtools.example_bedtool('a.bed')
 
-    >>> print a.filter(len_filter, L=10)
+    >>> print(a.filter(len_filter, L=10))
     chr1	1	100	feature1	0	+
     chr1	100	200	feature2	0	+
     chr1	150	500	feature3	0	-
     chr1	900	950	feature4	0	+
     <BLANKLINE>
 
-    >>> print a.filter(len_filter, L=99)
+    >>> print(a.filter(len_filter, L=99))
     chr1	100	200	feature2	0	+
     chr1	150	500	feature3	0	-
     <BLANKLINE>
 
-    >>> print a.filter(len_filter, L=200)
+    >>> print(a.filter(len_filter, L=200))
     chr1	150	500	feature3	0	-
     <BLANKLINE>
 
