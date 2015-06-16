@@ -138,16 +138,17 @@ class BedToolsFileError(Exception):
     pass
 
 
-cdef class Attributes(dict):
+class Attributes(dict):
     """
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
     """
-    cdef str sep, field_sep, _attr_str
-    cdef dict _quoted
-
+    #cdef str sep, field_sep, _attr_str
+    #cdef dict _quoted
+    #cpdef bool sort_keys
     def __init__(self, attr_str=""):
         attr_str = str(attr_str)
         self._attr_str = attr_str
+        self.sort_keys = False
 
         # in general, GFF files will have either as many '=' as ';'
         # (or ';'-1 if there's no trailing ';')
@@ -192,10 +193,12 @@ cdef class Attributes(dict):
             items.append((field, val))
 
         pairs = []
+        if self.sort_keys:
+            items.sort()
         for k, v in items:
             pairs.append(self.field_sep.join([k, v]))
 
-        return self.sep.join(pairs)
+        return self.sep.join(pairs) + self.sep
 
 cdef class Interval:
     """

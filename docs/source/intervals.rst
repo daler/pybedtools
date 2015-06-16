@@ -237,7 +237,9 @@ coordinates:
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> print gff
+    >>> # for testing, we make sure keys are sorted. Not needed in practice.
+    >>> gff.attrs.sort_keys = True
+    >>> print(gff)
     chr1	fake	mRNA	51	300	.	+	.	ID=mRNA1;Parent=gene1;
 
 .. doctest::
@@ -306,16 +308,20 @@ dictionary.
     chr1	fake	mRNA	51	300	.	+	.	ID=mRNA1;Parent=gene1;
 
     >>> # original attributes
-    >>> gff.attrs
-    {'ID': 'mRNA1', 'Parent': 'gene1'}
+    >>> sorted(gff.attrs.items())
+    [('ID', 'mRNA1'), ('Parent', 'gene1')]
 
     >>> # add some new attributes
     >>> gff.attrs['Awesomeness'] = "99"
     >>> gff.attrs['ID'] = 'transcript1'
 
     >>> # Changes in attributes are propagated to the printable feature
-    >>> print gff
-    chr1	fake	mRNA	51	300	.	+	.	Awesomeness=99;ID=transcript1;Parent=gene1
+
+    >>> # for testing, we make sure keys are sorted. Not needed in practice.
+    >>> gff.attrs.sort_keys = True
+    >>> assert gff.attrs.sort_keys
+    >>> print(gff)
+    chr1	fake	mRNA	51	300	.	+	.	Awesomeness=99;ID=transcript1;Parent=gene1;
 
 
 Understanding :class:`Interval` objects is important for using the powerful
