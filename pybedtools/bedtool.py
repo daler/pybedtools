@@ -418,6 +418,10 @@ class BedTool(object):
              >>> a = pybedtools.example_bedtool('a.bed')
 
         """
+        if remote:
+            raise ValueError(
+                "Remote BAM no longer supported (since BEDTools does not "
+                "support it)")
         self.remote = remote
         self._isbam = False
         self._bam_header = ""
