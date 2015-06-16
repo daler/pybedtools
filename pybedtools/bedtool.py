@@ -1955,11 +1955,14 @@ class BedTool(object):
         """
         Wraps `coverageBed` (v2.15+: `bedtools coverage`).
 
+        Note that starting in version 2.24.0, BEDTools swapped the semantics of
+        the "a" and "b" files.
+
         Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
-        >>> c = a.coverage(b)
+        >>> c = b.coverage(a)
         >>> c.head(3) #doctest: +NORMALIZE_WHITESPACE
         chr1	155	200	feature5	0	-	2	45	45	1.0000000
         chr1	800	901	feature6	0	+	1	1	101	0.0099010
