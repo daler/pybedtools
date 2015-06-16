@@ -599,7 +599,7 @@ class FisherOutput(object):
 
 def internet_on(timeout=1):
     try:
-        response = urllib.request.urlopen('http://google.com', timeout=timeout)
+        response = urllib.request.urlopen('http://genome.ucsc.edu', timeout=timeout)
         return True
     except urllib.error.URLError as err:
         pass
