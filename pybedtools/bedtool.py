@@ -3245,6 +3245,81 @@ class BAM(object):
             raise ValueError("Only files are supported, not streams")
         self.pysam_bamfile = pysam.Samfile(self.stream)
 
+    def _aligned_segment_to_interval(self, r):
+        if r.rname >= 0:
+            rname = self.pysam_bamfile.getrname(r.rname)
+        else:
+            rname = "*"
+
+        if r.rnext >= 0:
+            if r.rnext == r.rname:
+                rnext = "="
+            else:
+                rnext = self.pysam_bamfile.getrname(r.rnext)
+        else:
+            rnext = "*"
+
+        # SAM spec says if unavailable should be set to 0. Pysam sets to -1.
+
+        if r.pnext <= 0:
+            pnext = "0"
+        else:
+            # +1 here because cbedtools.pyx expects SAM -- which is 1-based --
+            # but pysam uses 0-based.
+            pnext = str(r.pnext + 1)
+
+        if r.cigarstring:
+            cigarstring = r.cigarstring
+        else:
+            cigarstring = "*"
+
+        # Rudimentary support.
+        # TODO: remove when refactoring to new BAM iterating
+        tags = []
+        for k, v in r.tags:
+            if isinstance(v, int):
+                t = 'i'
+            elif isinstance(v, float):
+                t = 'f'
+            else:
+                t = 'Z'
+            tags.append('{0}:{1}:{2}'.format(k, t, v))
+
+        tags = '\t'.join(tags)
+
+        if r.seq:
+            seq = r.seq
+        else:
+            seq = "*"
+
+        if r.qual:
+            qual = r.qual
+        else:
+            qual = "*"
+
+        fields = [
+            r.qname,
+            str(r.flag),
+            rname,
+
+            # +1 here because cbedtools.pyx expects SAM -- which is 1-based --
+            # but pysam uses 0-based.
+            str(r.pos + 1),
+            str(r.mapq),
+            cigarstring,
+            rnext,
+            pnext,
+            str(r.tlen),
+            seq,
+            qual,
+        ]
+        if tags:
+            fields.append(tags)
+
+        if None in fields:
+            raise ValueError("Found 'None' in fields: %s" % fields)
+        return create_interval_from_list(fields)
+
     def __iter__(self):
         return self
 
@@ -3252,10 +3327,7 @@ class BAM(object):
     # tests work, the new behavior will be to yield pysam AlignedSegment
     # objects directly.
     def __next__(self):
-        s = pysam.Samfile(BedTool._tmp(), 'w', template=self.pysam_bamfile)
-        s.write(next(self.pysam_bamfile))
-        s.close()
-        return create_interval_from_list(open(s.filename).read().strip().split('\t'))
+        return self._aligned_segment_to_interval(next(self.pysam_bamfile))
 
     def next(self):
         return self.__next__()
