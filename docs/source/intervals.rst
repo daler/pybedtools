@@ -88,15 +88,15 @@ Let's make another feature that only has chrom, start, and stop to see how
     1000
 
     >>> feature2.name
-    ''
+    '.'
 
     >>> feature2.score
-    ''
+    '.'
 
     >>> feature2.strand
-    ''
+    '.'
 
-This illustrates that default values are empty strings.
+This illustrates that default values are the string "`.`".
 
 
 Indexing into :class:`Interval` objects
