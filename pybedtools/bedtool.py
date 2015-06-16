@@ -939,8 +939,8 @@ class BedTool(object):
         'sam', 'empty').
 
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> a.file_type
-        'bed'
+        >>> print(a.file_type)
+        bed
         """
         if not isinstance(self.fn, six.string_types):
             raise ValueError('Checking file_type not supported for '
@@ -1395,7 +1395,7 @@ class BedTool(object):
 
         >>> a = pybedtools.BedTool("chr1 10 100\\nchr1 10 1",
         ... from_string=True)
-        >>> print a.remove_invalid() #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.remove_invalid()) #doctest: +NORMALIZE_WHITESPACE
         chr1	10	100
         <BLANKLINE>
 
@@ -1719,41 +1719,6 @@ class BedTool(object):
     def slop(self):
         """
         Wraps `slopBed` (v2.15+: `bedtools slop`).
-
-        If *g* is a dictionary (for example, return values from
-        pybedtools.chromsizes() ) it will be converted to a temp file for use
-        with slopBed.  If it is a string, then it is assumed to be a filename.
-
-        Alternatively, use *genome* to indicate a pybedtools-created genome.
-        Example usage:
-
-            >>> a = pybedtools.example_bedtool('a.bed')
-
-            Increase the size of features by 100 bp in either direction.  Note
-            that you need to specify either a dictionary of chromsizes or a
-            filename containing chromsizes for the genome that your bed file
-            corresponds to:
-
-            >>> c = a.slop(g=pybedtools.chromsizes('hg19'), b=100)
-
-            Grow features by 10 bp upstream and 500 bp downstream, using a
-            genome file you already have constructed called 'hg19.genome'
-
-            First, create the file:
-
-            >>> fout = open('hg19.genome','w')
-            >>> chromdict = pybedtools.get_chromsizes_from_ucsc('hg19')
-            >>> for chrom, size in chromdict.items():
-            ...     fout.write("%s\\t%s\\n" % (chrom, size[1]))
-            >>> fout.close()
-
-            Then use it:
-
-            >>> c = a.slop(g='hg19.genome', l=10, r=500, s=True)
-
-            Clean up afterwards:
-
-            >>> os.unlink('hg19.genome')
         """
 
     @_log_to_history
@@ -1808,7 +1773,7 @@ class BedTool(object):
 
             >>> a = pybedtools.example_bedtool('a.bed')
             >>> b = pybedtools.example_bedtool('b.bed')
-            >>> print a.window(b, w=1000) #doctest: +NORMALIZE_WHITESPACE
+            >>> print(a.window(b, w=1000)) #doctest: +NORMALIZE_WHITESPACE
             chr1	1	100	feature1	0	+	chr1	155	200	feature5	0	-
             chr1	1	100	feature1	0	+	chr1	800	901	feature6	0	+
             chr1	100	200	feature2	0	+	chr1	155	200	feature5	0	-
@@ -1832,7 +1797,7 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> seed = 1 # so this test always returns the same results
         >>> b = a.shuffle(genome='hg19', chrom=True, seed=seed)
-        >>> print b #doctest: +NORMALIZE_WHITESPACE
+        >>> print(b) #doctest: +NORMALIZE_WHITESPACE
         chr1	59535036	59535135	feature1	0	+
         chr1	99179023	99179123	feature2	0	+
         chr1	186189051	186189401	feature3	0	-
@@ -1858,7 +1823,7 @@ class BedTool(object):
         ... chr12 1 100
         ... chr9 500 600
         ... ''', from_string=True)
-        >>> print a.sort() #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.sort()) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	50
         chr1	100	200
         chr12	1	100
@@ -1895,7 +1860,7 @@ class BedTool(object):
         Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> print a.flank(genome='hg19', b=100) #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.flank(genome='hg19', b=100)) #doctest: +NORMALIZE_WHITESPACE
         chr1	0	1	feature1	0	+
         chr1	100	200	feature1	0	+
         chr1	0	100	feature2	0	+
@@ -2101,7 +2066,7 @@ class BedTool(object):
             >>> a = pybedtools.example_bedtool('a.bed')
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> result = x.multi_intersect(i=[a.fn, b.fn])
-            >>> print result   #doctest: +NORMALIZE_WHITESPACE
+            >>> print(result)   #doctest: +NORMALIZE_WHITESPACE
             chr1	1	155	1	1	1	0
             chr1	155	200	2	1,2	1	1
             chr1	200	500	1	1	1	0
@@ -2231,7 +2196,7 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> b = pybedtools.example_bedtool('b.bed')
         >>> f = a.fisher(b, genome='hg19')
-        >>> print f  # doctest: +NORMALIZE_WHITESPACE
+        >>> print(f)  # doctest: +NORMALIZE_WHITESPACE
         # Number of query intervals: 4
         # Number of db intervals: 2
         # Number of overlaps: 3
@@ -2314,7 +2279,7 @@ class BedTool(object):
         ... chr1 50 55''', from_string=True)
         >>> fasta = pybedtools.example_filename('test.fa')
         >>> a = a.sequence(fi=fasta)
-        >>> print open(a.seqfn).read()
+        >>> print(open(a.seqfn).read())
         >chr1:1-10
         GATGAGTCT
         >chr1:50-55
@@ -2374,18 +2339,18 @@ class BedTool(object):
 
         The actual overlap::
 
-            print results['actual']
+            print(results['actual'])
             3
 
         The median of all randomized overlaps::
 
-            print results['median randomized']
+            print(results['median randomized'])
             2.0
 
         The percentile of the actual overlap in the distribution of randomized
         overlaps, which can be used to get an empirical p-value::
 
-            print results['percentile']
+            print(results['percentile'])
             90.0
         """
         if ('intersect_kwargs' not in kwargs) or \
@@ -2965,12 +2930,12 @@ class BedTool(object):
         This does a merge() first, so this is what the total coverage is
         counting:
 
-        >>> print a.merge() #doctest: +NORMALIZE_WHITESPACE
+        >>> print(a.merge()) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	500
         chr1	900	950
         <BLANKLINE>
 
-        >>> print a.total_coverage()
+        >>> print(a.total_coverage())
         549
         """
         b = self.merge()

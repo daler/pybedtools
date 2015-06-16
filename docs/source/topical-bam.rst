@@ -44,12 +44,12 @@ BED results.
 .. doctest::
 
     >>> bam_results = a.intersect(b)
-    >>> bam_results.file_type
-    'bam'
+    >>> str(bam_results.file_type) == 'bam'
+    True
 
     >>> bed_results = a.intersect(b, bed=True)
-    >>> bed_results.file_type
-    'bed'
+    >>> str(bed_results.file_type) == 'bed'
+    True
 
 
 We can iterate over BAM files to get :class:`Interval` objects just like
@@ -77,15 +77,21 @@ There are several things to watch out for here.
 
 First, note that :mod:`pybedtools` uses the convention that BAM features in
 plain text format are considered SAM features, so these SAM features are
-**one-based and include the stop coordinate** as illustrated below:
+**one-based and include the stop coordinate** as illustrated below. (Note that
+there is some additional complexity here due to supporting Python 2 and
+3 simultaneously in this tested documentation)
 
 .. doctest::
 
     >>> bam_results[0].start
     9329
 
-    >>> bam_results[0][3]
-    '9330'
+    >>> import six
+    >>> isinstance(bam_results[0][3], six.string_types)
+    True
+
+    >>> print(bam_results[0][3])
+    9330
 
 
 Second, the stop coordinate is defined as the *start coord plus the

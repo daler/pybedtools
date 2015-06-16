@@ -253,7 +253,6 @@ clean up the temp directory.
     :toctree: autodocs
 
     pybedtools.set_bedtools_path
-    pybedtools.set_samtools_path
     pybedtools.get_tempdir
     pybedtools.set_tempdir
     pybedtools.cleanup

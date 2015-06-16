@@ -44,26 +44,60 @@ created (accessible via :attr:`Interval.file_type`).
 
 All features, no matter what the file type, have `chrom`, `start`, `stop`,
 `name`, `score`, and `strand` attributes.  Note that `start` and `stop` are
-long integers, while everything else (including `score`) is a string.
+integers, while everything else (including `score`) is a string.
+
+:mod:`pybedtools` supports both Python 2 and 3. When using Python 3, all
+strings are the `str` type. When using Python 2, all strings are unicode.
+
+.. note::
+
+    This documentation undergoes testing with Python 2 and Python 3. These
+    versions handle strings differently. For example, under Python 2::
+
+        >>> feature.chrom
+        u'chr1'
+
+    But under Python 3::
+
+        >>> feature.chrom
+        'chr1'
+
+    Since all strings returned by Interval objects are unicode, we solve this
+    by making a helper function `show_value` that converts unicode to native
+    string -- but only under Python 2.
+
 
 .. doctest::
 
-    >>> feature.chrom
+    >>> import sys
+    >>> def show_value(s):
+    ...     """
+    ...     Convert unicode to str under Python 2;
+    ...     all other values pass through unchanged
+    ...     """
+    ...     if sys.version_info.major == 2:
+    ...         if isinstance(s, unicode):
+    ...             return str(s)
+    ...     return s
+
+.. doctest::
+
+    >>> show_value(feature.chrom)
     'chr1'
 
-    >>> feature.start
+    >>> show_value(feature.start)
     1
 
-    >>> feature.stop
+    >>> show_value(feature.stop)
     100
 
-    >>> feature.name
+    >>> show_value(feature.name)
     'feature1'
 
-    >>> feature.score
+    >>> show_value(feature.score)
     '0'
 
-    >>> feature.strand
+    >>> show_value(feature.strand)
     '+'
 
 Let's make another feature that only has chrom, start, and stop to see how
@@ -78,22 +112,22 @@ Let's make another feature that only has chrom, start, and stop to see how
     chrX	500	1000
 
 
-    >>> feature2.chrom
+    >>> show_value(feature2.chrom)
     'chrX'
 
-    >>> feature2.start
+    >>> show_value(feature2.start)
     500
 
-    >>> feature2.stop
+    >>> show_value(feature2.stop)
     1000
 
-    >>> feature2.name
+    >>> show_value(feature2.name)
     '.'
 
-    >>> feature2.score
+    >>> show_value(feature2.score)
     '.'
 
-    >>> feature2.strand
+    >>> show_value(feature2.strand)
     '.'
 
 This illustrates that default values are the string "`.`".
@@ -112,16 +146,16 @@ line (like a list) or indexed by name of attribute (like a dictionary).
     chr1	1	100	feature1	0	+
 
 
-    >>> feature[0]
+    >>> show_value(feature[0])
     'chr1'
 
-    >>> feature['chrom']
+    >>> show_value(feature['chrom'])
     'chr1'
 
-    >>> feature[1]
+    >>> show_value(feature[1])
     '1'
 
-    >>> feature['start']
+    >>> show_value(feature['start'])
     1
 
 
@@ -135,7 +169,7 @@ the `fields` attribute that is actually being indexed into.
 .. doctest::
 
     >>> f = pybedtools.BedTool('chr1 1 100 asdf 0 + a b c d', from_string=True)[0]
-    >>> f.fields
+    >>> [show_value(i) for i in f.fields]
     ['chr1', '1', '100', 'asdf', '0', '+', 'a', 'b', 'c', 'd']
     >>> len(f.fields)
     10
@@ -225,9 +259,10 @@ the provided field list:
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> gff.file_type
+    >>> show_value(gff.file_type)
     'gff'
-    >>> bed.file_type
+
+    >>> show_value(bed.file_type)
     'bed'
 
 Printing the :class:`Intervals` shows that the strings are in the appropriate
@@ -264,9 +299,9 @@ other is a string) . . .
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> bed.start
+    >>> show_value(bed.start)
     50
-    >>> bed[1]
+    >>> show_value(bed[1])
     '50'
 
 . . . but for the GFF feature, they differ -- the `start` attribute is
@@ -276,9 +311,9 @@ remains in one-based GFF coords:
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> gff.start
+    >>> show_value(gff.start)
     50
-    >>> gff[3]
+    >>> show_value(gff[3])
     '51'
 
 As long as we use the integer `start` attributes, we can treat the

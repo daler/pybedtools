@@ -3,6 +3,7 @@
 """
 Example pybedtools usage; please read script and comments for more info
 """
+from __future__ import print_function
 from pybedtools import BedTool
 import pybedtools
 import os

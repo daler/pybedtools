@@ -239,8 +239,6 @@ cdef class Interval:
         >>> i
         Interval(chr1:22-44)
 
-        >>> i.start, i.end, i.strand, i.length
-        (22, 44, '-', 22)
 
     """
     def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
