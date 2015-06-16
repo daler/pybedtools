@@ -622,7 +622,7 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
 
         >>> dm3_chromsizes = get_chromsizes_from_ucsc('dm3')
         >>> for i in sorted(dm3_chromsizes.items()):
-        ...     print i
+        ...     print(i)
         ('chr2L', (0, 23011544))
         ('chr2LHet', (0, 368872))
         ('chr2R', (0, 21146708))

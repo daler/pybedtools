@@ -5,12 +5,12 @@ Example from pybedtools documentation (:ref:`third example`) to count \
 reads in introns and exons using multiple CPUs.
 """
 
+from __future__ import print_function
 import pybedtools
 import argparse
 import os
 import sys
 import multiprocessing
-from __future__ import print_function
 
 
 def featuretype_filter(feature, featuretype):

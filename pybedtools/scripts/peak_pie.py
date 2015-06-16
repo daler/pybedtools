@@ -11,7 +11,7 @@ intron".
 """
 
 import sys
-from six import urllib.request, urllib.parse, urllib.error
+from six import urllib
 import argparse
 import pybedtools
 from collections import defaultdict
