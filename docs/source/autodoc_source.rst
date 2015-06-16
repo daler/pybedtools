@@ -385,7 +385,6 @@ results.
     pybedtools.scripts.venn_mpl
     pybedtools.scripts.venn_gchart
     pybedtools.scripts.intersection_matrix
-    pybedtools.scripts.peak_pie
     pybedtools.scripts.annotate
     pybedtools.scripts.intron_exon_reads
     pybedtools.scripts.py_ms_example
