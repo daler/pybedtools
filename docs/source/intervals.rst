@@ -72,7 +72,7 @@ Let's make another feature that only has chrom, start, and stop to see how
 .. doctest::
     :options: +NORMALIZE_WHITESPACE
 
-    >>> feature2 = iter(pybedtools.BedTool('chrX 500 1000', from_string=True)).next()
+    >>> feature2 = pybedtools.BedTool('chrX 500 1000', from_string=True)[0]
 
     >>> print(feature2)
     chrX	500	1000
@@ -134,7 +134,7 @@ the `fields` attribute that is actually being indexed into.
 
 .. doctest::
 
-    >>> f = iter(pybedtools.BedTool('chr1 1 100 asdf 0 + a b c d', from_string=True)).next()
+    >>> f = pybedtools.BedTool('chr1 1 100 asdf 0 + a b c d', from_string=True)[0]
     >>> f.fields
     ['chr1', '1', '100', 'asdf', '0', '+', 'a', 'b', 'c', 'd']
     >>> len(f.fields)
