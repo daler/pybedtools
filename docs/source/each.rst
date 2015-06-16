@@ -34,7 +34,7 @@ field of the feature.  Here's the function:
     ...     assume feature's last field is the count
     ...     """
     ...     counts = float(feature[-1])
-    ...     normalized = counts / len(feature) * scalar
+    ...     normalized = round(counts / (len(feature) * scalar), 2)
     ...
     ...     # need to convert back to string to insert into feature
     ...     feature.score = str(normalized)
@@ -48,9 +48,9 @@ And we apply it like this:
     >>> normalized = with_counts.each(normalize_count)
     >>> print(normalized)
     chr1	1	100	feature1	0.0	+	0
-    chr1	100	200	feature2	1e-05	+	1
-    chr1	150	500	feature3	2.85714285714e-06	-	1
-    chr1	900	950	feature4	2e-05	+	1
+    chr1	100	200	feature2	10.0	+	1
+    chr1	150	500	feature3	2.86	-	1
+    chr1	900	950	feature4	20.0	+	1
     <BLANKLINE>
 
 Similar to :meth:`BedTool.filter`, we could have used the Python built-in
