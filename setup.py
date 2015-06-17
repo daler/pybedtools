@@ -173,6 +173,7 @@ def write_version_py(filename=pjoin(curdir, 'pybedtools/version.py')):
                      "full_version = '%(full_version)s'",
                      "git_revision = '%(git_revision)s'",
                      "release = %(isrelease)s", "",
+                     "__version__ = version",
                      "if not release:",
                      "    version = full_version"])
 
