@@ -511,6 +511,19 @@ class BedTool(object):
         self._file_type = None
         self.history = History()
 
+    @classmethod
+    def from_dataframe(self, df):
+        """
+        Creates a BedTool from a pandas.DataFrame.
+
+        The fields of the resulting BedTool will match the order of columns in
+        the dataframe.
+        """
+        import pandas
+        tmp = self._tmp()
+        df.to_csv(tmp, sep='\t', header=False, index=False)
+        return BedTool(tmp)
+
     def split(self, func, *args, **kwargs):
         """
         Split each feature using a user-defined function.
