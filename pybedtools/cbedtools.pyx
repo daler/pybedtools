@@ -141,9 +141,7 @@ class Attributes(dict):
     """
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
     """
-    #cdef str sep, field_sep, _attr_str
-    #cdef dict _quoted
-    #cpdef bool sort_keys
+
     def __init__(self, attr_str=""):
         attr_str = str(attr_str)
         self._attr_str = attr_str

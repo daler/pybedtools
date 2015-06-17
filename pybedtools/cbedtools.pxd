@@ -3,18 +3,6 @@ from libcpp.vector cimport vector
 from libcpp.string cimport string
 from cython.operator cimport dereference as deref
 
-#cdef extern from *:
-#    ctypedef char* const_char_ptr "const char*"
-
-#cdef extern from "<string>" namespace "std":
-#    cdef cppclass string:
-#        string()
-#        string(char *)
-#        #char *c_str()
-#        const_char_ptr c_str()
-#
-#        bint operator==(string&)
-#        bint operator==(char*)
 
 
 
