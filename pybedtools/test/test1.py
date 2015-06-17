@@ -1612,3 +1612,59 @@ def test_fisher():
 left	right	two-tail	ratio
 1	8.8247e-21	8.8247e-21	inf
 """, c
+def test_chromsizes_in_5prime_3prime():
+
+    # standard 5'
+    a = pybedtools.example_bedtool('a.bed')\
+        .each(featurefuncs.five_prime, 1, 10, add_to_name="_TSS",
+              genome=pybedtools.chromsizes("hg19"))\
+        .saveas()
+    assert a == fix(
+        """
+        chr1	0	11	feature1_TSS	0	+
+        chr1	99	110	feature2_TSS	0	+
+        chr1	490	501	feature3_TSS	0	-
+        chr1	899	910	feature4_TSS	0	+
+        """), str(a)
+
+    # add genomes sizes; last feature should be truncated
+    a = pybedtools.example_bedtool('a.bed')\
+        .each(featurefuncs.five_prime, 1, 10, add_to_name="_TSS",
+              genome=dict(chr1=(0, 900)))\
+        .saveas()
+    assert a == fix(
+        """
+        chr1	0	11	feature1_TSS	0	+
+        chr1	99	110	feature2_TSS	0	+
+        chr1	490	501	feature3_TSS	0	-
+        chr1	899	900	feature4_TSS	0	+
+        """), str(a)
+
+    # same thing but for 3'.
+    # Note that the last feature chr1:949-960 is completely truncated because
+    # it would entirely fall outside of the chromosome
+    a = pybedtools.example_bedtool('a.bed')\
+            .each(featurefuncs.three_prime, 1, 10, add_to_name="_TSS",
+                 genome=dict(chr1=(0, 900)))\
+            .saveas()
+    assert a == fix(
+        """
+        chr1	99	110	feature1_TSS	0	+
+        chr1	199	210	feature2_TSS	0	+
+        chr1	140	151	feature3_TSS	0	-
+        chr1	900	900	feature4_TSS	0	+
+        """), str(a)
+
+    # be a lot harsher with the chromsizes to ensure features on both strands
+    # get truncated correctly
+    a = pybedtools.example_bedtool('a.bed')\
+            .each(featurefuncs.three_prime, 1, 10, add_to_name="_TSS",
+                 genome=dict(chr1=(0, 120)))\
+            .saveas()
+    assert a == fix(
+        """
+        chr1	99	110	feature1_TSS	0	+
+        chr1	120	120	feature2_TSS	0	+
+        chr1	120	120	feature3_TSS	0	-
+        chr1	120	120	feature4_TSS	0	+
+        """), str(a)
