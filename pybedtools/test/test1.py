@@ -1628,6 +1628,16 @@ def test_fisher():
 left	right	two-tail	ratio
 1	8.8247e-21	8.8247e-21	inf
 """, c
+
+
+def test_zero_len_boolean():
+    # regression test: with no __nonzero__ method, __len__ is used. This means
+    # that `if interval` evaluates to False when length is zero.
+    i = pybedtools.create_interval_from_list(['chr1', '1', '1'])
+    assert len(i) == 0
+    assert i
+
+
 def test_chromsizes_in_5prime_3prime():
 
     # standard 5'
