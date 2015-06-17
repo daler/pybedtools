@@ -50,7 +50,6 @@ import six
 import subprocess
 from collections import defaultdict
 
-
 cdef dict LOOKUPS = {
     "gff":  {"chrom": 0, "start": 3, "end": 4, "stop": 4, "strand": 6},
     "vcf":  {"chrom": 0, "start": 1},

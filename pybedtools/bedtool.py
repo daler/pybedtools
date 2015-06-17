@@ -1066,9 +1066,7 @@ class BedTool(object):
 
     def __str__(self):
         """
-        Different methods to return the string, depending on how the BedTool
-        was created.  If self.fn is anything but a basestring, the iterable
-        will be consumed.
+        Returns the string representation of the whole `BedTool`
         """
         items = []
         for i in iter(self):
@@ -1247,6 +1245,7 @@ class BedTool(object):
             'groupBy': ',',
             'multiIntersectBed': ' ',
             'mergeBed': ',',
+            'intersectBed': ' ',
         }
         stdin = None
 
@@ -2863,7 +2862,6 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-
         # Default to compressed if extension is .gz
         if compressed is None:
             __, extension = os.path.splitext(fn)
@@ -2871,7 +2869,6 @@ class BedTool(object):
                 compressed = True
             else:
                 compressed = False
-
 
         fn = self._collapse(self, fn=fn, trackline=trackline,
                             compressed=compressed)
