@@ -2625,14 +2625,19 @@ class BedTool(object):
         Concatenates two BedTool objects (or an object and a file) and does an
         optional post-merge of the features.
 
-        Use *postmerge=False* if you want to keep features separate.
-        Use *force_truncate=True* to truncate all files to chrom, start, stop
+        *postmerge=True* by default; use *postmerge=False* if you want to keep
+        features separate.
 
-        TODO:
+        *force_truncate=False* by default; *force_truncate=True* to truncate
+        all files to chrom, start, stop.
 
-            force_truncate=True currently truncates at BED3 format!
+        When *force_truncate=False* and *postmerge=False*, the output will
+        contain the smallest number of fields observed across all inputs. This
+        maintains compatibility with BEDTools programs, which assume constant
+        number of fields in all lines of a file.
 
-        other kwargs are sent to :meth:`BedTool.merge`.
+        Other kwargs are sent to :meth:`BedTool.merge` (and assuming that
+        *postmerge=True*).
 
         Example usage:
 
@@ -2688,7 +2693,8 @@ class BedTool(object):
                     [self.file_type]
                     + [i.file_type for i in other_beds]).difference(['empty'])
                 field_nums = set(
-                    [i.field_count for i in other_beds]).difference([None])
+                    [self.field_count()]
+                    + [i.field_count() for i in other_beds]).difference([None])
                 same_field_num = len(field_nums) == 1
                 same_type = len(set(filetypes)) == 1
             except ValueError:
@@ -2704,7 +2710,18 @@ class BedTool(object):
                 for f in other:
                     TMP.write(str(f))
 
-        # otherwise, truncate
+        # Types match, so we can use the min number of fields observed across
+        # all inputs
+        elif not force_truncate and same_type:
+            minfields = min(field_nums)
+            for f in self:
+                TMP.write('\t'.join(f.fields[:minfields]) + '\n')
+            for other in other_beds:
+                for f in other:
+                    TMP.write('\t'.join(f.fields[:minfields]) + '\n')
+
+        # Otherwise, use the zero-based chrom/start/stop to create a BED3,
+        # which will work when catting a GFF and a BED together.
         else:
             for f in self:
                 TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
