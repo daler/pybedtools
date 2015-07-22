@@ -646,6 +646,8 @@ def test_field_count():
     a = pybedtools.example_bedtool('a.bed')
     assert a.field_count() == 6
 
+    assert pybedtools.BedTool("", from_string=True).field_count() == 0
+
 def test_repr_and_printing():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')

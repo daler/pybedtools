@@ -739,6 +739,8 @@ class BedTool(object):
         >>> a.field_count()
         6
         """
+        if self.file_type == 'empty':
+            return 0
         i = 0
         fields = set([])
         for feat in self:
