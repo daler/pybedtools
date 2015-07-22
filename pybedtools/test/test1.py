@@ -722,7 +722,47 @@ def test_cat():
     chr1	800	901	feature6	0	+
     """)
 
-@attr('slow')
+
+def test_issue_138():
+    x = pybedtools.BedTool(
+        """
+        chr1	1	100
+        """, from_string=True)
+    y = pybedtools.BedTool(
+        """
+        chr2	500	600	feature1
+        """, from_string=True)
+    z = pybedtools.BedTool(
+        """
+        chr3	99	999	feature2	0	+
+        """, from_string=True)
+
+    # When force_truncate is False (default), output field length should be the
+    # min across all input field lengths.
+    assert y.cat(y, z, postmerge=False) == fix(
+        """
+        chr2	500	600	feature1
+        chr2	500	600	feature1
+        chr3	99	999	feature2
+        """)
+
+    assert y.cat(x, z, postmerge=False) == fix(
+        """
+        chr2	500	600
+        chr1	1	100
+        chr3	99	999
+        """)
+
+    assert z.cat(z, z, z, z, postmerge=False) == fix(
+        """
+        chr3	99	999	feature2	0	+
+        chr3	99	999	feature2	0	+
+        chr3	99	999	feature2	0	+
+        chr3	99	999	feature2	0	+
+        chr3	99	999	feature2	0	+
+        """)
+
+
 def test_randomstats():
     chromsizes = {'chr1':(1,1000)}
     a = pybedtools.example_bedtool('a.bed').set_chromsizes(chromsizes)
