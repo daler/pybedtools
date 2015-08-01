@@ -1,0 +1,33 @@
+package:
+  name: pybedtools
+  version: '0.7.0rc1'
+
+source:
+  git_url: https://github.com/daler/pybedtools
+  git_rev: v0.7.0rc1
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - python
+    - six
+    - pysam >=0.8.1
+    - setuptools
+    - pandas
+    - cython
+
+  run:
+    - python
+    - six
+    - pysam >=0.8.1
+    - pandas
+
+test:
+  imports:
+    - pybedtools
+
+about:
+  home: https://github.com/daler/pybedtools
+  license: MIT
