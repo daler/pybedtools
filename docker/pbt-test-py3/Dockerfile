@@ -1,13 +1,15 @@
-FROM pybedtools-test
+FROM continuumio/miniconda3
 MAINTAINER Ryan Dale <dalerr@niddk.nih.gov>
-RUN conda install \
+RUN conda install -c daler \
     matplotlib \
     nose \
     numpydoc \
     pip \
     pandas \
-    python=3 \
     pyyaml \
-    sphinx
-RUN pip install pysam
+    sphinx \
+    pysam
+RUN conda install -c daler \
+    tabix \
+    bedtools
 WORKDIR /opt/pybedtools
