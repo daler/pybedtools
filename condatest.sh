@@ -35,7 +35,7 @@ conda create \
     nose \
     six \
     pyyaml \
-    pandas \
+    pandas
 
 source activate $name
 pip install -e .

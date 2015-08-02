@@ -107,7 +107,7 @@ def check_dependency_versions(min_versions):
     empty virtualenv for example.
     """
     setup_requires = []
-    install_requires = []
+    install_requires = ['six']
 
     if 'pysam' in min_versions:
         try:
