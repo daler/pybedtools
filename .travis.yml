@@ -7,6 +7,7 @@ sudo: false
 
 python:
     - "2.7"
+    - "3.3"
     - "3.4"
 
 notifications:
@@ -41,9 +42,8 @@ install:
     # everything else.
     - conda install cython
 
-script: 
-    - ./condatest.sh 2
-    - ./condatest.sh 3
+script:
+    - ./condatest.sh "$TRAVIS_PYTHON_VERSION"
 
 branches:
     only:
