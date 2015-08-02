@@ -333,6 +333,7 @@ if __name__ == "__main__":
     setup(
         name=DISTNAME,
         maintainer=MAINTAINER,
+        version=VERSION,
         ext_modules=extensions,
         maintainer_email=MAINTAINER_EMAIL,
         description=DESCRIPTION,
