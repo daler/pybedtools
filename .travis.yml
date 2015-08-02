@@ -41,6 +41,10 @@ install:
     # everything else.
     - conda install cython
 
+    - conda install -c daler tabix
+    - echo $(which tabix)
+    - tabix
+
 script: 
     - ./condatest.sh 2
     - ./condatest.sh 3
