@@ -38,6 +38,6 @@ conda create \
     pandas
 
 source activate $name
-pip install -e .
+pip install dist/pybedtools-*.tar.gz
 nosetests
 (cd docs && make clean && make doctest)
