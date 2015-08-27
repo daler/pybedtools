@@ -357,6 +357,8 @@ if __name__ == "__main__":
                                      "*.pyx",
                                      "*.pxi",
                                      "*.pxd",
+                                     "*.cxx",
+                                     "*.c",
                                      "*.cpp"]
                       },
         include_package_data=False,
