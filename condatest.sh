@@ -18,8 +18,12 @@ name=pbtpy${PY_VERSION}
 conda env remove -y -n $name
 
 # Force the re-Cythonizing
+rm -rf dist build
+
 python setup.py clean
+python setup.py build
 python setup.py sdist
+python setup.py bdist_wheel
 
 conda create \
     -y \
@@ -38,6 +42,12 @@ conda create \
     pandas
 
 source activate $name
+
+# test installation via pip; just test that we can import successfully:
 pip install dist/pybedtools-*.tar.gz
+(cd docs && python -c 'import pybedtools')
+
+# Now actually build from source dir
+python setup.py develop
 nosetests
 (cd docs && make clean && make doctest)
