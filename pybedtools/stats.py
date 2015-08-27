@@ -1,5 +1,5 @@
 import multiprocessing
-import helpers
+from . import helpers
 import pybedtools
 
 

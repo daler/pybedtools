@@ -2,6 +2,78 @@
 
 Changelog
 =========
+Changes in v0.7.0rc1
+--------------------
+This is a major upgrade in the underlying code in order to support both Python
+2 and Python 3 using the same code. Aside from trivial things like converting
+print statements to functions and using `next()` instead of `.next()`, this
+required a substantial rewrite to support the way strings are handled in Python
+3 (in Cython and wrapped C++) and how relative modules work.
+
+Importantly, after converting them to Python 2- and 3-compatible syntax *all
+previous tests pass* so to the end user should not notice any differences
+except those noted below.
+
+Strings from Interval fields are unicode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For consistency between Python 2 and 3, all strings from Interval objects are
+now unicode. That is, in Python 2, previously we would get this::
+
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> a[0].name
+    'feature1'
+
+Now, we get this::
+
+    >>> a = pybedtools.example_bedtool('a.bed')
+    >>> a[0].name
+    u'feature1'
+
+
+samtools no longer a dependency
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The dependency for samtools has been removed, which simplifies the installation
+process. Instead, `pysam` is used for handling BAM files.
+
+In order for existing tests to pass, `pysam.AlignedSegment` objects are
+currently converted to `pybedtools.Interval` objects when iterating over a BAM
+file. This will come at a performance cost if you are iterating over all reads
+in a BAM file using the `pybedtools.BAM` object.
+
+In the future, iterating over a BAM file will yield `pysam.AlignedSegment`
+objects directly, but for now you can use the `pybedtools.BAM.pysam_bamfile`
+attribute to access the underlying `pysam.AlignmentFile` 
+
+Remote BAM support clarification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Previously, `pybedtools` was able to support remote BAMs by loosely wrapping
+samtools, but BAM files still needed to be fully downloaded to disk before
+using with BEDTools. This was done automatically, but through an inefficient
+mechanism.
+
+Pysam does support remote BAMs, and as before, a BAM file needs to be created
+on disk for use with BEDTools. But now this needs to be explicitly done by the
+user, which should result in better performance.
+
+
+Iterating over intervals
+~~~~~~~~~~~~~~~~~~~~~~~~
+Previously, when iterating over a `BedTool` object, different machinery would
+be invoked depending on whether the BedTool was pointing to a file (a
+cbedtools.IntervalFile would be invoked), to another iterator of Interval
+objects, or to a stream like from the stdout of a BEDTools call
+(cbedtools.IntervalIterator in both cases).
+
+Everything is now an IntervalIterator, simplifying the path towards
+performance optimization.
+
+gzip support
+~~~~~~~~~~~~
+Thanks to Saulius Lukauskas, gzip handling is now improved, and calling
+`BedTool.saveas()` with a `.gz` extension on the filename will automatically
+compress the output.
+
+
 Changes in v0.6.9
 -----------------
 Minor bug fix release.

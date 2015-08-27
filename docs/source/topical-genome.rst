@@ -92,7 +92,7 @@ will create a file from a dictionary or string:
     >>> # with no filename specified, a tempfile will be created
     >>> pybedtools.chromsizes_to_file(pybedtools.chromsizes('dm3'), 'dm3.genome')
     'dm3.genome'
-    >>> print open('dm3.genome').read()
+    >>> print(open('dm3.genome').read())
     chr2L	23011544
     chr2LHet	368872
     chr2R	21146708

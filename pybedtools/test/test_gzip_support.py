@@ -19,9 +19,12 @@ def _make_temporary_gzip(bed_filename):
     :param bed_filename: Filename of bed file to gzip
     :return: filename of gzipped file
     """
+    orig_suffix = pybedtools.settings.tempfile_suffix
+    pybedtools.settings.tempfile_suffix = '.gz'
     gz_filename = pybedtools.BedTool._tmp()
-    with gzip.open(gz_filename, 'w') as out_:
-        with open(bed_filename, 'r') as in_:
+    pybedtools.settings.tempfile_suffix = orig_suffix
+    with gzip.open(gz_filename, 'wb') as out_:
+        with open(bed_filename, 'rb') as in_:
             out_.writelines(in_)
     return gz_filename
 
@@ -46,7 +49,8 @@ def test_gzipped_files_are_iterable_as_normal():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
     agz = pybedtools.BedTool(agz)
     a = pybedtools.example_bedtool('a.bed')
-
+    for i in agz:
+        print(i)
     assert_list_equal(list(a), list(agz))
 
 def test_str_representation_of_gzipped_files_is_the_same_as_normal():
@@ -65,7 +69,8 @@ def test_gzipped_output():
     _filename = pybedtools.example_filename('a.bed')
     compressed_file = pybedtools.BedTool(_filename).saveas(compressed=True)
 
-    with gzip.open(compressed_file.fn) as gf:
+    # Open gzipped file in text mode
+    with gzip.open(compressed_file.fn, 'rt') as gf:
         uncompressed_content = gf.read()
 
     with open(_filename) as f:
@@ -83,7 +88,7 @@ def test_gzipping_is_default_when_extension_is_dot_gz():
         bedtool = pybedtools.BedTool(_filename)
         bedtool.saveas(fn=temp_filename)
 
-        with gzip.open(temp_filename) as gf:
+        with gzip.open(temp_filename, 'rt') as gf:
             # gzip will fail next line if file is not gzipped
             actual_content = gf.read()
 

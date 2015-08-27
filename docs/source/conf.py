@@ -59,8 +59,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pybedtools'
-copyright = u'2010, Ryan Dale'
+project = 'pybedtools'
+copyright = '2010, Ryan Dale'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -199,8 +199,8 @@ htmlhelp_basename = 'pybedtoolsdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pybedtools.tex', u'pybedtools Documentation',
-   u'Ryan Dale', 'manual'),
+  ('index', 'pybedtools.tex', 'pybedtools Documentation',
+   'Ryan Dale', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -232,6 +232,6 @@ latex_use_parts = True
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pybedtools', u'pybedtools Documentation',
-     [u'Ryan Dale'], 1)
+    ('index', 'pybedtools', 'pybedtools Documentation',
+     ['Ryan Dale'], 1)
 ]

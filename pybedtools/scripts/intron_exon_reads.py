@@ -5,6 +5,7 @@ Example from pybedtools documentation (:ref:`third example`) to count \
 reads in introns and exons using multiple CPUs.
 """
 
+from __future__ import print_function
 import pybedtools
 import argparse
 import os
@@ -92,7 +93,7 @@ def main():
               'intron and exon:')
 
     for label, reads in zip(labels, results):
-        print '%s %s' % (label, reads)
+        print('%s %s' % (label, reads))
 
     pybedtools.cleanup(verbose=False)
 

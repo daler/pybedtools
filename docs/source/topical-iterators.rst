@@ -108,7 +108,7 @@ fact, this is what the :meth:`BedTool.filter` method does for you:
     :options: +NORMALIZE_WHITESPACE
 
     >>> a = pybedtools.example_bedtool('a.bed')
-    >>> print a
+    >>> print(a)
     chr1	1	100	feature1	0	+
     chr1	100	200	feature2	0	+
     chr1	150	500	feature3	0	-
@@ -149,13 +149,13 @@ objects as a result.  This iterable can in turn be used to create a new :class:`
     <itertools.islice object at 0x...>
 
     >>> for i in a[2:4]:
-    ...     print i
+    ...     print(i)
     chr1	150	500	feature3	0	-
     chr1	900	950	feature4	0	+
     <BLANKLINE>
 
     >>> b = pybedtools.example_bedtool('b.bed')
 
-    >>> print pybedtools.BedTool(a[:3]).intersect(b)
+    >>> print(pybedtools.BedTool(a[:3]).intersect(b))
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-

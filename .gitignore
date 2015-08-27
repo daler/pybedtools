@@ -15,3 +15,5 @@ pybedtools.egg-info/*
 pybedtools/_Window.c
 pybedtools/cbedtools.cpp
 pybedtools/featurefuncs.cpp
+*.bak
+cythonize.dat

@@ -2,7 +2,8 @@ import pybedtools
 import sys
 import os, difflib
 from nose.tools import assert_raises
-from tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
+from nose.plugins.attrib import attr
+from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
 def fix(x):
     """
@@ -90,13 +91,14 @@ def test_call():
     assert a.intersect(a,u=True) == a
 
 
+@attr('url')
 def test_chromsizes():
     assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')
     assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc, 'dm3', timeout=0)
     try:
 
-        print pybedtools.chromsizes('dm3')
-        print pybedtools.get_chromsizes_from_ucsc('dm3')
+        print(pybedtools.chromsizes('dm3'))
+        print(pybedtools.get_chromsizes_from_ucsc('dm3'))
         assert pybedtools.chromsizes('dm3') == pybedtools.get_chromsizes_from_ucsc('dm3')
 
         hg17 = pybedtools.chromsizes('hg17')
@@ -106,14 +108,14 @@ def test_chromsizes():
         fn = pybedtools.chromsizes_to_file(hg17, fn='hg17.genome')
         expected = 'chr1\t245522847\n'
         results = open(fn).readline()
-        print results
+        print(results)
         assert expected == results
 
         # make sure the tempfile version works, too
         fn = pybedtools.chromsizes_to_file(hg17, fn=None)
         expected = 'chr1\t245522847\n'
         results = open(fn).readline()
-        print results
+        print(results)
         assert expected == results
 
         assert_raises(OSError,

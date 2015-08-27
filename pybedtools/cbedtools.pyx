@@ -1,4 +1,40 @@
-# cython: profile=True
+# distutils: language = c++
+
+# String notes:
+#
+#   Anything that goes in C++ objects should be converted to a C++ <string>
+#   type, using the _cppstr() function.  For example: Interval._bed.file_type,
+#   or the entries in Interval._bed.fields.
+#
+#   Any Python accessor methods (Interval.fields, Interval.__getitem__) should
+#   then be converted to Python strings using the _pystr() function.
+#
+#   Cython uses the `str` type as whatever the native Python version uses as
+#   str.
+
+
+from cpython.version cimport PY_MAJOR_VERSION
+from libcpp.string cimport string
+
+# Python byte strings automatically coerce to/from C++ strings.
+
+cdef _cppstr(s):
+    # Use this to handle incoming strings from Python.
+    #
+    # C++ uses bytestrings. PY2 strings need no conversion; bare PY3 strings
+    # are unicode and so must be encoded to bytestring.
+    if isinstance(s, int):
+        s = str(s)
+    if isinstance(s, unicode):
+        s = s.encode('UTF-8')
+    return <string> s
+
+cdef _pystr(string s):
+    # Use this to prepare a string for sending to Python.
+    #
+    # Always returns unicode.
+    return s.decode('UTF-8', 'strict')
+
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
@@ -10,6 +46,7 @@
 """
 from cython.operator cimport dereference as deref
 import sys
+import six
 import subprocess
 from collections import defaultdict
 
@@ -18,8 +55,8 @@ cdef dict LOOKUPS = {
     "vcf":  {"chrom": 0, "start": 1},
     "bed":  {"chrom": 0, "start": 1, "end": 2, "stop": 2, "score": 4, "strand": 5}
 }
-for ktype, kdict in LOOKUPS.items():
-    for k, v in kdict.items():
+for ktype, kdict in list(LOOKUPS.items()):
+    for k, v in list(kdict.items()):
         kdict[v] = k
 
 # Keys are tuples of start/start, stop/stop, start/stop, stop/start.
@@ -100,15 +137,15 @@ class BedToolsFileError(Exception):
     pass
 
 
-cdef class Attributes(dict):
+class Attributes(dict):
     """
     Class to map between a dict of attrs and fields[8] of a GFF Interval obj.
     """
-    cdef str sep, field_sep, _attr_str
-    cdef dict _quoted
 
     def __init__(self, attr_str=""):
+        attr_str = str(attr_str)
         self._attr_str = attr_str
+        self.sort_keys = False
 
         # in general, GFF files will have either as many '=' as ';'
         # (or ';'-1 if there's no trailing ';')
@@ -141,9 +178,6 @@ cdef class Attributes(dict):
                 self._quoted[field] = True
             self[field] = value.replace('"', '')
 
-    def __setitem__(self, key, value):
-        dict.__setitem__(self, key, value)
-
     def __str__(self):
         # stringify all items first
         items = []
@@ -154,7 +188,14 @@ cdef class Attributes(dict):
             except KeyError:
                 pass
             items.append((field, val))
-        return self.sep.join([self.field_sep.join(kvs) for kvs in items])
+
+        pairs = []
+        if self.sort_keys:
+            items.sort()
+        for k, v in items:
+            pairs.append(self.field_sep.join([k, v]))
+
+        return self.sep.join(pairs) + self.sep
 
 cdef class Interval:
     """
@@ -195,23 +236,22 @@ cdef class Interval:
         >>> i
         Interval(chr1:22-44)
 
-        >>> i.start, i.end, i.strand, i.length
-        (22, 44, '-', 22)
 
     """
     def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
         if otherfields is None:
             otherfields = []
         self._bed = new BED()
-        self._bed.chrom = string(chrom)
+
+        self._bed.chrom = _cppstr(chrom)
         self._bed.start = start
         self._bed.end = end
-        self._bed.name = string(name)
-        self._bed.score = string(score)
-        self._bed.strand = string(strand)
-        fields = [chrom, str(start), str(end), name, score, strand]
-        fields.extend(otherfields)
-        self._bed.fields = list_to_vector(fields)
+        self._bed.name = _cppstr(name)
+        self._bed.score = _cppstr(score)
+        self._bed.strand = _cppstr(strand)
+        fields = [_cppstr(chrom), _cppstr(str(start)), _cppstr(str(end)), _cppstr(name), _cppstr(score), _cppstr(strand)]
+        fields.extend([_cppstr(i) for i in otherfields])
+        self._bed.fields = fields
         self._attrs = None
 
     def __copy__(self):
@@ -223,19 +263,28 @@ cdef class Interval:
     property chrom:
         """ the chromosome of the feature"""
         def __get__(self):
-            return self._bed.chrom.c_str()
+            return _pystr(self._bed.chrom)
 
-        def __set__(self, char* chrom):
-            self._bed.chrom = string(chrom)
+        def __set__(self, chrom):
+            chrom = _cppstr(chrom)
+            self._bed.chrom = chrom
             idx = LOOKUPS[self.file_type]["chrom"]
-            self._bed.fields[idx] = string(chrom)
+            self._bed.fields[idx] = _cppstr(chrom)
 
     # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
     def __richcmp__(self, other, int op):
-
         if (self.chrom != other.chrom) or (self.strand != other.strand):
             if op == 3: return True
             return False
+
+        def cmp(x, y):
+            if x < y:
+                return -1
+            if x == y:
+                return 0
+            if x > y:
+                return 1
+
 
         # check all 4 so that we can handle nesting and partial overlaps.
         profile = (cmp(self.start, other.start),
@@ -271,9 +320,7 @@ cdef class Interval:
             # Non-BED files should have 1-based coords in fields
             if self.file_type != 'bed':
                 start += 1
-
-            s = str(start)
-            self._bed.fields[idx] = string(s)
+            self._bed.fields[idx] = _cppstr(str(start))
 
     property end:
         """The end of the feature"""
@@ -282,9 +329,8 @@ cdef class Interval:
 
         def __set__(self, int end):
             self._bed.end = end
-            e = str(end)
             idx = LOOKUPS[self.file_type]["stop"]
-            self._bed.fields[idx] = string(e)
+            self._bed.fields[idx] = _cppstr(str(end))
 
     property stop:
         """ the end of the feature"""
@@ -293,19 +339,18 @@ cdef class Interval:
 
         def __set__(self, int end):
             idx = LOOKUPS[self.file_type]["stop"]
-            e = str(end)
-            self._bed.fields[idx] = string(e)
+            self._bed.fields[idx] = _cppstr(str(end))
             self._bed.end = end
 
     property strand:
         """ the strand of the feature"""
         def __get__(self):
-            return self._bed.strand.c_str()
+            return _pystr(self._bed.strand)
 
         def __set__(self, strand):
             idx = LOOKUPS[self.file_type]["strand"]
-            self._bed.fields[idx] = string(strand)
-            self._bed.strand = string(strand)
+            self._bed.fields[idx] = _cppstr(strand)
+            self._bed.strand = _cppstr(strand)
 
     property length:
         """ the length of the feature"""
@@ -319,23 +364,26 @@ cdef class Interval:
         if self.file_type != "gff":
             raise ValueError('Interval.attrs was not None, but this was a non-GFF Interval')
 
-        cdef char *cstr
-        tmp = self._attrs.__str__()
-        cstr = tmp
-        self._bed.fields[8] = string(cstr)
+        s = self._attrs.__str__()
+        self._bed.fields[8] = _cppstr(s)
 
     property fields:
         def __get__(self):
             self.deparse_attrs()
-            return string_vec2list(self._bed.fields)
-
+            items = []
+            for i in self._bed.fields:
+                if isinstance(i, int):
+                    items.append(i)
+                else:
+                    items.append(_pystr(i))
+            return items
 
     property attrs:
         def __get__(self):
-            cdef string ftype = self._bed.file_type
             if self._attrs is None:
-                if ftype == <char *>"gff":
-                    self._attrs = Attributes(self._bed.fields[8].c_str())
+                ft = _pystr(self._bed.file_type)
+                if ft == 'gff':
+                    self._attrs = Attributes(_pystr(self._bed.fields[8]))
                 else:
                     self._attrs = Attributes("")
             return self._attrs
@@ -358,7 +406,8 @@ cdef class Interval:
         """
         def __get__(self):
             cdef string ftype = self._bed.file_type
-            if ftype == <char *>"gff":
+            value = None
+            if ftype == <string>"gff":
                 """
                 # TODO. allow setting a name_key in the BedTool constructor?
                 if self.name_key and self.name_key in attrs:
@@ -367,49 +416,59 @@ cdef class Interval:
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
                     if key in self.attrs:
-                        return self.attrs[key]
+                        value = self.attrs[key]
+                        break
 
-            elif ftype == <char *>"vcf":
+            elif ftype == <string>"vcf":
                 s = self.fields[2]
                 if s in ("", "."):
-                    return "%s:%i" % (self.chrom, self.start)
-                return s
-            elif ftype == <char *>"bed":
-                return self._bed.name.c_str()
+                    value = "%s:%i" % (self.chrom, self.start)
+                else:
+                    value = _pystr(s)
+            elif ftype == <string>"bed":
+                value = _pystr(self._bed.name)
+
+            return value
 
         def __set__(self, value):
             cdef string ftype = self._bed.file_type
-            if ftype == <char *>"gff":
+
+            if ftype == <string>"gff":
                 for key in ("ID", "Name", "gene_name", "transcript_id", \
                             "gene_id", "Parent"):
                     if not key in self.attrs:
                         continue
 
+                    # If it's incoming from Python it's unicode, so store that directly
+                    # in the attributes (since an Attribute object works on
+                    # unicode)...
                     self.attrs[key] = value
                     break
 
-            elif ftype == <char *>"vcf":
-                self._bed.fields[2] = string(value)
+            # Otherwise use _cppstr() because we're storing it in _bed.fields.
+            elif ftype == <string>"vcf":
+                self._bed.fields[2] = _cppstr(value)
             else:
-                self._bed.name = string(value)
-                self._bed.fields[3] = string(value)
+                self._bed.name = _cppstr(value)
+                self._bed.fields[3] = _cppstr(value)
 
     property score:
         def __get__(self):
-            return self._bed.score.c_str()
+            return _pystr(self._bed.score)
 
         def __set__(self, value):
-            self._bed.score = string(value)
+            value = _cppstr(value)
+            self._bed.score = value
             idx = LOOKUPS[self.file_type]["score"]
-            self._bed.fields[idx] = string(value)
+            self._bed.fields[idx] = value
 
     property file_type:
         "bed/vcf/gff"
         def __get__(self):
-            return self._bed.file_type.c_str()
+            return _pystr(self._bed.file_type)
 
         def __set__(self, value):
-            self._bed.file_type = string(value)
+            self._bed.file_type = _cppstr(value)
 
     # TODO: maybe bed.overlap_start or bed.overlap.start ??
     @property
@@ -429,7 +488,13 @@ cdef class Interval:
         Interval objects always print with a newline to mimic a line in a
         BED/GFF/VCF file
         """
-        return "\t".join(self.fields) + "\n"
+        items = []
+        for i in self.fields:
+            if isinstance(i, int):
+                i = str(i)
+            items.append(i)
+
+        return '\t'.join(items) + '\n'
 
     def __repr__(self):
         return "Interval(%s:%i-%i)" % (self.chrom, self.start, self.end)
@@ -442,7 +507,7 @@ cdef class Interval:
 
     def __getitem__(self, object key):
         cdef int i
-        cdef string ftype = self._bed.file_type
+        ftype = _pystr(self._bed.file_type)
 
         self.deparse_attrs()
 
@@ -452,33 +517,31 @@ cdef class Interval:
                 raise IndexError('field index out of range')
             elif key < 0:
                 key = nfields + key
-            return self._bed.fields.at(key).c_str()
+            return _pystr(self._bed.fields.at(key))
         elif isinstance(key, slice):
             indices = key.indices(self._bed.fields.size())
-            return [self._bed.fields.at(i).c_str() for i in range(*indices)]
+            return [_pystr(self._bed.fields.at(i)) for i in range(*indices)]
 
-        elif isinstance(key, basestring):
-            if ftype == <char *>"gff":
+        elif isinstance(key, str):
+            if ftype == "gff":
                 try:
                     return self.attrs[key]
-                except:
+                except KeyError:
                     pass
+            # We don't have to convert using _pystr() because the __get__
+            # methods do that already.
             return getattr(self, key)
 
     def __setitem__(self, object key, object value):
-        cdef string ft_string
-        cdef char* ft_char
         if isinstance(key, (int, long)):
             nfields = self._bed.fields.size()
             if key >= nfields:
                 raise IndexError('field index out of range')
             elif key < 0:
                 key = nfields + key
-            self._bed.fields[key] = string(value)
+            self._bed.fields[key] = _cppstr(value)
 
-            ft_string = self._bed.file_type
-            ft = <char *>ft_string.c_str()
-
+            ft = _pystr(self._bed.file_type)
             if key in LOOKUPS[ft]:
                 setattr(self, LOOKUPS[ft][key], value)
 
@@ -486,7 +549,10 @@ cdef class Interval:
             setattr(self, key, value)
 
     cpdef append(self, object value):
-        self._bed.fields.push_back(string(value))
+        self._bed.fields.push_back(_cppstr(value))
+
+    def __nonzero__(self):
+        return True
 
     def __nonzero__(self):
         return True
@@ -499,6 +565,14 @@ cdef Interval create_interval(BED b):
                        b.o_start, b.o_end, b.bedType, b.file_type, b.status)
     pyb._bed.fields = b.fields
     return pyb
+
+# TODO: optimization: Previously we had (fields[1] + fields[2]).isdigit() when
+# checking in create_interval_from_list for filetype heuruistics. Is there
+# a performance hit by checking instances?
+cdef isdigit(s):
+    if isinstance(s, int):
+        return True
+    return s.isdigit()
 
 cpdef Interval create_interval_from_list(list fields):
     """
@@ -529,44 +603,83 @@ cpdef Interval create_interval_from_list(list fields):
     orig_fields = fields[:]
     # BED -- though a VCF will be detected as BED if its 2nd field, id, is a
     # digit
-    if (fields[1] + fields[2]).isdigit():
-        # if it's too short, just add some empty fields.
-        if len(fields) < 7:
-            fields.extend(["."] * (6 - len(fields)))
-            other_fields = []
-        else:
-            other_fields = fields[6:]
-
-        pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[2]), string(fields[3]),
-                string(fields[4]), string(fields[5]), list_to_vector(other_fields))
-        pyb.file_type = 'bed'
-
-    # VCF
-    elif fields[1].isdigit() and not fields[3].isdigit() and len(fields) >= 8:
-        pyb._bed = new BED(string(fields[0]), int(fields[1]), int(fields[1]) + 1,
-                           string(fields[2]), string(fields[5]), string('.'),
-                           list_to_vector(fields))
-        pyb.file_type = 'vcf'
 
     # SAM
-    elif ( len(fields) >= 13) and (fields[1] + fields[3]).isdigit():
-        strand = '+'
-        if int(fields[1]) & 0x10:
-            strand = '-'
+    if (len(fields) >= 11) and isdigit(fields[1]) and isdigit(fields[3]):
 
         # TODO: what should the stop position be?  Here, it's just the start
         # plus the length of the sequence, but perhaps this should eventually
         # do CIGAR string parsing.
-        pyb._bed = new BED(string(fields[2]), int(fields[3])-1, int(fields[3]) + len(fields[9]) - 1,
-                           string(strand), string(fields[0]), string(fields[1]), list_to_vector(fields))
-        pyb.file_type = 'sam'
+        chrom = _cppstr(fields[2])
+        start = int(fields[3]) - 1
+        stop = int(fields[3]) + len(fields[9]) - 1
+        name = _cppstr(fields[0])
+        score = _cppstr(fields[1])
+        if int(fields[1]) & 0x10:
+            strand = _cppstr('-')
+        else:
+            strand = _cppstr('+')
+
+        # Fields is in SAM format
+        fields[3] = str(start + 1)
+
+        pyb._bed = new BED(
+            chrom,
+            start,
+            stop,
+            strand,
+            name,
+            score,
+            list_to_vector(fields))
+        pyb.file_type = _cppstr('sam')
+
+
+    elif isdigit(fields[1]) and isdigit(fields[2]):
+        # if it's too short, just add some empty fields.
+        if len(fields) < 7:
+            fields.extend([".".encode('UTF-8')] * (6 - len(fields)))
+            other_fields = []
+        else:
+            other_fields = fields[6:]
+
+        pyb._bed = new BED(
+            _cppstr(fields[0]),
+            int(fields[1]),
+            int(fields[2]),
+            _cppstr(fields[3]),
+            _cppstr(fields[4]),
+            _cppstr(fields[5]),
+            list_to_vector(other_fields))
+        pyb.file_type = _cppstr('bed')
+
+    # VCF
+    elif isdigit(fields[1]) and not isdigit(fields[3]) and len(fields) >= 8:
+        pyb._bed = new BED(
+            _cppstr(fields[0]),
+            int(fields[1]),
+            int(fields[1]) + 1,
+            _cppstr(fields[2]),
+            _cppstr(fields[5]),
+            _cppstr('.'),
+            list_to_vector(fields))
+        pyb.file_type = b'vcf'
+
+
     # GFF
-    elif len(fields) >= 9 and (fields[3] + fields[4]).isdigit():
-        pyb._bed = new BED(string(fields[0]), int(fields[3])-1, int(fields[4]), string(fields[2]),
-                           string(fields[5]), string(fields[6]), list_to_vector(fields[7:]))
-        pyb.file_type = 'gff'
+    elif len(fields) >= 9 and isdigit(fields[3]) and isdigit(fields[4]):
+        pyb._bed = new BED(
+            _cppstr(fields[0]),
+            int(fields[3])-1, int(fields[4]),
+            _cppstr(fields[2]),
+            _cppstr(fields[5]),
+            _cppstr(fields[6]),
+            list_to_vector(fields[7:]))
+        pyb.file_type = _cppstr('gff')
     else:
         raise MalformedBedLineError('Unable to detect format from %s' % fields)
+
+    if pyb.start > pyb.end:
+        raise MalformedBedLineError("Start is greater than stop")
     pyb._bed.fields = list_to_vector(orig_fields)
     return pyb
 
@@ -574,12 +687,13 @@ cdef vector[string] list_to_vector(list li):
     cdef vector[string] s
     cdef int i
     for i in range(len(li)):
-        s.push_back(string(li[i]))
+        _s = li[i]
+        s.push_back(_cppstr(_s))
     return s
 
 cdef list string_vec2list(vector[string] sv):
     cdef size_t size = sv.size(), i
-    return [sv.at(i).c_str() for i in range(size)]
+    return [_pystr(sv.at(i)) for i in range(size)]
 
 cdef list bed_vec2list(vector[BED] bv):
     cdef size_t size = bv.size(), i
@@ -613,7 +727,7 @@ cdef class IntervalIterator:
     def __next__(self):
         while True:
             try:
-                line = self.stream.next()
+                line = next(self.stream)
                 if self._isstring < 0:
                     self._isstring = int(isinstance(line, basestring))
 
@@ -638,7 +752,10 @@ cdef class IntervalIterator:
         if self._isstring:
             fields = line.rstrip('\r\n').split('\t')
         else:
-            fields = map(str, line)
+            fields = list(line)
+
+        # TODO: optimization: create_interval_from_list should have a version
+        # that accepts C++ string instances
         return create_interval_from_list(fields)
 
 
@@ -647,7 +764,7 @@ cdef class IntervalFile:
     cdef BedFile *intervalFile_ptr
     cdef bint _loaded
     cdef bint _open
-    cdef str fn
+    cdef string _fn
     """
     An IntervalFile provides low-level access to the BEDTools API.
 
@@ -656,10 +773,10 @@ cdef class IntervalFile:
 
     """
     def __init__(self, intervalFile):
-        self.intervalFile_ptr = new BedFile(string(intervalFile))
+        self.intervalFile_ptr = new BedFile(_cppstr(intervalFile))
         self._loaded = 0
         self._open = 0
-        self.fn = intervalFile
+        self._fn = _cppstr(intervalFile)
 
     def __dealloc__(self):
         del self.intervalFile_ptr
@@ -682,14 +799,18 @@ cdef class IntervalFile:
         elif b.status == BED_MALFORMED:
             raise MalformedBedLineError("malformed line: %s" % string_vec2list(b.fields))
         else:
-            return self.next()
+            return next(self)
+
+    @property
+    def fn(self):
+        return _pystr(self._fn)
 
     @property
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             try:
-                a = iter(self).next()
-                file_type = self.intervalFile_ptr.file_type.c_str()
+                a = six.advance_iterator(iter(self))
+                file_type = _pystr(self.intervalFile_ptr.file_type)
                 self.intervalFile_ptr.Close()
                 return file_type
             except MalformedBedLineError:

@@ -1,9 +1,11 @@
+from __future__ import print_function 
 import difflib
 import itertools
 import yaml
 import os
 import gzip
 import pybedtools
+
 # The functools.partial trick to get descriptions to be valid is from:
 #
 #   http://code.google.com/p/python-nose/issues/detail?id=244#c1
@@ -19,10 +21,9 @@ def gz(x):
     """
     fin = open(x.fn)
     gzfn = pybedtools.BedTool._tmp()
-    fout = gzip.open(gzfn, 'wb')
-    fout.writelines(fin)
-    fout.close()
-    fin.close()
+    with gzip.open(gzfn, 'wb') as out_:
+        with open(x.fn, 'rb') as in_:
+            out_.writelines(in_)
     return pybedtools.BedTool(gzfn)
 
 def fix(x):
@@ -67,34 +68,34 @@ def run(method, bedtool, expected, **kwargs):
         assert res == expected
 
     except AssertionError:
-        print result.fn
-        print 'Method call:'
+        print(result.fn)
+        print('Method call:')
         args = []
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             args.append(('%s=%s' % (key, val)).strip())
 
         args = ', '.join(args)
-        print 'BedTool.%(method)s(%(args)s)' % locals()
-        print 'Got:'
-        print res
-        print 'Expected:'
-        print expected
-        print 'Diff:'
+        print('BedTool.%(method)s(%(args)s)' % locals())
+        print('Got:')
+        print(res)
+        print('Expected:')
+        print(expected)
+        print('Diff:')
         for i in difflib.unified_diff(res.splitlines(1), expected.splitlines(1)):
-            print i,
+            print(i, end=' ')
 
         # Make tabs and newlines visible
         spec_res = res.replace('\t', '\\t').replace('\n', '\\n\n')
         spec_expected = expected.replace('\t', '\\t').replace('\n', '\\n\n')
 
-        print 'Showing special characters:'
-        print 'Got:'
-        print spec_res
-        print 'Expected:'
-        print spec_expected
-        print 'Diff:'
+        print('Showing special characters:')
+        print('Got:')
+        print(spec_res)
+        print('Expected:')
+        print(spec_expected)
+        print('Diff:')
         for i in difflib.unified_diff(spec_res.splitlines(1), spec_expected.splitlines(1)):
-            print i,
+            print(i, end=' ')
         raise
 
 

@@ -10,3 +10,5 @@ recursive-include pybedtools/test/data *
 recursive-include pybedtools/test *
 include docs/Makefile
 include docs/make.bat
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

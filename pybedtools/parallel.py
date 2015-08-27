@@ -1,6 +1,6 @@
 import sys
 import multiprocessing
-import helpers
+from . import helpers
 import pybedtools
 
 
@@ -82,7 +82,7 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     ... reduce_func=reduce_func, debug=True, report_iterations=True)
 
     >>> # get results
-    >>> print list(results)
+    >>> print(list(results))
     [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
 
     >>> # We can compare this to the actual intersection:
@@ -99,7 +99,7 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     >>> results = parallel_apply(a, method='jaccard', method_args=(b,),
     ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
     >>> for i in results:
-    ...     print sorted(i.items())
+    ...     print(sorted(i.items()))
     [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
     [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
     [('intersection', 45), ('jaccard', 0.0818182), ('n_intersections', 1), ('union-intersection', 550)]

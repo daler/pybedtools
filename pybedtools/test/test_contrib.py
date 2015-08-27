@@ -6,7 +6,7 @@ import os
 import pybedtools
 from pybedtools import Interval
 #from pybedtools.contrib import Classifier
-from tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
+from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 
 # model for gdc.
 # chr2L, starts at 1 and spacing is 10bp.
@@ -85,14 +85,14 @@ def _classifier():
             bed[7]: set(['tRNA', 'intron', 'exon', 'mRNA', 'CDS', 'gene']),
             }
 
-    print 'use these indexes for debugging'
+    print('use these indexes for debugging')
     for i, f in enumerate(bed):
-        print i, f
+        print(i, f)
 
-    for k, v in c.class_features.items():
-        print k
+    for k, v in list(c.class_features.items()):
+        print(k)
         for i in v:
-            print '\t' + str(i)
+            print('\t' + str(i))
 
     assert c.class_features == {
             frozenset([]): [bed[0]],
@@ -163,12 +163,12 @@ def test_cleaned_intersect():
 
     try:
         pybedtools.helpers._check_for_R()
-        print pybedtools.contrib.venn_maker.venn_maker(
+        print(pybedtools.contrib.venn_maker.venn_maker(
                 beds=[x, y, z],
                 names=['x','y','z'],
                 figure_filename='out.tiff',
                 additional_args = ['euler.d=TRUE', 'scaled=TRUE', 'fill=c("red","blue", "orange")'],
-                run=True)
+                run=True))
     except ValueError:
         sys.stderr.write('R installation not found; skipping test')
 
@@ -190,5 +190,5 @@ def test_venn_maker_3way_1empty():
     try:
         pybedtools.contrib.venn_maker.venn_maker([a, b, c], run=True, figure_filename='t.tiff')
     except ValueError:
-        print "R not installed, skipping test"
+        print("R not installed, skipping test")
         #os.unlink('t.tiff')

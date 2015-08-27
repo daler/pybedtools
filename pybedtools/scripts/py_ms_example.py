@@ -23,7 +23,7 @@ def main():
 
     for gene in nearby:
         if int(gene[-1]) < 5000:
-            print gene.name
+            print(gene.name)
 
 if __name__ == "__main__":
     main()

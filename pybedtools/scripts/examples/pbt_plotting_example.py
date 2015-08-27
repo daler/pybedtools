@@ -2,6 +2,7 @@ import time
 import os
 import pybedtools
 from pybedtools.contrib import plotting
+from __future__ import print_function
 from matplotlib import pyplot as plt
 
 colors = ['r', 'b', 'g']
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     ax.legend(loc='best')
     ax.axis('tight')
 
-    print'%.2fs' % (time.time() - t0)
+    print('%.2fs' % (time.time() - t0))
 
 
     plt.show()

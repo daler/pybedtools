@@ -1,7 +1,9 @@
 import pybedtools
-from tfuncs import setup, teardown
+from .tfuncs import setup, teardown
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises, assert_equal
+from nose.plugins.attrib import attr
+from nose.plugins.skip import SkipTest
 import os
 import sys
 
@@ -22,7 +24,7 @@ def test_annotate_closest():
     assert a.field_count() == c.field_count() - 2
     # in this test-case, the final column should be exon;intron
     # since m1 completely contains both an exon and an intron.
-    f = iter(c).next()
+    f = next(iter(c))
     # waiting for fix to bedtools:
     #assert f.fields[-1] == "exon;intron", f.fields[-1]
 
@@ -71,8 +73,6 @@ def test_venn_mpl():
 
     os.unlink(outfn)
 
-
-
 def test_venn_gchart_data_is_correct():
     original = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed').sort().merge()
     a = pybedtools.BedTool(original[:300]).saveas()
@@ -83,7 +83,7 @@ def test_venn_gchart_data_is_correct():
     labels = 'a,b,c'
 
     expected_data = {'chco': '00FF00,FF0000,0000FF',
-                     'chd': 't:1.0,0.4,0.716666666667,0.0666666666667,0.05,0.183333333333,0.0166666666667',
+                     'chd': 't:1.0,0.4,0.7167,0.0667,0.05,0.1833,0.0167',
                      'chs': '300x300',
                      'cht': 'v',
                      'chdl': 'a|b|c'}
@@ -103,7 +103,7 @@ def test_venn_gchart_data_is_correct():
 
 def test_venn_gchart_png_is_saved_correctly():
     from nose.plugins.skip import SkipTest
-    raise SkipTest('Small differences between fonts in PDF are sometimes produced and need to be accounted for')
+    raise SkipTest('Small differences between fonts in PNG are sometimes produced and need to be accounted for')
     here = os.path.dirname(__file__)
     expected = open(os.path.join(here, 'gchart-expected.png')).read()
 

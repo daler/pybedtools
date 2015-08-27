@@ -1,5 +1,4 @@
 _bedtools_path = ""
-_samtools_path = ""
 _tabix_path = ""
 _bgzip_path = ""
 _R_path = ""
@@ -11,7 +10,6 @@ tempfile_suffix = '.tmp'
 # Checking for BEDTools will happen when creating the first BedTool; other
 # checks happen at first use (BAM object creation; tabix-ing a BedTool)
 _bedtools_installed = False
-_samtools_installed = False
 _tabix_installed = False
 _bgzip_installed = False
 _R_installed = False
@@ -82,8 +80,8 @@ _prog_names = {
     'fisher': 'fisher',
 }
 
-_old_names = _prog_names.keys()
-_new_names = _prog_names.values()
+_old_names = list(_prog_names.keys())
+_new_names = list(_prog_names.values())
 
 _column_names = {
     'bed': ['chrom', 'start', 'end', 'name', 'score', 'strand', 'thickStart',

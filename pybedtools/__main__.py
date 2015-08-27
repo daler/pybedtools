@@ -3,6 +3,7 @@
 pybedtools utility scripts:
 
 """
+from __future__ import print_function
 import sys
 import textwrap
 
@@ -25,15 +26,15 @@ def main():
     if (len(sys.argv) != 1 and not sys.argv[1] in scripts) \
        or len(sys.argv) == 1:
 
-        print __doc__.strip() + "\n"
+        print(__doc__.strip() + "\n")
         for name, mod in zip(scripts, mods):
             scriptname = " %-22s:" % name
             padding = ' ' * (len(scriptname) + 1)
             doclines = textwrap.wrap(textwrap.dedent(mod.main.__doc__), 50)
-            print scriptname, doclines[0]
+            print(scriptname, doclines[0])
             for line in doclines[1:]:
-                print padding, line
-            print
+                print(padding, line)
+            print()
 
     else:
         mname = sys.argv.pop(1)

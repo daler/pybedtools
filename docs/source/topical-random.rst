@@ -67,7 +67,7 @@ it to a list in order to look at it:
     >>> len(results)
     100
 
-    >>> print results[:10]
+    >>> print(results[:10])
     [1, 1, 2, 2, 1, 2, 1, 0, 2, 3]
 
 Running thousands of iterations on files with many features will of course
@@ -143,7 +143,7 @@ For example:
 
     >>> keys = ['self', 'other', 'actual', 'median randomized', 'normalized', 'percentile']
     >>> for key in keys:
-    ...     print '%s: %s' % (key, results_dict[key])
+    ...     print('%s: %s' % (key, results_dict[key]))
     self: 4
     other: 2
     actual: 3

@@ -143,10 +143,10 @@ class BasePairClassifier(object):
                 filename = '%s%s' % (prefix, featuretype)
                 files[featuretype] = open(filename, 'w')
             files[featuretype].write(str(feature))
-        for f in files.values():
+        for f in list(files.values()):
             f.close()
-        return zip(*[(featuretype, f.name)
-                   for (featuretype, f) in files.items()])
+        return list(zip(*[(featuretype, f.name)
+                   for (featuretype, f) in list(files.items())]))
 
     def classify(self, **kwargs):
         """
@@ -263,7 +263,7 @@ class BasePairClassifier(object):
         sample, genomic = self.table(include=include)
         sample = sample.copy()
         genomic = genomic.copy()
-        keys = list(set(sample.keys() + genomic.keys()))
+        keys = list(set(list(sample.keys()) + list(genomic.keys())))
         table = {}
         for h in order:
             classes = []
@@ -293,7 +293,7 @@ class BasePairClassifier(object):
         d, s = self.table(include)
         out = []
         out.append('class\tsample\tgenome')
-        for cls in sorted(d.keys(), key=lambda x: d[x], reverse=True):
+        for cls in sorted(list(d.keys()), key=lambda x: d[x], reverse=True):
             if len(cls) == 0:
                 label = 'unannotated'
             else:
@@ -441,7 +441,7 @@ class Classifier(object):
         self.class_features = defaultdict(list)
         self.class_counts = defaultdict(int)
 
-        for feature, featuretypes in self.feature_classes.items():
+        for feature, featuretypes in list(self.feature_classes.items()):
             # get rid of "unannotated"
             ft = featuretypes.difference(['.'])
             key = frozenset(ft)
@@ -467,7 +467,7 @@ class Classifier(object):
         def make_trackline(klass):
             return 'track name="%s"' % (' '.join(sorted(list(klass))))
 
-        for klass, features in self.class_features.iteritems():
+        for klass, features in self.class_features.items():
             pybedtools.BedTool(features)\
                 .saveas(make_filename(klass), make_trackline(klass))
 
@@ -514,7 +514,7 @@ class Classifier(object):
         """
         counts = self.table(include=include)
         counts = counts.copy()
-        keys = counts.keys()
+        keys = list(counts.keys())
         table = {}
         for h in order:
             classes = []
@@ -577,7 +577,7 @@ class Classifier(object):
         # restructure the table so that it's a dict of class sums (rather than
         # having every class)
         d = {}
-        for k, v in hierarchical_table.items():
+        for k, v in list(hierarchical_table.items()):
             d[k] = sum(i[1] for i in v)
 
         total = float(sum(d.values()))
@@ -589,7 +589,7 @@ class Classifier(object):
         if order:
             items = [(k, d[k]) for k in order]
         else:
-            items = sorted(d.items(), key=lambda x: x[1])
+            items = sorted(list(d.items()), key=lambda x: x[1])
 
         newlabels, labels, counts = [], [], []
         for label, count in items:

@@ -1,3 +1,4 @@
+# distutils: language = c++
 from cbedtools cimport Interval
 from cbedtools import create_interval_from_list
 

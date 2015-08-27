@@ -12,8 +12,7 @@ The values in the diagram assume:
 import argparse
 import sys
 import pybedtools
-import urllib
-import urllib2
+from six.moves import urllib
 
 
 def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
@@ -50,7 +49,7 @@ def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
     # API doesn't seem to like large numbers, so get fractions instead, then
     # join make a comma-separated list of values.
     mx = float(max(vals))
-    vals = [i / mx for i in vals]
+    vals = [round(i / mx, 4) for i in vals]
     valstr = ','.join(map(str, vals))
 
     data = {'cht': 'v',
@@ -69,14 +68,15 @@ def gchart(data, outfn='out.png'):
     """
     Sends data to Google Chart API
     """
-    data = urllib.urlencode(data)
+    data = urllib.parse.urlencode(data)
+    binary_data = data.encode('UTF-8')
 
     url = 'https://chart.googleapis.com/chart?'
 
     # Request and get the PNG
-    req = urllib2.Request(url, data)
-    print url + data
-    response = urllib2.urlopen(req)
+    req = urllib.request.Request(url, binary_data)
+    print(url + data)
+    response = urllib.request.urlopen(req)
     f = open(outfn, 'w')
     f.write(response.read())
     f.close()
