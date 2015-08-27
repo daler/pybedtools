@@ -17,3 +17,4 @@ pybedtools/cbedtools.cpp
 pybedtools/featurefuncs.cpp
 *.bak
 cythonize.dat
+docs/source/autodocs/*.rst

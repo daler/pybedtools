@@ -380,7 +380,6 @@ results.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.scripts.pybedtools_demo
     pybedtools.scripts.venn_mpl
     pybedtools.scripts.venn_gchart
     pybedtools.scripts.intersection_matrix
