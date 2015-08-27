@@ -368,7 +368,6 @@ if __name__ == "__main__":
                  'pybedtools/scripts/peak_pie.py',
                  'pybedtools/scripts/intersection_matrix.py',
                  'pybedtools/scripts/intron_exon_reads.py',
-                 'pybedtools/scripts/pybedtools_demo.py',
                  'pybedtools/scripts/examples/pbt_plotting_example.py',
                  'pybedtools/scripts/pybedtools'],
         **setuptools_kwargs)
