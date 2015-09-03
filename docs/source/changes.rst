@@ -2,13 +2,14 @@
 
 Changelog
 =========
-Changes in v0.7.0rc1
---------------------
-This is a major upgrade in the underlying code in order to support both Python
-2 and Python 3 using the same code. Aside from trivial things like converting
-print statements to functions and using `next()` instead of `.next()`, this
-required a substantial rewrite to support the way strings are handled in Python
-3 (in Cython and wrapped C++) and how relative modules work.
+Changes in v0.7.0
+-----------------
+This release reflects a major upgrade in the underlying code in order to
+support both Python 2 and Python 3 using the same code. Aside from trivial
+things like converting print statements to functions and using `next()` instead
+of `.next()`, this required a substantial rewrite to support the way strings
+are handled in Python 3 (in Cython and wrapped C++) and how relative modules
+work.
 
 Importantly, after converting them to Python 2- and 3-compatible syntax *all
 previous tests pass* so to the end user should not notice any differences
@@ -42,7 +43,14 @@ in a BAM file using the `pybedtools.BAM` object.
 
 In the future, iterating over a BAM file will yield `pysam.AlignedSegment`
 objects directly, but for now you can use the `pybedtools.BAM.pysam_bamfile`
-attribute to access the underlying `pysam.AlignmentFile` 
+attribute to access the underlying `pysam.AlignmentFile`
+
+Cython no longer a dependency
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The Cythonized ``.cxx`` files are now shipped with the `pybedtools`
+distribution, so Cython is no longer a requirement for installation.
+
+You will however need to have Cython installed if you're developing pybedtools.
 
 Remote BAM support clarification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +81,49 @@ Thanks to Saulius Lukauskas, gzip handling is now improved, and calling
 `BedTool.saveas()` with a `.gz` extension on the filename will automatically
 compress the output.
 
+Docker
+~~~~~~
+In the github repo there is a `docker` directory containing Dockerfiles to set
+up isolated testing environments. These Dockerfiles also demonstrate how to set
+up a complete environment starting from a base Ubuntu install.
+
+Tests
+~~~~~
+All tests from v0.6.9 (which was Python 2 only) have been made Python 2/3
+compatible and all previous tests pass.
+
+If you have docker installed, from the top level directory, you can run the
+full tests like this::
+
+    cd docker
+    ./full-tests.sh
+
+This will build docker containers for Python 2 and Python 3 with all
+depedencies, export the parent directory to the container, and run the test
+suite.
+
+
+Conda packages
+~~~~~~~~~~~~~~
+You can now install the latest versions of tabix, bedtools, pysam, and
+pybedtools from conda, dramatically speeding up installation time. These
+mechanisms are used for automated testing as well (see the ``condatest.sh``
+script in the github repo).
+
+To use these packages in your own environment(s), specify the `daler` conda
+channel like this::
+
+    conda install -c daler pybedtools
+
+Note that this will not install BEDTools or tabix unless you explicitly say
+so::
+
+    conda install -c daler pybedtools bedtools tabix
+
+.. note::
+
+    This currently only works on Linux; contributions to Mac conda recipes (see
+    the `conda` dir in the github repo) would be welcomed.
 
 Changes in v0.6.9
 -----------------
