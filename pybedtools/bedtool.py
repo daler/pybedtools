@@ -1970,7 +1970,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='complement', implicit='i', uses_genome=True)
+    @_wraps(prog='complementBed', implicit='i', uses_genome=True)
     def complement(self):
         """
         Wraps `bedtools complement`.
