@@ -67,8 +67,8 @@ requires knowledge in Perl, bash, and awk.  The run time is identical to the
 
     rm $intergenic_snps
 
-See the `Shell script comparison <http://pythonhosted.org/pybedtools/sh-comparison.html>`_ in the docs
+See the `Shell script comparison <http://daler.github.io/pybedtools/sh-comparison.html>`_ in the docs
 for more details on this comparison, or keep reading the full documentation at
-http://pythonhosted.org/pybedtools/index.html.
+http://daler.github.io/pybedtools.
 
 
