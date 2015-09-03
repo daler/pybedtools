@@ -5,8 +5,8 @@
 
 .. include:: includeme.rst
 
-Welcome to pybedtools's documentation!
-======================================
+`pybedtools` documentation
+==========================
 
 .. include:: ../../README.rst
 
