@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.bedtool.BedTool.groupby &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.bedtool.BedTool.expand" href="pybedtools.bedtool.BedTool.expand.html" />
+    <link rel="prev" title="pybedtools.bedtool.BedTool.window_maker" href="pybedtools.bedtool.BedTool.window_maker.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.expand.html" title="pybedtools.bedtool.BedTool.expand"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.window_maker.html" title="pybedtools.bedtool.BedTool.window_maker"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-bedtool-bedtool-groupby">
+<h1>pybedtools.bedtool.BedTool.groupby<a class="headerlink" href="#pybedtools-bedtool-bedtool-groupby" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="pybedtools.bedtool.BedTool.groupby">
+<code class="descclassname">BedTool.</code><code class="descname">groupby</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.groupby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.groupby" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">groupby</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;gdc.gff&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;gdc.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ops</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;sum&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> 
+<span class="go">chr2L   41      70      0</span>
+<span class="go">chr2L   71      130     2</span>
+<span class="go">chr2L   131     170     4</span>
+<span class="go">chr2L   171     200     0</span>
+<span class="go">chr2L   201     220     1</span>
+<span class="go">chr2L   41      130     2</span>
+<span class="go">chr2L   171     220     1</span>
+<span class="go">chr2L   41      220     7</span>
+<span class="go">chr2L   161     230     6</span>
+<span class="go">chr2L   41      220     7</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">groupBy</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools groupby 
+Version: v2.25.0
+Summary: Summarizes a dataset column based upon
+         common column groupings. Akin to the SQL &quot;group by&quot; command.
+
+Usage:   bedtools groupby -g [group**column(s)] -c [op**column(s)] -o [ops] 
+         cat [FILE] | bedtools groupby -g [group**column(s)] -c [op**column(s)] -o [ops] 
+
+Options: 
+        -i              Input file. Assumes &quot;stdin&quot; if omitted.
+
+        -g -grp         Specify the columns (1-based) for the grouping.
+                        The columns must be comma separated.
+                        - Default: 1,2,3
+
+        -c -opCols      Specify the column (1-based) that should be summarized.
+                        - Required.
+
+        -o -ops         Specify the operation that should be applied to opCol.
+                        Valid operations:
+                            sum, count, count**distinct, min, max,
+                            mean, median, mode, antimode,
+                            stdev, sstdev (sample standard dev.),
+                            collapse (i.e., print a comma separated list (duplicates allowed)), 
+                            distinct (i.e., print a comma separated list (NO duplicates allowed)), 
+                            distinct**sort**num (as distinct, but sorted numerically, ascending), 
+                            distinct**sort**num**desc (as distinct, but sorted numerically, descending), 
+                            concat   (i.e., merge values into a single, non-delimited string), 
+                            freqdesc (i.e., print desc. list of values:freq)
+                            freqasc (i.e., print asc. list of values:freq)
+                            first (i.e., print first value)
+                            last (i.e., print last value)
+                        - Default: sum
+
+                If there is only column, but multiple operations, all operations will be
+                applied on that column. Likewise, if there is only one operation, but
+                multiple columns, that operation will be applied to all columns.
+                Otherwise, the number of columns must match the the number of operations,
+                and will be applied in respective order.
+                E.g., &quot;-c 5,4,6 -o sum,mean,count&quot; will give the sum of column 5,
+                the mean of column 4, and the count of column 6.
+                The order of output columns will match the ordering given in the command.
+
+        -full           Print all columns from input file.  The first line in the group is used.
+                        Default: print only grouped columns.
+
+        -inheader       Input file has a header line - the first line will be ignored.
+
+        -outheader      Print header line in the output, detailing the column names. 
+                        If the input file has headers (-inheader), the output file
+                        will use the input&#39;s column names.
+                        If the input file has no headers, the output file
+                        will use &quot;col**1&quot;, &quot;col**2&quot;, etc. as the column names.
+
+        -header         same as &#39;-inheader -outheader&#39;
+
+        -ignorecase     Group values regardless of upper/lower case.
+
+        -prec   Sets the decimal precision for output (Default: 5)
+
+        -delim  Specify a custom delimiter for the collapse operations.
+                - Example: -delim &quot;|&quot;
+                - Default: &quot;,&quot;.
+
+Examples: 
+        $ cat ex1.out
+        chr1 10  20  A   chr1    15  25  B.1 1000    ATAT
+        chr1 10  20  A   chr1    25  35  B.2 10000   CGCG
+
+        $ groupBy -i ex1.out -g 1,2,3,4 -c 9 -o sum
+        chr1 10  20  A   11000
+
+        $ groupBy -i ex1.out -grp 1,2,3,4 -opCols 9,9 -ops sum,max
+        chr1 10  20  A   11000   10000
+
+        $ groupBy -i ex1.out -g 1,2,3,4 -c 8,9 -o collapse,mean
+        chr1 10  20  A   B.1,B.2,    5500
+
+        $ cat ex1.out | groupBy -g 1,2,3,4 -c 8,9 -o collapse,mean
+        chr1 10  20  A   B.1,B.2,    5500
+
+        $ cat ex1.out | groupBy -g 1,2,3,4 -c 10 -o concat
+        chr1 10  20  A   ATATCGCG
+
+Notes: 
+        (1)  The input file/stream should be sorted/grouped by the -grp. columns
+        (2)  If -i is unspecified, input is assumed to come from stdin.
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.window_maker.html"
+                        title="previous chapter">pybedtools.bedtool.BedTool.window_maker</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.expand.html"
+                        title="next chapter">pybedtools.bedtool.BedTool.expand</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.groupby.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.expand.html" title="pybedtools.bedtool.BedTool.expand"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.window_maker.html" title="pybedtools.bedtool.BedTool.window_maker"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

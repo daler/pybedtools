@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripts &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="next" title="pybedtools Reference" href="autodoc_source.html" />
+    <link rel="prev" title="FAQs" href="FAQs.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autodoc_source.html" title="pybedtools Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FAQs.html" title="FAQs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripts">
+<h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> comes with several scripts that illustrate common use-cases.</p>
+<p>In Python 2.7, you can use:</p>
+<div class="highlight-python"><div class="highlight"><pre>python -m pybedtools
+</pre></div>
+</div>
+<p>to get a list of scripts and their description.</p>
+<div class="section" id="venn-diagram-scripts">
+<h2>Venn diagram scripts<a class="headerlink" href="#venn-diagram-scripts" title="Permalink to this headline">¶</a></h2>
+<p>There are two scripts for making Venn diagrams, depending on how you'd like the
+diagrams to look.  Both simply take 3 BED files as input.  <code class="docutils literal"><span class="pre">venn_gchart.py</span></code>
+uses the Google Chart API, while <code class="docutils literal"><span class="pre">venn_mpl.py</span></code> uses matplotlib if you have it
+installed.</p>
+<p>Upon installing <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>, these scripts should be available on your
+path.  Calling them with the <code class="docutils literal"><span class="pre">-h</span></code> option will print the help, and using the
+<code class="docutils literal"><span class="pre">--test</span></code> option will run a test, creating a new file <code class="docutils literal"><span class="pre">out.png</span></code> in the current
+working directory.</p>
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="_images/gchart.png"><img alt="_images/gchart.png" src="_images/gchart.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">Above: using <code class="docutils literal"><span class="pre">--test</span></code> with <code class="docutils literal"><span class="pre">venn_gchart.py</span></code> results in this figure</span></p>
+</div>
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="_images/mpl.png"><img alt="_images/mpl.png" src="_images/mpl.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Above: Result of using <code class="docutils literal"><span class="pre">--test</span></code> with <code class="docutils literal"><span class="pre">venn_mpl.py</span></code></span></p>
+</div>
+</div>
+<div class="section" id="intron-exon-classification">
+<h2>Intron/exon classification<a class="headerlink" href="#intron-exon-classification" title="Permalink to this headline">¶</a></h2>
+<p>The script <code class="docutils literal"><span class="pre">intron_exon_reads.py</span></code> accepts a GFF file (with introns and exons
+annotated) and a BAM file.  When complete, it prints out the number of exonic,
+intronic, and both intronic and exonic (i.e., from overlapping genes or
+isoforms).  This script is also a good example of how to do use Python's
+<code class="xref py py-mod docutils literal"><span class="pre">multiprocessing</span></code> for parallel computation.</p>
+</div>
+<div class="section" id="annotate-py">
+<h2>Annotate.py<a class="headerlink" href="#annotate-py" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">annotate.py</span></code> script extends <code class="docutils literal"><span class="pre">closestBed</span></code> by classifying features (intron,
+exon) that are a distance of 0 away from the query features.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripts</a><ul>
+<li><a class="reference internal" href="#venn-diagram-scripts">Venn diagram scripts</a></li>
+<li><a class="reference internal" href="#intron-exon-classification">Intron/exon classification</a></li>
+<li><a class="reference internal" href="#annotate-py">Annotate.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="FAQs.html"
+                        title="previous chapter">FAQs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="autodoc_source.html"
+                        title="next chapter"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/scripts.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="autodoc_source.html" title="pybedtools Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FAQs.html" title="FAQs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

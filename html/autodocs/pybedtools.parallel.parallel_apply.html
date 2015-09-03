@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.parallel.parallel_apply &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.contrib.plotting.Track" href="pybedtools.contrib.plotting.Track.html" />
+    <link rel="prev" title="pybedtools.helpers.chromsizes_to_file" href="pybedtools.helpers.chromsizes_to_file.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.plotting.Track.html" title="pybedtools.contrib.plotting.Track"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.helpers.chromsizes_to_file.html" title="pybedtools.helpers.chromsizes_to_file"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-parallel-parallel-apply">
+<h1>pybedtools.parallel.parallel_apply<a class="headerlink" href="#pybedtools-parallel-parallel-apply" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pybedtools.parallel.parallel_apply">
+<code class="descclassname">pybedtools.parallel.</code><code class="descname">parallel_apply</code><span class="sig-paren">(</span><em>orig_bedtool</em>, <em>method</em>, <em>genome=None</em>, <em>genome_fn=None</em>, <em>method_args=None</em>, <em>method_kwargs=None</em>, <em>shuffle_kwargs=None</em>, <em>shuffle=True</em>, <em>reduce_func=None</em>, <em>processes=1</em>, <em>sort=False</em>, <em>_orig_pool=None</em>, <em>iterations=1000</em>, <em>debug=False</em>, <em>report_iterations=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/parallel.html#parallel_apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.parallel.parallel_apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call an arbitrary BedTool method many times in parallel.</p>
+<p>An example use-case is to generate a null distribution of intersections,
+and then compare this to the actual intersections.</p>
+<p><strong>Important:</strong> due to a known file handle leak in BedTool.__len__, it's
+best to simply check the number of lines in the file, as in the below
+function. This works because BEDTools programs strip any non-interval lines
+in the results.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># set up example BedTools</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Method of `a` to call:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">method</span> <span class="o">=</span> <span class="s">&#39;intersect&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Kwargs provided to `a.intersect` each iteration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">method_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Function that will be called on the results of</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># `a.intersect(**method_kwargs)`.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">reduce_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Create a small artificial genome for this test (generally you&#39;d</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># use an assembly name, like &quot;hg19&quot;):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">genome</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">chr1</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Do 10 iterations using 1 process for this test (generally you&#39;d</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># use 1000+ iterations, and as many processes as you have CPUs)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">parallel</span><span class="o">.</span><span class="n">parallel_apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="n">genome</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">method_kwargs</span><span class="o">=</span><span class="n">method_kwargs</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">reduce_func</span><span class="o">=</span><span class="n">reduce_func</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">report_iterations</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># get results</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+<span class="go">[2, 2, 3, 0, 3, 3, 0, 0, 2, 4]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># We can compare this to the actual intersection:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reduce_func</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="o">**</span><span class="n">method_kwargs</span><span class="p">))</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>Alternatively, we could use the <code class="docutils literal"><span class="pre">a.jaccard</span></code> method, which already does the
+reduction to a dictionary.  However, the Jaccard method requires the input
+to be sorted.  Here, we specify <code class="docutils literal"><span class="pre">sort=True</span></code> to sort each shuffled BedTool
+before calling its <code class="docutils literal"><span class="pre">jaccard</span></code> method.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools.parallel</span> <span class="kn">import</span> <span class="n">parallel_apply</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel_apply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;jaccard&#39;</span><span class="p">,</span> <span class="n">method_args</span><span class="o">=</span><span class="p">(</span><span class="n">b</span><span class="p">,),</span>
+<span class="gp">... </span><span class="n">genome</span><span class="o">=</span><span class="n">genome</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+<span class="go">[(&#39;intersection&#39;, 15), (&#39;jaccard&#39;, 0.0238095), (&#39;n_intersections&#39;, 2), (&#39;union-intersection&#39;, 630)]</span>
+<span class="go">[(&#39;intersection&#39;, 15), (&#39;jaccard&#39;, 0.0238095), (&#39;n_intersections&#39;, 2), (&#39;union-intersection&#39;, 630)]</span>
+<span class="go">[(&#39;intersection&#39;, 45), (&#39;jaccard&#39;, 0.0818182), (&#39;n_intersections&#39;, 1), (&#39;union-intersection&#39;, 550)]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>orig_bedtool</strong> : BedTool</p>
+<p><strong>method</strong> : str</p>
+<blockquote>
+<div><p>The method of <code class="docutils literal"><span class="pre">orig_bedtool</span></code> to run</p>
+</div></blockquote>
+<p><strong>method_args</strong> : tuple</p>
+<blockquote>
+<div><p>Passed directly to getattr(orig_bedtool, method)()</p>
+</div></blockquote>
+<p><strong>method_kwargs</strong> : dict</p>
+<blockquote>
+<div><p>Passed directly to getattr(orig_bedtool, method)()</p>
+</div></blockquote>
+<p><strong>shuffle</strong> : bool</p>
+<blockquote>
+<div><p>If True, then <code class="docutils literal"><span class="pre">orig_bedtool</span></code> will be shuffled at each iteration and
+that shuffled version's <code class="docutils literal"><span class="pre">method</span></code> will be called with <code class="docutils literal"><span class="pre">method_args</span></code> and
+<code class="docutils literal"><span class="pre">method_kwargs</span></code>.</p>
+</div></blockquote>
+<p><strong>shuffle_kwargs</strong> : dict</p>
+<blockquote>
+<div><p>If <code class="docutils literal"><span class="pre">shuffle</span></code> is True, these are passed to <code class="docutils literal"><span class="pre">orig_bedtool.shuffle()</span></code>.
+You do not need to pass the genome here; that's handled separately by
+the <code class="docutils literal"><span class="pre">genome</span></code> and <code class="docutils literal"><span class="pre">genome_fn</span></code> kwargs.</p>
+</div></blockquote>
+<p><strong>iterations</strong> : int</p>
+<blockquote>
+<div><p>Number of iterations to perform</p>
+</div></blockquote>
+<p><strong>genome</strong> : string or dict</p>
+<blockquote>
+<div><p>If string, then assume it is the assembly name (e.g., hg19) and get
+a dictionary of chromsizes for that assembly, then converts to
+a filename.</p>
+</div></blockquote>
+<p><strong>genome_fn</strong> : str</p>
+<blockquote>
+<div><p>Mutually exclusive with <code class="docutils literal"><span class="pre">genome</span></code>; <code class="docutils literal"><span class="pre">genome_fn</span></code> must be an existing
+filename with the chromsizes.  Use the <code class="docutils literal"><span class="pre">genome</span></code> kwarg instead if you'd
+rather supply an assembly or dict.</p>
+</div></blockquote>
+<p><strong>reduce_func</strong> : callable</p>
+<blockquote>
+<div><p>Function or other callable object that accepts, as its only argument,
+the results from <code class="docutils literal"><span class="pre">orig_bedtool.method()</span></code>.  For example, if you care
+about the number of results, then you can use <code class="docutils literal"><span class="pre">reduce_func=len</span></code>.</p>
+</div></blockquote>
+<p><strong>processes</strong> : int</p>
+<blockquote>
+<div><p>Number of processes to run.  If <code class="docutils literal"><span class="pre">processes=1</span></code>, then multiprocessing is
+not used (making it much easier to debug).  This argument is ignored if
+<code class="docutils literal"><span class="pre">_orig_pool</span></code> is provided.</p>
+</div></blockquote>
+<p><strong>sort</strong> : bool</p>
+<blockquote>
+<div><p>If both <code class="docutils literal"><span class="pre">shuffle</span></code> and <code class="docutils literal"><span class="pre">sort</span></code> are True, then the shuffled BedTool will
+then be sorted.  Use this if <code class="docutils literal"><span class="pre">method</span></code> requires sorted input.</p>
+</div></blockquote>
+<p><strong>_orig_pool</strong> : multiprocessing.Pool instance</p>
+<blockquote>
+<div><p>If provided, uses <code class="docutils literal"><span class="pre">_orig_pool</span></code> instead of creating one.  In this case,
+<code class="docutils literal"><span class="pre">processes</span></code> will be ignored.</p>
+</div></blockquote>
+<p><strong>debug</strong> : bool</p>
+<blockquote>
+<div><p>If True, then use the current iteration index as the seed to shuffle.</p>
+</div></blockquote>
+<p><strong>report_iterations</strong> : bool</p>
+<blockquote class="last">
+<div><p>If True, then report the number of iterations to stderr.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.helpers.chromsizes_to_file.html"
+                        title="previous chapter">pybedtools.helpers.chromsizes_to_file</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.contrib.plotting.Track.html"
+                        title="next chapter">pybedtools.contrib.plotting.Track</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.parallel.parallel_apply.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.plotting.Track.html" title="pybedtools.contrib.plotting.Track"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.helpers.chromsizes_to_file.html" title="pybedtools.helpers.chromsizes_to_file"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

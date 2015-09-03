@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.bedtool.BedTool.coverage &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.bedtool.BedTool.map" href="pybedtools.bedtool.BedTool.map.html" />
+    <link rel="prev" title="pybedtools.bedtool.BedTool.closest" href="pybedtools.bedtool.BedTool.closest.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.map.html" title="pybedtools.bedtool.BedTool.map"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.closest.html" title="pybedtools.bedtool.BedTool.closest"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-bedtool-bedtool-coverage">
+<h1>pybedtools.bedtool.BedTool.coverage<a class="headerlink" href="#pybedtools-bedtool-bedtool-coverage" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="pybedtools.bedtool.BedTool.coverage">
+<code class="descclassname">BedTool.</code><code class="descname">coverage</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.coverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.coverage" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">coverage</span></code>.</p>
+<p>Note that starting in version 2.24.0, BEDTools swapped the semantics of
+the &quot;a&quot; and &quot;b&quot; files.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> 
+<span class="go">chr1    155     200     feature5        0       -       2       45      45      1.0000000</span>
+<span class="go">chr1    800     901     feature6        0       +       1       1       101     0.0099010</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-a</span></code> argument to <code class="docutils literal"><span class="pre">coverageBed</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools coverage (aka coverageBed)
+Version: v2.25.0
+Summary: Returns the depth and breadth of coverage of features from B
+         on the intervals in A.
+
+Usage:   bedtools coverage [OPTIONS] -a &lt;bed/gff/vcf&gt; -b &lt;bed/gff/vcf&gt;
+
+Options: 
+        -hist   Report a histogram of coverage for each feature in A
+                as well as a summary histogram for **all** features in A.
+
+                Output (tab delimited) after each feature in A:
+                  1) depth
+                  2) # bases at depth
+                  3) size of A
+                  4) % of A at depth
+
+        -d      Report the depth at each position in each A feature.
+                Positions reported are one based.  Each position
+                and depth follow the complete A feature.
+
+        -counts Only report the count of overlaps, don&#39;t compute fraction, etc.
+
+        -mean   Report the mean depth of all positions in each A feature.
+
+        -s      Require same strandedness.  That is, only report hits in B
+                that overlap A on the **same** strand.
+                - By default, overlaps are reported without respect to strand.
+
+        -S      Require different strandedness.  That is, only report hits in B
+                that overlap A on the **opposite** strand.
+                - By default, overlaps are reported without respect to strand.
+
+        -f      Minimum overlap required as a fraction of A.
+                - Default is 1E-9 (i.e., 1bp).
+                - FLOAT (e.g. 0.50)
+
+        -F      Minimum overlap required as a fraction of B.
+                - Default is 1E-9 (i.e., 1bp).
+                - FLOAT (e.g. 0.50)
+
+        -r      Require that the fraction overlap be reciprocal for A AND B.
+                - In other words, if -f is 0.90 and -r is used, this requires
+                  that B overlap 90% of A and A **also** overlaps 90% of B.
+
+        -e      Require that the minimum fraction be satisfied for A OR B.
+                - In other words, if -e is used with -f 0.90 and -F 0.10 this requires
+                  that either 90% of A is covered OR 10% of  B is covered.
+                  Without -e, both fractions would have to be satisfied.
+
+        -split  Treat &quot;split&quot; BAM or BED12 entries as distinct BED intervals.
+
+        -g      Provide a genome file to enforce consistent chromosome sort order
+                across input files. Only applies when used with -sorted option.
+
+        -nonamecheck    For sorted data, don&#39;t throw an error if the file has different naming conventions
+                        for the same chromosome. ex. &quot;chr1&quot; vs &quot;chr01&quot;.
+
+        -sorted Use the &quot;chromsweep&quot; algorithm for sorted (-k1,1 -k2,2n) input.
+
+        -bed    If using BAM input, write output as BED.
+
+        -header Print the header from the A file prior to results.
+
+        -nobuf  Disable buffered output. Using this option will cause each line
+                of output to be printed as it is generated, rather than saved
+                in a buffer. This will make printing large output files 
+                noticeably slower, but can be useful in conjunction with
+                other software tools and scripts that need to process one
+                line of bedtools output at a time.
+
+        -iobuf  Specify amount of memory to use for input buffer.
+                Takes an integer argument. Optional suffixes K/M/G supported.
+                Note: currently has no effect with compressed files.
+
+Default Output:  
+         After each entry in A, reports: 
+           1) The number of features in B that overlapped the A interval.
+           2) The number of bases in A that had non-zero coverage.
+           3) The length of the entry in A.
+           4) The fraction of bases in A that had non-zero coverage.
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.closest.html"
+                        title="previous chapter">pybedtools.bedtool.BedTool.closest</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.map.html"
+                        title="next chapter">pybedtools.bedtool.BedTool.map</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.coverage.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.map.html" title="pybedtools.bedtool.BedTool.map"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.closest.html" title="pybedtools.bedtool.BedTool.closest"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

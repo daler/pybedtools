@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Randomization &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="up" title="Topical Documentation" href="topical-documentation-contents.html" />
+    <link rel="next" title="Wrapping new tools" href="topical-wrapping.html" />
+    <link rel="prev" title="Specifying genomes" href="topical-genome.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topical-wrapping.html" title="Wrapping new tools"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="topical-genome.html" title="Specifying genomes"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="randomization">
+<h1>Randomization<a class="headerlink" href="#randomization" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> provides some basic functionality for assigning some
+significance value to the overlap between two BEDfiles.</p>
+<p>The strategy is to randomly shuffle a file many times, each time doing an
+intersection with another file of interest and counting the number of
+intersections (or computing some other statistic on the overlap).  Upon doing
+this many times, an empirical distribution is constructed, and the number of
+intersections between the original, un-shuffled file is compared to this
+empirical distribution to obtain a p-value, or compared to the median of the
+distribution to get a score.</p>
+<p>There are two methods, <code class="xref py py-meth docutils literal"><span class="pre">pybedtools.BedTool.randomintersection()</span></code> which does the
+brute force randomizations, and <code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomstats()</span></code> which compiles
+and reports the results from the former method.</p>
+<div class="section" id="example-workflow">
+<h2>Example workflow<a class="headerlink" href="#example-workflow" title="Permalink to this headline">¶</a></h2>
+<p>As a somewhat trivial example, we'll intersect the example <code class="docutils literal"><span class="pre">a.bed</span></code> with
+<code class="docutils literal"><span class="pre">b.bed</span></code>, taking care to set some options that will let it run in a
+determinisitic way so that these tests will run.</p>
+<p>We will be shuffling <code class="docutils literal"><span class="pre">a.bed</span></code>, so we'll need to specify the limits of its
+chromosomes with <code class="xref py py-meth docutils literal"><span class="pre">BedTool.set_chromsizes()</span></code>.  Here, we set it to an
+artifically small chromosome size so that we can get some meaningful
+results in reasonable time.  In practice, you would either supply your own
+dictionary or use a string assembly name (e.g., <code class="docutils literal"><span class="pre">'hg19'</span></code>, <code class="docutils literal"><span class="pre">'mm9'</span></code>, <code class="docutils literal"><span class="pre">'dm3'</span></code>,
+etc).  The genome-handling code will find the chromsizes we've set, so
+there's no need to tell <code class="docutils literal"><span class="pre">shuffleBed</span></code> which genome file to use each time.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">chromsizes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;chr1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_chromsizes</span><span class="p">(</span><span class="n">chromsizes</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We have the option of specifying what kwargs to provide
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.shuffle()</span></code> and <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code>, which will be called
+each iteration.  In this example, we'll tell <code class="docutils literal"><span class="pre">shuffleBed</span></code> to only shuffle
+within the chromsome just to illustrate the kwargs passing. We also need to
+specify how many iterations to perform.  In practice, 1000 or 10000 are
+good numbers, but for the sake of this example we'll only do 100.</p>
+<p>Last, setting <code class="docutils literal"><span class="pre">debug=True</span></code> means that the random seed will be set in a
+predictable manner so that we'll always get the same results for testing.
+In practice, make sure you use <code class="docutils literal"><span class="pre">debug=False</span></code> (the default) to ensure random
+results.</p>
+<p>Furthermore, using the <code class="docutils literal"><span class="pre">processes</span></code> kwarg will substantially speed up the
+comparison (e.g., <code class="docutils literal"><span class="pre">processes=8</span></code> to split the randomizations across 8 cores).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomintersection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;chrom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">results</span></code> is a generator of intersection counts where each number is the
+number of times the shuffled <code class="docutils literal"><span class="pre">a</span></code> intersected with <code class="docutils literal"><span class="pre">b</span></code>.  We need to convert
+it to a list in order to look at it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="go">100</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="go">[1, 1, 2, 2, 1, 2, 1, 0, 2, 3]</span>
+</pre></div>
+</div>
+<p>Running thousands of iterations on files with many features will of course
+result in more complex results.  We could then take these results and plot
+them in matplotlib, or get some statistics on them.</p>
+<p>The method <code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomstats()</span></code> does this for us, but requires NumPy
+and SciPy to be installed.  This method also calls
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomintersection()</span></code> for us, returning the summarized results
+in a dictionary.</p>
+<p><code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomstats()</span></code> takes the same arguments as
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomintersection()</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">results_dict</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomstats</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;chrom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The keys to this results dictionary are as follows (some are redundant,
+I've found these keys useful for writing out to file):</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">iterations:</th><td class="field-body">the number of iterations we specified</td>
+</tr>
+<tr class="field-even field"><th class="field-name">actual:</th><td class="field-body">the number of intersections between then un-shuffled <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">b</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">file_a:</th><td class="field-body">the filename of <code class="docutils literal"><span class="pre">a</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">file_b:</th><td class="field-body">the filename of <code class="docutils literal"><span class="pre">b</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">&lt;file_a&gt;:</th><td class="field-body">the key is actully the filename of <code class="docutils literal"><span class="pre">a</span></code>, and the value is the number of
+features in <code class="docutils literal"><span class="pre">a</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">&lt;file_b&gt;:</th><td class="field-body">the key is actually the filename of <code class="docutils literal"><span class="pre">b</span></code> and the value is the number of
+features in <code class="docutils literal"><span class="pre">b</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">self:</th><td class="field-body">number of features in <code class="docutils literal"><span class="pre">a</span></code> (or &quot;self&quot;; same value as for &lt;file_a&gt;)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">other:</th><td class="field-body">number of features in <code class="docutils literal"><span class="pre">b</span></code> (or &quot;other&quot;; same value as for &lt;file_b&gt;)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">frac randomized above actual:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">fraction of iterations that had counts above the actual count</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">frac randomized below actual:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">fraction of iterations that had counts below the actual count</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">median randomized:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">the median of the distribution of randomized intersections</td>
+</tr>
+<tr class="field-even field"><th class="field-name">normalized:</th><td class="field-body">the actual count divided by the median; can be considered as a score</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">percentile:</th><td class="field-body">the percentile of actual within the distribution of randomized
+intersections; can be considered an empirical p-value</td>
+</tr>
+<tr class="field-even field"><th class="field-name">upper 97.5th:</th><td class="field-body">the 97.5th percentile of the randomized distribution</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">lower 2.5th:</th><td class="field-body">the 2.5th percentile of the randomized distribution</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;self&#39;</span><span class="p">,</span> <span class="s">&#39;other&#39;</span><span class="p">,</span> <span class="s">&#39;actual&#39;</span><span class="p">,</span> <span class="s">&#39;median randomized&#39;</span><span class="p">,</span> <span class="s">&#39;normalized&#39;</span><span class="p">,</span> <span class="s">&#39;percentile&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+<span class="go">self: 4</span>
+<span class="go">other: 2</span>
+<span class="go">actual: 3</span>
+<span class="go">median randomized: 2.0</span>
+<span class="go">normalized: 1.5</span>
+<span class="go">percentile: 92.0</span>
+</pre></div>
+</div>
+<p>Contributions toward improving this code or implementing other methods of
+statistical testing are very welcome!</p>
+</div>
+<div class="section" id="other-statistics">
+<h2>Other statistics<a class="headerlink" href="#other-statistics" title="Permalink to this headline">¶</a></h2>
+<p>In practice, a comparison between two sets of features (say, two transcription
+factors) with 1000 randomizations will have an empirical p-value of &lt; 0.001.
+That is, out of all the randomizations performed,  every single one had fewer
+intersections than the original.  Of course the resolution of the p-value is
+dependent on the number of randomizations:  the lowest nonzero p-value for
+10000 iterations will be 0.0001.  Getting a non-zero p-value often requires
+doing more randomizations than is practical (several million to tens of
+millions).</p>
+<p>That's where the enrichment score comes in.  The randomized intersections
+typically have a normal distribution, but just in case, we take the median of
+the randomized intersections and call this the background or control.  Then we
+divide the actual intersections by this median to get an enrichment score.</p>
+<p>The advantage to using the enrichment score is that it gives nonzero scores for
+more fine-grained comparison among sets of features without performing
+impractical amounts of randomization.  The first example of its usage that I'm
+aware of is Negre et al. (2010) PLoS Genet 6(1): e1000814,  The downside of
+this metric is that the numbers are relative, and have their greatest utility
+for making biological conclusions when used in large matrices of pairwise
+comparisons.</p>
+<p><code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomintersection()</span></code> and <code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomstats()</span></code> both use the
+intersection count method.  That is, for each randomization the calculated
+metric is &quot;number of intersection events&quot;.  An alternative is to compute the
+Jaccard statistic on each iteration, as implemented in
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.naive_jaccard()</span></code>. The Jaccard statistic (or Jaccard similarity) is
+the ratio of the intersection over the union, and is introduced in a genomic
+intersection context in Favorov et al. (2012) PLoS Comput Biol 8(5): e1002529.
+However, this still has the same p-value resolution limitation, so the
+actual-divided-by-median approach could be tried here as well.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Randomization</a><ul>
+<li><a class="reference internal" href="#example-workflow">Example workflow</a></li>
+<li><a class="reference internal" href="#other-statistics">Other statistics</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="topical-genome.html"
+                        title="previous chapter">Specifying genomes</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="topical-wrapping.html"
+                        title="next chapter">Wrapping new tools</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/topical-random.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topical-wrapping.html" title="Wrapping new tools"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="topical-genome.html" title="Specifying genomes"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" >Topical Documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

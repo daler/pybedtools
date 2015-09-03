@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Intervals &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="up" title="Tutorial Contents" href="tutorial-contents.html" />
+    <link rel="next" title="Filtering" href="filtering.html" />
+    <link rel="prev" title="Chaining methods together (pipe)" href="piping.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filtering.html" title="Filtering"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="piping.html" title="Chaining methods together (pipe)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="intervals">
+<span id="id1"></span><h1>Intervals<a class="headerlink" href="#intervals" title="Permalink to this headline">¶</a></h1>
+<p>An <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> object is how <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> represents a line in a BED,
+GFF, GTF, or VCF file in a uniform fashion.  This section will describe
+some useful features of <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects.</p>
+<p>First, let's get a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> to work with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can access the <code class="xref py py-class docutils literal"><span class="pre">Intervals</span></code> of <code class="docutils literal"><span class="pre">a</span></code> several different ways.
+Probably the most convenient way is by indexing a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">feature</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects support slices, too:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">features</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="common-interval-attributes">
+<h2>Common <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> attributes<a class="headerlink" href="#common-interval-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Printing a feature converts it into the original line from the file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+<span class="go">chr1        1       100     feature1        0       +</span>
+</pre></div>
+</div>
+<p>The string representation of an <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> object is simply a valid line,
+<strong>including the newline</strong>, for the format from which that <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> was
+created (accessible via <code class="xref py py-attr docutils literal"><span class="pre">Interval.file_type</span></code>).</p>
+<p>All features, no matter what the file type, have <code class="docutils literal"><span class="pre">chrom</span></code>, <code class="docutils literal"><span class="pre">start</span></code>, <code class="docutils literal"><span class="pre">stop</span></code>,
+<code class="docutils literal"><span class="pre">name</span></code>, <code class="docutils literal"><span class="pre">score</span></code>, and <code class="docutils literal"><span class="pre">strand</span></code> attributes.  Note that <code class="docutils literal"><span class="pre">start</span></code> and <code class="docutils literal"><span class="pre">stop</span></code> are
+integers, while everything else (including <code class="docutils literal"><span class="pre">score</span></code>) is a string.</p>
+<p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> supports both Python 2 and 3. When using Python 3, all
+strings are the <code class="docutils literal"><span class="pre">str</span></code> type. When using Python 2, all strings are unicode.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This documentation undergoes testing with Python 2 and Python 3. These
+versions handle strings differently. For example, under Python 2:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">feature</span><span class="o">.</span><span class="n">chrom</span>
+<span class="go">u&#39;chr1&#39;</span>
+</pre></div>
+</div>
+<p>But under Python 3:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">feature</span><span class="o">.</span><span class="n">chrom</span>
+<span class="go">&#39;chr1&#39;</span>
+</pre></div>
+</div>
+<p class="last">Since all strings returned by Interval objects are unicode, we solve this
+by making a helper function <code class="docutils literal"><span class="pre">show_value</span></code> that converts unicode to native
+string -- but only under Python 2.</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">show_value</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="gp">... </span><span class="sd">    Convert unicode to str under Python 2;</span>
+<span class="gp">... </span><span class="sd">    all other values pass through unchanged</span>
+<span class="gp">... </span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+<span class="gp">... </span>            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">s</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">chrom</span><span class="p">)</span>
+<span class="go">&#39;chr1&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+<span class="go">1</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+<span class="go">100</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="go">&#39;feature1&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
+<span class="go">&#39;0&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">)</span>
+<span class="go">&#39;+&#39;</span>
+</pre></div>
+</div>
+<p>Let's make another feature that only has chrom, start, and stop to see how
+<code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> deals with missing attributes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">feature2</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;chrX 500 1000&#39;</span><span class="p">,</span> <span class="n">from_string</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">feature2</span><span class="p">)</span>
+<span class="go">chrX        500     1000</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature2</span><span class="o">.</span><span class="n">chrom</span><span class="p">)</span>
+<span class="go">&#39;chrX&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature2</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+<span class="go">500</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature2</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+<span class="go">1000</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature2</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="go">&#39;.&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature2</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
+<span class="go">&#39;.&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature2</span><span class="o">.</span><span class="n">strand</span><span class="p">)</span>
+<span class="go">&#39;.&#39;</span>
+</pre></div>
+</div>
+<p>This illustrates that default values are the string &quot;<code class="docutils literal"><span class="pre">.</span></code>&quot;.</p>
+</div>
+<div class="section" id="indexing-into-interval-objects">
+<h2>Indexing into <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects<a class="headerlink" href="#indexing-into-interval-objects" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects can also be indexed by position into the original
+line (like a list) or indexed by name of attribute (like a dictionary).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+<span class="go">chr1        1       100     feature1        0       +</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;chr1&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s">&#39;chrom&#39;</span><span class="p">])</span>
+<span class="go">&#39;chr1&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&#39;1&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s">&#39;start&#39;</span><span class="p">])</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fields">
+<h2>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects have a <code class="xref py py-attr docutils literal"><span class="pre">Interval.fields</span></code> attribute that
+contains the original line split into a list of strings.  When an integer
+index is used on the <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> (for example, <code class="docutils literal"><span class="pre">feature[3]</span></code>), it is
+the <code class="docutils literal"><span class="pre">fields</span></code> attribute that is actually being indexed into.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;chr1 1 100 asdf 0 + a b c d&#39;</span><span class="p">,</span> <span class="n">from_string</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">show_value</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+<span class="go">[&#39;chr1&#39;, &#39;1&#39;, &#39;100&#39;, &#39;asdf&#39;, &#39;0&#39;, &#39;+&#39;, &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="bed-is-0-based-others-are-1-based">
+<span id="zero-based-coords"></span><h2>BED is 0-based, others are 1-based<a class="headerlink" href="#bed-is-0-based-others-are-1-based" title="Permalink to this headline">¶</a></h2>
+<p>One troublesome part about working with multiple formats is that BED files
+have a different coordinate system than GFF/GTF/VCF/ files.</p>
+<ul class="simple">
+<li><strong>BED files are 0-based</strong> (the first base of the chromosome is considered
+position 0) and the <strong>feature does not include the stop position</strong>.</li>
+<li><strong>GFF, GTF, and VCF files are 1-based</strong> (the first base of the chromosome
+is considered position 1) and the <strong>feature includes the stop position</strong>.</li>
+</ul>
+<p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> follows the following conventions:</p>
+<ul>
+<li><p class="first">The value in <code class="xref py py-attr docutils literal"><span class="pre">Interval.start</span></code> will <em>always contain the
+0-based start position</em>, even if it came from a GFF or other 1-based
+feature.</p>
+</li>
+<li><p class="first">Getting the <code class="docutils literal"><span class="pre">len()</span></code> of an <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> will always return
+<code class="docutils literal"><span class="pre">Interval.stop</span> <span class="pre">-</span> <span class="pre">Interval.start</span></code>, so no matter what format the
+original file was in, the length will be correct.  This greatly simplifies
+underlying code, and it means you can treat all <code class="xref py py-class docutils literal"><span class="pre">Intervals</span></code>
+identically.</p>
+</li>
+<li><p class="first">The contents of <code class="xref py py-attr docutils literal"><span class="pre">Interval.fields</span></code> will <em>always be strings</em>,
+which in turn always represent the original line in the file.</p>
+<blockquote>
+<div><ul class="simple">
+<li>This means that for a GFF feature, <code class="xref py py-attr docutils literal"><span class="pre">Interval.fields[3]</span></code> or
+<code class="xref py py-attr docutils literal"><span class="pre">Interval[3]</span></code>, which is 1-based according to the file format,
+will always be one bp larger than <code class="xref py py-attr docutils literal"><span class="pre">Interval.start</span></code>, which
+always contains the 0-based start position.  Their data types
+are different; <code class="xref py py-attr docutils literal"><span class="pre">Interval[3]</span></code> will be a string and
+<code class="xref py py-attr docutils literal"><span class="pre">Interval.start</span></code> will be a long.</li>
+<li>Printing an <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> object created from a GFF file will
+show the tab-delimited fields in GFF coords while printing an
+<code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> object created from a BED file will show fields in
+BED coords.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="section" id="worked-example">
+<h3>Worked example<a class="headerlink" href="#worked-example" title="Permalink to this headline">¶</a></h3>
+<p>To illustrate and confirm this functionality, let's create a GFF feature and
+a BED feature from scratch and compare them.</p>
+<p>First, let's create a GFF <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> from scratch:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">gff</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;chr1&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;fake&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;mRNA&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;51&quot;</span><span class="p">,</span>   <span class="c"># &lt;- start is 1 greater than start for the BED feature below</span>
+<span class="gp">... </span>       <span class="s">&quot;300&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;.&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;+&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;.&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;ID=mRNA1;Parent=gene1;&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then let's create a corresponding BED <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> that represents the
+same genomic coordinates of of the GFF feature, but since BED format is
+zero-based we need to subtract 1 from the start:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bed</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;chr1&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;50&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;300&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;mRNA1&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;.&quot;</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="s">&quot;+&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bed</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">bed</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let's confirm these new features were recognized as the right file type --
+the format is auto-detected based on the position of chrom/start/stop coords in
+the provided field list:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">gff</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
+<span class="go">&#39;gff&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">bed</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
+<span class="go">&#39;bed&#39;</span>
+</pre></div>
+</div>
+<p>Printing the <code class="xref py py-class docutils literal"><span class="pre">Intervals</span></code> shows that the strings are in the appropriate
+coordinates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># for testing, we make sure keys are sorted. Not needed in practice.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span>
+<span class="go">chr1        fake    mRNA    51      300     .       +       .       ID=mRNA1;Parent=gene1;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">bed</span><span class="p">)</span>
+<span class="go">chr1        50      300     mRNA1   .       +</span>
+</pre></div>
+</div>
+<p>Since <code class="docutils literal"><span class="pre">start</span></code> attributes are always zero-based, the GFF and BED <code class="docutils literal"><span class="pre">start</span></code> values
+should be identical:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bed</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="n">gff</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="mi">50</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>For the BED feature, the second string field (representing the start position)
+and the <code class="docutils literal"><span class="pre">start</span></code> attribute should both be <code class="docutils literal"><span class="pre">50</span></code> (though one is an integer and the
+other is a string) . . .</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">bed</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+<span class="go">50</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">bed</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&#39;50&#39;</span>
+</pre></div>
+</div>
+<p>. . . but for the GFF feature, they differ -- the <code class="docutils literal"><span class="pre">start</span></code> attribute is
+zero-based while the string representation (the fourth field of a GFF file)
+remains in one-based GFF coords:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">gff</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+<span class="go">50</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show_value</span><span class="p">(</span><span class="n">gff</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">&#39;51&#39;</span>
+</pre></div>
+</div>
+<p>As long as we use the integer <code class="docutils literal"><span class="pre">start</span></code> attributes, we can treat the
+<code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects identically, without having to check for their format
+every time:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">bed</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span> <span class="o">==</span> <span class="mi">250</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="gff-features-have-access-to-attributes">
+<h2>GFF features have access to attributes<a class="headerlink" href="#gff-features-have-access-to-attributes" title="Permalink to this headline">¶</a></h2>
+<p>GFF and GTF files have lots of useful information in their attributes field
+(the last field in each line).  These attributes can be accessed with the
+<code class="xref py py-attr docutils literal"><span class="pre">Interval.attrs</span></code> attribute, which acts like a dictionary.  For speed,
+the attributes are lazy -- they are only parsed when you ask for them.  BED
+files, which do not have an attributes field, will return an empty
+dictionary.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># original feature</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span>
+<span class="go">chr1        fake    mRNA    51      300     .       +       .       ID=mRNA1;Parent=gene1;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># original attributes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">gff</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+<span class="go">[(&#39;ID&#39;, &#39;mRNA1&#39;), (&#39;Parent&#39;, &#39;gene1&#39;)]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># add some new attributes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;Awesomeness&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;99&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;transcript1&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Changes in attributes are propagated to the printable feature</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># for testing, we make sure keys are sorted. Not needed in practice.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gff</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">gff</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">sort_keys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span>
+<span class="go">chr1        fake    mRNA    51      300     .       +       .       Awesomeness=99;ID=transcript1;Parent=gene1;</span>
+</pre></div>
+</div>
+<p>Understanding <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects is important for using the powerful
+filtering and mapping facilities of <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects, as described
+in the next section.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Intervals</a><ul>
+<li><a class="reference internal" href="#common-interval-attributes">Common <code class="docutils literal"><span class="pre">Interval</span></code> attributes</a></li>
+<li><a class="reference internal" href="#indexing-into-interval-objects">Indexing into <code class="docutils literal"><span class="pre">Interval</span></code> objects</a></li>
+<li><a class="reference internal" href="#fields">Fields</a></li>
+<li><a class="reference internal" href="#bed-is-0-based-others-are-1-based">BED is 0-based, others are 1-based</a><ul>
+<li><a class="reference internal" href="#worked-example">Worked example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gff-features-have-access-to-attributes">GFF features have access to attributes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="piping.html"
+                        title="previous chapter">Chaining methods together (pipe)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="filtering.html"
+                        title="next chapter">Filtering</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/intervals.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="filtering.html" title="Filtering"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="piping.html" title="Chaining methods together (pipe)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial-contents.html" >Tutorial Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

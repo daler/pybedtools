@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Each &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="up" title="Tutorial Contents" href="tutorial-contents.html" />
+    <link rel="next" title="Using the history and tags" href="history.html" />
+    <link rel="prev" title="Filtering" href="filtering.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="history.html" title="Using the history and tags"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="filtering.html" title="Filtering"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="each">
+<h1>Each<a class="headerlink" href="#each" title="Permalink to this headline">¶</a></h1>
+<p>Similar to <code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code>, which applies a function to return True
+or False given an <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code>, the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.each()</span></code> method applies a
+function to return a new, possibly modified <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code>.</p>
+<p>The <code class="xref py py-meth docutils literal"><span class="pre">BedTool.each()</span></code> method applies a function to every feature.  Like
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code>, you can use your own function or some pre-defined
+ones in the <code class="xref py py-mod docutils literal"><span class="pre">featurefuncs</span></code> module.  Also like <code class="xref py py-meth docutils literal"><span class="pre">filter()</span></code>, <code class="docutils literal"><span class="pre">*args</span></code>
+and <code class="docutils literal"><span class="pre">**kwargs</span></code> are sent to the function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># The results of an &quot;intersect&quot; with c=True will return features</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># with an additional field representing the counts.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">with_counts</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let's define a function that will take the number of counts in each feature
+as calculated above and divide by the number of bases in that feature.  We
+can also supply an optional scalar, like 0.001, to get the results in
+&quot;number of intersections per kb&quot;.  We then insert that value into the score
+field of the feature.  Here's the function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">normalize_count</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">scalar</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="gp">... </span><span class="sd">    assume feature&#39;s last field is the count</span>
+<span class="gp">... </span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="gp">... </span>    <span class="n">counts</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="n">normalized</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">counts</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">*</span> <span class="n">scalar</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="c"># need to convert back to string to insert into feature</span>
+<span class="gp">... </span>    <span class="n">feature</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">feature</span>
+</pre></div>
+</div>
+<p>And we apply it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">normalized</span> <span class="o">=</span> <span class="n">with_counts</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">normalize_count</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+<span class="go">chr1        1       100     feature1        0.0     +       0</span>
+<span class="go">chr1        100     200     feature2        10.0    +       1</span>
+<span class="go">chr1        150     500     feature3        2.86    -       1</span>
+<span class="go">chr1        900     950     feature4        20.0    +       1</span>
+</pre></div>
+</div>
+<p>Similar to <code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code>, we could have used the Python built-in
+function <code class="docutils literal"><span class="pre">map</span></code> to map a function to each <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code>.  In fact, this can
+still be useful if you don't want a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object as a result.  For
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_lengths</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.each()</span></code> method returns a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object,
+which can be used in a chain of commands, e.g.,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">normalize_count</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">lamda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="filtering.html"
+                        title="previous chapter">Filtering</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="history.html"
+                        title="next chapter">Using the history and tags</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/each.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="history.html" title="Using the history and tags"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="filtering.html" title="Filtering"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial-contents.html" >Tutorial Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
