@@ -207,9 +207,9 @@
         i: a.bed
         s: True
     expected: |
-        chr1	1	200
-        chr1	150	500
-        chr1	900	950
+        chr1	1	200	+
+        chr1	150	500	-
+        chr1	900	950	+
 
 -   method: merge
     kwargs:
@@ -218,9 +218,9 @@
         c: [4, 5, 6]
         o: 'distinct'
     expected: |
-        chr1	1	200	feature1,feature2	0	+
-        chr1	150	500	feature3	0	-
-        chr1	900	950	feature4	0	+
+        chr1	1	200	+	feature1,feature2	0	+
+        chr1	150	500	-	feature3	0	-
+        chr1	900	950	+	feature4	0	+
 
 -   method: merge
     kwargs:

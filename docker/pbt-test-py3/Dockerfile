@@ -34,7 +34,7 @@ RUN conda install -c daler \
     pysam
 RUN conda install -c daler \
     tabix \
-    bedtools
+    bedtools=2.25.0
 ENV DISPLAY=:0
 ENV LANG C.UTF-8
 WORKDIR /opt/pybedtools
