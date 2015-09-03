@@ -11,10 +11,6 @@ Welcome to pybedtools's documentation!
 .. include:: ../../README.rst
 
 
-*Created by Ryan Dale 2010*
-
-*Copyright 2010, 2011, 2012 Ryan Dale, all rights
-reserved.*
 
 `pybedtools` is released under the GPLv2 license; see LICENSE.txt for more
 info.

@@ -1,7 +1,7 @@
 Wrapper for Aaron Quinlan's BEDtools, plus other useful methods for working
 with BED, BAM, GFF, and VCF files
 
-Copyright (c) 2010,2011 Ryan Dale
+Copyright (c) 2010-2015 Ryan Dale
 All rights reserved.
 
 This program is free software; you can redistribute it and/or
