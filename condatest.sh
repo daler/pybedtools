@@ -30,7 +30,7 @@ conda create \
     -c daler \
     -n $name \
     python=${PY_VERSION} \
-    bedtools \
+    bedtools=2.25.0 \
     matplotlib \
     sphinx \
     numpydoc \
