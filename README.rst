@@ -8,10 +8,10 @@ Overview
     :target: http://badge.fury.io/py/pybedtools
 
 
-`pybedtools` is a Python wrapper for Aaron Quinlan's `BEDtools` programs
-(https://github.com/arq5x/bedtools), which are widely used for genomic interval
-manipulation or "genome algebra".  `pybedtools` extends `BEDTools` by offering
-feature-level manipulations from with Python. 
+The `BEDTools suite of programs <http://bedtools.readthedocs.org/>`_, is widely
+used for genomic interval manipulation or "genome algebra".  `pybedtools` wraps
+and extends BEDTools by offering feature-level manipulations from within
+Python.
 
 See full online documentation, including installation instructions, at
 http://daler.github.io/pybedtools/.
