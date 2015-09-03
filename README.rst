@@ -8,9 +8,9 @@ Overview
     :target: http://badge.fury.io/py/pybedtools
 
 
-The `BEDTools suite of programs <http://bedtools.readthedocs.org/>`_, is widely
+The `BEDTools suite of programs <http://bedtools.readthedocs.org/>`_ is widely
 used for genomic interval manipulation or "genome algebra".  `pybedtools` wraps
-and extends BEDTools by offering feature-level manipulations from within
+and extends BEDTools and offers feature-level manipulations from within
 Python.
 
 See full online documentation, including installation instructions, at
