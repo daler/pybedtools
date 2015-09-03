@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>FAQs &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="next" title="Scripts" href="scripts.html" />
+    <link rel="prev" title="Under the hood" href="flow-of-commands.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="flow-of-commands.html" title="Under the hood"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="faqs">
+<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">More detailed answers to these questions can often be found on the <a class="reference external" href="https://github.com/daler/pybedtools/issues/">Issues</a> page.</p>
+</div>
+<div class="section" id="does-pybedtools-have-a-simple-reader-writer-for-bed-files">
+<h2>&quot;Does pybedtools have a simple reader/writer for BED files?&quot;<a class="headerlink" href="#does-pybedtools-have-a-simple-reader-writer-for-bed-files" title="Permalink to this headline">¶</a></h2>
+<p>While <code class="docutils literal"><span class="pre">pybedtools</span></code> designed to work with BEDTools, the reading/writing/parsing
+function can be easily used for other things.</p>
+<p>Simply iterating over a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object will parse each line into
+a <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> object.  You can then manipulate this or access the fields
+as needed.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>x = pybedtools.example_bedtool(&#39;a.bed&#39;)
+for interval in x:
+    # do something with interval
+</pre></div>
+</div>
+<p>However, if you're planning on writing the results out to file, it may be more
+useful to write a transformation function along with the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.each()</span></code>
+method.  This allows you to read, transform, and write all in one command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    adds 10 bp to the stop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">stop</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;out.bed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another useful idiom is creating a generator function.  For example, here we
+change the name field to reflect the value of a counter.  We create a BedTool
+from the iterator and then save it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">):</span>
+        <span class="n">i</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">yield</span> <span class="n">i</span>
+
+<span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;counted.bed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="save-results.html#saveresults"><span>Saving the results</span></a> for more on saving the results.</p>
+</div>
+<div class="section" id="can-i-create-a-bedtool-object-from-an-existing-list">
+<h2>&quot;Can I create a BedTool object from an existing list?&quot;<a class="headerlink" href="#can-i-create-a-bedtool-object-from-an-existing-list" title="Permalink to this headline">¶</a></h2>
+<p>Sure, the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> constructor will figure it out:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="i-m-getting-an-empty-bedtool">
+<h2>&quot;I'm getting an empty BedTool&quot;<a class="headerlink" href="#i-m-getting-an-empty-bedtool" title="Permalink to this headline">¶</a></h2>
+<p>Check to make sure you're not consuming a BedTool generator.  Note that
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code> and <code class="xref py py-meth docutils literal"><span class="pre">BedTool.each()</span></code> will return a generator BedTool
+object. Keep in mind that checking the length of a generator BedTool will
+completely consume it.</p>
+<p>It's probably best to save intermediate versions to file using
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.saveas()</span></code>.  If you don't provide a filename, it'll save to an
+automatically cleaned up tempfile:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_bedtool</span>\
+ <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">my_filter_func</span><span class="p">)</span>\
+ <span class="o">.</span><span class="n">saveas</span><span class="p">()</span>\
+ <span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>\
+ <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">)</span>\
+ <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;filtered-intersected-large.bed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="i-m-getting-a-malformedbedlineerror">
+<h2>&quot;I'm getting a MalformedBedLineError&quot;<a class="headerlink" href="#i-m-getting-a-malformedbedlineerror" title="Permalink to this headline">¶</a></h2>
+<p>This error can be raised by BEDTools itself.  Typical reasons are that start
+&gt; end, or the fields are not tab-delimited.</p>
+<p>You can try the <code class="xref py py-func docutils literal"><span class="pre">pybedtools.remove_invalid()</span></code> function to clean up your
+file, or manually edit the offending lines.</p>
+</div>
+<div class="section" id="i-get-a-segfault-when-iterating-over-a-bedtool-object">
+<h2>&quot;I get a segfault when iterating over a BedTool object&quot;<a class="headerlink" href="#i-get-a-segfault-when-iterating-over-a-bedtool-object" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/daler/pybedtools/issues/88">Issue #88</a> which
+addresses this issue -- in summary, Cython's handling of iterators works
+unexpectedly.  It's best to call the <code class="docutils literal"><span class="pre">next()</span></code> method explicitly when doing
+complex manipulations on an iterating <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>.</p>
+</div>
+<div class="section" id="can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence">
+<h2>&quot;Can I add extra information to FASTA headers when using BedTool.sequence()?&quot;<a class="headerlink" href="#can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence" title="Permalink to this headline">¶</a></h2>
+<p>Since BEDTools adds the feature name to the FASTA header, you can manipulate
+the feature name on the fly with a custom modifier function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fields2name</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="s">&quot;replace GFF featuretype field with the attributes field&quot;</span>
+    <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&quot;my.gff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">fields2name</span><span class="p">)</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="s">&#39;my.fasta&#39;</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="nb">open</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">seqfn</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="too-many-files-open-error">
+<h2>&quot;Too many files open&quot; error<a class="headerlink" href="#too-many-files-open-error" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you may get the error:</p>
+<div class="highlight-python"><div class="highlight"><pre>* Too many files open -- please submit a bug report so that this can be fixed
+</pre></div>
+</div>
+<p>This error occurs because you have hit your operating system's limit on the
+number of open files.  This usually happens when creating many <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>
+objects, often within a for-loop.</p>
+<p>In general, <strong>try to create as few</strong> <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> <strong>objects as you can</strong>.  Every time you
+create a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object, you create a new open file.  There is usually
+a BEDTools program that already does what you want, and will do it faster.</p>
+<p>For example, say we want to:</p>
+<ul class="simple">
+<li>start with all annotations</li>
+<li>only consider exons</li>
+<li>write a file containing just exons</li>
+<li>count reads in multiple BAM files for each exon</li>
+</ul>
+<p>Here is a first draft.  Note that the for-loop creates a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>
+object each iteration, and the <code class="docutils literal"><span class="pre">result</span></code> is yet another <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>.  This
+will version will raise the &quot;Too many files open&quot; error.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># This version will be slow and, with many exons, will raise the &quot;Too many</span>
+<span class="c"># files open&quot; error</span>
+
+<span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="n">all_features</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;annotations.gff&#39;</span><span class="p">)</span>
+<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;exons.gff&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">all_features</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;exon&#39;</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+
+    <span class="n">bt</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">([</span><span class="n">feature</span><span class="p">])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">bt</span><span class="o">.</span><span class="n">multi_bam_coverage</span><span class="p">(</span><span class="n">bams</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;reads1.bam&#39;</span><span class="p">,</span> <span class="s">&#39;reads2.bam&#39;</span><span class="p">])</span>
+
+    <span class="c"># ...do something with result</span>
+
+<span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In contrast, it would be better to construct an &quot;exon-only&quot; <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> at
+the beginning.  The <code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code> method is a good way to do this.
+Then, there is only one call to <code class="xref py py-meth docutils literal"><span class="pre">BedTool.multi_bam_coverage()</span></code>.</p>
+<p>In this version there are only 3 <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects:  the
+one that opens <code class="docutils literal"><span class="pre">annotations.gff</span></code>, the one that uses <code class="docutils literal"><span class="pre">exons.gff</span></code> after it is
+saved, and <code class="docutils literal"><span class="pre">result</span></code>.  (Note that the one created from the filter operation is
+a &quot;streaming&quot; BedTool, so there is no open file that will contribute to the
+total).</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># This is the recommended way.</span>
+
+<span class="kn">import</span> <span class="nn">pybedtools</span>
+
+<span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;annotations.gff&#39;</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;exon&#39;</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;exons.gff&#39;</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">multi_bam_coverage</span><span class="p">(</span><span class="n">bams</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;reads1.bam&#39;</span><span class="p">,</span> <span class="s">&#39;reads2.bam&#39;</span><span class="p">])</span>
+
+<span class="c"># ...do something with result</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">FAQs</a><ul>
+<li><a class="reference internal" href="#does-pybedtools-have-a-simple-reader-writer-for-bed-files">&quot;Does pybedtools have a simple reader/writer for BED files?&quot;</a></li>
+<li><a class="reference internal" href="#can-i-create-a-bedtool-object-from-an-existing-list">&quot;Can I create a BedTool object from an existing list?&quot;</a></li>
+<li><a class="reference internal" href="#i-m-getting-an-empty-bedtool">&quot;I'm getting an empty BedTool&quot;</a></li>
+<li><a class="reference internal" href="#i-m-getting-a-malformedbedlineerror">&quot;I'm getting a MalformedBedLineError&quot;</a></li>
+<li><a class="reference internal" href="#i-get-a-segfault-when-iterating-over-a-bedtool-object">&quot;I get a segfault when iterating over a BedTool object&quot;</a></li>
+<li><a class="reference internal" href="#can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence">&quot;Can I add extra information to FASTA headers when using BedTool.sequence()?&quot;</a></li>
+<li><a class="reference internal" href="#too-many-files-open-error">&quot;Too many files open&quot; error</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="flow-of-commands.html"
+                        title="previous chapter">Under the hood</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scripts.html"
+                        title="next chapter">Scripts</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/FAQs.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="flow-of-commands.html" title="Under the hood"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

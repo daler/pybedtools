@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.bedtool.BedTool.sequence &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.bedtool.BedTool.mask_fasta" href="pybedtools.bedtool.BedTool.mask_fasta.html" />
+    <link rel="prev" title="pybedtools.bedtool.BedTool.bam_to_fastq" href="pybedtools.bedtool.BedTool.bam_to_fastq.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.mask_fasta.html" title="pybedtools.bedtool.BedTool.mask_fasta"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.bam_to_fastq.html" title="pybedtools.bedtool.BedTool.bam_to_fastq"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-bedtool-bedtool-sequence">
+<h1>pybedtools.bedtool.BedTool.sequence<a class="headerlink" href="#pybedtools-bedtool-bedtool-sequence" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="pybedtools.bedtool.BedTool.sequence">
+<code class="descclassname">BedTool.</code><code class="descname">sequence</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.sequence" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">getfasta</span></code>.</p>
+<p><em>fi</em> is passed in by the user; <em>bed</em> is automatically passed in as the
+bedfile of this object; <em>fo</em> by default is a temp file.  Use
+save_seqs() to save as a file.</p>
+<p>The end result is that this BedTool will have an attribute, self.seqfn,
+that points to the new fasta file.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="gp">... </span><span class="s">chr1 1 10</span>
+<span class="gp">... </span><span class="s">chr1 50 55&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">from_string</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fasta</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s">&#39;test.fa&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="n">fasta</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seqfn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="go">&gt;chr1:1-10</span>
+<span class="go">GATGAGTCT</span>
+<span class="go">&gt;chr1:50-55</span>
+<span class="go">CCATC</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-bed</span></code> argument to <code class="docutils literal"><span class="pre">fastaFromBed</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools getfasta (aka fastaFromBed)
+Version: v2.25.0
+Summary: Extract DNA sequences into a fasta file based on feature coordinates.
+
+Usage:   bedtools getfasta [OPTIONS] -fi &lt;fasta&gt; -bed &lt;bed/gff/vcf&gt; -fo &lt;fasta&gt; 
+
+Options: 
+        -fi     Input FASTA file
+        -bed    BED/GFF/VCF file of ranges to extract from -fi
+        -fo     Output file (can be FASTA or TAB-delimited)
+        -name   Use the name field for the FASTA header
+        -split  given BED12 fmt., extract and concatenate the sequencesfrom the BED &quot;blocks&quot; (e.g., exons)
+        -tab    Write output in TAB delimited format.
+                - Default is FASTA format.
+
+        -s      Force strandedness. If the feature occupies the antisense,
+                strand, the sequence will be reverse complemented.
+                - By default, strand information is ignored.
+
+        -fullHeader     Use full fasta header.
+                - By default, only the word before the first space or tab is used.
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.bam_to_fastq.html"
+                        title="previous chapter">pybedtools.bedtool.BedTool.bam_to_fastq</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.mask_fasta.html"
+                        title="next chapter">pybedtools.bedtool.BedTool.mask_fasta</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.sequence.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.mask_fasta.html" title="pybedtools.bedtool.BedTool.mask_fasta"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.bam_to_fastq.html" title="pybedtools.bedtool.BedTool.bam_to_fastq"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

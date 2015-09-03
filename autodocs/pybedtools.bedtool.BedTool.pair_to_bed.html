@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.bedtool.BedTool.pair_to_bed &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.bedtool.BedTool.pair_to_pair" href="pybedtools.bedtool.BedTool.pair_to_pair.html" />
+    <link rel="prev" title="pybedtools.bedtool.BedTool.union_bedgraphs" href="pybedtools.bedtool.BedTool.union_bedgraphs.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.pair_to_pair.html" title="pybedtools.bedtool.BedTool.pair_to_pair"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.union_bedgraphs.html" title="pybedtools.bedtool.BedTool.union_bedgraphs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-bedtool-bedtool-pair-to-bed">
+<h1>pybedtools.bedtool.BedTool.pair_to_bed<a class="headerlink" href="#pybedtools-bedtool-bedtool-pair-to-bed" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="pybedtools.bedtool.BedTool.pair_to_bed">
+<code class="descclassname">BedTool.</code><code class="descname">pair_to_bed</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.pair_to_bed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.pair_to_bed" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">pairtobed</span></code>.</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-a</span></code> argument to <code class="docutils literal"><span class="pre">pairToBed</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools pairtobed (aka pairToBed)
+Version: v2.25.0
+Summary: Report overlaps between a BEDPE file and a BED/GFF/VCF file.
+
+Usage:   bedtools pairtobed [OPTIONS] -a &lt;bedpe&gt; -b &lt;bed/gff/vcf&gt;
+
+Options: 
+        -abam   The A input file is in BAM format.  Output will be BAM as well. Replaces -a.
+                - Requires BAM to be grouped or sorted by query.
+
+        -ubam   Write uncompressed BAM output. Default writes compressed BAM.
+
+                is to write output in BAM when using -abam.
+
+        -bedpe  When using BAM input (-abam), write output as BEDPE. The default
+                is to write output in BAM when using -abam.
+
+        -ed     Use BAM total edit distance (NM tag) for BEDPE score.
+                - Default for BEDPE is to use the minimum of
+                  of the two mapping qualities for the pair.
+                - When -ed is used the total edit distance
+                  from the two mates is reported as the score.
+
+        -f      Minimum overlap required as fraction of A (e.g. 0.05).
+                Default is 1E-9 (effectively 1bp).
+
+        -s      Require same strandedness when finding overlaps.
+                Default is to ignore stand.
+                Not applicable with -type inspan or -type outspan.
+
+        -S      Require different strandedness when finding overlaps.
+                Default is to ignore stand.
+                Not applicable with -type inspan or -type outspan.
+
+        -type   Approach to reporting overlaps between BEDPE and BED.
+
+                either  Report overlaps if either end of A overlaps B.
+                        - Default.
+                neither Report A if neither end of A overlaps B.
+                both    Report overlaps if both ends of A overlap  B.
+                xor     Report overlaps if one and only one end of A overlaps B.
+                notboth Report overlaps if neither end or one and only one 
+                        end of A overlap B.  That is, xor + neither.
+
+                ispan   Report overlaps between [end1, start2] of A and B.
+                        - Note: If chrom1 &lt;&gt; chrom2, entry is ignored.
+
+                ospan   Report overlaps between [start1, end2] of A and B.
+                        - Note: If chrom1 &lt;&gt; chrom2, entry is ignored.
+
+                notispan        Report A if ispan of A doesn&#39;t overlap B.
+                                - Note: If chrom1 &lt;&gt; chrom2, entry is ignored.
+
+                notospan        Report A if ospan of A doesn&#39;t overlap B.
+                                - Note: If chrom1 &lt;&gt; chrom2, entry is ignored.
+
+Refer to the BEDTools manual for BEDPE format.
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.union_bedgraphs.html"
+                        title="previous chapter">pybedtools.bedtool.BedTool.union_bedgraphs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.pair_to_pair.html"
+                        title="next chapter">pybedtools.bedtool.BedTool.pair_to_pair</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.pair_to_bed.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.pair_to_pair.html" title="pybedtools.bedtool.BedTool.pair_to_pair"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.union_bedgraphs.html" title="pybedtools.bedtool.BedTool.union_bedgraphs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

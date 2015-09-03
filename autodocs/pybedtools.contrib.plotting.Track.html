@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.contrib.plotting.Track &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.contrib.plotting.TrackCollection" href="pybedtools.contrib.plotting.TrackCollection.html" />
+    <link rel="prev" title="pybedtools.parallel.parallel_apply" href="pybedtools.parallel.parallel_apply.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.plotting.TrackCollection.html" title="pybedtools.contrib.plotting.TrackCollection"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.parallel.parallel_apply.html" title="pybedtools.parallel.parallel_apply"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-contrib-plotting-track">
+<h1>pybedtools.contrib.plotting.Track<a class="headerlink" href="#pybedtools-contrib-plotting-track" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybedtools.contrib.plotting.Track">
+<em class="property">class </em><code class="descclassname">pybedtools.contrib.plotting.</code><code class="descname">Track</code><span class="sig-paren">(</span><em>features</em>, <em>chrom=None</em>, <em>ybase=0</em>, <em>yheight=1</em>, <em>visibility='dense'</em>, <em>stranded=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#Track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.Track" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pybedtools.contrib.plotting.Track.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>features</em>, <em>chrom=None</em>, <em>ybase=0</em>, <em>yheight=1</em>, <em>visibility='dense'</em>, <em>stranded=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#Track.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.Track.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subclass of matplotlib's PolyCollection that can be added to an Axes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>features</strong> -- Can be an existing BedTool, or anything than can be used to create
+a BedTool (e.g., a filename or a generator of Interval objects)</li>
+<li><strong>ybase</strong> -- y-coord of the bottom edge of the track (in data coordinates)</li>
+<li><strong>yheight</strong> -- How high each feature will be, in data coordinates</li>
+<li><strong>visibility</strong> -- <p>Mimics the settings in the UCSC Genome Browser:</p>
+<ul>
+<li>&quot;dense&quot; is the default; overlapping features can be seen if you
+set alpha &lt; 1.</li>
+<li>&quot;squish&quot; prevents adjacent features from overlapping.  This keeps
+<code class="docutils literal"><span class="pre">yheight</span></code> for all features, so if you have a lot of features
+piling up, the track will be a lot higher on the y-axis than
+<code class="docutils literal"><span class="pre">yheight</span></code>.</li>
+</ul>
+</li>
+<li><strong>stranded</strong> -- <p>If boolean and True, will draw arrrow-shaped features to indicate
+direction (where the point is 10% of the total gene length)</p>
+<p>If a dictionary, map strands to colors, e.g., {'+': 'r', '-': 'b'}.</p>
+</li>
+<li><strong>kwargs</strong> -- Additional keyword args are passed to
+matplotlib.collections.PolyCollection.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<p>After creating a track, use the <code class="docutils literal"><span class="pre">ymax</span></code> attribute to get the max y-value
+used in the track -- useful if you've created a &quot;squish&quot; track but
+would like to stack another track on top, and need to calculate what
+the new Track's <code class="docutils literal"><span class="pre">ybase</span></code> should be.</p>
+<p>The returned PolyCollection will have the <code class="docutils literal"><span class="pre">features</span></code> attribute, which
+contains the BedTool it was created from -- so you can write callback
+functions for event handling, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    prints the feature&#39;s line when clicked in the plot</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">coll</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">artist</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">ind</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">coll</span><span class="o">.</span><span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s">&#39;on_pick&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">track</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">picker</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> 
+<span class="go">&lt;pybedtools.contrib.plotting.Track object at 0x...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">limits</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;tight&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.plotting.Track.__init__" title="pybedtools.contrib.plotting.Track.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(features[,&nbsp;chrom,&nbsp;ybase,&nbsp;yheight,&nbsp;...])</td>
+<td>Subclass of matplotlib's PolyCollection that can be added to an Axes.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_xlims</span></code>(ax)</td>
+<td>Needs <code class="docutils literal"><span class="pre">ax</span></code> to convert to transData coords</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">aname</span></code></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">midpoint</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">zorder</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.parallel.parallel_apply.html"
+                        title="previous chapter">pybedtools.parallel.parallel_apply</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.contrib.plotting.TrackCollection.html"
+                        title="next chapter">pybedtools.contrib.plotting.TrackCollection</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.contrib.plotting.Track.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.plotting.TrackCollection.html" title="pybedtools.contrib.plotting.TrackCollection"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.parallel.parallel_apply.html" title="pybedtools.parallel.parallel_apply"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.contrib.IntersectionMatrix &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-contrib-intersectionmatrix">
+<h1>pybedtools.contrib.IntersectionMatrix<a class="headerlink" href="#pybedtools-contrib-intersectionmatrix" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pybedtools.contrib.IntersectionMatrix">
+<em class="property">class </em><code class="descclassname">pybedtools.contrib.</code><code class="descname">IntersectionMatrix</code><span class="sig-paren">(</span><em>beds</em>, <em>genome</em>, <em>iterations</em>, <em>dbfn=None</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/intersection_matrix.html#IntersectionMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.IntersectionMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to handle many pairwise comparisons of interval files</p>
+<dl class="method">
+<dt id="pybedtools.contrib.IntersectionMatrix.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>beds</em>, <em>genome</em>, <em>iterations</em>, <em>dbfn=None</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/intersection_matrix.html#IntersectionMatrix.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.IntersectionMatrix.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to handle and keep track of many pairwise comparisons of interval
+files.</p>
+<p>A lightweight database approach is used to minimize computational time.</p>
+<p>The database stores filenames and calculation timestamps;
+re-calculating a matrix using the same interval files will only
+re-calculate values for those files whose modification times are newer
+than the timestamp in the database.</p>
+<p><code class="docutils literal"><span class="pre">beds</span></code> is a list of bed files.</p>
+<p><code class="docutils literal"><span class="pre">genome</span></code> is the string assembly name, e.g., &quot;hg19&quot; or &quot;dm3&quot;.</p>
+<p><code class="docutils literal"><span class="pre">dbfn</span></code> is the filename of the database you'd like to use to track
+what's been completed.</p>
+<p>Example usage:</p>
+<p>First, get a list of bed files to use:
+#&gt;&gt;&gt; beds = [
+#... pybedtools.example_filename(i) for i in  [
+#... 'Cp190_Kc_Bushey_2009.bed',
+#... 'CTCF_Kc_Bushey_2009.bed',
+#... 'SuHw_Kc_Bushey_2009.bed',
+#... 'BEAF_Kc_Bushey_2009.bed'
+#... ]]</p>
+<p>Set some parameters.  &quot;dm3&quot; is the genome to use; info will be stored
+in &quot;ex.db&quot;.  <code class="docutils literal"><span class="pre">force=True</span></code> means to overwrite what's in the database
+#&gt;&gt;&gt; # In practice, you'll want many more iterations...
+#&gt;&gt;&gt; im = IntersectionMatrix(beds, 'dm3',
+#...            dbfn='ex.db', iterations=3, force=True)
+#&gt;&gt;&gt; # Use 4 CPUs for randomization
+#&gt;&gt;&gt; matrix = im.create_matrix(verbose=True, processes=4)</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.contrib.IntersectionMatrix.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

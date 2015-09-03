@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.parallel &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../../index.html" />
+    <link rel="up" title="pybedtools" href="../pybedtools.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pybedtools.parallel</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">helpers</span>
+<span class="kn">import</span> <span class="nn">pybedtools</span>
+
+
+<span class="k">def</span> <span class="nf">_parallel_wrap</span><span class="p">(</span><span class="n">orig_bedtool</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="p">,</span> <span class="n">genome_fn</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span>
+                   <span class="n">method_args</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                   <span class="n">reduce_func</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a BedTool object `orig_bedtool`, call its `method` with `args` and</span>
+<span class="sd">    `kwargs` and then call `reduce_func` on the results.</span>
+
+<span class="sd">    See parallel_apply docstring for details</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># note: be careful about cleaning up tempfiles</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">shuffle</span><span class="p">:</span>
+        <span class="n">to_use</span> <span class="o">=</span> <span class="n">orig_bedtool</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shuffled</span> <span class="o">=</span> <span class="n">orig_bedtool</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">genome_fn</span><span class="p">,</span> <span class="o">**</span><span class="n">shuffle_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">to_use</span> <span class="o">=</span> <span class="n">shuffled</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">helpers</span><span class="o">.</span><span class="n">close_or_delete</span><span class="p">(</span><span class="n">shuffled</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">to_use</span> <span class="o">=</span> <span class="n">shuffled</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">to_use</span><span class="p">,</span> <span class="n">method</span><span class="p">)(</span><span class="o">*</span><span class="n">method_args</span><span class="p">,</span> <span class="o">**</span><span class="n">method_kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">close_or_delete</span><span class="p">(</span><span class="n">to_use</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">reduce_func</span><span class="p">:</span>
+        <span class="n">reduced</span> <span class="o">=</span> <span class="n">reduce_func</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">):</span>
+            <span class="n">helpers</span><span class="o">.</span><span class="n">close_or_delete</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">reduced</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="parallel_apply"><a class="viewcode-back" href="../../autodocs/pybedtools.parallel.parallel_apply.html#pybedtools.parallel.parallel_apply">[docs]</a><span class="k">def</span> <span class="nf">parallel_apply</span><span class="p">(</span><span class="n">orig_bedtool</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">genome_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">method_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">reduce_func</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                   <span class="n">_orig_pool</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                   <span class="n">report_iterations</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Call an arbitrary BedTool method many times in parallel.</span>
+
+<span class="sd">    An example use-case is to generate a null distribution of intersections,</span>
+<span class="sd">    and then compare this to the actual intersections.</span>
+
+<span class="sd">    **Important:** due to a known file handle leak in BedTool.__len__, it&#39;s</span>
+<span class="sd">    best to simply check the number of lines in the file, as in the below</span>
+<span class="sd">    function. This works because BEDTools programs strip any non-interval lines</span>
+<span class="sd">    in the results.</span>
+
+<span class="sd">    &gt;&gt;&gt; # set up example BedTools</span>
+<span class="sd">    &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;a.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; b = pybedtools.example_bedtool(&#39;b.bed&#39;)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Method of `a` to call:</span>
+<span class="sd">    &gt;&gt;&gt; method = &#39;intersect&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; # Kwargs provided to `a.intersect` each iteration</span>
+<span class="sd">    &gt;&gt;&gt; method_kwargs = dict(b=b, u=True)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Function that will be called on the results of</span>
+<span class="sd">    &gt;&gt;&gt; # `a.intersect(**method_kwargs)`.</span>
+<span class="sd">    &gt;&gt;&gt; def reduce_func(x):</span>
+<span class="sd">    ...     return sum(1 for _ in open(x.fn))</span>
+
+<span class="sd">    &gt;&gt;&gt; # Create a small artificial genome for this test (generally you&#39;d</span>
+<span class="sd">    &gt;&gt;&gt; # use an assembly name, like &quot;hg19&quot;):</span>
+<span class="sd">    &gt;&gt;&gt; genome = dict(chr1=(0, 1000))</span>
+
+<span class="sd">    &gt;&gt;&gt; # Do 10 iterations using 1 process for this test (generally you&#39;d</span>
+<span class="sd">    &gt;&gt;&gt; # use 1000+ iterations, and as many processes as you have CPUs)</span>
+<span class="sd">    &gt;&gt;&gt; results = pybedtools.parallel.parallel_apply(a, method, genome=genome,</span>
+<span class="sd">    ... method_kwargs=method_kwargs, iterations=10, processes=1,</span>
+<span class="sd">    ... reduce_func=reduce_func, debug=True, report_iterations=True)</span>
+
+<span class="sd">    &gt;&gt;&gt; # get results</span>
+<span class="sd">    &gt;&gt;&gt; print(list(results))</span>
+<span class="sd">    [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]</span>
+
+<span class="sd">    &gt;&gt;&gt; # We can compare this to the actual intersection:</span>
+<span class="sd">    &gt;&gt;&gt; reduce_func(a.intersect(**method_kwargs))</span>
+<span class="sd">    3</span>
+
+<span class="sd">    Alternatively, we could use the `a.jaccard` method, which already does the</span>
+<span class="sd">    reduction to a dictionary.  However, the Jaccard method requires the input</span>
+<span class="sd">    to be sorted.  Here, we specify `sort=True` to sort each shuffled BedTool</span>
+<span class="sd">    before calling its `jaccard` method.</span>
+
+<span class="sd">    &gt;&gt;&gt; from pybedtools.parallel import parallel_apply</span>
+<span class="sd">    &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;a.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; results = parallel_apply(a, method=&#39;jaccard&#39;, method_args=(b,),</span>
+<span class="sd">    ... genome=genome, iterations=3, processes=1, sort=True, debug=True)</span>
+<span class="sd">    &gt;&gt;&gt; for i in results:</span>
+<span class="sd">    ...     print(sorted(i.items()))</span>
+<span class="sd">    [(&#39;intersection&#39;, 15), (&#39;jaccard&#39;, 0.0238095), (&#39;n_intersections&#39;, 2), (&#39;union-intersection&#39;, 630)]</span>
+<span class="sd">    [(&#39;intersection&#39;, 15), (&#39;jaccard&#39;, 0.0238095), (&#39;n_intersections&#39;, 2), (&#39;union-intersection&#39;, 630)]</span>
+<span class="sd">    [(&#39;intersection&#39;, 45), (&#39;jaccard&#39;, 0.0818182), (&#39;n_intersections&#39;, 1), (&#39;union-intersection&#39;, 550)]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    orig_bedtool : BedTool</span>
+
+<span class="sd">    method : str</span>
+<span class="sd">        The method of `orig_bedtool` to run</span>
+
+<span class="sd">    method_args : tuple</span>
+<span class="sd">        Passed directly to getattr(orig_bedtool, method)()</span>
+
+<span class="sd">    method_kwargs : dict</span>
+<span class="sd">        Passed directly to getattr(orig_bedtool, method)()</span>
+
+<span class="sd">    shuffle : bool</span>
+<span class="sd">        If True, then `orig_bedtool` will be shuffled at each iteration and</span>
+<span class="sd">        that shuffled version&#39;s `method` will be called with `method_args` and</span>
+<span class="sd">        `method_kwargs`.</span>
+
+<span class="sd">    shuffle_kwargs : dict</span>
+<span class="sd">        If `shuffle` is True, these are passed to `orig_bedtool.shuffle()`.</span>
+<span class="sd">        You do not need to pass the genome here; that&#39;s handled separately by</span>
+<span class="sd">        the `genome` and `genome_fn` kwargs.</span>
+
+<span class="sd">    iterations : int</span>
+<span class="sd">        Number of iterations to perform</span>
+
+<span class="sd">    genome : string or dict</span>
+<span class="sd">        If string, then assume it is the assembly name (e.g., hg19) and get</span>
+<span class="sd">        a dictionary of chromsizes for that assembly, then converts to</span>
+<span class="sd">        a filename.</span>
+
+<span class="sd">    genome_fn : str</span>
+<span class="sd">        Mutually exclusive with `genome`; `genome_fn` must be an existing</span>
+<span class="sd">        filename with the chromsizes.  Use the `genome` kwarg instead if you&#39;d</span>
+<span class="sd">        rather supply an assembly or dict.</span>
+
+<span class="sd">    reduce_func : callable</span>
+<span class="sd">        Function or other callable object that accepts, as its only argument,</span>
+<span class="sd">        the results from `orig_bedtool.method()`.  For example, if you care</span>
+<span class="sd">        about the number of results, then you can use `reduce_func=len`.</span>
+
+<span class="sd">    processes : int</span>
+<span class="sd">        Number of processes to run.  If `processes=1`, then multiprocessing is</span>
+<span class="sd">        not used (making it much easier to debug).  This argument is ignored if</span>
+<span class="sd">        `_orig_pool` is provided.</span>
+
+<span class="sd">    sort : bool</span>
+<span class="sd">        If both `shuffle` and `sort` are True, then the shuffled BedTool will</span>
+<span class="sd">        then be sorted.  Use this if `method` requires sorted input.</span>
+
+<span class="sd">    _orig_pool : multiprocessing.Pool instance</span>
+<span class="sd">        If provided, uses `_orig_pool` instead of creating one.  In this case,</span>
+<span class="sd">        `processes` will be ignored.</span>
+
+<span class="sd">    debug : bool</span>
+<span class="sd">        If True, then use the current iteration index as the seed to shuffle.</span>
+
+<span class="sd">    report_iterations : bool</span>
+<span class="sd">        If True, then report the number of iterations to stderr.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">shuffle_kwargs</span> <span class="o">=</span> <span class="n">shuffle_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">method_args</span> <span class="o">=</span> <span class="n">method_args</span> <span class="ow">or</span> <span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method_args</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method_args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s">&quot;method_args must be a list or tuple, got </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">method_args</span><span class="p">))</span>
+    <span class="n">method_kwargs</span> <span class="o">=</span> <span class="n">method_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">genome_fn</span> <span class="ow">and</span> <span class="n">genome</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;only of of genome_fn or genome should be provided&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">genome_fn</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">genome</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;shuffle=True, so either genome_fn&quot;</span>
+                                 <span class="s">&quot; or genome must be provided&quot;</span><span class="p">)</span>
+            <span class="n">genome_fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span>
+
+    <span class="n">_parallel_wrap_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">orig_bedtool</span><span class="o">=</span><span class="n">orig_bedtool</span><span class="p">,</span>
+        <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="n">shuffle_kwargs</span><span class="p">,</span>
+        <span class="n">genome_fn</span><span class="o">=</span><span class="n">genome_fn</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+        <span class="n">method_args</span><span class="o">=</span><span class="n">method_args</span><span class="p">,</span>
+        <span class="n">method_kwargs</span><span class="o">=</span><span class="n">method_kwargs</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
+        <span class="n">reduce_func</span><span class="o">=</span><span class="n">reduce_func</span><span class="p">,</span>
+        <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_seed</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">debug</span> <span class="ow">and</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;shuffle_kwargs&#39;</span><span class="p">][</span><span class="s">&#39;seed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="n">kwargs</span>
+
+    <span class="k">if</span> <span class="n">processes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">_parallel_wrap</span><span class="p">(</span><span class="o">**</span><span class="n">add_seed</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">_parallel_wrap_kwargs</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+    <span class="k">if</span> <span class="n">_orig_pool</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">_orig_pool</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">_parallel_wrap</span><span class="p">,</span> <span class="p">(),</span> <span class="n">add_seed</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">_parallel_wrap_kwargs</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">report_iterations</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">raise</span> <span class="ne">StopIteration</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" >pybedtools</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

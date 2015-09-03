@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.contrib.venn_maker &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../../../index.html" />
+    <link rel="up" title="pybedtools" href="../../pybedtools.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pybedtools.contrib.venn_maker</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Interface between pybedtools and the R package VennDiagram.</span>
+
+<span class="sd">Rather than depend on the user to have rpy2 installed, this simply writes an</span>
+<span class="sd">R script that can be edited and tweaked by the user before being run in R.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">helpers</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="c"># really just fill in x and filename...leave the rest up to the user.</span>
+<span class="c">#</span>
+<span class="c"># Note that the closing parentheses is missing -- that&#39;s so the user can add</span>
+<span class="c"># kwargs from the calling function</span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">library(VennDiagram)</span>
+<span class="s">venn.diagram(</span>
+<span class="s">    x=$x,</span>
+<span class="s">    filename=$filename,</span>
+<span class="s">    category.names = $names</span>
+<span class="s">&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_list_to_R_syntax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert items in `x` to a string, and replace tabs with pipes in Interval</span>
+<span class="sd">    string representations.  Put everything into an R vector and return as one</span>
+<span class="sd">    big string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">Interval</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;|&#39;</span><span class="p">)</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s">&#39;c(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_dict_to_R_named_list</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls _list_to_R_syntax for each item.  Returns one big string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot; = </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">_list_to_R_syntax</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="s">&#39;list(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">truncator</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a feature of any format into a BED3 format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">create_interval_from_list</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">chrom</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">)])</span>
+
+
+<div class="viewcode-block" id="cleaned_intersect"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.venn_maker.cleaned_intersect.html#pybedtools.contrib.venn_maker.cleaned_intersect">[docs]</a><span class="k">def</span> <span class="nf">cleaned_intersect</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform interval intersections such that the end products have identical \</span>
+<span class="sd">    features for overlapping intervals.</span>
+
+<span class="sd">    The VennDiagram package does *set* intersection, not *interval*</span>
+<span class="sd">    intersection.  So the goal here is to represent intersecting intervals as</span>
+<span class="sd">    intersecting sets of strings.</span>
+
+<span class="sd">    Doing a simple BEDTools intersectBed call doesn&#39;t do the trick (even with</span>
+<span class="sd">    the -u argument).  As a concrete example, what would the string be for an</span>
+<span class="sd">    intersection of the feature &quot;chr1:1-100&quot; in file `x` and &quot;chr1:50-200&quot; in</span>
+<span class="sd">    file `y`?</span>
+
+<span class="sd">    The method used here is to substitute the intervals in `y` that overlap `x`</span>
+<span class="sd">    with the corresponding elements in `x`.  This means that in the resulting</span>
+<span class="sd">    sets, the overlapping features are identical.  To follow up with the</span>
+<span class="sd">    example, both `x` and `y` would have an item &quot;chr1:50-200&quot; in their sets,</span>
+<span class="sd">    simply indicating *that* one interval overlapped.</span>
+
+<span class="sd">    Venn diagrams are not well suited for nested overlaps or multi-overlaps.</span>
+<span class="sd">    To illustrate, try drawing the 2-way Venn diagram of the following two</span>
+<span class="sd">    files. Specifically, what number goes in the middle -- the number of</span>
+<span class="sd">    features in `x` that intersect `y` (1) or the number of features in `y`</span>
+<span class="sd">    that intersect `x` (2)?::</span>
+
+<span class="sd">        x:</span>
+<span class="sd">            chr1  1  100</span>
+<span class="sd">            chr1 500 6000</span>
+
+<span class="sd">        y:</span>
+<span class="sd">            chr1 50 100</span>
+<span class="sd">            chr1 80 200</span>
+<span class="sd">            chr9 777 888</span>
+
+<span class="sd">    In this case, this function will return the following sets::</span>
+
+<span class="sd">        x:</span>
+<span class="sd">            chr1:1-100</span>
+<span class="sd">            chr1:500-6000</span>
+
+<span class="sd">        y:</span>
+<span class="sd">            chr1:1-100</span>
+<span class="sd">            chr9:777-888</span>
+
+<span class="sd">    This means that while `x` does not change in length, `y` can.  For example,</span>
+<span class="sd">    if there are 2 features in `x` that overlap one feature in `y`, then `y`</span>
+<span class="sd">    will gain those two features in place of its single original feature.</span>
+
+<span class="sd">    This strategy is extended for multiple intersections -- see the source for</span>
+<span class="sd">    details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+
+        <span class="c"># Combine the unique-to-y intervals with the shared-with-x intervals.</span>
+        <span class="c"># Since x is first in x+y, resulting features are from x.</span>
+        <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">new_y</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+
+        <span class="c"># Same as above.  Don&#39;t care about z yet; this means that y will not</span>
+        <span class="c"># change because of z.</span>
+        <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="c"># Combine:</span>
+        <span class="c">#  unique-to-z</span>
+        <span class="c">#  shared-with-any-x</span>
+        <span class="c">#  shared-with-unique-to-y</span>
+        <span class="n">new_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">,</span> <span class="n">new_z</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+
+        <span class="c"># Same as 2-way</span>
+        <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="c"># Same as 3-way</span>
+        <span class="n">new_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+
+        <span class="c"># Combine:</span>
+        <span class="c">#  unique-to-q</span>
+        <span class="c">#  shared-with-any-x</span>
+        <span class="c">#  shared-with-unique-to-y</span>
+        <span class="c">#  shared-with-unique-to-z</span>
+        <span class="n">new_q</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>\
+                <span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>\
+                <span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>\
+                <span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">,</span> <span class="n">new_z</span><span class="p">,</span> <span class="n">new_q</span>
+
+</div>
+<div class="viewcode-block" id="venn_maker"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.venn_maker.venn_maker.html#pybedtools.contrib.venn_maker.venn_maker">[docs]</a><span class="k">def</span> <span class="nf">venn_maker</span><span class="p">(</span><span class="n">beds</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">figure_filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">script_filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">additional_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a list of interval files, write an R script to create a Venn \</span>
+<span class="sd">    diagram of overlaps (and optionally run it).</span>
+
+<span class="sd">    The R script calls the venn.diagram function of the R package VennDiagram</span>
+<span class="sd">    for extremely flexible Venn and Euler diagram creation.  Uses</span>
+<span class="sd">    `cleaned_intersect()` to create string representations of shared intervals.</span>
+
+<span class="sd">    `beds` is a list of up to 4 filenames or BedTools.</span>
+
+<span class="sd">    `names` is a list of names to use for the Venn diagram, in the same order</span>
+<span class="sd">    as `beds`. Default is &quot;abcd&quot;[:len(beds)].</span>
+
+<span class="sd">    `figure_filename` is the TIFF file to save the figure as.</span>
+
+<span class="sd">    `script_filename` is the optional filename to write the R script to</span>
+
+<span class="sd">    `additional_args` is list that will be inserted into the R script,</span>
+<span class="sd">    verbatim.  For example, to use scaled Euler diagrams with different colors,</span>
+<span class="sd">    use::</span>
+
+<span class="sd">        additional_args = [&#39;euler.d=TRUE&#39;,</span>
+<span class="sd">                           &#39;scaled=TRUE&#39;,</span>
+<span class="sd">                           &#39;cat.col=c(&quot;red&quot;,&quot;blue&quot;)&#39;]</span>
+
+<span class="sd">    If `run` is True, then assume R is installed, is on the path, and has</span>
+<span class="sd">    VennDiagram installed . . . and run the script.  The resulting filename</span>
+<span class="sd">    will be saved as `figure_filename`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">figure_filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">figure_filename</span> <span class="o">=</span> <span class="s">&#39;NULL&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">figure_filename</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">figure_filename</span>
+
+    <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="s">&quot;abcd&quot;</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">beds</span><span class="p">)]</span>
+
+    <span class="n">_beds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">bed</span> <span class="ow">in</span> <span class="n">beds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bed</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">):</span>
+            <span class="n">bed</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">bed</span><span class="p">)</span>
+        <span class="n">_beds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bed</span><span class="p">)</span>
+
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">cleaned_intersect</span><span class="p">(</span><span class="n">_beds</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">cleaned</span><span class="p">)))</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">_dict_to_R_named_list</span><span class="p">(</span><span class="n">results</span><span class="p">),</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">figure_filename</span><span class="p">,</span>
+            <span class="n">names</span><span class="o">=</span><span class="n">_list_to_R_syntax</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">additional_args</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;,&#39;</span> <span class="o">+</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">additional_args</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">+=</span> <span class="s">&quot;)&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">script_filename</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">script_filename</span>
+
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s">&#39;.Rout&#39;</span>
+    <span class="k">if</span> <span class="n">run</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_R_installed</span><span class="p">:</span>
+            <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_R</span><span class="p">()</span>
+
+        <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_R_path</span><span class="p">,</span> <span class="s">&#39;R&#39;</span><span class="p">),</span> <span class="s">&#39;CMD&#39;</span><span class="p">,</span> <span class="s">&#39;BATCH&#39;</span><span class="p">,</span>
+                <span class="n">fn</span><span class="p">,</span> <span class="n">out</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+                <span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+
+        <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">stdout</span> <span class="ow">or</span> <span class="n">stderr</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout:&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr:&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">script_filename</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">return</span> <span class="bp">None</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" >pybedtools</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

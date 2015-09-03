@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Topical Documentation &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="next" title="Design principles" href="topical-design-principles.html" />
+    <link rel="prev" title="Using the history and tags" href="history.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topical-design-principles.html" title="Design principles"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="history.html" title="Using the history and tags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="topical-documentation">
+<span id="topical"></span><h1>Topical Documentation<a class="headerlink" href="#topical-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This section contains additional documentation not covered in the tutorial.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="topical-design-principles.html">Design principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principle-1-temporary-files-are-created-and-deleted-automatically">Principle 1: Temporary files are created (and deleted) automatically</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principle-2-names-and-arguments-are-as-similar-as-possible-to-bedtools">Principle 2: Names and arguments are as similar as possible to BEDTools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principle-3-indifference-to-bedtools-version">Principle 3: Indifference to BEDTools version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principle-4-sensible-default-args">Principle 4: Sensible default args</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principal-5-other-arguments-have-no-defaults">Principal 5: Other arguments have no defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principle-6-chaining-together-commands">Principle 6: Chaining together commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html#principle-7-check-the-help">Principle 7: Check the help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal"><span class="pre">BedTool</span></code> results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html#use-the-bedtool-saveas-method">Use the <code class="docutils literal"><span class="pre">BedTool.saveas()</span></code> method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html#use-the-bedtool-moveto-method">Use the <code class="docutils literal"><span class="pre">BedTool.moveto()</span></code> method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html#use-the-output-keyword-argument">Use the <code class="docutils literal"><span class="pre">output</span></code> keyword argument</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html#creating-a-bedtool-from-an-iterable">Creating a <code class="docutils literal"><span class="pre">BedTool</span></code> from an iterable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html#indexing-a-bedtool">Indexing a <code class="docutils literal"><span class="pre">BedTool</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topical-bam-semantics.html">Notes on BAM file semantics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topical-genome.html">Specifying genomes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html#as-a-file">As a file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html#as-a-string">As a string</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html#as-a-dictionary">As a dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html#converting-to-a-file">Converting to a file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-random.html">Randomization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html#example-workflow">Example workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html#other-statistics">Other statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#example-program-description">Example program description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#method-name">Method name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#define-a-method-in-bedtool">Define a method in <code class="docutils literal"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#add-the-wraps-decorator">Add the <code class="docutils literal"><span class="pre">_wraps()</span></code> decorator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#add-doctests">Add doctests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#add-to-list-of-known-programs">Add to list of known programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html#pybedtools-version-py-ms-example-py"><code class="docutils literal"><span class="pre">pybedtools</span></code> version (<code class="docutils literal"><span class="pre">py_ms_example.py</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html#bash-version-sh-ms-example-sh"><code class="docutils literal"><span class="pre">bash</span></code> version (<code class="docutils literal"><span class="pre">sh_ms_example.sh</span></code>)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flow-of-commands.html">Under the hood</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html#iterator-protocol">Iterator &quot;protocol&quot;</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flow-of-commands.html#filename-based">Filename-based</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flow-of-commands.html#open-file-based">Open file-based</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flow-of-commands.html#iterator-or-generator-based">Iterator or generator-based</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html#calling-bedtools-programs">Calling BEDTools programs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="history.html"
+                        title="previous chapter">Using the history and tags</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="topical-design-principles.html"
+                        title="next chapter">Design principles</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/topical-documentation-contents.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="topical-design-principles.html" title="Design principles"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="history.html" title="Using the history and tags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.bedtool.BedTool.randomstats &mdash; pybedtools 0.7.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.0 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.bedtool.BedTool.randomintersection" href="pybedtools.bedtool.BedTool.randomintersection.html" />
+    <link rel="prev" title="pybedtools.bedtool.BedTool.parallel_apply" href="pybedtools.bedtool.BedTool.parallel_apply.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.randomintersection.html" title="pybedtools.bedtool.BedTool.randomintersection"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.parallel_apply.html" title="pybedtools.bedtool.BedTool.parallel_apply"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-bedtool-bedtool-randomstats">
+<h1>pybedtools.bedtool.BedTool.randomstats<a class="headerlink" href="#pybedtools-bedtool-bedtool-randomstats" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="pybedtools.bedtool.BedTool.randomstats">
+<code class="descclassname">BedTool.</code><code class="descname">randomstats</code><span class="sig-paren">(</span><em>other</em>, <em>iterations</em>, <em>new=False</em>, <em>genome_fn=None</em>, <em>include_distribution=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.randomstats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.randomstats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of results from many randomly shuffled intersections.</p>
+<p>Sends args and kwargs to <a class="reference internal" href="pybedtools.bedtool.BedTool.randomintersection.html#pybedtools.bedtool.BedTool.randomintersection" title="pybedtools.bedtool.BedTool.randomintersection"><code class="xref py py-meth docutils literal"><span class="pre">BedTool.randomintersection()</span></code></a> and
+compiles results into a dictionary with useful stats.  Requires
+numpy.</p>
+<p>If <code class="docutils literal"><span class="pre">include_distribution</span></code> is True, then the dictionary will include the
+full distribution; otherwise, the distribution is deleted and cleaned
+up to save on memory usage.</p>
+<p>This is one possible way of assigning significance to overlaps between
+two files. See, for example:</p>
+<blockquote>
+<div>Negre N, Brown CD, Shah PK, Kheradpour P, Morrison CA, et al. 2010
+A Comprehensive Map of Insulator Elements for the Drosophila
+Genome. PLoS Genet 6(1): e1000814. doi:10.1371/journal.pgen.1000814</div></blockquote>
+<p>Example usage:</p>
+<p>Make chromsizes a very small genome for this example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">chromsizes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;chr1&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_chromsizes</span><span class="p">(</span><span class="n">chromsizes</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomstats</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">pass</span>
+</pre></div>
+</div>
+<p><em>results</em> is a dictionary that you can inspect.</p>
+<p>(Note that the following examples are not run as part of the doctests
+to avoid forcing users to install NumPy just to pass tests)</p>
+<p>The actual overlap:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s">&#39;actual&#39;</span><span class="p">])</span>
+<span class="mi">3</span>
+</pre></div>
+</div>
+<p>The median of all randomized overlaps:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s">&#39;median randomized&#39;</span><span class="p">])</span>
+<span class="mf">2.0</span>
+</pre></div>
+</div>
+<p>The percentile of the actual overlap in the distribution of randomized
+overlaps, which can be used to get an empirical p-value:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s">&#39;percentile&#39;</span><span class="p">])</span>
+<span class="mf">90.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.parallel_apply.html"
+                        title="previous chapter">pybedtools.bedtool.BedTool.parallel_apply</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pybedtools.bedtool.BedTool.randomintersection.html"
+                        title="next chapter">pybedtools.bedtool.BedTool.randomintersection</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.randomstats.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.randomintersection.html" title="pybedtools.bedtool.BedTool.randomintersection"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.bedtool.BedTool.parallel_apply.html" title="pybedtools.bedtool.BedTool.parallel_apply"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" ><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.genomicnorth.com/piwik/" : "http://piwik.genomicnorth.com/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://piwik.genomicnorth.com/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
+
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2010, Ryan Dale.
+      Last updated on Sep 03, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
