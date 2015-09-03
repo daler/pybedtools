@@ -3,6 +3,8 @@
 
 .. _pybedtools reference:
 
+.. currentmodule:: pybedtools
+
 :mod:`pybedtools` Reference
 ===========================
 The following tables summarize the methods and functions; click on a method or
@@ -19,7 +21,7 @@ a BedTool`.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool
+    pybedtools.bedtool.BedTool
 
 `BEDTools` wrappers
 -------------------
@@ -39,52 +41,48 @@ In general the `BEDTool` wrapper methods adhere to the :ref:`Design principles`:
     * :ref:`version principle`
     * :ref:`default args principle`
 
-A new interface was introduced in BEDTools v2.15 which retains compatibility
-with :mod:`pybedtools`.  For clarity, in the table below, both the "old" (e.g.,
-`intersectBed`) or "new" (e.g., `bedtools intersect`) versions of calling the
-program are indicated. 
 
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.intersect
-    pybedtools.BedTool.window
-    pybedtools.BedTool.closest
-    pybedtools.BedTool.coverage
-    pybedtools.BedTool.map
-    pybedtools.BedTool.genome_coverage
-    pybedtools.BedTool.merge
-    pybedtools.BedTool.cluster
-    pybedtools.BedTool.complement
-    pybedtools.BedTool.subtract
-    pybedtools.BedTool.slop
-    pybedtools.BedTool.flank
-    pybedtools.BedTool.sort
-    pybedtools.BedTool.random
-    pybedtools.BedTool.shuffle
-    pybedtools.BedTool.annotate
-    pybedtools.BedTool.multi_intersect
-    pybedtools.BedTool.union_bedgraphs
-    pybedtools.BedTool.pair_to_bed
-    pybedtools.BedTool.pair_to_pair
-    pybedtools.BedTool.bam_to_bed
-    pybedtools.BedTool.to_bam
-    pybedtools.BedTool.bedpe_to_bam
-    pybedtools.BedTool.bed6
-    pybedtools.BedTool.bam_to_fastq
-    pybedtools.BedTool.sequence
-    pybedtools.BedTool.mask_fasta
-    pybedtools.BedTool.nucleotide_content
-    pybedtools.BedTool.multi_bam_coverage
-    pybedtools.BedTool.tag_bam
-    pybedtools.BedTool.jaccard
-    pybedtools.BedTool.reldist
-    pybedtools.BedTool.overlap
-    pybedtools.BedTool.links
-    pybedtools.BedTool.igv
-    pybedtools.BedTool.window_maker
-    pybedtools.BedTool.groupby
-    pybedtools.BedTool.expand
+    pybedtools.bedtool.BedTool.intersect
+    pybedtools.bedtool.BedTool.window
+    pybedtools.bedtool.BedTool.closest
+    pybedtools.bedtool.BedTool.coverage
+    pybedtools.bedtool.BedTool.map
+    pybedtools.bedtool.BedTool.genome_coverage
+    pybedtools.bedtool.BedTool.merge
+    pybedtools.bedtool.BedTool.cluster
+    pybedtools.bedtool.BedTool.complement
+    pybedtools.bedtool.BedTool.subtract
+    pybedtools.bedtool.BedTool.slop
+    pybedtools.bedtool.BedTool.flank
+    pybedtools.bedtool.BedTool.sort
+    pybedtools.bedtool.BedTool.random
+    pybedtools.bedtool.BedTool.shuffle
+    pybedtools.bedtool.BedTool.annotate
+    pybedtools.bedtool.BedTool.multi_intersect
+    pybedtools.bedtool.BedTool.union_bedgraphs
+    pybedtools.bedtool.BedTool.pair_to_bed
+    pybedtools.bedtool.BedTool.pair_to_pair
+    pybedtools.bedtool.BedTool.bam_to_bed
+    pybedtools.bedtool.BedTool.to_bam
+    pybedtools.bedtool.BedTool.bedpe_to_bam
+    pybedtools.bedtool.BedTool.bed6
+    pybedtools.bedtool.BedTool.bam_to_fastq
+    pybedtools.bedtool.BedTool.sequence
+    pybedtools.bedtool.BedTool.mask_fasta
+    pybedtools.bedtool.BedTool.nucleotide_content
+    pybedtools.bedtool.BedTool.multi_bam_coverage
+    pybedtools.bedtool.BedTool.tag_bam
+    pybedtools.bedtool.BedTool.jaccard
+    pybedtools.bedtool.BedTool.reldist
+    pybedtools.bedtool.BedTool.overlap
+    pybedtools.bedtool.BedTool.links
+    pybedtools.bedtool.BedTool.igv
+    pybedtools.bedtool.BedTool.window_maker
+    pybedtools.bedtool.BedTool.groupby
+    pybedtools.bedtool.BedTool.expand
 
 Other :class:`BedTool` methods
 ------------------------------
@@ -100,14 +98,16 @@ on the fly.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.each
-    pybedtools.BedTool.filter
-    pybedtools.BedTool.split
-    pybedtools.BedTool.truncate_to_chrom
-    pybedtools.BedTool.remove_invalid
+    pybedtools.bedtool.BedTool.each
+    pybedtools.bedtool.BedTool.filter
+    pybedtools.bedtool.BedTool.split
+    pybedtools.bedtool.BedTool.truncate_to_chrom
+    pybedtools.bedtool.BedTool.remove_invalid
 
 The :mod:`pybedtools.featurefuncs` module contains some commonly-used functions
 that can be passed to :meth:`BedTool.each`:
+
+.. currentmodule:: pybedtools
 
 .. autosummary::
     :toctree:
@@ -143,12 +143,12 @@ stored in many different BED files, that fall within a gene's coordinates.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.all_hits
-    pybedtools.BedTool.any_hits
-    pybedtools.BedTool.count_hits
-    pybedtools.BedTool.tabix_intervals
-    pybedtools.BedTool.tabix
-    pybedtools.BedTool.bgzip
+    pybedtools.bedtool.BedTool.all_hits
+    pybedtools.bedtool.BedTool.any_hits
+    pybedtools.bedtool.BedTool.count_hits
+    pybedtools.bedtool.BedTool.tabix_intervals
+    pybedtools.bedtool.BedTool.tabix
+    pybedtools.bedtool.BedTool.bgzip
 
 
 :class:`BedTool` introspection
@@ -161,10 +161,10 @@ If using :meth:`BedTool.head`, don't forget that you can index into
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.head
-    pybedtools.BedTool.count
-    pybedtools.BedTool.field_count
-    pybedtools.BedTool.file_type
+    pybedtools.bedtool.BedTool.head
+    pybedtools.bedtool.BedTool.count
+    pybedtools.bedtool.BedTool.field_count
+    pybedtools.bedtool.BedTool.file_type
 
 
 Randomization helpers
@@ -175,13 +175,13 @@ distributions between interval files.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.parallel_apply
-    pybedtools.BedTool.randomstats
-    pybedtools.BedTool.randomintersection
-    pybedtools.BedTool.randomintersection_bp
-    pybedtools.BedTool.random_subset
-    pybedtools.BedTool.random_jaccard
-    pybedtools.BedTool.random_op
+    pybedtools.bedtool.BedTool.parallel_apply
+    pybedtools.bedtool.BedTool.randomstats
+    pybedtools.bedtool.BedTool.randomintersection
+    pybedtools.bedtool.BedTool.randomintersection_bp
+    pybedtools.bedtool.BedTool.random_subset
+    pybedtools.bedtool.BedTool.random_jaccard
+    pybedtools.bedtool.BedTool.random_op
 
 Managing :class:`BedTool` objects on disk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,8 +191,8 @@ operations.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.saveas
-    pybedtools.BedTool.moveto
+    pybedtools.bedtool.BedTool.saveas
+    pybedtools.bedtool.BedTool.moveto
 
 
 Misc operations
@@ -202,21 +202,21 @@ Methods that can't quite be categorized into the above sections.
 .. autosummary::
     :toctree: autodocs
 
-    pybedtools.BedTool.cat
-    pybedtools.BedTool.at
-    pybedtools.BedTool.absolute_distance
-    pybedtools.BedTool.cut
-    pybedtools.BedTool.total_coverage
-    pybedtools.BedTool.with_attrs
-    pybedtools.BedTool.as_intervalfile
-    pybedtools.BedTool.introns
-    pybedtools.BedTool.set_chromsizes
-    pybedtools.BedTool.print_sequence
-    pybedtools.BedTool.save_seqs
-    pybedtools.BedTool.seq
-    pybedtools.BedTool.liftover
-    pybedtools.BedTool.colormap_normalize
-    pybedtools.BedTool.relative_distance
+    pybedtools.bedtool.BedTool.cat
+    pybedtools.bedtool.BedTool.at
+    pybedtools.bedtool.BedTool.absolute_distance
+    pybedtools.bedtool.BedTool.cut
+    pybedtools.bedtool.BedTool.total_coverage
+    pybedtools.bedtool.BedTool.with_attrs
+    pybedtools.bedtool.BedTool.as_intervalfile
+    pybedtools.bedtool.BedTool.introns
+    pybedtools.bedtool.BedTool.set_chromsizes
+    pybedtools.bedtool.BedTool.print_sequence
+    pybedtools.bedtool.BedTool.save_seqs
+    pybedtools.bedtool.BedTool.seq
+    pybedtools.bedtool.BedTool.liftover
+    pybedtools.bedtool.BedTool.colormap_normalize
+    pybedtools.bedtool.BedTool.relative_distance
 
 Module-level functions
 ----------------------
