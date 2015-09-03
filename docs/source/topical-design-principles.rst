@@ -91,14 +91,14 @@ Returning again to this example::
 This demonstrates that the :class:`BedTool` methods that wrap BEDTools_
 programs do the same thing and take the exact same arguments as the
 BEDTools_ program.  Here we can pass `d=100` and `s=True` only because the
-underlying BEDTools_ program, `mergeBed`, can accept these arguments.
-Need to know what arguments `mergeBed` can take?  See the docs for
+underlying BEDTools_ program, `bedtools merge`, can accept these arguments.
+Need to know what arguments `bedtools merge` can take?  See the docs for
 :meth:`BedTool.merge`; for more on this see :ref:`good docs principle`.
 
-In general, remove the "Bed" from the end of the BEDTools_ program to get
-the corresponding :class:`BedTool` method.  So there's a
-:meth:`BedTool.subtract` method for `subtractBed`, a
-:meth:`BedTool.intersect` method for `intersectBed`, and so on.
+In general, use the BEDTools_ program name to get the corresponding
+:class:`BedTool` method.  So there's a :meth:`BedTool.subtract` method for
+`bedtools subtract`, a :meth:`BedTool.intersect` method for `bedtools
+intersect`, and so on.
 
 .. _`version principle`:
 
@@ -107,7 +107,7 @@ Principle 3: Indifference to BEDTools version
 Since :class:`BedTool` methods just wrap BEDTools_ programs, they are as up-to-date as
 the version of BEDTools_ you have installed on disk.  If you are using a
 cutting-edge version of BEDTools_ that has some hypothetical argument
-`-z` for `intersectBed`, then you can use `a.intersectBed(z=True)`.
+`-z` for `bedtools intersect`, then you can use `a.intersect(z=True)`.
 
 :mod:`pybedtools` will also raise an exception if you try to use a method
 that relies on a more recent version of BEDTools than you have installed.
@@ -117,8 +117,8 @@ that relies on a more recent version of BEDTools than you have installed.
 
 Principle 4: Sensible default args
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If we were running the ``mergeBed`` program from the command line, we
-would have to specify the input file with the :option:`mergeBed -i` option.
+If we were running the `bedtools merge` program from the command line, we
+would have to specify the input file with the :option:`bedtools merge -i` option.
 
 :mod:`pybedtools` assumes that if we're calling the :meth:`merge` method on
 the :class:`BedTool`, `a`, we want to operate on the bed file that `a`
@@ -153,10 +153,10 @@ Methods that have this type of default behavior are indicated by the following t
         For convenience, the file this BedTool object points to is passed as "-i"
 
 There are some BEDTools_ programs that accept two BED files as input, like
-``intersectBed`` where the the first file is specified with `-a` and the
+`bedtools intersect` where the the first file is specified with `-a` and the
 second file with `-b`.  The default behavior for :mod:`pybedtools` is to
-consider the :mod:`BedTool`'s file as `-a` and the first non-keyword
-argument to the method as `-b`, like this:
+consider the :mod:`BedTool`'s file as `-a` and the first non-keyword argument
+to the method as `-b`, like this:
 
 .. doctest::
 
@@ -201,10 +201,10 @@ defaults.  In the current version of BEDTools_, this means only the `-i`,
 specified by :mod:`pybedtools`; they pass the buck to BEDTools programs.  This
 means if you do not specify the `d` kwarg when calling :meth:`BedTool.merge`,
 then it will use whatever the installed version of BEDTools_ uses for `-d`
-(currently, `mergeBed`'s default for `-d` is 0).
+(currently, `bedtools merge`'s default for `-d` is 0).
 
 
-`-d` is an option to BEDTools_ `mergeBed` that accepts a value, while
+`-d` is an option to BEDTools_ `bedtools merge` that accepts a value, while
 `-s` is an option that acts as a switch.  In :mod:`pybedtools`, simply
 pass a value (integer, float, whatever) for value-type options like `-d`,
 and boolean values (`True` or `False`) for the switch-type options like
@@ -212,7 +212,7 @@ and boolean values (`True` or `False`) for the switch-type options like
 
 Here's another example using both types of keyword arguments; the
 :class:`BedTool` object `b` (or it could be a string filename too) is
-implicitly passed to `intersectBed` as `-b` (see :ref:`default args
+implicitly passed to `bedtools intersect` as `-b` (see :ref:`default args
 principle` above)::
 
     >>> a.intersect(b, v=True, f=0.5)

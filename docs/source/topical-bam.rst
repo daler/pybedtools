@@ -4,11 +4,11 @@
 
 Working with BAM files
 ======================
-Some BEDTools programs, like `intersecteBed`, support BAM files as input.
-From the command line, you would need to specify the `-abam`
-argument to do so.  However, :mod:`pybedtools` auto-detects BAM files and
-passes the `abam` argument automatically for you.  That means if you create
-a :class:`BedTool` out of a BAM file, like this:
+Some BEDTools programs, like `bedtools intersect`, support BAM files as input.
+From the command line, you would need to specify the `-abam` argument to do so.
+However, :mod:`pybedtools` auto-detects BAM files and passes the `abam`
+argument automatically for you.  That means if you create a :class:`BedTool`
+out of a BAM file, like this:
 
 .. doctest::
 
@@ -22,7 +22,7 @@ you can intersect it with a BED file without doing anything special:
     y = x.intersect(b)
 
 The output of this operation follows the semantics of BEDTools.  That is,
-for programs like `intersectBed`, if `abam` is used then the output will be
+for programs like `bedtools intersect`, if `abam` is used then the output will be
 BAM format as well.  But if the `-bed` argument is passed, then the output
 will be BED format. Similarly, in :mod:`pybedtools`, if a BAM file is used
 to create the :class:`BedTool` then the results will also be in BAM
@@ -133,7 +133,7 @@ Note that since we are viewing BED output, *the start and stops are 0-based*:
     chr2L	9329	9365	HWUSI-NAME:2:69:512:1017#0	3	-	9329	9365	0,0,0	1	36,	0,
 
 Consistent with BEDTools programs, BAM files are **not** supported as the
-second input argument.  In other words, `intersectBed` does not have both
+second input argument.  In other words, `bedtools intersect` does not have both
 `-abam` and `-bbam` arguments, so :mod:`pybedtools` will not not allow this
 either.
 

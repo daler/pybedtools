@@ -24,9 +24,9 @@ the next section is less confusing:
 
 
 While we're on the subject of arguments, note that we didn't have to specify
-`-a` or `-b` arguments, like you would need if calling `intersectBed` from the
-command line.  In other words, since `exons` refers to the file `a.bed` and
-`snps` refers to the file `b.bed`, the following line::
+`-a` or `-b` arguments, like you would need if calling `bedtools intersect`
+from the command line.  In other words, since `exons` refers to the file
+`a.bed` and `snps` refers to the file `b.bed`, the following line::
 
     >>> exons_with_snps = exons.intersect(snps, u=True)
 

@@ -1528,7 +1528,7 @@ class BedTool(object):
     @_wraps(prog='bed12ToBed6', implicit='i', bam=None, other=None)
     def bed6(self, **kwargs):
         """
-        Wraps `bed12ToBed6` (v2.15+: `bedtools bed12tobed6`).
+        Wraps `bedtools bed12tobed6`.
         """
         pass
 
@@ -1536,7 +1536,7 @@ class BedTool(object):
     @_wraps(prog='bamToBed', implicit='i', other=None, nonbam='ALL', bam='i')
     def bam_to_bed(self, **kwargs):
         """
-        Wraps `bamToBed` (v2.15+: `bedtools bamtobed`).
+        Wraps `bedtools bamtobed`.
         """
 
     @_wraps(prog='bedToBam', implicit='i', uses_genome=True, force_bam=True)
@@ -1549,7 +1549,7 @@ class BedTool(object):
     @_log_to_history
     def to_bam(self, **kwargs):
         """
-        Wraps `bedToBam` (v2.15+: `bedtools bedtobam`)
+        Wraps `bedtools bedtobam`
 
         If self.fn is in BED/VCF/GFF format, call BEDTools' bedToBam.  If
         self.fn is in SAM format, then create a header out of the genome file
@@ -1617,7 +1617,7 @@ class BedTool(object):
             nonbam='bed')
     def intersect(self):
         """
-        Wraps `intersectBed` (v2.15+: `bedtools intersect`).
+        Wraps `bedtools intersect`.
         """
 
     @_log_to_history
@@ -1626,7 +1626,7 @@ class BedTool(object):
             add_to_bedtool={'fo': 'seqfn'})
     def sequence(self):
         '''
-        Wraps `fastaFromBed` (v2.15+: `bedtools getfasta`).
+        Wraps `bedtools getfasta`.
 
         *fi* is passed in by the user; *bed* is automatically passed in as the
         bedfile of this object; *fo* by default is a temp file.  Use
@@ -1679,7 +1679,7 @@ class BedTool(object):
     @_wraps(prog='nucBed', implicit='bed', other='fi')
     def nucleotide_content(self):
         """
-        Wraps `nucBed` (v2.15+: `bedtools nuc`).
+        Wraps `bedtools nuc`.
 
         Profiles nucleotide content.  The returned BED file contains extra
         information about the nucleotide content
@@ -1689,7 +1689,7 @@ class BedTool(object):
     @_wraps(prog='multiBamCov', implicit='bed')
     def multi_bam_coverage(self):
         """
-        Wraps `multiBamCov` (v2.15+: `bedtools multicov`).
+        Wraps `bedtools multicov`.
 
         Pass a list of sorted and indexed BAM files as `bams`
         """
@@ -1698,7 +1698,7 @@ class BedTool(object):
     @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
     def subtract(self):
         """
-        Wraps `subtractBed` (v2.15+: `bedtools subtract`).
+        Wraps `bedtools subtract`.
 
         Subtracts from another BED file and returns a new BedTool object.
 
@@ -1729,14 +1729,14 @@ class BedTool(object):
             uses_genome=True)
     def slop(self):
         """
-        Wraps `slopBed` (v2.15+: `bedtools slop`).
+        Wraps `bedtools slop`.
         """
 
     @_log_to_history
     @_wraps(prog='mergeBed', implicit='i', other=None, bam=None)
     def merge(self):
         """
-        Wraps `mergeBed` (v2.15+: `bedtools merge`).
+        Wraps `bedtools merge`.
 
         Merge overlapping features together. Returns a new BedTool object.
 
@@ -1758,7 +1758,7 @@ class BedTool(object):
     @_wraps(prog='closestBed', implicit='a', other='b', bam=None)
     def closest(self):
         """
-        Wraps `closestBed` (v2.15+: `bedtools closest`).
+        Wraps `bedtools closest`.
 
         Return a new BedTool object containing closest features in *b*.  Note
         that the resulting file is no longer a valid BED format; use the
@@ -1778,7 +1778,7 @@ class BedTool(object):
             nonbam='bed')
     def window(self):
         """
-        Wraps `windowBed` (v2.15+: `bedtools window`).
+        Wraps `bedtools window`.
 
         Example usage::
 
@@ -1801,7 +1801,7 @@ class BedTool(object):
             uses_genome=True)
     def shuffle(self):
         """
-        Wraps `shuffleBed` (v2.15+: `bedtools shuffle`).
+        Wraps `bedtools shuffle`.
 
         Example usage:
 
@@ -1820,7 +1820,7 @@ class BedTool(object):
     @_wraps(prog='sortBed', implicit='i')
     def sort(self):
         """
-        Wraps `sortBed` (v2.15+: `bedtools sort`).
+        Wraps `bedtools sort`.
 
         Note that chromosomes are sorted lexograpically, so chr12 will come
         before chr9.
@@ -1847,7 +1847,7 @@ class BedTool(object):
     @_wraps(prog='annotateBed', implicit='i')
     def annotate(self):
         """
-        Wraps `annotateBed` (v2.15+: `bedtools annotate`).
+        Wraps  `bedtools annotate`.
 
         Annotate this BedTool with a list of other files.
         Example usage:
@@ -1866,7 +1866,7 @@ class BedTool(object):
     @_wraps(prog='flankBed', implicit='i', uses_genome=True)
     def flank(self):
         """
-        Wraps `flankBed` (v2.15+: `bedtools flank`).
+        Wraps `bedtools flank`.
 
         Example usage:
 
@@ -1898,7 +1898,7 @@ class BedTool(object):
             nonbam='ALL')
     def genome_coverage(self):
         """
-        Wraps `genomeCoverageBed` (v2.15+: `bedtools genomecov`).
+        Wraps `bedtools genomecov`.
 
         Example usage:
 
@@ -1929,7 +1929,7 @@ class BedTool(object):
             nonbam='ALL')
     def coverage(self):
         """
-        Wraps `coverageBed` (v2.15+: `bedtools coverage`).
+        Wraps `bedtools coverage`.
 
         Note that starting in version 2.24.0, BEDTools swapped the semantics of
         the "a" and "b" files.
@@ -1950,7 +1950,7 @@ class BedTool(object):
             check_stderr=_check_sequence_stderr)
     def mask_fasta(self):
         """
-        Wraps `maskFastaFromBed` (v2.15+: `bedtools maskfasta`).
+        Wraps `bedtools maskfasta`.
 
         Masks a fasta file at the positions in a BED file and saves result as
         'out' and stores the filename in seqfn.
@@ -1970,11 +1970,10 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='complementBed', implicit='i', uses_genome=True)
+    @_wraps(prog='complement', implicit='i', uses_genome=True)
     def complement(self):
         """
-        Wraps `complementBed` (v2.15+: `bedtools complement`)
-
+        Wraps `bedtools complement`.
         Example usage:
 
         >>> a = pybedtools.example_bedtool('a.bed')
@@ -1990,7 +1989,7 @@ class BedTool(object):
     @_wraps(prog='getOverlap', implicit='i')
     def overlap(self):
         """
-        Wraps `overlap` (v2.15+: `bedtools overlap`)
+        Wraps `bedtools overlap`.
 
         Example usage:
 
@@ -2010,21 +2009,21 @@ class BedTool(object):
             nonbam='bedpe')
     def pair_to_bed(self):
         """
-        Wraps `pairToBed` (v2.15+: `bedtools pairtobed`).
+        Wraps `bedtools pairtobed`.
         """
 
     @_log_to_history
     @_wraps(prog='pairToPair', implicit='a', other='b')
     def pair_to_pair(self):
         """
-        Wraps `pairToPair` (v2.15+: `bedtools pairtopair`).
+        Wraps `bedtools pairtopair`.
         """
 
     @_log_to_history
     @_wraps(prog='groupBy', implicit='i')
     def groupby(self):
         """
-        Wraps `groupBy` (v2.15+: `bedtools groupby`).
+        Wraps `bedtools groupby`.
 
         Example usage:
 
@@ -2051,7 +2050,7 @@ class BedTool(object):
     @_wraps(prog='tagBam', implicit='i', bam='i')
     def tag_bam(self):
         """
-        Wraps `tagBam` (v2.15+: `bedtools tag`).
+        Wraps `bedtools tag`.
 
         `files` and `labels` should lists of equal length.
 
@@ -2061,14 +2060,14 @@ class BedTool(object):
     @_wraps(prog='mapBed', implicit='a', other='b')
     def map(self):
         """
-        Wraps `mapBed` (v2.15+: `bedtools map`); See also :meth:`BedTool.each`.
+        Wraps  `bedtools map`; See also :meth:`BedTool.each`.
         """
 
     @_log_to_history
     @_wraps(prog='multiIntersectBed', uses_genome=True, genome_if=['empty'])
     def multi_intersect(self):
         """
-        Wraps `multiIntersectBed` (v2.15+: `bedtools multiintersect`)
+        Wraps `bedtools multiintersect`.
 
         Provide a list of filenames as the "i" argument. e.g. if you already
         have BedTool objects then use their `.fn` attribute, like this::
@@ -2092,7 +2091,7 @@ class BedTool(object):
     @_wraps(prog='randomBed', uses_genome=True)
     def random(self):
         """
-        Wraps `randomBed` (v2.15+: `bedtools random`)
+        Wraps `bedtools random`.
 
         Since this method does not operate on an existing file, create
         a BedTool with no arguments and then call this method, e.g.,
@@ -2105,21 +2104,21 @@ class BedTool(object):
     @_wraps('bedpeToBam', implicit='i', uses_genome=True, force_bam=True)
     def bedpe_to_bam(self):
         """
-        Wraps `bedpeToBam` (v2.15+: `bedtools bedpetobam`)
+        Wraps `bedtools bedpetobam`.
         """
 
     @_log_to_history
     @_wraps(prog='clusterBed', implicit='i')
     def cluster(self):
         """
-        Wraps `clusterBed` (v2.15+: `bedtools cluster`)
+        Wraps  `bedtools cluster`.
         """
 
     @_log_to_history
     @_wraps(prog='unionBedGraphs')
     def union_bedgraphs(self):
         """
-        Wraps `unionBedGraphs` (v2.15+: `bedtools unionbedg`)
+        Wraps `bedtools unionbedg`.
 
         Warning: using the `header=True` kwarg will result in a file that is
         not in true BED format, which may break downstream analysis.
@@ -2130,14 +2129,14 @@ class BedTool(object):
             other='b')
     def window_maker(self):
         """
-        Wraps `windowMaker` (v2.15+: `bedtools makewindows`)
+        Wraps `bedtools makewindows`.
         """
 
     @_log_to_history
     @_wraps(prog='expandCols', implicit='i')
     def expand(self):
         """
-        Wraps `expandCols` (v2.15+: `bedtools expand`)
+        Wraps `bedtools expand`
         """
 
     @_log_to_history
@@ -2145,7 +2144,7 @@ class BedTool(object):
             add_to_bedtool={'stdout': 'links_html'})
     def links(self):
         """
-        Wraps `linksBed` (v2.15+: `bedtools links`)
+        Wraps `linksBed`.
 
         The resulting BedTool will have a new attribute `links_html`.  This
         attribute is a temp filename containing the HTML links.
@@ -2156,7 +2155,7 @@ class BedTool(object):
             add_to_bedtool={'stdout': 'igv_script'})
     def igv(self):
         """
-        Wraps `bedToIgv` (v2.15+: `bedtools igv`)
+        Wraps `bedtools igv`.
 
         The resulting BedTool will have a new attribute `igv_script`.  This
         attribute is a temp filename containing the IGV script.
@@ -2167,7 +2166,7 @@ class BedTool(object):
             add_to_bedtool={'fq': 'fastq'})
     def bam_to_fastq(self):
         """
-        Wraps `bamToFastq` (v2.15+: `bedtools bamtofastq`)
+        Wraps `bedtools bamtofastq`.
 
         The `fq` argument is required.
 

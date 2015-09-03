@@ -48,9 +48,9 @@ default).  Here's what `a`, `b`, and `a_and_b` look like:
     chr1    900 901 feature4    0   +
 
 The :meth:`BedTool.intersect` method simply wraps the BEDTools_ program
-`intersectBed`.  This means that we can pass :meth:`BedTool.intersect` any
-arguments that `intersectBed` accepts.  For example, if we want to use the
-`intersectBed` switch `-u` (which, according to the BEDTools documentation,
+`bedtools intersect`.  This means that we can pass :meth:`BedTool.intersect` any
+arguments that `bedtools intersect` accepts.  For example, if we want to use the
+`bedtools intersect` switch `-u` (which, according to the BEDTools documentation,
 acts as a True/False switch to indicate that we want to see the features in `a`
 that overlapped something in `b`), then we can use the keyword argument
 `u=True`, like this:

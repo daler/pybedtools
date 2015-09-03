@@ -7,11 +7,19 @@ BEDTools.
 Example program description
 ---------------------------
 Let's assume we would like to wrap a new program, appropriately named
-`newProgramBed`.  Its signature from the command line is `newProgramBed -a
+`bedtools newprogram`.  Its signature from the command line is `bedtools newprogram -a
 <infile> -b <other file> [options]`, and it accepts `-a stdin` to indicate
 data is being piped to it::
 
-    newProgramBed -a <BED/VCF/GFF> -b <BED/VCF/GFF> [options]
+    bedtools newprogram -a <BED/VCF/GFF> -b <BED/VCF/GFF> [options]
+
+.. note::
+
+    Back before BEDTools v2.15, programs were called using a different syntax.
+    Instead of `bedtools intersect`, we would use `intersectBed`.
+    :mod:`pybedtools` still uses that older syntax, so this example also
+    assumes that `bedtools newprogram` would also be called as something like
+    `newProgramBed`.
 
 
 Method name
@@ -19,7 +27,7 @@ Method name
 Generally, I've tried to keep method names as similar as possible to
 BEDTools programs while still being PEP8-compliant.  The trailing 'Bed' is
 usually removed from the program name. So here the name would probably be
-`new_program`.
+`newprogram`.
 
 
 Define a method in :class:`BedTool`
@@ -31,7 +39,7 @@ effectively be ignored.
 
 ::
 
-    def new_program(self):
+    def newprogram(self):
         pass
 
 
@@ -48,17 +56,17 @@ time a new program is wrapped, this work is abstracted out into the
     The :func:`_wraps` docstring and source is the best place to learn the
     details on what it's doing; here we'll focus on using it.
 
-Our hypothetical program, `newProgramBed`, takes `-a` as the first input.
+Our hypothetical program, `bedtools newprogram`, takes `-a` as the first input.
 We'd like to have `-a` implicitly be passed as whatever our
 :class:`BedTool` already points to, so we use the `implicit='a'` kwarg to
-:func:`_wraps` here.  `newProgramBed` also takes a second input, `-b`.  We
+:func:`_wraps` here.  `bedtools newprogram` also takes a second input, `-b`.  We
 describe that to the wrapper with the `other='b'` kwarg.
 
 Any other keyword args that are used when calling the method will
-automatically be passed to the program.  So if `newProgramBed` has an
+automatically be passed to the program.  So if `bedtools newprogram` has an
 optional `-s` argument, we don't need to specify that here.  When the user
 passes an `s=True` kwarg, it will be passed automatically to
-`newProgramBed` as the argument `-s`.  If `newProgramBed` does not accept a
+`bedtools newprogram` as the argument `-s`.  If `bedtools newprogram` does not accept a
 `-z` argument but the user passes one anyway, we rely on the BEDTools
 program to do the error-checking of arguments and report any errors back to
 Python.
@@ -113,9 +121,9 @@ for programs that have been wrapped.
 
 Summary
 -------
-That's it!  We now have a method, :meth:`BedTool.new_program`, that wraps
-a hypothetical `newProgramBed` BEDTools program, will accept any optional
-args that `newProgramBed` does, will return a new :class:`BedTool`
+That's it!  We now have a method, :meth:`BedTool.newprogram`, that wraps
+a hypothetical `bedtools newprogram` BEDTools program, will accept any optional
+args that `bedtools newprogram` does, will return a new :class:`BedTool`
 containing the results, *and it's tested*.
 
 This new method can be be chained with other :class:`BedTool` instances,

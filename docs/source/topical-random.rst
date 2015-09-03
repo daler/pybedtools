@@ -29,7 +29,7 @@ artifically small chromosome size so that we can get some meaningful
 results in reasonable time.  In practice, you would either supply your own
 dictionary or use a string assembly name (e.g., `'hg19'`, `'mm9'`, `'dm3'`,
 etc).  The genome-handling code will find the chromsizes we've set, so
-there's no need to tell `shuffleBed` which genome file to use each time.
+there's no need to tell `bedtools shuffle` which genome file to use each time.
 
 .. doctest::
 
@@ -39,7 +39,7 @@ there's no need to tell `shuffleBed` which genome file to use each time.
 
 We have the option of specifying what kwargs to provide
 :meth:`BedTool.shuffle` and :meth:`BedTool.intersect`, which will be called
-each iteration.  In this example, we'll tell `shuffleBed` to only shuffle
+each iteration.  In this example, we'll tell `bedtools shuffle` to only shuffle
 within the chromsome just to illustrate the kwargs passing. We also need to
 specify how many iterations to perform.  In practice, 1000 or 10000 are
 good numbers, but for the sake of this example we'll only do 100.

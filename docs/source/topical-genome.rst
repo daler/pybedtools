@@ -8,10 +8,10 @@ This section illustrates the use of genome files for use with BEDTools
 programs that need to know chromosome limits to prevent out-of-range
 coordinates.
 
-Using BEDTools programs like `slopBed` or `shuffleBed`  from the command
-line requires "genome" or "chromsizes" files.  :mod:`pybedtools` comes with
-common genome assemblies already set up as a dictionary with chromosomes as
-keys and zero-based (start, stop) tuples as values:
+Using BEDTools programs like `bedtools slop` or `bedtools shuffle`  from the
+command line requires "genome" or "chromsizes" files.  :mod:`pybedtools` comes
+with common genome assemblies already set up as a dictionary with chromosomes
+as keys and zero-based (start, stop) tuples as values:
 
 .. doctest::
 

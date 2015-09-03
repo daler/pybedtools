@@ -75,8 +75,8 @@ To illustrate, these two example commands do the same thing:
     >>> x5 == x6
     True
 
-Just as the `+` operator assumes `intersectBed` with the `-u` arg, the `-`
-operator assumes `intersectBed` with the `-v` arg:
+Just as the `+` operator assumes `bedtools intersect` with the `-u` arg, the
+`-` operator assumes `bedtools intersect` with the `-v` arg:
 
 
 .. doctest::

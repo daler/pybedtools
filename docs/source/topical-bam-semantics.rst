@@ -15,15 +15,15 @@ below).
 Some BEDTools programs natively handle BAM files.  The `@_wraps` decorator
 that is used to wrap each method has a `bam` kwarg that specifies what
 input argument the wrapped tool will accept as BAM (for example, the
-wrapper for `intersectBed` has the kwarg `bam="abam"`).
+wrapper for `bedtools intersect` has the kwarg `bam="abam"`).
 
 If `self._isbam == True`, then `self.fn` is passed to the `bam` input arg
-instead of the default implicit input arg (so `intersectBed`, `self.fn` is
+instead of the default implicit input arg (so `bedtools intersect`, `self.fn` is
 passed as `abam` instead of `-a`).
 
 Trying to call a method that does not have a `bam` kwarg registered will
 result in a ValueError, along with a message that says to use
-:meth:`BedTool.bam_to_bed()` first.  For example, `subtractBed` currently
+:meth:`BedTool.bam_to_bed()` first.  For example, `bedtools subtract` currently
 doesn't accept BAM files as input, so this doesn't work::
 
     >>> a = pybedtools.example_bedtool('gdc.bam')
@@ -55,7 +55,7 @@ Given `a = BedTool('x.bam')`:
 
 * `a.intersect(b, bed=True)` returns BED output.  `@_wraps` needs to know, if the
   input was BAM, which kwarg[s] disable BAM output. For example, if `-bed`
-  is passed to `intersectBed`, the output will NOT be BAM.  This is
+  is passed to `bedtools intersect`, the output will NOT be BAM.  This is
   implemented with the `nonbam` kwarg for :func:`_wraps`.  In this case,
   the resulting BED file is treated like any other BED file.
 

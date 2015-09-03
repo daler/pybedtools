@@ -43,5 +43,5 @@ isoforms).  This script is also a good example of how to do use Python's
 
 Annotate.py
 -----------
-The `annotate.py` script extends `closestBed` by classifying features (intron,
-exon) that are a distance of 0 away from the query features.
+The `annotate.py` script extends `bedtools closest` by classifying features
+(intron, exon) that are a distance of 0 away from the query features.

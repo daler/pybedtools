@@ -39,7 +39,7 @@ In some cases, a stream may be "rendered" to a temp file.  This is because
 BEDTools programs can only accept one input file as `stdin`.  This is typically
 the first input (`-i` or `-a`), while the other input (`-b`) must be a file.
 Consider this example, where the second intersection needs to convert the
-streaming BedTool to a file before sending to `intersectBed`:
+streaming BedTool to a file before sending to `bedtools intersect`:
 
 .. doctest::
 

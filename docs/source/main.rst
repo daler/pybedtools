@@ -32,7 +32,7 @@ Required
     The version is not important, but later versions will have more features so
     it's a good idea to get the latest.  Follow the instructions at
     https://github.com/arq5x/bedtools to install, and make sure the programs
-    are on your path. That is, you should be able to call `intersectBed` from
+    are on your path. That is, you should be able to call `bedtools intersect` from
     any directory
 
 
