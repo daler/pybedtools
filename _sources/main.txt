@@ -118,13 +118,8 @@ Run the script with `python mytest.py`. You should get the results::
 Running tests, compiling docs
 -----------------------------
 
-There are several modes of testing:
-
-- test current installation
-- test within isolated conda environments
-- test within isolated Docker containers
-
-In each mode, unit tests and doctests can be run.
+There are several modes of testing described below, and in each mode both unit
+tests and doctests can be run.
 
 The following instructions assume that you have a working copy of the
 :mod:`pybedtools` repository and that you're in the top-level dir of repo,
