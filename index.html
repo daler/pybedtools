@@ -56,24 +56,24 @@ Python.</p>
 intergenic SNPs:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">BedTool</span>
 
-<span class="n">snps</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;snps.bed.gz&#39;</span><span class="p">)</span>
-<span class="n">genes</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;hg19.gff&#39;</span><span class="p">)</span>
+<span class="n">snps</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;snps.bed.gz&#39;</span><span class="p">)</span>  <span class="c"># [1]</span>
+<span class="n">genes</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;hg19.gff&#39;</span><span class="p">)</span>    <span class="c"># [1]</span>
 
-<span class="n">intergenic_snps</span> <span class="o">=</span> <span class="n">snps</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>
-<span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">intergenic_snps</span> <span class="o">=</span> <span class="n">snps</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>                       <span class="c"># [2]</span>
+<span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># [2, 3]</span>
 
-<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">gene</span><span class="o">.</span><span class="n">name</span>
+<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>             <span class="c"># [4]</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>    <span class="c"># [4]</span>
+        <span class="k">print</span> <span class="n">gene</span><span class="o">.</span><span class="n">name</span>         <span class="c"># [4]</span>
 </pre></div>
 </div>
 <p>Useful features shown here include:</p>
 <ul class="simple">
-<li>support for all BEDTools-supported formats (here gzipped BED and GFF)</li>
-<li>wrapping of all BEDTools programs and arguments (here, <code class="docutils literal"><span class="pre">subtract</span></code> and <code class="docutils literal"><span class="pre">closest</span></code> and passing
+<li><code class="docutils literal"><span class="pre">[1]</span></code> support for all BEDTools-supported formats (here gzipped BED and GFF)</li>
+<li><code class="docutils literal"><span class="pre">[2]</span></code> wrapping of all BEDTools programs and arguments (here, <code class="docutils literal"><span class="pre">subtract</span></code> and <code class="docutils literal"><span class="pre">closest</span></code> and passing
 the <code class="docutils literal"><span class="pre">-d</span></code> flag to <code class="docutils literal"><span class="pre">closest</span></code>);</li>
-<li>streaming results (like Unix pipes, here specified by <code class="docutils literal"><span class="pre">stream=True</span></code>)</li>
-<li>iterating over results while accessing feature data by index or by attribute
+<li><code class="docutils literal"><span class="pre">[3]</span></code> streaming results (like Unix pipes, here specified by <code class="docutils literal"><span class="pre">stream=True</span></code>)</li>
+<li><code class="docutils literal"><span class="pre">[4]</span></code> iterating over results while accessing feature data by index or by attribute
 access (here <code class="docutils literal"><span class="pre">[-1]</span></code> and <code class="docutils literal"><span class="pre">.name</span></code>).</li>
 </ul>
 <p>In contrast, here is the same analysis using shell scripting.  Note that this
