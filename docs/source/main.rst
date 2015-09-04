@@ -4,12 +4,6 @@
 
 Installation
 ------------
-.. note::
-
-    Windows does not support command line programs easily, so BEDTools and
-    pybedtools are only supported via Cygwin on Windows.
-
-
 :mod:`pybedtools` is a Python package that wraps BEDTools, so you'll need both
 installed.
 
@@ -65,20 +59,12 @@ The following external tools are **optional**:
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-There are multiple options:
-
-* Install latest release via conda (recommended; also quickest and easiest)
-* Install latest release using pip (may require admin rights)
-* Install development version via github
-
-Install latest release via conda
-++++++++++++++++++++++++++++++++
+Install latest release via `conda` (recommended)
+++++++++++++++++++++++++++++++++++++++++++++++++
 
 Use the Anaconda channel `daler`::
 
     conda install -c daler pybedtools
-
 
 This example installs :mod:`pybedtools` and BEDTools into an isolated
 environment called `myenv` running Python 3::
@@ -86,11 +72,12 @@ environment called `myenv` running Python 3::
     conda create -n myenv -c daler pybedtools bedtools python=3
 
 
-Install latest release using pip
-++++++++++++++++++++++++++++++++
+Install latest release using `pip`
+++++++++++++++++++++++++++++++++++
 
 :mod:`pybedtools` is on PyPI, so you can install via `pip` like most Python
-packages::
+packages. Depending on your Python installation, this may require admin
+rights::
 
     pip install pybedtools
 
@@ -98,7 +85,7 @@ packages::
 Install development version via github
 ++++++++++++++++++++++++++++++++++++++
 
-Assumes:
+Assumptions:
 
 1. `git` is installed
 2. Cython is installed (`conda install cython` or `pip install cython`)
@@ -121,9 +108,7 @@ Paste the following into a new file called `mytest.py`::
     b = pybedtools.example_bedtool('b.bed')
     print a.intersect(b)
 
-Run the script with `python mytest.py` or, if you used the virtualenv method of
-installation described above, run the script with `~/myEnv/bin/python
-mytest.py`.  You should get the results::
+Run the script with `python mytest.py`. You should get the results::
 
     chr1	155	200	feature2	0	+
     chr1	155	200	feature3	0	-
@@ -133,13 +118,8 @@ mytest.py`.  You should get the results::
 Running tests, compiling docs
 -----------------------------
 
-There are several modes of testing:
-
-- test current installation
-- test within isolated conda environments
-- test within isolated Docker containers
-
-In each mode, unit tests and doctests can be run.
+There are several modes of testing described below, and in each mode both unit
+tests and doctests can be run.
 
 The following instructions assume that you have a working copy of the
 :mod:`pybedtools` repository and that you're in the top-level dir of repo,
@@ -169,7 +149,7 @@ Test within isolated conda environments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the `condatest.sh` script in the top-level dir of the repo. This script
-runs both unit tests and doctests.
+creates a new isolated conda environment and runs both unit tests and doctests.
 
 To run tests under Python 2::
 
