@@ -40,11 +40,6 @@
             
   <div class="section" id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Windows does not support command line programs easily, so BEDTools and
-pybedtools are only supported via Cygwin on Windows.</p>
-</div>
 <p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> is a Python package that wraps BEDTools, so you'll need both
 installed.</p>
 <div class="section" id="quick-install-via-conda">
@@ -110,12 +105,6 @@ call <code class="docutils literal"><span class="pre">tabix</span></code> from a
 </div>
 <div class="section" id="installing-pybedtools">
 <h2>Installing <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code><a class="headerlink" href="#installing-pybedtools" title="Permalink to this headline">¶</a></h2>
-<p>There are multiple options:</p>
-<ul class="simple">
-<li>Install latest release via conda (recommended; also quickest and easiest)</li>
-<li>Install latest release using pip (may require admin rights)</li>
-<li>Install development version via github</li>
-</ul>
 <div class="section" id="install-latest-release-via-conda">
 <h3>Install latest release via conda<a class="headerlink" href="#install-latest-release-via-conda" title="Permalink to this headline">¶</a></h3>
 <p>Use the Anaconda channel <code class="docutils literal"><span class="pre">daler</span></code>:</p>
@@ -131,14 +120,15 @@ environment called <code class="docutils literal"><span class="pre">myenv</span>
 <div class="section" id="install-latest-release-using-pip">
 <h3>Install latest release using pip<a class="headerlink" href="#install-latest-release-using-pip" title="Permalink to this headline">¶</a></h3>
 <p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> is on PyPI, so you can install via <code class="docutils literal"><span class="pre">pip</span></code> like most Python
-packages:</p>
+packages. Depending on your Python installation, this may require admin
+rights:</p>
 <div class="highlight-python"><div class="highlight"><pre>pip install pybedtools
 </pre></div>
 </div>
 </div>
 <div class="section" id="install-development-version-via-github">
 <h3>Install development version via github<a class="headerlink" href="#install-development-version-via-github" title="Permalink to this headline">¶</a></h3>
-<p>Assumes:</p>
+<p>Assumptions:</p>
 <ol class="arabic simple">
 <li><code class="docutils literal"><span class="pre">git</span></code> is installed</li>
 <li>Cython is installed (<code class="docutils literal"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">cython</span></code> or <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">cython</span></code>)</li>
@@ -160,9 +150,7 @@ python setup.py develop
 <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Run the script with <code class="docutils literal"><span class="pre">python</span> <span class="pre">mytest.py</span></code> or, if you used the virtualenv method of
-installation described above, run the script with <code class="docutils literal"><span class="pre">~/myEnv/bin/python</span>
-<span class="pre">mytest.py</span></code>.  You should get the results:</p>
+<p>Run the script with <code class="docutils literal"><span class="pre">python</span> <span class="pre">mytest.py</span></code>. You should get the results:</p>
 <div class="highlight-python"><div class="highlight"><pre>chr1        155     200     feature2        0       +
 chr1        155     200     feature3        0       -
 chr1        900     901     feature4        0       +
@@ -206,7 +194,7 @@ a conda environment.  It requires some additional packages to be installed:</p>
 <div class="section" id="test-within-isolated-conda-environments">
 <h2>Test within isolated conda environments<a class="headerlink" href="#test-within-isolated-conda-environments" title="Permalink to this headline">¶</a></h2>
 <p>Run the <code class="docutils literal"><span class="pre">condatest.sh</span></code> script in the top-level dir of the repo. This script
-runs both unit tests and doctests.</p>
+creates a new isolated conda environment and runs both unit tests and doctests.</p>
 <p>To run tests under Python 2:</p>
 <div class="highlight-python"><div class="highlight"><pre>./condatest.sh 2
 </pre></div>
