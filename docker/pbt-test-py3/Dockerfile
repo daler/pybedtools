@@ -3,16 +3,17 @@ FROM ubuntu:14.04
 MAINTAINER Ryan Dale <dalerr@niddk.nih.gov>
 
 RUN apt-get update && apt-get install -y \
-    wget \
+    build-essential \
     bzip2 \
     ca-certificates \
+    git \
     libglib2.0-0 \
-    libxext6 \
     libsm6 \
+    libxext6 \
     libxrender1 \
-    build-essential \
-    zlib1g-dev \
-    git
+    mysql-client \
+    wget \
+    zlib1g-dev
 
 RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-3.10.1-Linux-x86_64.sh && \
