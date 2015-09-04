@@ -2030,7 +2030,7 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('gdc.gff')
         >>> b = pybedtools.example_bedtool('gdc.bed')
         >>> c = a.intersect(b, c=True)
-        >>> d = c.groupby(g=[1, 4, 5], c=10, ops=['sum'])
+        >>> d = c.groupby(g=[1, 4, 5], c=10, o=['sum'])
         >>> print(d) #doctest: +NORMALIZE_WHITESPACE
         chr2L	41	70	0
         chr2L	71	130	2
