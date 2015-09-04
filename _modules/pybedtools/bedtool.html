@@ -2070,7 +2070,7 @@
 <span class="sd">        &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;gdc.gff&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; b = pybedtools.example_bedtool(&#39;gdc.bed&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; c = a.intersect(b, c=True)</span>
-<span class="sd">        &gt;&gt;&gt; d = c.groupby(g=[1, 4, 5], c=10, ops=[&#39;sum&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; d = c.groupby(g=[1, 4, 5], c=10, o=[&#39;sum&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; print(d) #doctest: +NORMALIZE_WHITESPACE</span>
 <span class="sd">        chr2L	41	70	0</span>
 <span class="sd">        chr2L	71	130	2</span>
