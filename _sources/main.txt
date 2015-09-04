@@ -59,8 +59,8 @@ The following external tools are **optional**:
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Install latest release via conda
-++++++++++++++++++++++++++++++++
+Install latest release via conda (recommended)
+++++++++++++++++++++++++++++++++++++++++++++++
 
 Use the Anaconda channel `daler`::
 
