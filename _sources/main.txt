@@ -59,8 +59,8 @@ The following external tools are **optional**:
 
 Installing :mod:`pybedtools`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Install latest release via conda (recommended)
-++++++++++++++++++++++++++++++++++++++++++++++
+Install latest release via `conda` (recommended)
+++++++++++++++++++++++++++++++++++++++++++++++++
 
 Use the Anaconda channel `daler`::
 
@@ -72,8 +72,8 @@ environment called `myenv` running Python 3::
     conda create -n myenv -c daler pybedtools bedtools python=3
 
 
-Install latest release using pip
-++++++++++++++++++++++++++++++++
+Install latest release using `pip`
+++++++++++++++++++++++++++++++++++
 
 :mod:`pybedtools` is on PyPI, so you can install via `pip` like most Python
 packages. Depending on your Python installation, this may require admin
