@@ -8,5 +8,5 @@ set -x
 containers="pbt-test-py2 pbt-test-py3"
 for container in $containers; do
     docker build -t $container $container
-    docker run -it -v $(pwd)/..:/opt/pybedtools $container docker/harness.sh $branch
+    docker run -it -v $(pwd)/..:/opt/pybedtools $container docker/harness.sh
 done

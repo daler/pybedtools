@@ -9,11 +9,15 @@ mkdir -p ~/.config/matplotlib
 cp $mplrc ~/.config/matplotlib
 sed -i "s/: Qt4Agg/: Agg/g" ~/.config/matplotlib/matplotlibrc
 
-# The repo should have been exported to the container; make a copy and do
-# a completely clean installation on that copy before running tests.
+# The repo should have been exported to the container as /opt/pybedtools.
+#
+# Since docker runs as root, and we want to keep the exported data intact, we
+# make a copy and do a completely clean installation on that copy before
+# running tests.
 cd ~
 cp -r /opt/pybedtools .
 cd pybedtools
 python setup.py clean
 python setup.py develop
 nosetests
+(cd docs && make doctest)
