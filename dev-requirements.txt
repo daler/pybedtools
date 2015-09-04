@@ -1,0 +1,8 @@
+cython
+matplotlib
+nose
+numpydoc
+pandas
+pyyaml
+sphinx
+pysam
