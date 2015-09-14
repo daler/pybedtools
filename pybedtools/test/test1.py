@@ -879,8 +879,11 @@ def test_gzip():
 # ----------------------------------------------------------------------------
 def test_bam_bedtool_creation():
     x = pybedtools.example_bedtool('x.bam')
+    y = pybedtools.example_bedtool('y.bam')
+
     a = pybedtools.example_bedtool('a.bed')
     assert x._isbam
+    assert y._isbam
     assert not a._isbam
 
 def test_print_abam():

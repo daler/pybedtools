@@ -479,10 +479,14 @@ class BedTool(object):
                     for k, v in header.items():
                         if isinstance(v, list):
                             for i in v:
-                                txt_header.append(
-                                    '\t'.join(
-                                        ['@' + k] +
-                                        [':'.join(map(str, j)) for j in sorted(i.items(), reverse=True)]))
+                                if isinstance(i, dict):
+                                    txt_header.append(
+                                        '\t'.join(
+                                            ['@' + k] +
+                                            [':'.join(map(str, j)) for j in sorted(i.items(), reverse=True)]))
+                                elif isinstance(i, str):
+                                    txt_header.append(i)
+
                         elif isinstance(v, dict):
                             txt_header.append(
                                 '\t'.join(
