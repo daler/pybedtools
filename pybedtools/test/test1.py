@@ -1769,3 +1769,15 @@ def test_issue_142():
     b = a.merge(s=True, stream=True).each(func).saveas()
     c = a.merge(s=True).each(func).saveas()
     assert b == c
+
+    b = a.merge(s=True, stream=True)
+    for i in b:
+        assert isinstance(i, pybedtools.Interval)
+
+    b = a.merge(s=True, stream=True)
+    for i in iter(iter(iter(b))):
+        assert isinstance(i, pybedtools.Interval)
+
+
+    for i in a.merge(s=True, stream=True).each(lambda x: x):
+        assert isinstance(i, pybedtools.Interval)

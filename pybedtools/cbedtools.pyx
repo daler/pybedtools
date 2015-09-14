@@ -732,7 +732,7 @@ cdef class IntervalIterator:
                 if self._itemtype < 0:
                     if isinstance(line, Interval):
                         self._itemtype = 2
-                    elif isinstance(line, (unicode, str)):
+                    elif isinstance(line, basestring):
                         self._itemtype = 1
                     else:
                         self._itemtype = 0
