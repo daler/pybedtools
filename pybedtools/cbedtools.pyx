@@ -711,7 +711,7 @@ def overlap(int s1, int s2, int e1, int e2):
 
 cdef class IntervalIterator:
     cdef object stream
-    cdef int _isstring
+    cdef int _itemtype
     def __init__(self, stream):
         self.stream = stream
 
@@ -720,16 +720,22 @@ cdef class IntervalIterator:
         #
         # Also assumes that all items in the iterable `stream` are the same
         # type...this seems like a reasonable assumption.
-        self._isstring = -1
+        self._itemtype = -1
 
     def __iter__(self):
         return self
+
     def __next__(self):
         while True:
             try:
                 line = next(self.stream)
-                if self._isstring < 0:
-                    self._isstring = int(isinstance(line, basestring))
+                if self._itemtype < 0:
+                    if isinstance(line, Interval):
+                        self._itemtype = 2
+                    elif isinstance(line, (unicode, str)):
+                        self._itemtype = 1
+                    else:
+                        self._itemtype = 0
 
             # If you only trap StopIteration, for some reason even after
             # raising a new StopIteration it goes back to the top of the
@@ -744,13 +750,20 @@ cdef class IntervalIterator:
                 raise StopIteration
                 break
 
-            if self._isstring:
+            if self._itemtype == 1:
                 if line.startswith(('@', '#', 'track', 'browser')):
                     continue
             break
 
-        if self._isstring:
+        # Iterable of Interval objects
+        if self._itemtype == 2:
+            return line
+
+        # Iterable of strings, in which case we need to split
+        elif self._itemtype == 1:
             fields = line.rstrip('\r\n').split('\t')
+
+        # Otherwise assume list/tuple/iterable of fields
         else:
             fields = list(line)
 

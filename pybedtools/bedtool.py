@@ -1033,17 +1033,11 @@ class BedTool(object):
                 return IntervalIterator(gzip.open(self.fn, 'rt'))
             else:
                 return IntervalIterator(open(self.fn, 'r'))
-
-        # Open file, like subprocess.PIPE.
-        if hasattr(self.fn, 'read'):
-            # Note: even if this is a SAM, the filetype handling eventually
-            # gets passed to create_interval_from_fields.
-            return IntervalIterator(self.fn)
-
-        #if isinstance(self.fn, (IntervalIterator, IntervalFile)) or hasattr(self.fn, 'next') or hasattr(self.fn, '__next__'):
-        #    return self.fn
+        # Any other kind of input (streaming string from stdout; iterable of
+        # Intervals, iterable of (chrom, start, stop) tuples, etc are handled
+        # appropriately by IntervalIterator.
         else:
-            return self.fn
+            return IntervalIterator(self.fn)
 
     @property
     def intervals(self):
