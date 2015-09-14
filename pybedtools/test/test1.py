@@ -1734,3 +1734,38 @@ def test_chromsizes_in_5prime_3prime():
         chr1	120	120	feature3_TSS	0	-
         chr1	120	120	feature4_TSS	0	+
         """), str(a)
+
+
+def test_issue_141():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+
+    # make an empty file
+    empty = pybedtools.BedTool("", from_string=True)
+
+    # invalid file format
+    malformed = pybedtools.BedTool('a	a	a', from_string=True)
+
+    # positive control; works
+    a + b
+
+    # "adding" an empty file always gets zero features
+    assert len(a + empty) == 0
+    assert len(empty + a) == 0
+    assert len(empty + empty) == 0
+
+    # "adding" a malformed file raises MalformedBedLineError
+    # (an uncaught exception raised when trying to intersect)
+    assert_raises(pybedtools.MalformedBedLineError, a.__add__, malformed)
+
+    x = pybedtools.example_bedtool('x.bam')
+    x + a
+
+def test_issue_142():
+    def func(x):
+        x.start += 10
+        return x
+    a = pybedtools.example_bedtool('a.bed')
+    b = a.merge(s=True, stream=True).each(func).saveas()
+    c = a.merge(s=True).each(func).saveas()
+    assert b == c
