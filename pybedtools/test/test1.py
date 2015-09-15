@@ -1761,7 +1761,7 @@ def test_issue_141():
     x = pybedtools.example_bedtool('x.bam')
     x + a
 
-def test_issue_142():
+def test_issue_143():
     def func(x):
         x.start += 10
         return x
@@ -1781,3 +1781,26 @@ def test_issue_142():
 
     for i in a.merge(s=True, stream=True).each(lambda x: x):
         assert isinstance(i, pybedtools.Interval)
+
+def test_issue_145():
+    x = pybedtools.BedTool("""
+    chr1    1   100 feature1    0   +
+    chr1    1   100 feature1    0   +
+    """, from_string=True).saveas('foo.bed')
+
+    g = pybedtools.chromsizes_to_file({'chr1': (0, 200)}, 'genome.txt')
+    y = x.genome_coverage(g=g, **{'5': True})
+
+    # trying to print causes pybedtools to interpret as a BED file, but it's
+    # a histogram so line 2 raises error
+    assert_raises(pybedtools.MalformedBedLineError, print, y)
+
+    # solution is to iterate over lines of file; make sure this works
+    for line in open(y.fn):
+        print (line)
+
+    # if streaming, iterate over y.fn directly:
+    y = x.genome_coverage(g=g, **{'5': True})
+    for line in y.fn:
+        print(line)
+
