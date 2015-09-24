@@ -26,23 +26,23 @@ intergenic SNPs:
 
     from pybedtools import BedTool
 
-    snps = BedTool('snps.bed.gz')
-    genes = BedTool('hg19.gff')
+    snps = BedTool('snps.bed.gz')  # [1]
+    genes = BedTool('hg19.gff')    # [1]
 
-    intergenic_snps = snps.subtract(genes)
-    nearby = genes.closest(intergenic_snps, d=True, stream=True)
+    intergenic_snps = snps.subtract(genes)                       # [2]
+    nearby = genes.closest(intergenic_snps, d=True, stream=True) # [2, 3]
 
-    for gene in nearby:
-        if int(gene[-1]) < 5000:
-            print gene.name
+    for gene in nearby:             # [4]
+        if int(gene[-1]) < 5000:    # [4]
+            print gene.name         # [4]
 
 Useful features shown here include:
 
-* support for all BEDTools-supported formats (here gzipped BED and GFF)
-* wrapping of all BEDTools programs and arguments (here, `subtract` and `closest` and passing
+* `[1]` support for all BEDTools-supported formats (here gzipped BED and GFF)
+* `[2]` wrapping of all BEDTools programs and arguments (here, `subtract` and `closest` and passing
   the `-d` flag to `closest`);
-* streaming results (like Unix pipes, here specified by `stream=True`)
-* iterating over results while accessing feature data by index or by attribute
+* `[3]` streaming results (like Unix pipes, here specified by `stream=True`)
+* `[4]` iterating over results while accessing feature data by index or by attribute
   access (here `[-1]` and `.name`).
 
 In contrast, here is the same analysis using shell scripting.  Note that this
