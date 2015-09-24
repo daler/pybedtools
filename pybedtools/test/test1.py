@@ -1446,6 +1446,13 @@ def test_reldist():
     chr1	100	200	feature2	0	+	0.153
     chr1	150	500	feature3	0	-	0.220""")
 
+
+def test_remote_bam_raises_exception_when_file_doesnt_exist():
+    "from #134"
+    def f():
+        pybedtools.BedTool('ftp://ftp-trace.ncbi.nih.gov/this/url/clearly/does/not/exist.bam', remote=True)
+    assert_raises(ValueError, f)
+
 @attr('url')
 def test_remote_bam():
     raise SkipTest("Known failure: no support in BEDTools for remote BAM")
