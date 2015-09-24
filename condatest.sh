@@ -23,7 +23,6 @@ rm -rf dist build
 python setup.py clean
 python setup.py build
 python setup.py sdist
-python setup.py bdist_wheel
 
 conda create \
     -y \
