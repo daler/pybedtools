@@ -1453,6 +1453,21 @@ def test_remote_bam_raises_exception_when_file_doesnt_exist():
         pybedtools.BedTool('ftp://ftp-trace.ncbi.nih.gov/this/url/clearly/does/not/exist.bam', remote=True)
     assert_raises(ValueError, f)
 
+
+def test_issue_131():
+    """
+    Regression test; in previous versions this would cause a segfault.
+    """
+    from itertools import groupby
+
+    x = pybedtools.BedTool([('chr1', 12, 13, 'N', 1000, '+'), 
+                            ('chr1', 12, 13, 'N', 1000, '-'), 
+                            ('chr1', 12, 13, 'N', 1000, '-'), 
+                            ('chr1', 115, 116, 'N', 1000, '+')])
+
+    for key, group_ in groupby(x, key=lambda r: (r.chrom, r.start, r.end)):
+        print(key, map(lambda r: r.strand, group_))
+
 @attr('url')
 def test_remote_bam():
     raise SkipTest("Known failure: no support in BEDTools for remote BAM")
