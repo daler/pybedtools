@@ -11,6 +11,7 @@ import six
 from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 from nose.plugins.attrib import attr
 from nose.plugins.skip import SkipTest
+from nose.tools import assert_equal
 from six.moves import socketserver
 from six.moves import BaseHTTPServer
 
@@ -978,6 +979,46 @@ def test_sam_filetype():
     a = pybedtools.example_bedtool('gdc.bam')
     b = pybedtools.BedTool(i for i in a).saveas()
     assert b.file_type == 'sam'
+
+
+def test_bam_to_sam_to_bam2():
+    "test directly from #135"
+    a = pybedtools.example_bedtool('gdc.bam')
+    orig = str(a)
+    assert a.file_type == 'bam'
+
+    # saveas should maintain BAM format
+    b = a.saveas()
+    assert b.file_type == 'bam'
+
+    # Converting to string gets SAM format
+    assert str(b) == orig
+
+    # b is a bam; to_bam should return a bam
+    c = b.to_bam(genome='dm3')
+    assert c.file_type == 'bam'
+
+    # in fact, it should be the same file:
+    assert c.fn == b.fn
+
+    # In order to get SAM format, need to print to file.
+    d = open(pybedtools.BedTool._tmp(), 'w')
+    d.write(str(c))
+    d.close()
+    d = pybedtools.BedTool(d.name)
+    assert d.file_type == 'sam'
+
+    e = d.to_bam(genome='dm3')
+    assert e.file_type == 'bam'
+
+    # everybody should be the same
+    assert_equal_with_pretty_message = lambda expected, actual: assert_equal(expected, actual,
+                                                                             '{0!r} != {1!r}\nExpected:\n{0}\n\nActual:\n{1}'.format(expected, actual))
+    assert_equal_with_pretty_message(a, b)
+    assert_equal_with_pretty_message(a, c)
+    assert_equal_with_pretty_message(a, d)
+    assert_equal_with_pretty_message(a, e)
+
 
 def test_bam_to_sam_to_bam():
     a = pybedtools.example_bedtool('gdc.bam')
