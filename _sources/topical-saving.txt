@@ -50,3 +50,65 @@ default behavior of creating a tempfile.
     >>> b = pybedtools.example_bedtool('b.bed')
     >>> c = a.intersect(b, output='intersection_of_a_and_b.bed')
 
+
+Working with non-interval output files
+--------------------------------------
+`BEDTools` commands offer lots of flexibility. This means it is possible to
+return results that are not supported interval files like
+BED/GFF/GTF/BAM/SAM/VCF.
+
+Consider the following example, which uses :meth:`BedTool.groupby` to get
+a 2-column file containing the number of intervals in each featuretype:
+
+.. doctest::
+
+    >>> a = pybedtools.example_bedtool('gdc.gff')
+    >>> b = pybedtools.example_bedtool('gdc.bed')
+    >>> c = a.intersect(b, c=True)
+    >>> d = c.groupby(g=[3], c=10, o=['sum'])
+
+We can read the file created by `d` looks like this:
+
+.. doctest::
+    :options: +NORMALIZE_WHITESPACE
+
+    >>> print(open(d.fn).read())
+    UTR	0
+    CDS	2
+    intron	4
+    CDS	0
+    UTR	1
+    exon	3
+    mRNA	7
+    CDS	2
+    exon	2
+    tRNA	2
+    gene	7
+    <BLANKLINE>
+
+
+Trying to iterate over `d` (`[i for i in d]`) or save it (`d.saveas()`) raises
+exceptions. This is because:
+
+* `saveas()` is expected to return a `BedTool` object that can be
+  used with other `BEDTools` tools. We can't create a `BedTool` object out of
+  an unsupported file format like this
+
+* iterating over a `BedTool` object is expected to yield `Interval` objects,
+  but these lines can't be converted into the supported formats
+
+
+To save the output to a filename of your choosing, provide the `output`
+argument instead of `saveas()`, like this:
+
+.. doctest::
+
+    >>> d = c.groupby(g=[3], c=10, o=['sum'], output='counts.txt')
+
+To iterate over the lines of the file, you can use standard Python
+tools, e.g.:
+
+.. doctest::
+
+    >>> for line in open(d.fn):
+    ...     featuretype, count = line.strip().split()
