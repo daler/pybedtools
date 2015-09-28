@@ -1104,10 +1104,12 @@ class BedTool(object):
     def __add__(self, other):
         try:
             result = self.intersect(other, u=True)
-        except BEDToolsError:
+        except BEDToolsError as e:
             # BEDTools versions <2.20 would raise BEDToolsError
             if (self.file_type == 'empty') or (other.file_type == 'empty'):
                 result = pybedtools.BedTool("", from_string=True)
+            else:
+                raise e
         return result
 
     def __sub__(self, other):
