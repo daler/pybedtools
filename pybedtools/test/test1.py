@@ -1874,6 +1874,7 @@ def test_issue_141():
     a = pybedtools.example_bedtool('hg38-problem.bed')
     b = pybedtools.example_bedtool('hg38-base.bed')
     assert_raises(pybedtools.helpers.BEDToolsError, a.intersect, b)
+    assert_raises(pybedtools.helpers.BEDToolsError, a.__add__, b)
 
     # use nonamech
     res = a.intersect(b, nonamecheck=True)
