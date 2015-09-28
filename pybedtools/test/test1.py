@@ -1870,3 +1870,14 @@ def test_issue_145():
     for line in y.fn:
         print(line)
 
+def test_issue_141():
+    a = pybedtools.example_bedtool('hg38-problem.bed')
+    b = pybedtools.example_bedtool('hg38-base.bed')
+    assert_raises(pybedtools.helpers.BEDToolsError, a.intersect, b)
+
+    # use nonamech
+    res = a.intersect(b, nonamecheck=True)
+    assert res == fix(
+        """
+        chr1 2 50
+        """)
