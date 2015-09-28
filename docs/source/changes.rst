@@ -2,6 +2,16 @@
 
 Changelog
 =========
+Changes in v0.7.1
+-----------------
+This is largely a bugfix release with the following changes:
+
+- fix for some BAM headers (thanks Gabriel Platt)
+- unified IntervalIterator to address some streaming issues (fixes #143)
+- fix bug where `__add__` was not re-raising exceptions (thanks Brad Chapman
+  and Dan Halligan)
+
+
 Changes in v0.7.0
 -----------------
 This release reflects a major upgrade in the underlying code in order to
