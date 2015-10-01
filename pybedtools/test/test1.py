@@ -1873,10 +1873,14 @@ def test_issue_145():
 def test_issue_141():
     a = pybedtools.example_bedtool('hg38-problem.bed')
     b = pybedtools.example_bedtool('hg38-base.bed')
-    assert_raises(pybedtools.helpers.BEDToolsError, a.intersect, b)
-    assert_raises(pybedtools.helpers.BEDToolsError, a.__add__, b)
 
-    # use nonamech
+    # prior to fixing #147, BEDToolsError was raised here due to unhandled
+    # stderr.  Now the stderr is detected as OK because it's just a warning, so
+    # these lines are commented out now.
+    #assert_raises(pybedtools.helpers.BEDToolsError, a.intersect, b)
+    #assert_raises(pybedtools.helpers.BEDToolsError, a.__add__, b)
+
+    # use nonamecheck
     res = a.intersect(b, nonamecheck=True)
     assert res == fix(
         """
