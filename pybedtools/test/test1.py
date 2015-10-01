@@ -1882,3 +1882,14 @@ def test_issue_141():
         """
         chr1 2 50
         """)
+
+def test_issue_147():
+    # previously this would raise BEDToolsError because of unexpected stderr.
+    with open(pybedtools.BedTool._tmp(), 'w') as tmp:
+        orig_stderr = sys.stderr
+        sys.stderr = tmp
+        v = pybedtools.example_bedtool('vcf-stderr-test.vcf')
+        b = pybedtools.example_bedtool('vcf-stderr-test.bed')
+        v.intersect(b)
+    sys.stderr = orig_stderr
+
