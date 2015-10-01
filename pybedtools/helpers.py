@@ -381,7 +381,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
             # bedtools source has several different ways of showing a warning,
             # but they seem to all have "WARNING" in the first 20 or so
             # characters
-            if len(stderr) > 20 and "WARNING" in stderr[:20]:
+            if len(stderr) > 20 and "WARNING" in str(stderr[:20]):
                 sys.stderr.write(stderr)
             else:
                 raise BEDToolsError(subprocess.list2cmdline(cmds), stderr)
