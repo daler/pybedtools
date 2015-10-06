@@ -1,8 +1,8 @@
+from __future__ import print_function
 import time
 import os
 import pybedtools
 from pybedtools.contrib import plotting
-from __future__ import print_function
 from matplotlib import pyplot as plt
 
 colors = ['r', 'b', 'g']
