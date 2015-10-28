@@ -723,6 +723,19 @@ def test_cat():
     chr1	800	901	feature6	0	+
     """)
 
+    b_expected = fix("""
+    chr1	155	200	feature5	0	-
+    chr1	800	901	feature6	0	+
+    """)
+    b_merge_expected = fix("""
+    chr1	155	200
+    chr1	800	901
+    """)
+    empty = pybedtools.BedTool([])
+    assert b.cat(empty) == b_merge_expected
+    assert empty.cat(b) == b_merge_expected
+    assert b.cat(empty, postmerge=False)== b_expected
+    assert empty.cat(b, postmerge=False)== b_expected
 
 def test_issue_138():
     x = pybedtools.BedTool(
