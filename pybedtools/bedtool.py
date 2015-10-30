@@ -2776,7 +2776,6 @@ class BedTool(object):
         # postmerge and force_trucate don't get passed on to merge
         postmerge = kwargs.pop('postmerge', True)
         force_truncate = kwargs.pop('force_truncate', False)
-
         stream_merge = kwargs.get('stream', False)
         if stream_merge and postmerge:
             raise ValueError(
@@ -2796,7 +2795,7 @@ class BedTool(object):
                     + [i.file_type for i in other_beds]).difference(['empty'])
                 field_nums = set(
                     [self.field_count()]
-                    + [i.field_count() for i in other_beds]).difference([None])
+                    + [i.field_count() for i in other_beds]).difference([None]).difference([0])
                 same_field_num = len(field_nums) == 1
                 same_type = len(set(filetypes)) == 1
             except ValueError:

@@ -12,7 +12,7 @@ from os.path import relpath, join as pjoin
 import sys
 import subprocess
 import re
-from distutils.version import StrictVersion
+from distutils.version import StrictVersion, LooseVersion
 import glob
 
 no_frills = (len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
@@ -115,7 +115,7 @@ def check_dependency_versions(min_versions):
         except ImportError:
             install_requires.append('pysam')
         else:
-            if not (StrictVersion(pysam_version) >= min_versions['pysam']):
+            if not (LooseVersion(pysam_version) >= min_versions['pysam']):
                 raise ImportError("Pysam version is %s. Requires >= %s" %
                                   (pysam_version, min_versions['pysam']))
 
@@ -125,7 +125,7 @@ def check_dependency_versions(min_versions):
         except ImportError:
             install_requires.append('pandas')
         else:
-            if not (StrictVersion(pandas_version) >= min_versions['pandas']):
+            if not (LooseVersion(pandas_version) >= min_versions['pandas']):
                 raise ImportError("pandas version is %s. Requires >= %s" %
                                   (pandas_version, min_versions['pandas']))
 
