@@ -12,7 +12,7 @@ from os.path import relpath, join as pjoin
 import sys
 import subprocess
 import re
-from distutils.version import StrictVersion
+from distutils.version import StrictVersion, LooseVersion
 import glob
 
 no_frills = (len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
