@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &mdash; pybedtools 0.7.0 documentation</title>
+    <title>Changelog &mdash; pybedtools 0.7.4 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.0',
+        VERSION:     '0.7.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.0 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.4 documentation" href="index.html" />
     <link rel="prev" title="pybedtools.scripts.py_ms_example" href="autodocs/pybedtools.scripts.py_ms_example.html" />
    
   
@@ -39,6 +39,27 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-v0-7-4">
+<h2>Changes in v0.7.4<a class="headerlink" href="#changes-in-v0-7-4" title="Permalink to this headline">¶</a></h2>
+<p>Bugfix release.</p>
+<ul class="simple">
+<li>fix <a class="reference external" href="https://github.com/daler/pybedtools/issues/147">#147</a> so that warnings
+are simply passed to the user without raising exceptions</li>
+<li>in setup.py, allow depedencies to have &quot;loose&quot; versions with suffixes like
+&quot;rc1&quot;</li>
+<li>fix in <code class="docutils literal"><span class="pre">BedTool.cat()</span></code> on empty files (thanks Brad Chapman (<a class="reference external" href="https://github.com/daler/pybedtools/pull/149">PR #149</a>)</li>
+</ul>
+</div>
+<div class="section" id="changes-in-v0-7-1">
+<h2>Changes in v0.7.1<a class="headerlink" href="#changes-in-v0-7-1" title="Permalink to this headline">¶</a></h2>
+<p>This is largely a bugfix release with the following changes:</p>
+<ul class="simple">
+<li>fix for some BAM headers (thanks Gabriel Platt)</li>
+<li>unified IntervalIterator to address some streaming issues (fixes #143)</li>
+<li>fix bug where <code class="docutils literal"><span class="pre">__add__</span></code> was not re-raising exceptions (thanks Brad Chapman
+and Dan Halligan)</li>
+</ul>
+</div>
 <div class="section" id="changes-in-v0-7-0">
 <h2>Changes in v0.7.0<a class="headerlink" href="#changes-in-v0-7-0" title="Permalink to this headline">¶</a></h2>
 <p>This release reflects a major upgrade in the underlying code in order to
@@ -546,6 +567,8 @@ where to save output -- no more moving tempfiles</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#changes-in-v0-7-4">Changes in v0.7.4</a></li>
+<li><a class="reference internal" href="#changes-in-v0-7-1">Changes in v0.7.1</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-0">Changes in v0.7.0</a><ul>
 <li><a class="reference internal" href="#strings-from-interval-fields-are-unicode">Strings from Interval fields are unicode</a></li>
 <li><a class="reference internal" href="#samtools-no-longer-a-dependency">samtools no longer a dependency</a></li>
@@ -618,7 +641,7 @@ where to save output -- no more moving tempfiles</p>
         <li class="right" >
           <a href="autodocs/pybedtools.scripts.py_ms_example.html" title="pybedtools.scripts.py_ms_example"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
 
