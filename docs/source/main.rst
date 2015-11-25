@@ -15,11 +15,11 @@ If you're usng the `Anaconda Python distribution
 <http://continuum.io/downloads>`_ on Linux, then the following will install
 :mod:`pybedtools`::
 
-    conda install -c daler pybedtools
+    conda install -c bioconda pybedtools
 
 You can also install Tabix and BEDTools via conda::
 
-    conda install -c daler bedtools tabix
+    conda install -c bioconda bedtools htslib
 
 Otherwise, read on for installation on other platforms and in other
 environments.
