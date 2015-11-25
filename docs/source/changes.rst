@@ -2,6 +2,17 @@
 
 Changelog
 =========
+Changes in v0.7.4
+-----------------
+Bugfix release.
+
+- fix `#147 <https://github.com/daler/pybedtools/issues/147>`_ so that warnings
+  are simply passed to the user without raising exceptions
+- in setup.py, allow depedencies to have "loose" versions with suffixes like
+  "rc1"
+- fix in `BedTool.cat()` on empty files (thanks Brad Chapman (`PR #149
+  <https://github.com/daler/pybedtools/pull/149>`_)
+
 Changes in v0.7.1
 -----------------
 This is largely a bugfix release with the following changes:
