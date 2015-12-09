@@ -1910,3 +1910,12 @@ def test_issue_147():
         v.intersect(b)
     sys.stderr = orig_stderr
 
+
+def test_issue_154():
+    # ensure longs are OK as start/stop
+    regions = [('chr2', long(1), long(2), 'tag')]
+    b = pybedtools.BedTool(regions)
+
+    regions = [('chr2', int(1), int(2), 'tag')]
+    b = pybedtools.BedTool(regions)
+

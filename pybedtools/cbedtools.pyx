@@ -570,7 +570,7 @@ cdef Interval create_interval(BED b):
 # checking in create_interval_from_list for filetype heuruistics. Is there
 # a performance hit by checking instances?
 cdef isdigit(s):
-    if isinstance(s, int):
+    if isinstance(s, (int, long)):
         return True
     return s.isdigit()
 
