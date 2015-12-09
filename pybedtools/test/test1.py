@@ -1912,10 +1912,13 @@ def test_issue_147():
 
 
 def test_issue_154():
-    # ensure longs are OK as start/stop
-    regions = [('chr2', long(1), long(2), 'tag')]
-    b = pybedtools.BedTool(regions)
-
     regions = [('chr2', int(1), int(2), 'tag')]
     b = pybedtools.BedTool(regions)
+
+    # ensure longs are OK as start/stop. In Python3 everything is long, so only
+    # try the following on PY2
+    if six.PY2:
+        regions = [('chr2', long(1), long(2), 'tag')]
+        b = pybedtools.BedTool(regions)
+
 

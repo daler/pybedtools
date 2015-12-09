@@ -35,6 +35,10 @@ cdef _pystr(string s):
     # Always returns unicode.
     return s.decode('UTF-8', 'strict')
 
+if PY_MAJOR_VERSION < 3:
+    integer_types = (int, long)
+else:
+    integer_types = (int,)
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
@@ -570,9 +574,10 @@ cdef Interval create_interval(BED b):
 # checking in create_interval_from_list for filetype heuruistics. Is there
 # a performance hit by checking instances?
 cdef isdigit(s):
-    if isinstance(s, (int, long)):
+    if isinstance(s, integer_types):
         return True
     return s.isdigit()
+
 
 cpdef Interval create_interval_from_list(list fields):
     """
