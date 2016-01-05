@@ -3180,7 +3180,7 @@ class BedTool(object):
             except KeyError:
                 _names = None
 
-        return pandas.read_table(self.fn, names=_names, *args, **kwargs)
+        return pandas.read_table(self.fn, names=_names, header=None, *args, **kwargs)
 
     def tail(self, lines=10, as_string=False):
         """
