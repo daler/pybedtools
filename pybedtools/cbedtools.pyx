@@ -610,8 +610,12 @@ cpdef Interval create_interval_from_list(list fields):
     # digit
 
     # SAM
-    if (len(fields) >= 11) and isdigit(fields[1]) and isdigit(fields[3]):
-
+    if (
+        (len(fields) >= 11)
+        and isdigit(fields[1])
+        and isdigit(fields[3])
+        and (fields[5] not in ['.', '+', '-'])
+    ):
         # TODO: what should the stop position be?  Here, it's just the start
         # plus the length of the sequence, but perhaps this should eventually
         # do CIGAR string parsing.

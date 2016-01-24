@@ -1922,3 +1922,14 @@ def test_issue_154():
         b = pybedtools.BedTool(regions)
 
 
+def test_issue_151():
+
+    # this used to be incorrectly inferred to be SAM because of the name field
+    # being an integer and >=11 fields. The fix was to check the strand -- if
+    # it's not in ['+', '-', '.'] then consider it a SAM.
+    f = pybedtools.create_interval_from_list(
+        ["chr1", "1197700", "1197758", "0", "0.318355266754715", "-", "foo",
+         "bar", "bam", "baz", "bizzle", "buz", "bis"]
+    )
+    assert f.file_type == 'bed'
+
