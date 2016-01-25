@@ -1937,3 +1937,14 @@ def test_issue_151():
     )
     assert f.file_type == 'bed'
 
+def test_issue_156():
+    a = pybedtools.example_bedtool('a.bed')
+    b = [pybedtools.example_filename('b.bed'), pybedtools.example_filename('c.gff')]
+    print('default')
+    print(a.intersect(b))
+    print('filenames=True')
+    print(a.intersect(b, wao=True, filenames=True))
+    print('with names')
+    print(a.intersect(b, wb=True, names=['B', 'C']))
+    assert False
+
