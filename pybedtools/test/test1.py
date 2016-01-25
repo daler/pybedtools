@@ -119,7 +119,6 @@ def test_tabix():
         t = a.tabix()
         assert t._tabixed()
         results = (t.tabix_intervals('chr1:99-200'))
-        print('first:', results[0])
         results = str(results)
         print(results)
         assert results == fix("""
