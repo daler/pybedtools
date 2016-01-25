@@ -598,7 +598,7 @@ class BedTool(object):
         interval = helpers.string_to_interval(interval_or_string)
         tbx = pysam.TabixFile(self.fn)
         results = tbx.fetch(str(interval.chrom), interval.start, interval.stop)
-        return BedTool((i.decode() for i in results))
+        return BedTool(results)
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
