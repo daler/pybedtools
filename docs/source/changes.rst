@@ -6,6 +6,17 @@ Changes in v0.7.5
 -----------------
 * When using tabix-indexed files, `tabix` and `bgzip` are no longer required to
   be installed separately. Only `pysam` is needed.
+
+* Recent BEDTools releases support multiple files for the `-b` argument of
+  `bedtools intersect`. This version of `pybedtools` now supports multiple
+  files as well. Note that it is still possible to provide a list of strings
+  representing intervals as the `b` argument to `BedTool.intersect`. To
+  differentiate between a list of intervals and a list of filenames, the first
+  item converted into an `Interval` object; if it fails then consider the items
+  to be filenames; otherwise assume strings representing intervals. This check
+  only occurs if the `b` argument is a list or tuple; other iterable types are
+  always assumed to be intervals.
+
 Changes in v0.7.4
 -----------------
 Bugfix release.
