@@ -8,6 +8,7 @@ from nose.tools import assert_raises, raises
 from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
 import six
+import pysam
 from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
 from nose.plugins.attrib import attr
 from nose.plugins.skip import SkipTest
@@ -113,28 +114,32 @@ def test_tuple_creation():
 
 
 def test_tabix():
-    a = pybedtools.example_bedtool('a.bed')
-    t = a.tabix()
-    assert t._tabixed()
-    results = str(t.tabix_intervals('chr1:99-200'))
-    print(results)
-    assert results == fix("""
-    chr1	1	100	feature1	0	+
-    chr1	100	200	feature2	0	+
-    chr1	150	500	feature3	0	-""")
+    try:
+        a = pybedtools.example_bedtool('a.bed')
+        t = a.tabix()
+        assert t._tabixed()
+        results = (t.tabix_intervals('chr1:99-200'))
+        print('first:', results[0])
+        results = str(results)
+        print(results)
+        assert results == fix("""
+        chr1	1	100	feature1	0	+
+        chr1	100	200	feature2	0	+
+        chr1	150	500	feature3	0	-""")
 
-    assert str(t.tabix_intervals(a[2])) == fix("""
-    chr1	100	200	feature2	0	+
-    chr1	150	500	feature3	0	-""")
+        assert str(t.tabix_intervals(a[2])) == fix("""
+        chr1	100	200	feature2	0	+
+        chr1	150	500	feature3	0	-""")
 
-    # clean up
-    fns = [
-            pybedtools.example_filename('a.bed.gz'),
-            pybedtools.example_filename('a.bed.gz.tbi'),
-          ]
-    for fn in fns:
-        if os.path.exists(fn):
-            os.unlink(fn)
+    finally:
+        # clean up
+        fns = [
+                pybedtools.example_filename('a.bed.gz'),
+                pybedtools.example_filename('a.bed.gz.tbi'),
+              ]
+        for fn in fns:
+            if os.path.exists(fn):
+                os.unlink(fn)
 
 def test_tabix_intervals():
     a = pybedtools.BedTool('chr1 25 30', from_string=True).tabix()

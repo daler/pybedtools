@@ -592,16 +592,13 @@ class BedTool(object):
                 "This BedTool has not been indexed for tabix "
                 "-- please use the .tabix() method")
 
-        # NOTE: tabix expects 1-based coords, but BEDTools works with
-        # zero-based.
+        # tabix expects 1-based coords, but BEDTools works with
+        # zero-based. pybedtools and pysam also work with zero-based. So we can
+        # pass zero-based directly to the pysam tabix interface.
         interval = helpers.string_to_interval(interval_or_string)
-        coords = '%s:%s-%s' % (
-            interval.chrom,
-            interval.start + 1,  # convert to 1-based coords
-            interval.stop)
-        cmds = ['tabix', self.fn, coords]
-        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
-        return BedTool((i.decode() for i in p.stdout))
+        tbx = pysam.TabixFile(self.fn)
+        results = tbx.fetch(str(interval.chrom), interval.start, interval.stop)
+        return BedTool((i.decode() for i in results))
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
@@ -624,17 +621,7 @@ class BedTool(object):
         is_sorted : bool
             If True (default is False), then assume the file is already sorted
             so that BedTool.bgzip() doesn't have to do that work.
-
         """
-        if not settings._tabix_installed:
-            helpers._check_for_tabix()
-        if not settings._bgzip_installed:
-            helpers._check_for_bgzip()
-        if force:
-            force_arg = "-f"
-        else:
-            force_arg = ""
-
         # Return quickly if nothing to do
         if self._tabixed() and not force:
             return self
@@ -642,10 +629,7 @@ class BedTool(object):
         # Make sure it's BGZIPed
         fn = self.bgzip(in_place=in_place, force=force)
 
-        # Create the index
-        cmds = [os.path.join(settings._tabix_path, 'tabix'),
-                force_arg, '-p', self.file_type, fn]
-        os.system(' '.join(cmds))
+        pysam.tabix_index(fn, force=force, preset=self.file_type)
         return BedTool(fn)
 
     def _tabixed(self):
@@ -698,9 +682,7 @@ class BedTool(object):
             BedTool.TEMPFILES.append(outfn)
 
             # Creates tempfile.gz
-            cmds = [os.path.join(settings._bgzip_path, 'bgzip'),
-                    force_arg, fn]
-            os.system(' '.join(cmds))
+            pysam.tabix_compress(fn, outfn, force=force)
             return outfn
 
         # Otherwise, make sure the BGZIPed version has a similar name to the
@@ -711,9 +693,7 @@ class BedTool(object):
             else:
                 fn = self.fn
             outfn = self.fn + '.gz'
-            cmds = [os.path.join(settings._bgzip_path, 'bgzip'),
-                    '-c', force_arg, fn, '>', outfn]
-            os.system(' '.join(cmds))
+            pysam.tabix_compress(fn, outfn, force=force)
             return outfn
 
     def delete_temporary_history(self, ask=True, raw_input_func=None):
