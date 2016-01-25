@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool &mdash; pybedtools 0.7.4 documentation</title>
+    <title>pybedtools.bedtool &mdash; pybedtools 0.7.5 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.4',
+        VERSION:     '0.7.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,28 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.4 documentation" href="../../index.html" />
+    <link rel="top" title="pybedtools 0.7.5 documentation" href="../../index.html" />
     <link rel="up" title="pybedtools" href="../pybedtools.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
 
   </head>
-  <body role="document">  
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -632,16 +646,13 @@
                 <span class="s">&quot;This BedTool has not been indexed for tabix &quot;</span>
                 <span class="s">&quot;-- please use the .tabix() method&quot;</span><span class="p">)</span>
 
-        <span class="c"># NOTE: tabix expects 1-based coords, but BEDTools works with</span>
-        <span class="c"># zero-based.</span>
+        <span class="c"># tabix expects 1-based coords, but BEDTools works with</span>
+        <span class="c"># zero-based. pybedtools and pysam also work with zero-based. So we can</span>
+        <span class="c"># pass zero-based directly to the pysam tabix interface.</span>
         <span class="n">interval</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">string_to_interval</span><span class="p">(</span><span class="n">interval_or_string</span><span class="p">)</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="n">interval</span><span class="o">.</span><span class="n">chrom</span><span class="p">,</span>
-            <span class="n">interval</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="c"># convert to 1-based coords</span>
-            <span class="n">interval</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;tabix&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">coords</span><span class="p">]</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">i</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">stdout</span><span class="p">))</span>
+        <span class="n">tbx</span> <span class="o">=</span> <span class="n">pysam</span><span class="o">.</span><span class="n">TabixFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">tbx</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">chrom</span><span class="p">),</span> <span class="n">interval</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="BedTool.tabix"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.tabix.html#pybedtools.bedtool.BedTool.tabix">[docs]</a>    <span class="k">def</span> <span class="nf">tabix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">is_sorted</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -664,17 +675,7 @@
 <span class="sd">        is_sorted : bool</span>
 <span class="sd">            If True (default is False), then assume the file is already sorted</span>
 <span class="sd">            so that BedTool.bgzip() doesn&#39;t have to do that work.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">_tabix_installed</span><span class="p">:</span>
-            <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_tabix</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">_bgzip_installed</span><span class="p">:</span>
-            <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_bgzip</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
-            <span class="n">force_arg</span> <span class="o">=</span> <span class="s">&quot;-f&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">force_arg</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-
         <span class="c"># Return quickly if nothing to do</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tabixed</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
@@ -682,10 +683,7 @@
         <span class="c"># Make sure it&#39;s BGZIPed</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgzip</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
 
-        <span class="c"># Create the index</span>
-        <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_tabix_path</span><span class="p">,</span> <span class="s">&#39;tabix&#39;</span><span class="p">),</span>
-                <span class="n">force_arg</span><span class="p">,</span> <span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">,</span> <span class="n">fn</span><span class="p">]</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
+        <span class="n">pysam</span><span class="o">.</span><span class="n">tabix_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_tabixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -738,9 +736,7 @@
             <span class="n">BedTool</span><span class="o">.</span><span class="n">TEMPFILES</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outfn</span><span class="p">)</span>
 
             <span class="c"># Creates tempfile.gz</span>
-            <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_bgzip_path</span><span class="p">,</span> <span class="s">&#39;bgzip&#39;</span><span class="p">),</span>
-                    <span class="n">force_arg</span><span class="p">,</span> <span class="n">fn</span><span class="p">]</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
+            <span class="n">pysam</span><span class="o">.</span><span class="n">tabix_compress</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">outfn</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">outfn</span>
 
         <span class="c"># Otherwise, make sure the BGZIPed version has a similar name to the</span>
@@ -751,9 +747,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span>
             <span class="n">outfn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">+</span> <span class="s">&#39;.gz&#39;</span>
-            <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_bgzip_path</span><span class="p">,</span> <span class="s">&#39;bgzip&#39;</span><span class="p">),</span>
-                    <span class="s">&#39;-c&#39;</span><span class="p">,</span> <span class="n">force_arg</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">outfn</span><span class="p">]</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
+            <span class="n">pysam</span><span class="o">.</span><span class="n">tabix_compress</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">outfn</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">outfn</span>
 </div>
     <span class="k">def</span> <span class="nf">delete_temporary_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">raw_input_func</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -1339,6 +1333,26 @@
             <span class="c"># Filename</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instream2</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="n">inarg2</span><span class="p">]</span> <span class="o">=</span> <span class="n">instream2</span>
+
+            <span class="c"># If it&#39;s a list of strings, then we need to figure out if it&#39;s</span>
+            <span class="c"># a list of filenames or a list of intervals (see issue #156)</span>
+            <span class="c">#</span>
+            <span class="c"># Several options:</span>
+            <span class="c">#</span>
+            <span class="c">#   - assume intervals have tabs but filenames don&#39;t</span>
+            <span class="c">#   - assume that, upon being split on tabs, an interval is &gt;=3 fields</span>
+            <span class="c">#   - try creating an interval out of the first thing, success means interval</span>
+            <span class="c">#</span>
+            <span class="c"># The last seems the most robust. It does allow filenames with</span>
+            <span class="c"># tabs; deciding whether or not such filenames are a good idea is</span>
+            <span class="c"># left to the user.</span>
+            <span class="c">#</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instream2</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instream2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_</span> <span class="o">=</span> <span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">instream2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">))</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">inarg2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapse</span><span class="p">(</span><span class="n">instream2</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">inarg2</span><span class="p">]</span> <span class="o">=</span> <span class="n">instream2</span>
 
             <span class="c"># Otherwise we need to collapse it in order to send to BEDTools</span>
             <span class="c"># programs</span>
@@ -3220,7 +3234,7 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">_names</span> <span class="o">=</span> <span class="bp">None</span>
 
-        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">_names</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">_names</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3449,17 +3463,7 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  <li><a href="../pybedtools.html">pybedtools</a><ul>
-  </ul></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
+        <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -3483,13 +3487,13 @@
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
+             >index</a></li>
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.4 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" >pybedtools</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -3499,7 +3503,7 @@
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
       
     </div>
 
