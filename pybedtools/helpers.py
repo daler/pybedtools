@@ -60,40 +60,6 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
                               "it's on the path. %s" % add_msg)
 
 
-def _check_for_tabix():
-    try:
-        p = subprocess.Popen(
-            [os.path.join(settings._tabix_path, 'tabix')],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-        settings._tabix_installed = True
-    except OSError:
-        if settings._tabix_path:
-            add_msg = "(tried path '%s')" % settings._tabix_path
-        else:
-            add_msg = ""
-        raise ValueError(
-            'Please install tabix and ensure it is on your path %s'
-            % add_msg)
-
-
-def _check_for_bgzip():
-    try:
-        p = subprocess.Popen(
-            [os.path.join(settings._bgzip_path, 'bgzip'), '-h'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-        settings._bgzip_installed = True
-    except OSError:
-        if settings._bgzip_path:
-            add_msg = "(tried path '%s')" % settings._bgzip_path
-        else:
-            add_msg = ""
-        raise ValueError(
-            'Please install tabix and ensure bgzip is on your path %s'
-            % add_msg)
-
-
 def _check_for_R():
     try:
         p = subprocess.Popen(
@@ -422,30 +388,6 @@ def set_bedtools_path(path=""):
     arguments or use path="".
     """
     settings._bedtools_path = path
-
-
-def set_tabix_path(path=""):
-    """
-    Explicitly set path to `tabix` installation dir.
-
-    If tabix is not available on the path, then it can be explicitly
-    specified here.
-
-    Use path="" to reset to default system path.
-    """
-    settings._tabix_path = path
-
-
-def set_bgzip_path(path=""):
-    """
-    Explicitly set path to `bgzip` installation dir.
-
-    If bgzip is not available on the path, then it can be explicitly
-    specified here.
-
-    Use path="" to reset to default system path.
-    """
-    settings._bgzip_path = path
 
 
 def set_R_path(path=""):
