@@ -2,6 +2,10 @@
 
 Changelog
 =========
+Changes in v0.7.5
+-----------------
+* When using tabix-indexed files, `tabix` and `bgzip` are no longer required to
+  be installed separately. Only `pysam` is needed.
 Changes in v0.7.4
 -----------------
 Bugfix release.
