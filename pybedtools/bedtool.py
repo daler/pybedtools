@@ -1293,16 +1293,12 @@ class BedTool(object):
             # tabs; deciding whether or not such filenames are a good idea is
             # left to the user.
             #
-            if isinstance(instream2, (list, tuple)):
-                if isinstance(instream2[0], six.string_types):
-                    try:
-                        _ = create_interval_from_list(instream2[0].split('\t'))
-                        kwargs[inarg2] = self._collapse(instream2)
-
-                    except IndexError:
-                        kwargs[inarg2] = instream2
-                else:
+            elif isinstance(instream2, (list, tuple)) and isinstance(instream2[0], six.string_types):
+                try:
+                    _ = create_interval_from_list(instream2[0].split('\t'))
                     kwargs[inarg2] = self._collapse(instream2)
+                except IndexError:
+                    kwargs[inarg2] = instream2
 
             # Otherwise we need to collapse it in order to send to BEDTools
             # programs
