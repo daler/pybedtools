@@ -28,11 +28,12 @@ def test_midpoint():
         input_bed_mid = input_bed.each(func)
         assert len(input_bed_mid) == 4
 
-def test_bgzip_missing():
-
-    old_path = pybedtools.settings._tabix_path
-    pybedtools.helpers.set_bgzip_path('somenonexistantpath')
-    a = pybedtools.example_bedtool('a.bed')
-    assert_raises(ValueError, a.tabix)
-    pybedtools.helpers.set_bgzip_path(old_path)
+# pysam is now handling bgzip
+# def test_bgzip_missing():
+# 
+#     old_path = pybedtools.settings._tabix_path
+#     pybedtools.helpers.set_bgzip_path('somenonexistantpath')
+#     a = pybedtools.example_bedtool('a.bed')
+#     assert_raises(ValueError, a.tabix)
+#     pybedtools.helpers.set_bgzip_path(old_path)
 
