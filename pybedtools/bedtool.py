@@ -1280,6 +1280,30 @@ class BedTool(object):
             if isinstance(instream2, six.string_types):
                 kwargs[inarg2] = instream2
 
+            # If it's a list of strings, then we need to figure out if it's
+            # a list of filenames or a list of intervals (see issue #156)
+            #
+            # Several options:
+            #
+            #   - assume intervals have tabs but filenames don't
+            #   - assume that, upon being split on tabs, an interval is >=3 fields
+            #   - try creating an interval out of the first thing, success means interval
+            #
+            # The last seems the most robust. It does allow filenames with
+            # tabs; deciding whether or not such filenames are a good idea is
+            # left to the user.
+            #
+            if isinstance(instream2, (list, tuple)):
+                if isinstance(instream2[0], six.string_types):
+                    try:
+                        _ = create_interval_from_list(instream2[0].split('\t'))
+                        kwargs[inarg2] = self._collapse(instream2)
+
+                    except IndexError:
+                        kwargs[inarg2] = instream2
+                else:
+                    kwargs[inarg2] = self._collapse(instream2)
+
             # Otherwise we need to collapse it in order to send to BEDTools
             # programs
             else:
