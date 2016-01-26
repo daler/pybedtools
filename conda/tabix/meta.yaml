@@ -1,6 +1,0 @@
-package:
-    name: tabix
-    version: "0.2.6"
-source:
-    url: http://sourceforge.net/projects/samtools/files/tabix/tabix-0.2.6.tar.bz2
-    fn: tabix-0.2.6.tar.bz2
