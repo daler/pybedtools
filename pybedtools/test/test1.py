@@ -1989,3 +1989,53 @@ def test_issue_156():
         chr1	900	913	feature4	0	+	C	chr1	ucb	CDS	760	913	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
         chr1	900	950	feature4	0	+	C	chr1	ucb	CDS	706	1095	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
         """)
+
+def test_issue_157():
+    # the problem here was that converting to file from dataframe didn't pass
+    # through enough options to pandas.
+    try:
+        import pandas
+    except ImportError:
+        from nose.plugins.skip import SkipTest
+        raise SkipTest("pandas not installed; skipping test")
+    contents = """##fileformat=VCFv4.0
+    ##fileDate=20090805
+    ##source=myImputationProgramV3.1
+    ##reference=1000GenomesPilot-NCBI36
+    ##phasing=partial
+    ##INFO=<ID=NS,Number=1,Type=Integer,Description="Number of Samples With Data">
+    ##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth">
+    ##INFO=<ID=AF,Number=.,Type=Float,Description="Allele Frequency">
+    ##INFO=<ID=AA,Number=1,Type=String,Description="Ancestral Allele">
+    ##INFO=<ID=DB,Number=0,Type=Flag,Description="dbSNP membership, build 129">
+    ##INFO=<ID=H2,Number=0,Type=Flag,Description="HapMap2 membership">
+    ##FILTER=<ID=q10,Description="Quality below 10">
+    ##FILTER=<ID=s50,Description="Less than 50% of samples have data">
+    ##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+    ##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+    ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">
+    ##FORMAT=<ID=HQ,Number=2,Type=Integer,Description="Haplotype Quality">
+    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NA00001	NA00002	NA00003
+    20	14370	rs6054257	G	A	29	PASS	NS=3;DP=14;AF=0.5;DB;H2	GT:GQ:DP:HQ	0|0:48:1:51,51	1|0:48:8:51,51	1/1:43:5:.,.
+    20	17330	.	T	A	3	q10	NS=3;DP=11;AF=0.017	GT:GQ:DP:HQ	0|0:49:3:58,50	0|1:3:5:65,3	0/0:41:3
+    20	1110696	rs6040355	A	G,T	67	PASS	NS=2;DP=10;AF=0.333,0.667;AA=T;DB	GT:GQ:DP:HQ	1|2:21:6:23,27	2|1:2:0:18,2	2/2:35:4
+    20	1230237	.	T	.	47	PASS	NS=3;DP=13;AA=T	GT:GQ:DP:HQ	0|0:54:7:56,60	0|0:48:4:51,51	0/0:61:2
+    20	1234567	microsat1	GTCT	G,GTACT	50	PASS	NS=3;DP=9;AA=G	GT:GQ:DP	0/1:35:4	0/2:17:2	1/1:40:3
+    """
+    tmp1 = pybedtools.BedTool._tmp()
+    with open(tmp1, 'w') as fout:
+        fout.write(contents)
+    vcf = pybedtools.BedTool(tmp1)
+    bed = pybedtools.BedTool('20\t14300\t17000', from_string=True)
+    non_dataframe = str(vcf.intersect(bed))
+    df = vcf.to_dataframe(comment='#', names=['CHROM', 'POS', 'ID', 'REF', 'ALT',
+                                         'QUAL', 'FILTER', 'INFO', 'FORMAT',
+                                         'NA00001', 'NA00002', 'NA00003'])
+
+    header = ''.join([line for line in open('1kgenomes.vcf') if line.startswith('#')])
+    outfile = pybedtools.BedTool._tmp()
+    with open(outfile, 'w') as fout:
+        fout.write(header)
+        vcf_from_df = pybedtools.BedTool.from_dataframe(df, outfile=fout)
+    from_dataframe = str(vcf_from_df.intersect(bed))
+    assert non_dataframe == from_dataframe

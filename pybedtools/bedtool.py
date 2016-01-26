@@ -516,17 +516,29 @@ class BedTool(object):
         self.history = History()
 
     @classmethod
-    def from_dataframe(self, df):
+    def from_dataframe(self, df, outfile=None, **kwargs):
         """
         Creates a BedTool from a pandas.DataFrame.
+
+        If `outfile` is None, a temporary file will be used. Otherwise it can
+        be a specific filename or an open file handle. Additional kwargs will
+        be passed to `pandas.DataFrame.to_csv` and can be used to override the
+        default `sep="\\t", header=False, index=False)`.
 
         The fields of the resulting BedTool will match the order of columns in
         the dataframe.
         """
         import pandas
-        tmp = self._tmp()
-        df.to_csv(tmp, sep='\t', header=False, index=False)
-        return BedTool(tmp)
+        if outfile is None:
+            outfile = self._tmp()
+        default_kwargs = dict(sep='\t', header=False, index=False)
+        default_kwargs.update(kwargs)
+        df.to_csv(outfile, **default_kwargs)
+        if isinstance(outfile, file):
+            fn = outfile.name
+        else:
+            fn = outfile
+        return BedTool(fn)
 
     def split(self, func, *args, **kwargs):
         """
