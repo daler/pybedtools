@@ -2034,7 +2034,7 @@ def test_issue_157():
                                          'QUAL', 'FILTER', 'INFO', 'FORMAT',
                                          'NA00001', 'NA00002', 'NA00003'])
 
-    header = ''.join([line for line in open('1kgenomes.vcf') if line.startswith('#')])
+    header = ''.join([line for line in open(tmp1) if line.startswith('#')])
     outfile = pybedtools.BedTool._tmp()
     with open(outfile, 'w') as fout:
         fout.write(header)
