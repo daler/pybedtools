@@ -534,10 +534,16 @@ class BedTool(object):
         default_kwargs = dict(sep='\t', header=False, index=False)
         default_kwargs.update(kwargs)
         df.to_csv(outfile, **default_kwargs)
-        if isinstance(outfile, file):
-            fn = outfile.name
-        else:
+
+        if isinstance(outfile, six.string_types):
             fn = outfile
+        else:
+            try:
+                fn = outfile.name
+            except AttributeError:
+                raise ValueError(
+                    "`outfile` is not a string and doesn't have a `name` attribute. "
+                    "Unable to determine filename.")
         return BedTool(fn)
 
     def split(self, func, *args, **kwargs):
