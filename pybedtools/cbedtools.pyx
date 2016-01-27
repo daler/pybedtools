@@ -619,9 +619,15 @@ cpdef Interval create_interval_from_list(list fields):
         # TODO: what should the stop position be?  Here, it's just the start
         # plus the length of the sequence, but perhaps this should eventually
         # do CIGAR string parsing.
-        chrom = _cppstr(fields[2])
-        start = int(fields[3]) - 1
-        stop = int(fields[3]) + len(fields[9]) - 1
+        if int(fields[1]) & 0x04:
+            # handle unmapped reads
+            chrom = "*"
+            start = 0
+            stop = 0
+        else:
+            chrom = _cppstr(fields[2])
+            start = int(fields[3]) - 1
+            stop = int(fields[3]) + len(fields[9]) - 1
         name = _cppstr(fields[0])
         score = _cppstr(fields[1])
         if int(fields[1]) & 0x10:
