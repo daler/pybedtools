@@ -2012,3 +2012,11 @@ def test_issue_157():
         vcf_from_df = pybedtools.BedTool.from_dataframe(df, outfile=fout)
     from_dataframe = str(vcf_from_df.intersect(bed))
     assert non_dataframe == from_dataframe
+
+
+def test_PR_158():
+    # See #121 for original, #122 for follow-up, and #158 for fix.
+    #
+    # This used to crash with "OverflowError: can't convert negative value to CHRPOS"
+    b = pybedtools.example_bedtool('issue_121.bam')
+    print(b)
