@@ -621,7 +621,7 @@ cpdef Interval create_interval_from_list(list fields):
         # do CIGAR string parsing.
         if int(fields[1]) & 0x04:
             # handle unmapped reads
-            chrom = "*"
+            chrom = _cppstr("*")
             start = 0
             stop = 0
         else:
