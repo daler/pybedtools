@@ -114,6 +114,7 @@ def tag_bedpe(b, beds, verbose=False):
 
     Then we can get the following iterator, n, and extra:
 
+    >>> from pybedtools.contrib.long_range_interaction import tag_bedpe
     >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
     >>> print(n)
     2
@@ -249,6 +250,8 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     chr1  3  4  peak1  50  .
     <BLANKLINE>
 
+    >>> from pybedtools.contrib.long_range_interaction import tag_bedpe
+    >>> from pybedtools.contrib.long_range_interaction import cis_tran_interactions
     >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
 
     >>> for (label, group1, group2) in iterator:
