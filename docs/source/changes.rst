@@ -2,6 +2,10 @@
 
 Changelog
 =========
+Changes since v0.7.5
+--------------------
+* New module `pybedtools.contrib.long_range_interaction`
+
 Changes in v0.7.5
 -----------------
 * When using tabix-indexed files, `tabix` and `bgzip` are no longer required to
