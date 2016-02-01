@@ -2,9 +2,10 @@
 
 Changelog
 =========
-Changes since v0.7.5
---------------------
-* New module `pybedtools.contrib.long_range_interaction`
+Changes in v0.7.6
+-----------------
+* New module `pybedtools.contrib.long_range_interaction` for working with
+  HiC-like data.
 
 Changes in v0.7.5
 -----------------
