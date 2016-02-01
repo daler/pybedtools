@@ -27,24 +27,10 @@
     <link rel="up" title="pybedtools" href="../pybedtools.html" />
    
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
@@ -567,20 +553,38 @@
         <span class="n">_tags</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hascounts</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_file_type</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">History</span><span class="p">()</span>
-</div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">History</span><span class="p">()</span></div>
+
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a BedTool from a pandas.DataFrame.</span>
+
+<span class="sd">        If `outfile` is None, a temporary file will be used. Otherwise it can</span>
+<span class="sd">        be a specific filename or an open file handle. Additional kwargs will</span>
+<span class="sd">        be passed to `pandas.DataFrame.to_csv` and can be used to override the</span>
+<span class="sd">        default `sep=&quot;\\t&quot;, header=False, index=False)`.</span>
 
 <span class="sd">        The fields of the resulting BedTool will match the order of columns in</span>
 <span class="sd">        the dataframe.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">pandas</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
+        <span class="n">default_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">default_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="o">**</span><span class="n">default_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">outfile</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">outfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s">&quot;`outfile` is not a string and doesn&#39;t have a `name` attribute. &quot;</span>
+                    <span class="s">&quot;Unable to determine filename.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BedTool.split"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.split.html#pybedtools.bedtool.BedTool.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -598,8 +602,8 @@
             <span class="k">for</span> <span class="n">orig_interval</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">func</span><span class="p">(</span><span class="n">orig_interval</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">interval</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">generator</span><span class="p">())</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">generator</span><span class="p">())</span></div>
+
 <div class="viewcode-block" id="BedTool.truncate_to_chrom"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.truncate_to_chrom.html#pybedtools.bedtool.BedTool.truncate_to_chrom">[docs]</a>    <span class="k">def</span> <span class="nf">truncate_to_chrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genome</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ensure all features fall within chromosome limits.</span>
@@ -631,8 +635,8 @@
             <span class="n">stop</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
             <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
         <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.tabix_intervals"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.tabix_intervals.html#pybedtools.bedtool.BedTool.tabix_intervals">[docs]</a>    <span class="k">def</span> <span class="nf">tabix_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval_or_string</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve all intervals within cooridnates from a &quot;tabixed&quot; BedTool.</span>
@@ -652,8 +656,8 @@
         <span class="n">interval</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">string_to_interval</span><span class="p">(</span><span class="n">interval_or_string</span><span class="p">)</span>
         <span class="n">tbx</span> <span class="o">=</span> <span class="n">pysam</span><span class="o">.</span><span class="n">TabixFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">tbx</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">chrom</span><span class="p">),</span> <span class="n">interval</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.tabix"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.tabix.html#pybedtools.bedtool.BedTool.tabix">[docs]</a>    <span class="k">def</span> <span class="nf">tabix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">is_sorted</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare a BedTool for use with Tabix.</span>
@@ -684,8 +688,8 @@
         <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bgzip</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
 
         <span class="n">pysam</span><span class="o">.</span><span class="n">tabix_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_tabixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Verifies that we&#39;re working with a tabixed file: a string filename</span>
@@ -748,8 +752,8 @@
                 <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span>
             <span class="n">outfn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span> <span class="o">+</span> <span class="s">&#39;.gz&#39;</span>
             <span class="n">pysam</span><span class="o">.</span><span class="n">tabix_compress</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">outfn</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">outfn</span>
-</div>
+            <span class="k">return</span> <span class="n">outfn</span></div>
+
     <span class="k">def</span> <span class="nf">delete_temporary_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">raw_input_func</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use at your own risk!  This method will delete temp files. You will be</span>
@@ -850,8 +854,8 @@
 <span class="sd">        so it has extracted 2 records from the original 4.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)))</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)))</span></div>
+
 <div class="viewcode-block" id="BedTool.field_count"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.field_count.html#pybedtools.bedtool.BedTool.field_count">[docs]</a>    <span class="k">def</span> <span class="nf">field_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Number of fields in each line of this BedTool (checks `n` lines)</span>
@@ -874,8 +878,8 @@
             <span class="c"># TODO: make this more efficient.</span>
             <span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">feat</span><span class="o">.</span><span class="n">fields</span><span class="p">)])</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">fields</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">fields</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">fields</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
 <div class="viewcode-block" id="BedTool.each"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.each.html#pybedtools.bedtool.BedTool.each">[docs]</a>    <span class="k">def</span> <span class="nf">each</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Modify each feature with a user-defined function.</span>
@@ -911,8 +915,8 @@
                 <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">result</span>
 
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">_generator</span><span class="p">())</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">_generator</span><span class="p">())</span></div>
+
 <div class="viewcode-block" id="BedTool.introns"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.introns.html#pybedtools.bedtool.BedTool.introns">[docs]</a>    <span class="k">def</span> <span class="nf">introns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="o">=</span><span class="s">&quot;gene&quot;</span><span class="p">,</span> <span class="n">exon</span><span class="o">=</span><span class="s">&quot;exon&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create intron features (requires specific input format).</span>
@@ -972,8 +976,8 @@
                     <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%i</span><span class="se">\t</span><span class="si">%i</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s">intron</span><span class="se">\t</span><span class="si">%s</span><span class="s">&quot;</span>
                           <span class="o">%</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">chrom</span><span class="p">,</span> <span class="n">istart</span><span class="p">,</span> <span class="n">iend</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">strand</span><span class="p">),</span> <span class="nb">file</span><span class="o">=</span><span class="n">fh</span><span class="p">)</span>
         <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an iterable of features</span>
@@ -1037,8 +1041,8 @@
                     <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">])),</span>
                     <span class="nb">file</span><span class="o">=</span><span class="n">fh</span><span class="p">)</span>
             <span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</div>
+            <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_tmp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -1180,8 +1184,8 @@
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">n</span><span class="p">):</span>
                     <span class="k">break</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">)</span>
-</div>
+                <span class="k">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.set_chromsizes"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.set_chromsizes.html#pybedtools.bedtool.BedTool.set_chromsizes">[docs]</a>    <span class="k">def</span> <span class="nf">set_chromsizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromsizes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare BedTool for operations that require chromosome coords.</span>
@@ -1207,8 +1211,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Need to specify chromsizes either as a string&quot;</span>
                              <span class="s">&quot; (assembly name) or a dictionary&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
     <span class="k">def</span> <span class="nf">_collapse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trackline</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Collapses an iterable into file *fn* (or a new tempfile if *fn* is</span>
@@ -1492,8 +1496,8 @@
                     <span class="k">continue</span>
                 <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                     <span class="k">break</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">_generator</span><span class="p">())</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">_generator</span><span class="p">())</span></div>
+
 <div class="viewcode-block" id="BedTool.all_hits"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.all_hits.html#pybedtools.bedtool.BedTool.all_hits">[docs]</a>    <span class="k">def</span> <span class="nf">all_hits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all intervals that overlap `interval`.</span>
@@ -1520,8 +1524,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isbam</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bam_to_bed</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
         <span class="n">interval_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">IntervalFile</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">interval_file</span><span class="o">.</span><span class="n">all_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">interval_file</span><span class="o">.</span><span class="n">all_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.any_hits"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.any_hits.html#pybedtools.bedtool.BedTool.any_hits">[docs]</a>    <span class="k">def</span> <span class="nf">any_hits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return whether or not any intervals overlap `interval`.</span>
@@ -1548,8 +1552,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isbam</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bam_to_bed</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
         <span class="n">interval_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">IntervalFile</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">interval_file</span><span class="o">.</span><span class="n">any_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">interval_file</span><span class="o">.</span><span class="n">any_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.count_hits"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.count_hits.html#pybedtools.bedtool.BedTool.count_hits">[docs]</a>    <span class="k">def</span> <span class="nf">count_hits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the number of intervals that overlap `interval`.</span>
@@ -1576,23 +1580,23 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isbam</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bam_to_bed</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
         <span class="n">interval_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">IntervalFile</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">interval_file</span><span class="o">.</span><span class="n">count_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">interval_file</span><span class="o">.</span><span class="n">count_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">same_strand</span><span class="p">,</span> <span class="n">overlap</span><span class="p">)</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;bed12ToBed6&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.bed6"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.bed6.html#pybedtools.bedtool.BedTool.bed6">[docs]</a>    <span class="k">def</span> <span class="nf">bed6</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools bed12tobed6`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span>
-</div>
+        <span class="k">pass</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;bamToBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nonbam</span><span class="o">=</span><span class="s">&#39;ALL&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.bam_to_bed"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.bam_to_bed.html#pybedtools.bedtool.BedTool.bam_to_bed">[docs]</a>    <span class="k">def</span> <span class="nf">bam_to_bed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools bamtobed`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;bedToBam&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force_bam</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_bed_to_bam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1664,16 +1668,16 @@
             <span class="n">bamfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">new_bedtool</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">bam_tmp</span><span class="p">)</span>
             <span class="n">new_bedtool</span><span class="o">.</span><span class="n">_isbam</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="k">return</span> <span class="n">new_bedtool</span>
-</div>
+            <span class="k">return</span> <span class="n">new_bedtool</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;intersectBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;abam&#39;</span><span class="p">,</span>
             <span class="n">nonbam</span><span class="o">=</span><span class="s">&#39;bed&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.intersect"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.intersect.html#pybedtools.bedtool.BedTool.intersect">[docs]</a>    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools intersect`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;fastaFromBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;bed&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;fi&#39;</span><span class="p">,</span>
             <span class="n">make_tempfile_for</span><span class="o">=</span><span class="s">&#39;fo&#39;</span><span class="p">,</span> <span class="n">check_stderr</span><span class="o">=</span><span class="n">_check_sequence_stderr</span><span class="p">,</span>
@@ -1703,8 +1707,8 @@
 <span class="sd">        CCATC</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
 
-<span class="sd">        &#39;&#39;&#39;</span>
-</div>
+<span class="sd">        &#39;&#39;&#39;</span></div>
+
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="BedTool.seq"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.seq.html#pybedtools.bedtool.BedTool.seq">[docs]</a>    <span class="k">def</span> <span class="nf">seq</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">fasta</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1727,8 +1731,8 @@
         <span class="n">lseq</span> <span class="o">=</span> <span class="n">loc</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="n">fasta</span><span class="p">)</span>
         <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">lseq</span><span class="o">.</span><span class="n">seqfn</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
-             <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&gt;&quot;</span><span class="p">])</span>
-</div>
+             <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&gt;&quot;</span><span class="p">])</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;nucBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;bed&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;fi&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.nucleotide_content"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.nucleotide_content.html#pybedtools.bedtool.BedTool.nucleotide_content">[docs]</a>    <span class="k">def</span> <span class="nf">nucleotide_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1737,8 +1741,8 @@
 
 <span class="sd">        Profiles nucleotide content.  The returned BED file contains extra</span>
 <span class="sd">        information about the nucleotide content</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;multiBamCov&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;bed&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.multi_bam_coverage"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.multi_bam_coverage.html#pybedtools.bedtool.BedTool.multi_bam_coverage">[docs]</a>    <span class="k">def</span> <span class="nf">multi_bam_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1746,8 +1750,8 @@
 <span class="sd">        Wraps `bedtools multicov`.</span>
 
 <span class="sd">        Pass a list of sorted and indexed BAM files as `bams`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;subtractBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.subtract"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.subtract.html#pybedtools.bedtool.BedTool.subtract">[docs]</a>    <span class="k">def</span> <span class="nf">subtract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1776,16 +1780,16 @@
 
         <span class="n">cmds</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">stdin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_kwargs</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;subtractBed&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">stream</span> <span class="o">=</span> <span class="n">call_bedtools</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">stdin</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;slopBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
             <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.slop"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.slop.html#pybedtools.bedtool.BedTool.slop">[docs]</a>    <span class="k">def</span> <span class="nf">slop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools slop`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;mergeBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.merge"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.merge.html#pybedtools.bedtool.BedTool.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1806,8 +1810,8 @@
 
 <span class="sd">            &gt;&gt;&gt; c = a.merge(d=500)</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;closestBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.closest"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.closest.html#pybedtools.bedtool.BedTool.closest">[docs]</a>    <span class="k">def</span> <span class="nf">closest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1825,8 +1829,8 @@
 <span class="sd">            # get the closest feature in &#39;other.bed&#39; on the same strand</span>
 <span class="sd">            b = a.closest(&#39;other.bed&#39;, s=True)</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;windowBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;abam&#39;</span><span class="p">,</span>
             <span class="n">nonbam</span><span class="o">=</span><span class="s">&#39;bed&#39;</span><span class="p">)</span>
@@ -1848,8 +1852,8 @@
 <span class="sd">            chr1	900	950	feature4	0	+	chr1	155	200	feature5	0	-</span>
 <span class="sd">            chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+</span>
 <span class="sd">            &lt;BLANKLINE&gt;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;shuffleBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
             <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1868,8 +1872,8 @@
 <span class="sd">        chr1	186189051	186189401	feature3	0	-</span>
 <span class="sd">        chr1	219133189	219133239	feature4	0	+</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;sortBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.sort"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.sort.html#pybedtools.bedtool.BedTool.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1895,8 +1899,8 @@
 <span class="sd">        chr9	300	400</span>
 <span class="sd">        chr9	500	600</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;annotateBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.annotate"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.annotate.html#pybedtools.bedtool.BedTool.annotate">[docs]</a>    <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1914,8 +1918,8 @@
 <span class="sd">        chr1	150	500	feature3	0	-	0.128571</span>
 <span class="sd">        chr1	900	950	feature4	0	+	0.020000</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;flankBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.flank"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.flank.html#pybedtools.bedtool.BedTool.flank">[docs]</a>    <span class="k">def</span> <span class="nf">flank</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1944,8 +1948,8 @@
 
         <span class="n">cmds</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">stdin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_kwargs</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;flankBed&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">stream</span> <span class="o">=</span> <span class="n">call_bedtools</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="n">stdin</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;genomeCoverageBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;ibam&#39;</span><span class="p">,</span>
             <span class="n">genome_none_if</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ibam&#39;</span><span class="p">],</span> <span class="n">genome_ok_if</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;ibam&#39;</span><span class="p">],</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
@@ -1976,8 +1980,8 @@
 
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;coverageBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;abam&#39;</span><span class="p">,</span>
             <span class="n">nonbam</span><span class="o">=</span><span class="s">&#39;ALL&#39;</span><span class="p">)</span>
@@ -1996,8 +2000,8 @@
 <span class="sd">        &gt;&gt;&gt; c.head(3) #doctest: +NORMALIZE_WHITESPACE</span>
 <span class="sd">        chr1	155	200	feature5	0	-	2	45	45	1.0000000</span>
 <span class="sd">        chr1	800	901	feature6	0	+	1	1	101	0.0099010</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;maskFastaFromBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;bed&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;fi&#39;</span><span class="p">,</span>
             <span class="n">make_tempfile_for</span><span class="o">=</span><span class="s">&#39;fo&#39;</span><span class="p">,</span> <span class="n">add_to_bedtool</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;fo&#39;</span><span class="p">:</span> <span class="s">&#39;seqfn&#39;</span><span class="p">},</span>
@@ -2021,8 +2025,8 @@
 <span class="sd">        &gt;&gt;&gt; os.unlink(&#39;masked.fa.example&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; if os.path.exists(&#39;masked.fa.example.fai&#39;):</span>
 <span class="sd">        ...     os.unlink(&#39;masked.fa.example.fai&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;complementBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.complement"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.complement.html#pybedtools.bedtool.BedTool.complement">[docs]</a>    <span class="k">def</span> <span class="nf">complement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2037,8 +2041,8 @@
 <span class="sd">        chr1	950	249250621</span>
 <span class="sd">        chr10	0	135534747</span>
 <span class="sd">        chr11	0	135006516</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;getOverlap&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.overlap"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.overlap.html#pybedtools.bedtool.BedTool.overlap">[docs]</a>    <span class="k">def</span> <span class="nf">overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2055,24 +2059,24 @@
 <span class="sd">        chr1	150	500	feature3	0	-	chr1	155	200	feature5	0	-	45</span>
 <span class="sd">        chr1	900	950	feature4	0	+	chr1	800	901	feature6	0	+	1</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
-    <span class="c"># TODO: needs test files and doctests written</span></div>
+    <span class="c"># TODO: needs test files and doctests written</span>
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;pairToBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;abam&#39;</span><span class="p">,</span>
             <span class="n">nonbam</span><span class="o">=</span><span class="s">&#39;bedpe&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.pair_to_bed"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.pair_to_bed.html#pybedtools.bedtool.BedTool.pair_to_bed">[docs]</a>    <span class="k">def</span> <span class="nf">pair_to_bed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools pairtobed`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;pairToPair&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.pair_to_pair"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.pair_to_pair.html#pybedtools.bedtool.BedTool.pair_to_pair">[docs]</a>    <span class="k">def</span> <span class="nf">pair_to_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools pairtopair`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;groupBy&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.groupby"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.groupby.html#pybedtools.bedtool.BedTool.groupby">[docs]</a>    <span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2098,8 +2102,8 @@
 <span class="sd">        chr2L	41	220	7</span>
 <span class="sd">        &lt;BLANKLINE&gt;</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;tagBam&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.tag_bam"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.tag_bam.html#pybedtools.bedtool.BedTool.tag_bam">[docs]</a>    <span class="k">def</span> <span class="nf">tag_bam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2108,15 +2112,15 @@
 
 <span class="sd">        `files` and `labels` should lists of equal length.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;mapBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.map"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.map.html#pybedtools.bedtool.BedTool.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps  `bedtools map`; See also :meth:`BedTool.each`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;multiIntersectBed&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">genome_if</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;empty&#39;</span><span class="p">])</span>
 <div class="viewcode-block" id="BedTool.multi_intersect"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.multi_intersect.html#pybedtools.bedtool.BedTool.multi_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">multi_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2139,8 +2143,8 @@
 <span class="sd">            chr1	901	950	1	1	1	0</span>
 <span class="sd">            &lt;BLANKLINE&gt;</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;randomBed&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.random"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.random.html#pybedtools.bedtool.BedTool.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2152,22 +2156,22 @@
 
 <span class="sd">        &gt;&gt;&gt; x = BedTool()</span>
 <span class="sd">        &gt;&gt;&gt; y = x.random(l=100, n=10, genome=&#39;hg19&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="s">&#39;bedpeToBam&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force_bam</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.bedpe_to_bam"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.bedpe_to_bam.html#pybedtools.bedtool.BedTool.bedpe_to_bam">[docs]</a>    <span class="k">def</span> <span class="nf">bedpe_to_bam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools bedpetobam`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;clusterBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.cluster"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.cluster.html#pybedtools.bedtool.BedTool.cluster">[docs]</a>    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps  `bedtools cluster`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;unionBedGraphs&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.union_bedgraphs"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.union_bedgraphs.html#pybedtools.bedtool.BedTool.union_bedgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">union_bedgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2176,23 +2180,23 @@
 
 <span class="sd">        Warning: using the `header=True` kwarg will result in a file that is</span>
 <span class="sd">        not in true BED format, which may break downstream analysis.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;windowMaker&#39;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">genome_none_if</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">],</span>
             <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.window_maker"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.window_maker.html#pybedtools.bedtool.BedTool.window_maker">[docs]</a>    <span class="k">def</span> <span class="nf">window_maker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools makewindows`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;expandCols&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.expand"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.expand.html#pybedtools.bedtool.BedTool.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools expand`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;linksBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span>
             <span class="n">add_to_bedtool</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;stdout&#39;</span><span class="p">:</span> <span class="s">&#39;links_html&#39;</span><span class="p">})</span>
@@ -2202,8 +2206,8 @@
 
 <span class="sd">        The resulting BedTool will have a new attribute `links_html`.  This</span>
 <span class="sd">        attribute is a temp filename containing the HTML links.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;bedToIgv&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span>
             <span class="n">add_to_bedtool</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;stdout&#39;</span><span class="p">:</span> <span class="s">&#39;igv_script&#39;</span><span class="p">})</span>
@@ -2213,8 +2217,8 @@
 
 <span class="sd">        The resulting BedTool will have a new attribute `igv_script`.  This</span>
 <span class="sd">        attribute is a temp filename containing the IGV script.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;bamToFastq&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">make_tempfile_for</span><span class="o">=</span><span class="s">&#39;fq&#39;</span><span class="p">,</span>
             <span class="n">add_to_bedtool</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;fq&#39;</span><span class="p">:</span> <span class="s">&#39;fastq&#39;</span><span class="p">})</span>
@@ -2225,15 +2229,15 @@
 <span class="sd">        The `fq` argument is required.</span>
 
 <span class="sd">        The resulting BedTool will have a new attribute, `fastq`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;jaccard&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span>
             <span class="n">does_not_return_bedtool</span><span class="o">=</span><span class="n">_jaccard_output_to_dict</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.jaccard"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.jaccard.html#pybedtools.bedtool.BedTool.jaccard">[docs]</a>    <span class="k">def</span> <span class="nf">jaccard</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary with keys (intersection, union, jaccard).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;reldist&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span>
             <span class="n">does_not_return_bedtool</span><span class="o">=</span><span class="n">_reldist_output_handler</span><span class="p">)</span>
 <div class="viewcode-block" id="BedTool.reldist"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.reldist.html#pybedtools.bedtool.BedTool.reldist">[docs]</a>    <span class="k">def</span> <span class="nf">reldist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2243,8 +2247,8 @@
 
 <span class="sd">        Otherwise return a BedTool, with the relative distance for each</span>
 <span class="sd">        interval in A in the last column.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s">&#39;sample&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s">&#39;i&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2312,8 +2316,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;next&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;__next__&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-</div>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="BedTool.print_sequence"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.print_sequence.html#pybedtools.bedtool.BedTool.print_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">print_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Print the sequence that was retrieved by BedTool.sequence.</span>
@@ -2325,8 +2329,8 @@
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seqfn</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">s</span>
-</div>
+        <span class="k">return</span> <span class="n">s</span></div>
+
 <div class="viewcode-block" id="BedTool.save_seqs"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.save_seqs.html#pybedtools.bedtool.BedTool.save_seqs">[docs]</a>    <span class="k">def</span> <span class="nf">save_seqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save sequences, after calling BedTool.sequence.</span>
@@ -2362,8 +2366,8 @@
         <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">new_bedtool</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
         <span class="n">new_bedtool</span><span class="o">.</span><span class="n">seqfn</span> <span class="o">=</span> <span class="n">fn</span>
-        <span class="k">return</span> <span class="n">new_bedtool</span>
-</div>
+        <span class="k">return</span> <span class="n">new_bedtool</span></div>
+
 <div class="viewcode-block" id="BedTool.randomstats"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.randomstats.html#pybedtools.bedtool.BedTool.randomstats">[docs]</a>    <span class="k">def</span> <span class="nf">randomstats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">genome_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                     <span class="n">include_distribution</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2508,14 +2512,14 @@
             <span class="n">d</span><span class="p">[</span><span class="s">&#39;distribution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">distribution</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">distribution</span>
-        <span class="k">return</span> <span class="n">d</span>
-</div>
+        <span class="k">return</span> <span class="n">d</span></div>
+
 <div class="viewcode-block" id="BedTool.random_op"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.random_op.html#pybedtools.bedtool.BedTool.random_op">[docs]</a>    <span class="k">def</span> <span class="nf">random_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        For backwards compatibility; see BedTool.parallel_apply instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallel_apply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallel_apply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.parallel_apply"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.parallel_apply.html#pybedtools.bedtool.BedTool.parallel_apply">[docs]</a>    <span class="k">def</span> <span class="nf">parallel_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">func_args</span><span class="p">,</span> <span class="n">func_kwargs</span><span class="p">,</span>
                        <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">_orig_pool</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2572,8 +2576,8 @@
             <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="ne">StopIteration</span>
-</div>
+        <span class="k">raise</span> <span class="ne">StopIteration</span></div>
+
 <div class="viewcode-block" id="BedTool.random_jaccard"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.random_jaccard.html#pybedtools.bedtool.BedTool.random_jaccard">[docs]</a>    <span class="k">def</span> <span class="nf">random_jaccard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">genome_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                        <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">_orig_pool</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                        <span class="n">jaccard_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -2618,8 +2622,8 @@
                 <span class="n">processes</span><span class="o">=</span><span class="n">processes</span><span class="p">,</span>
                 <span class="n">_orig_pool</span><span class="o">=</span><span class="n">_orig_pool</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="p">)</span>
-</div>
+        <span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_randomintersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">genome_fn</span><span class="p">,</span>
                             <span class="n">intersect_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">_orig_pool</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                             <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -2674,8 +2678,8 @@
                 <span class="n">processes</span><span class="o">=</span><span class="n">processes</span><span class="p">,</span>
                 <span class="n">_orig_pool</span><span class="o">=</span><span class="n">_orig_pool</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="p">)</span>
-</div>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.randomintersection"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.randomintersection.html#pybedtools.bedtool.BedTool.randomintersection">[docs]</a>    <span class="k">def</span> <span class="nf">randomintersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">intersect_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                            <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                            <span class="n">report_iterations</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -2771,8 +2775,8 @@
             <span class="c"># tmp.fn.close()</span>
             <span class="n">tmp2</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">del</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-            <span class="k">del</span><span class="p">(</span><span class="n">tmp2</span><span class="p">)</span>
-</div>
+            <span class="k">del</span><span class="p">(</span><span class="n">tmp2</span><span class="p">)</span></div>
+
     <span class="nd">@_log_to_history</span>
 <div class="viewcode-block" id="BedTool.cat"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.cat.html#pybedtools.bedtool.BedTool.cat">[docs]</a>    <span class="k">def</span> <span class="nf">cat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2893,8 +2897,8 @@
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">d</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">c</span>
-</div>
+            <span class="k">return</span> <span class="n">c</span></div>
+
     <span class="nd">@_log_to_history</span>
 <div class="viewcode-block" id="BedTool.saveas"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.saveas.html#pybedtools.bedtool.BedTool.saveas">[docs]</a>    <span class="k">def</span> <span class="nf">saveas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trackline</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">compressed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2940,8 +2944,8 @@
 
         <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span> <span class="n">trackline</span><span class="o">=</span><span class="n">trackline</span><span class="p">,</span>
                             <span class="n">compressed</span><span class="o">=</span><span class="n">compressed</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
     <span class="nd">@_log_to_history</span>
 <div class="viewcode-block" id="BedTool.moveto"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.moveto.html#pybedtools.bedtool.BedTool.moveto">[docs]</a>    <span class="k">def</span> <span class="nf">moveto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2966,8 +2970,8 @@
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
     <span class="nd">@_log_to_history</span>
 <div class="viewcode-block" id="BedTool.random_subset"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.random_subset.html#pybedtools.bedtool.BedTool.random_subset">[docs]</a>    <span class="k">def</span> <span class="nf">random_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -2992,8 +2996,8 @@
             <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idxs</span><span class="p">:</span>
                 <span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
         <span class="n">tmp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">tmpfn</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">tmpfn</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.total_coverage"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.total_coverage.html#pybedtools.bedtool.BedTool.total_coverage">[docs]</a>    <span class="k">def</span> <span class="nf">total_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the total number of bases covered by this interval file.</span>
@@ -3020,8 +3024,8 @@
         <span class="n">total_bp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">features</span><span class="p">():</span>
             <span class="n">total_bp</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">total_bp</span>
-</div>
+        <span class="k">return</span> <span class="n">total_bp</span></div>
+
     <span class="nd">@_log_to_history</span>
 <div class="viewcode-block" id="BedTool.with_attrs"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.with_attrs.html#pybedtools.bedtool.BedTool.with_attrs">[docs]</a>    <span class="k">def</span> <span class="nf">with_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3045,8 +3049,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 <div class="viewcode-block" id="BedTool.as_intervalfile"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.as_intervalfile.html#pybedtools.bedtool.BedTool.as_intervalfile">[docs]</a>    <span class="k">def</span> <span class="nf">as_intervalfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an IntervalFile of this BedTool for low-level interface.</span>
@@ -3055,8 +3059,8 @@
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span>
-        <span class="k">return</span> <span class="n">IntervalFile</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">IntervalFile</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.liftover"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.liftover.html#pybedtools.bedtool.BedTool.liftover">[docs]</a>    <span class="k">def</span> <span class="nf">liftover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chainfile</span><span class="p">,</span> <span class="n">unmapped</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">liftover_args</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a new BedTool of the liftedOver features, saving the unmapped</span>
@@ -3075,8 +3079,8 @@
         <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;liftOver&#39;</span><span class="p">,</span> <span class="n">liftover_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">chainfile</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span>
                 <span class="n">unmapped</span><span class="p">]</span>
         <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.absolute_distance"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.absolute_distance.html#pybedtools.bedtool.BedTool.absolute_distance">[docs]</a>    <span class="k">def</span> <span class="nf">absolute_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">closest_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                           <span class="n">use_midpoints</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3106,8 +3110,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">closest_kwargs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-</div>
+            <span class="k">yield</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
 <div class="viewcode-block" id="BedTool.relative_distance"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.relative_distance.html#pybedtools.bedtool.BedTool.relative_distance">[docs]</a>    <span class="k">def</span> <span class="nf">relative_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an iterator of relative distances between features in self and</span>
@@ -3140,8 +3144,8 @@
 
         <span class="n">hits</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">wao</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</div>
+            <span class="k">yield</span> <span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="BedTool.colormap_normalize"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.colormap_normalize.html#pybedtools.bedtool.BedTool.colormap_normalize">[docs]</a>    <span class="k">def</span> <span class="nf">colormap_normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                            <span class="n">log</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3186,8 +3190,8 @@
                 <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
             <span class="n">norm</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span>
 
-        <span class="k">return</span> <span class="n">norm</span>
-</div>
+        <span class="k">return</span> <span class="n">norm</span></div>
+
 <div class="viewcode-block" id="BedTool.at"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.at.html#pybedtools.bedtool.BedTool.at">[docs]</a>    <span class="k">def</span> <span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a new BedTool with only intervals at lines `inds`</span>
@@ -3202,8 +3206,8 @@
                     <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">length</span><span class="p">:</span>
                         <span class="k">break</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">_gen</span><span class="p">())</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
-</div>
+        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">_gen</span><span class="p">())</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span></div>
+
     <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        create a pandas.DataFrame, passing args and kwargs to pandas.read_table</span>
@@ -3272,9 +3276,9 @@
         <span class="k">if</span> <span class="n">as_string</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-</div>
+
 <span class="k">class</span> <span class="nc">BAM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3451,8 +3455,8 @@
     <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filenames</span><span class="o">.</span><span class="n">data_dir</span><span class="p">(),</span> <span class="n">fn</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> does not exist&quot;</span> <span class="o">%</span> <span class="n">fn</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-</div>
+    <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">doctest</span>
     <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">ELLIPSIS</span> <span class="o">|</span>
@@ -3463,7 +3467,17 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../pybedtools.html">pybedtools</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -3487,13 +3501,13 @@
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../pybedtools.html" >pybedtools</a> &raquo;</li> 
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -3502,8 +3516,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
       
     </div>
 

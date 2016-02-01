@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.contrib.long_range_interaction.tag_bedpe &mdash; pybedtools 0.7.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.5 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions" href="pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" />
+    <link rel="prev" title="pybedtools.contrib.venn_maker.cleaned_intersect" href="pybedtools.contrib.venn_maker.cleaned_intersect.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-contrib-long-range-interaction-tag-bedpe">
+<h1>pybedtools.contrib.long_range_interaction.tag_bedpe<a class="headerlink" href="#pybedtools-contrib-long-range-interaction-tag-bedpe" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pybedtools.contrib.long_range_interaction.tag_bedpe">
+<code class="descclassname">pybedtools.contrib.long_range_interaction.</code><code class="descname">tag_bedpe</code><span class="sig-paren">(</span><em>b</em>, <em>beds</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/long_range_interaction.html#tag_bedpe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.long_range_interaction.tag_bedpe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tag each end of a BEDPE with a set of (possibly many) query BED files.</p>
+<p>For example, given a BEDPE of interacting fragments from a Hi-C experiment,
+identify the contacts between promoters and ChIP-seq peaks. In this case,
+promoters and ChIP-seq peaks of interest would be provided as BED files.</p>
+<p>The strategy is to split the BEDPE into two separate files.  Each file is
+intersected independently with the set of queries.  The results are then
+iterated through in parallel to tie the ends back together. It is this
+iterator that is returned (see example below).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bedpe</strong> : str</p>
+<blockquote>
+<div><p>BEDPE-format file. Must be name-sorted.</p>
+</div></blockquote>
+<p><strong>queries</strong> : dict</p>
+<blockquote>
+<div><p>Dictionary of BED/GFF/GTF/VCF files to use. After splitting the BEDPE,
+these query files (values in the dictionary) will be passed as the <code class="docutils literal"><span class="pre">-b</span></code>
+arg to <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">intersect</span></code>. The keys are passed as the <code class="docutils literal"><span class="pre">names</span></code>
+argument for <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">intersect</span></code>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Tuple of (iterator, n, extra).</p>
+<p><code class="docutils literal"><span class="pre">iterator</span></code> is described below. <code class="docutils literal"><span class="pre">n</span></code> is the total number of lines in the</p>
+<p>BEDPE file, which is useful for calculating percentage complete for</p>
+<p>downstream work. <code class="docutils literal"><span class="pre">extra</span></code> is the number of extra fields found in the BEDPE</p>
+<p>(also useful for downstream processing).</p>
+<p><code class="docutils literal"><span class="pre">iterator</span></code> yields tuples of (label, end1_hits, end2_hits) where <code class="docutils literal"><span class="pre">label</span></code> is</p>
+<p>the name field of one line of the original BEDPE file. <code class="docutils literal"><span class="pre">end1_hits</span></code> and</p>
+<p><code class="docutils literal"><span class="pre">end2_hits</span></code> are each iterators of BED-like lines representing all</p>
+<p>identified intersections across all query BED files for end1 and end2 for</p>
+<p>this pair.</p>
+<p>Recall that BEDPE format defines a single name and a single score for each</p>
+<p>pair. For each item in <code class="docutils literal"><span class="pre">end1_hits</span></code>, the fields are:</p>
+<div class="highlight-python"><div class="highlight"><pre>chrom1
+start1
+end1
+name
+score
+strand1
+[extra fields]
+query_label
+fields_from_query_intersecting_end1
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">[extra</span> <span class="pre">fields]</span></code> are any additional fields from the original BEDPE,</p>
+<p><code class="docutils literal"><span class="pre">query_label</span></code> is one of the keys in the <code class="docutils literal"><span class="pre">beds</span></code> input dictionary, and the</p>
+<p>remaining fields in the line are the intersecting line from the</p>
+<p>corresponding BED file in the <code class="docutils literal"><span class="pre">beds</span></code> input dictionary.</p>
+<p>Similarly, each item in <code class="docutils literal"><span class="pre">end2_hits</span></code> consists of:</p>
+<blockquote>
+<div><p>chrom2
+start2
+end2
+name
+score
+strand2
+[extra fields]
+query_label
+fields_from_query_intersecting_end2</p>
+</div></blockquote>
+<p>At least one line is reported for every line in the BEDPE file. If there</p>
+<p>was no intersection, the standard BEDTools null fields will be shown. In</p>
+<p><code class="docutils literal"><span class="pre">end1_hits</span></code> and <code class="docutils literal"><span class="pre">end2_hits</span></code>, a line will be reported for each hit in each</p>
+<p class="last">query.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
+      <li>Previous: <a href="pybedtools.contrib.venn_maker.cleaned_intersect.html" title="previous chapter">pybedtools.contrib.venn_maker.cleaned_intersect</a></li>
+      <li>Next: <a href="pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" title="next chapter">pybedtools.contrib.long_range_interaction.cis_trans_interactions</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.contrib.long_range_interaction.tag_bedpe.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.venn_maker.cleaned_intersect.html" title="pybedtools.contrib.venn_maker.cleaned_intersect"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+
+
+    <div class="footer">
+      &copy;2010-2015, Ryan Dale.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/autodocs/pybedtools.contrib.long_range_interaction.tag_bedpe.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

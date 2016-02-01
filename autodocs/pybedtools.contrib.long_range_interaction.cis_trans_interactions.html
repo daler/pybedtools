@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.contrib.long_range_interaction.cis_trans_interactions &mdash; pybedtools 0.7.5 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.7.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.5 documentation" href="../index.html" />
+    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="next" title="pybedtools.scripts.venn_mpl" href="pybedtools.scripts.venn_mpl.html" />
+    <link rel="prev" title="pybedtools.contrib.long_range_interaction.tag_bedpe" href="pybedtools.contrib.long_range_interaction.tag_bedpe.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pybedtools-contrib-long-range-interaction-cis-trans-interactions">
+<h1>pybedtools.contrib.long_range_interaction.cis_trans_interactions<a class="headerlink" href="#pybedtools-contrib-long-range-interaction-cis-trans-interactions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pybedtools.contrib.long_range_interaction.cis_trans_interactions">
+<code class="descclassname">pybedtools.contrib.long_range_interaction.</code><code class="descname">cis_trans_interactions</code><span class="sig-paren">(</span><em>iterator</em>, <em>n</em>, <em>extra</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/long_range_interaction.html#cis_trans_interactions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.long_range_interaction.cis_trans_interactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the output from <code class="docutils literal"><span class="pre">tag_bedpe</span></code> into a pandas DataFrame containing
+information about regions that contact each other in cis (same fragment) or
+trans (different fragments).</p>
+<p>For example, given a BEDPE file representing 3D interactions in the genome,
+we want to identify which transcription start sites are connected to distal
+regions containing a peak.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bedpe</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;test_bedpe.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">bedpe</span><span class="p">)</span> 
+<span class="go">chr1  1  10  chr1  50   90   pair1  5  +  -  x1</span>
+<span class="go">chr1  2  15  chr1  200  210  pair2  1  +  +  y1</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tsses</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;test_tsses.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">tsses</span><span class="p">)</span> 
+<span class="go">chr1  5   6   gene1</span>
+<span class="go">chr1  60  61  gene2</span>
+<span class="go">chr1  88  89  gene3</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;test_peaks.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">peaks</span><span class="p">)</span> 
+<span class="go">chr1  3  4  peak1  50  .</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools.contrib.long_range_interaction</span> <span class="kn">import</span> <span class="n">tag_bedpe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools.contrib.long_range_interaction</span> <span class="kn">import</span> <span class="n">cis_tran_interactions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="n">tag_bedpe</span><span class="p">(</span><span class="n">bedpe</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;tss&#39;</span><span class="p">:</span> <span class="n">tsses</span><span class="p">,</span> <span class="s">&#39;pk&#39;</span><span class="p">:</span> <span class="n">peaks</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">group1</span><span class="p">:</span>
+<span class="gp">... </span>       <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">group2</span><span class="p">:</span>
+<span class="gp">... </span>       <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>  
+<span class="go">chr1  1    10   pair1  5  +  x1  pk   chr1  3   4   peak1  50  .  1</span>
+<span class="go">chr1  1    10   pair1  5  +  x1  tss  chr1  5   6   gene1  1</span>
+<span class="go">chr1  50   90   pair1  5  -  x1  tss  chr1  60  61  gene2  1</span>
+<span class="go">chr1  50   90   pair1  5  -  x1  tss  chr1  88  89  gene3  1</span>
+<span class="go">chr1  2    15   pair2  1  +  y1  pk   chr1  3   4   peak1  50  .  1</span>
+<span class="go">chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1</span>
+<span class="go">chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="n">tag_bedpe</span><span class="p">(</span><span class="n">bedpe</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;tss&#39;</span><span class="p">:</span> <span class="n">tsses</span><span class="p">,</span> <span class="s">&#39;pk&#39;</span><span class="p">:</span> <span class="n">peaks</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span>  <span class="n">cis_trans_interactions</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="go">  target_label target_name cis_label cis_name distal_label distal_name  label</span>
+<span class="go">0          tss       gene1        pk    peak1          tss       gene2  pair1</span>
+<span class="go">1          tss       gene1        pk    peak1          tss       gene3  pair1</span>
+<span class="go">2           pk       peak1       tss    gene1          tss       gene2  pair1</span>
+<span class="go">3           pk       peak1       tss    gene1          tss       gene3  pair1</span>
+<span class="go">4          tss       gene2       tss    gene3          tss       gene1  pair1</span>
+<span class="go">5          tss       gene2       tss    gene3           pk       peak1  pair1</span>
+<span class="go">6          tss       gene3       tss    gene2          tss       gene1  pair1</span>
+<span class="go">7          tss       gene3       tss    gene2           pk       peak1  pair1</span>
+<span class="go">8          tss       gene1        pk    peak1            .           .  pair2</span>
+<span class="go">9           pk       peak1       tss    gene1            .           .  pair2</span>
+</pre></div>
+</div>
+<p>If we only care about genes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">target_label</span> <span class="o">==</span> <span class="s">&#39;tss&#39;</span><span class="p">])</span>
+<span class="go">  target_label target_name cis_label cis_name distal_label distal_name  label</span>
+<span class="go">0          tss       gene1        pk    peak1          tss       gene2  pair1</span>
+<span class="go">1          tss       gene1        pk    peak1          tss       gene3  pair1</span>
+<span class="go">4          tss       gene2       tss    gene3          tss       gene1  pair1</span>
+<span class="go">5          tss       gene2       tss    gene3           pk       peak1  pair1</span>
+<span class="go">6          tss       gene3       tss    gene2          tss       gene1  pair1</span>
+<span class="go">7          tss       gene3       tss    gene2           pk       peak1  pair1</span>
+<span class="go">8          tss       gene1        pk    peak1            .           .  pair2</span>
+</pre></div>
+</div>
+<p>Note that in pair2, there is no evidence of interaction between gene1 and
+gene2.</p>
+<p>What interacts distally with gene2's TSS?</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">target_name</span> <span class="o">==</span> <span class="s">&#39;gene2&#39;</span><span class="p">,</span> <span class="s">&#39;distal_name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
+<span class="go">set([u&#39;gene1&#39;, u&#39;peak1&#39;])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
+      <li>Previous: <a href="pybedtools.contrib.long_range_interaction.tag_bedpe.html" title="previous chapter">pybedtools.contrib.long_range_interaction.tag_bedpe</a></li>
+      <li>Next: <a href="pybedtools.scripts.venn_mpl.html" title="next chapter">pybedtools.scripts.venn_mpl</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.scripts.venn_mpl.html" title="pybedtools.scripts.venn_mpl"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pybedtools.contrib.long_range_interaction.tag_bedpe.html" title="pybedtools.contrib.long_range_interaction.tag_bedpe"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+
+
+    <div class="footer">
+      &copy;2010-2015, Ryan Dale.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

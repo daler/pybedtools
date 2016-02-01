@@ -2,6 +2,11 @@
 
 Changelog
 =========
+Changes in v0.7.6
+-----------------
+* New module `pybedtools.contrib.long_range_interaction` for working with
+  HiC-like data.
+
 Changes in v0.7.5
 -----------------
 * When using tabix-indexed files, `tabix` and `bgzip` are no longer required to

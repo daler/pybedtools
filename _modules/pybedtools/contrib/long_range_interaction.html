@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pybedtools.contrib.long_range_interaction &mdash; pybedtools 0.7.5 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.7.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="pybedtools 0.7.5 documentation" href="../../../index.html" />
+    <link rel="up" title="pybedtools" href="../../pybedtools.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pybedtools.contrib.long_range_interaction</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">pysam</span>
+<span class="kn">import</span> <span class="nn">pybedtools</span>
+
+
+<div class="viewcode-block" id="tag_bedpe"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.long_range_interaction.tag_bedpe.html#pybedtools.contrib.long_range_interaction.tag_bedpe">[docs]</a><span class="k">def</span> <span class="nf">tag_bedpe</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">beds</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tag each end of a BEDPE with a set of (possibly many) query BED files.</span>
+
+<span class="sd">    For example, given a BEDPE of interacting fragments from a Hi-C experiment,</span>
+<span class="sd">    identify the contacts between promoters and ChIP-seq peaks. In this case,</span>
+<span class="sd">    promoters and ChIP-seq peaks of interest would be provided as BED files.</span>
+
+<span class="sd">    The strategy is to split the BEDPE into two separate files.  Each file is</span>
+<span class="sd">    intersected independently with the set of queries.  The results are then</span>
+<span class="sd">    iterated through in parallel to tie the ends back together. It is this</span>
+<span class="sd">    iterator that is returned (see example below).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    bedpe : str</span>
+<span class="sd">        BEDPE-format file. Must be name-sorted.</span>
+
+<span class="sd">    queries : dict</span>
+<span class="sd">        Dictionary of BED/GFF/GTF/VCF files to use. After splitting the BEDPE,</span>
+<span class="sd">        these query files (values in the dictionary) will be passed as the `-b`</span>
+<span class="sd">        arg to `bedtools intersect`. The keys are passed as the `names`</span>
+<span class="sd">        argument for `bedtools intersect`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple of (iterator, n, extra).</span>
+
+<span class="sd">    `iterator` is described below. `n` is the total number of lines in the</span>
+<span class="sd">    BEDPE file, which is useful for calculating percentage complete for</span>
+<span class="sd">    downstream work. `extra` is the number of extra fields found in the BEDPE</span>
+<span class="sd">    (also useful for downstream processing).</span>
+
+<span class="sd">    `iterator` yields tuples of (label, end1_hits, end2_hits) where `label` is</span>
+<span class="sd">    the name field of one line of the original BEDPE file. `end1_hits` and</span>
+<span class="sd">    `end2_hits` are each iterators of BED-like lines representing all</span>
+<span class="sd">    identified intersections across all query BED files for end1 and end2 for</span>
+<span class="sd">    this pair.</span>
+
+<span class="sd">    Recall that BEDPE format defines a single name and a single score for each</span>
+<span class="sd">    pair. For each item in `end1_hits`, the fields are::</span>
+
+<span class="sd">        chrom1</span>
+<span class="sd">        start1</span>
+<span class="sd">        end1</span>
+<span class="sd">        name</span>
+<span class="sd">        score</span>
+<span class="sd">        strand1</span>
+<span class="sd">        [extra fields]</span>
+<span class="sd">        query_label</span>
+<span class="sd">        fields_from_query_intersecting_end1</span>
+
+<span class="sd">    where `[extra fields]` are any additional fields from the original BEDPE,</span>
+<span class="sd">    `query_label` is one of the keys in the `beds` input dictionary, and the</span>
+<span class="sd">    remaining fields in the line are the intersecting line from the</span>
+<span class="sd">    corresponding BED file in the `beds` input dictionary.</span>
+
+<span class="sd">    Similarly, each item in `end2_hits` consists of:</span>
+
+<span class="sd">        chrom2</span>
+<span class="sd">        start2</span>
+<span class="sd">        end2</span>
+<span class="sd">        name</span>
+<span class="sd">        score</span>
+<span class="sd">        strand2</span>
+<span class="sd">        [extra fields]</span>
+<span class="sd">        query_label</span>
+<span class="sd">        fields_from_query_intersecting_end2</span>
+
+<span class="sd">    At least one line is reported for every line in the BEDPE file. If there</span>
+<span class="sd">    was no intersection, the standard BEDTools null fields will be shown. In</span>
+<span class="sd">    `end1_hits` and `end2_hits`, a line will be reported for each hit in each</span>
+<span class="sd">    query.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    Consider the following BEDPE (where &quot;x1&quot; is an aribtrary extra field).</span>
+
+<span class="sd">    &gt;&gt;&gt; bedpe = pybedtools.example_bedtool(&#39;test_bedpe.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(bedpe) # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  1  10  chr1  50   90   pair1  5  +  -  x1</span>
+<span class="sd">    chr1  2  15  chr1  200  210  pair2  1  +  +  y1</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+
+<span class="sd">    And the following transcription start sites (TSSes) in BED4 format:</span>
+
+<span class="sd">    &gt;&gt;&gt; tsses = pybedtools.example_bedtool(&#39;test_tsses.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(tsses) # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  5   6   gene1</span>
+<span class="sd">    chr1  60  61  gene2</span>
+<span class="sd">    chr1  88  89  gene3</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    And the following called peaks as BED6:</span>
+
+<span class="sd">    &gt;&gt;&gt; peaks = pybedtools.example_bedtool(&#39;test_peaks.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(peaks) # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  3  4  peak1  50  .</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    Then we can get the following iterator, n, and extra:</span>
+
+<span class="sd">    &gt;&gt;&gt; from pybedtools.contrib.long_range_interaction import tag_bedpe</span>
+<span class="sd">    &gt;&gt;&gt; iterator, n, extra = tag_bedpe(bedpe, {&#39;tss&#39;: tsses, &#39;pk&#39;: peaks})</span>
+<span class="sd">    &gt;&gt;&gt; print(n)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; print(extra)</span>
+<span class="sd">    1</span>
+
+<span class="sd">    The following illustrates that each item in the iterator represents one</span>
+<span class="sd">    pair, and each item in each group represents an intersection with one end:</span>
+
+<span class="sd">    &gt;&gt;&gt; for (label, end1_hits, end2_hits) in iterator:</span>
+<span class="sd">    ...    print(&#39;PAIR = {}&#39;.format(label))</span>
+<span class="sd">    ...    print(&#39;end1_hits:&#39;)</span>
+<span class="sd">    ...    for i in end1_hits:</span>
+<span class="sd">    ...        print(i, end=&#39;&#39;)</span>
+<span class="sd">    ...    print(&#39;end2_hits:&#39;)</span>
+<span class="sd">    ...    for i in end2_hits:</span>
+<span class="sd">    ...        print(i, end=&#39;&#39;)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    PAIR = pair1</span>
+<span class="sd">    end1_hits:</span>
+<span class="sd">    chr1  1    10   pair1  5  +  x1  pk   chr1  3   4   peak1  50  .  1</span>
+<span class="sd">    chr1  1    10   pair1  5  +  x1  tss  chr1  5   6   gene1  1</span>
+<span class="sd">    end2_hits:</span>
+<span class="sd">    chr1  50   90   pair1  5  -  x1  tss  chr1  60  61  gene2  1</span>
+<span class="sd">    chr1  50   90   pair1  5  -  x1  tss  chr1  88  89  gene3  1</span>
+<span class="sd">    PAIR = pair2</span>
+<span class="sd">    end1_hits:</span>
+<span class="sd">    chr1  2    15   pair2  1  +  y1  pk   chr1  3   4   peak1  50  .  1</span>
+<span class="sd">    chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1</span>
+<span class="sd">    end2_hits:</span>
+<span class="sd">    chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0</span>
+
+<span class="sd">    See the `cis_trans_interactions()` function for one way of summarizing</span>
+<span class="sd">    these data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="c"># Figure out if the supplied bedpe had any extra fields. If so, the fields</span>
+    <span class="c"># are repeated in each of the split output files.</span>
+    <span class="n">observed</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">field_count</span><span class="p">()</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">observed</span> <span class="o">-</span> <span class="mi">10</span>
+    <span class="n">extra_inds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">extra</span><span class="p">)]</span>
+
+    <span class="n">end1_fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
+    <span class="n">end2_fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
+
+    <span class="c"># Performance notes:</span>
+    <span class="c"># We don&#39;t need the overhead of converting every line into</span>
+    <span class="c"># a pybedtools.Interval object just so we can grab the fields. Doing so</span>
+    <span class="c"># takes 3.5x more time than simply splitting each line on a tab.</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;splitting BEDPE into separate files&#39;</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">end1_fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">end1_out</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">end2_fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">end2_out</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">fn</span><span class="p">):</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="n">end1_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_inds</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="n">end2_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_inds</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+    <span class="c"># Performance notes:</span>
+    <span class="c">#</span>
+    <span class="c"># For small BEDPE and large set of query files, it would be faster to sort</span>
+    <span class="c"># these independently, intersect with sorted=True, and then re-sort by name</span>
+    <span class="c"># for the grouping. For large BEDPE, I don&#39;t think the sorted=True</span>
+    <span class="c"># performance gain outweighs the hit from sorting twice.</span>
+    <span class="c">#</span>
+    <span class="c"># On the other hand, if BEDPE was coord-sorted in the first place, only</span>
+    <span class="c"># end2 would need to be sorted and re-sorted. On the other (third!?) hand,</span>
+    <span class="c"># BEDPE creation from BAM implies name-sorting, so it&#39;s probably not</span>
+    <span class="c"># reasonable to assume coord-sorted.</span>
+    <span class="c">#</span>
+    <span class="c"># In the end: don&#39;t do any sorting.</span>
+
+    <span class="n">end1_bt</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">end1_fn</span><span class="p">)</span>
+    <span class="n">end2_bt</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">end2_fn</span><span class="p">)</span>
+    <span class="n">names</span><span class="p">,</span> <span class="n">fns</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">beds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">):</span>
+            <span class="n">fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;intersecting end 1&#39;</span><span class="p">)</span>
+    <span class="n">end1_hits</span> <span class="o">=</span> <span class="n">end1_bt</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">wao</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;intersecting end 2&#39;</span><span class="p">)</span>
+    <span class="n">end2_hits</span> <span class="o">=</span> <span class="n">end2_bt</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">wao</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">grouped_end1</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">end1_hits</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">grouped_end2</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">end2_hits</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">label1</span><span class="p">,</span> <span class="n">group1</span><span class="p">),</span> <span class="p">(</span><span class="n">label2</span><span class="p">,</span> <span class="n">group2</span><span class="p">)</span> \
+            <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">grouped_end1</span><span class="p">,</span> <span class="n">grouped_end2</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">label1</span> <span class="o">==</span> <span class="n">label2</span>
+            <span class="k">yield</span> <span class="n">label1</span><span class="p">,</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span>
+
+    <span class="k">return</span> <span class="n">gen</span><span class="p">(),</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span></div>
+
+
+<div class="viewcode-block" id="cis_trans_interactions"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html#pybedtools.contrib.long_range_interaction.cis_trans_interactions">[docs]</a><span class="k">def</span> <span class="nf">cis_trans_interactions</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the output from `tag_bedpe` into a pandas DataFrame containing</span>
+<span class="sd">    information about regions that contact each other in cis (same fragment) or</span>
+<span class="sd">    trans (different fragments).</span>
+
+<span class="sd">    For example, given a BEDPE file representing 3D interactions in the genome,</span>
+<span class="sd">    we want to identify which transcription start sites are connected to distal</span>
+<span class="sd">    regions containing a peak.</span>
+
+<span class="sd">    &gt;&gt;&gt; bedpe = pybedtools.example_bedtool(&#39;test_bedpe.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(bedpe) # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  1  10  chr1  50   90   pair1  5  +  -  x1</span>
+<span class="sd">    chr1  2  15  chr1  200  210  pair2  1  +  +  y1</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; tsses = pybedtools.example_bedtool(&#39;test_tsses.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(tsses) # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  5   6   gene1</span>
+<span class="sd">    chr1  60  61  gene2</span>
+<span class="sd">    chr1  88  89  gene3</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; peaks = pybedtools.example_bedtool(&#39;test_peaks.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(peaks) # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  3  4  peak1  50  .</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; from pybedtools.contrib.long_range_interaction import tag_bedpe</span>
+<span class="sd">    &gt;&gt;&gt; from pybedtools.contrib.long_range_interaction import cis_tran_interactions</span>
+<span class="sd">    &gt;&gt;&gt; iterator, n, extra = tag_bedpe(bedpe, {&#39;tss&#39;: tsses, &#39;pk&#39;: peaks})</span>
+
+<span class="sd">    &gt;&gt;&gt; for (label, group1, group2) in iterator:</span>
+<span class="sd">    ...    for i in group1:</span>
+<span class="sd">    ...        print(i, end=&#39;&#39;)</span>
+<span class="sd">    ...    for i in group2:</span>
+<span class="sd">    ...        print(i, end=&#39;&#39;)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    chr1  1    10   pair1  5  +  x1  pk   chr1  3   4   peak1  50  .  1</span>
+<span class="sd">    chr1  1    10   pair1  5  +  x1  tss  chr1  5   6   gene1  1</span>
+<span class="sd">    chr1  50   90   pair1  5  -  x1  tss  chr1  60  61  gene2  1</span>
+<span class="sd">    chr1  50   90   pair1  5  -  x1  tss  chr1  88  89  gene3  1</span>
+<span class="sd">    chr1  2    15   pair2  1  +  y1  pk   chr1  3   4   peak1  50  .  1</span>
+<span class="sd">    chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1</span>
+<span class="sd">    chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0</span>
+
+
+<span class="sd">    &gt;&gt;&gt; iterator, n, extra = tag_bedpe(bedpe, {&#39;tss&#39;: tsses, &#39;pk&#39;: peaks})</span>
+<span class="sd">    &gt;&gt;&gt; df =  cis_trans_interactions(iterator, n, extra)</span>
+<span class="sd">    &gt;&gt;&gt; print(df)</span>
+<span class="sd">      target_label target_name cis_label cis_name distal_label distal_name  label</span>
+<span class="sd">    0          tss       gene1        pk    peak1          tss       gene2  pair1</span>
+<span class="sd">    1          tss       gene1        pk    peak1          tss       gene3  pair1</span>
+<span class="sd">    2           pk       peak1       tss    gene1          tss       gene2  pair1</span>
+<span class="sd">    3           pk       peak1       tss    gene1          tss       gene3  pair1</span>
+<span class="sd">    4          tss       gene2       tss    gene3          tss       gene1  pair1</span>
+<span class="sd">    5          tss       gene2       tss    gene3           pk       peak1  pair1</span>
+<span class="sd">    6          tss       gene3       tss    gene2          tss       gene1  pair1</span>
+<span class="sd">    7          tss       gene3       tss    gene2           pk       peak1  pair1</span>
+<span class="sd">    8          tss       gene1        pk    peak1            .           .  pair2</span>
+<span class="sd">    9           pk       peak1       tss    gene1            .           .  pair2</span>
+
+<span class="sd">    If we only care about genes:</span>
+
+<span class="sd">    &gt;&gt;&gt; print(df[df.target_label == &#39;tss&#39;])</span>
+<span class="sd">      target_label target_name cis_label cis_name distal_label distal_name  label</span>
+<span class="sd">    0          tss       gene1        pk    peak1          tss       gene2  pair1</span>
+<span class="sd">    1          tss       gene1        pk    peak1          tss       gene3  pair1</span>
+<span class="sd">    4          tss       gene2       tss    gene3          tss       gene1  pair1</span>
+<span class="sd">    5          tss       gene2       tss    gene3           pk       peak1  pair1</span>
+<span class="sd">    6          tss       gene3       tss    gene2          tss       gene1  pair1</span>
+<span class="sd">    7          tss       gene3       tss    gene2           pk       peak1  pair1</span>
+<span class="sd">    8          tss       gene1        pk    peak1            .           .  pair2</span>
+
+<span class="sd">    Note that in pair2, there is no evidence of interaction between gene1 and</span>
+<span class="sd">    gene2.</span>
+
+<span class="sd">    What interacts distally with gene2&#39;s TSS?</span>
+
+<span class="sd">    &gt;&gt;&gt; print(set(df.ix[df.target_name == &#39;gene2&#39;, &#39;distal_name&#39;]).difference(&#39;.&#39;))</span>
+<span class="sd">    set([u&#39;gene1&#39;, u&#39;peak1&#39;])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">end1_hits</span><span class="p">,</span> <span class="n">end2_hits</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> (</span><span class="si">%.1f%%</span><span class="s">)</span><span class="se">\r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="c"># end1_hits has the full lines of all intersections with end1</span>
+        <span class="n">end1_hits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">end1_hits</span><span class="p">)</span>
+        <span class="n">end2_hits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">end2_hits</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_name_hits</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns the key (from which file the interval came) and the name</span>
+<span class="sd">            (of the individual feature).</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c"># this is the &quot;name&quot; reported if there was no hit.</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">6</span> <span class="o">+</span> <span class="n">extra</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;.&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">7</span> <span class="o">+</span> <span class="n">extra</span><span class="p">:])</span>
+            <span class="k">return</span> <span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="mi">6</span> <span class="o">+</span> <span class="n">extra</span><span class="p">],</span> <span class="n">interval</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+
+        <span class="n">names1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_name_hits</span><span class="p">,</span> <span class="n">end1_hits</span><span class="p">)))</span>
+        <span class="n">names2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">get_name_hits</span><span class="p">,</span> <span class="n">end2_hits</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">cis</span><span class="p">,</span> <span class="n">others</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">names1</span><span class="p">,</span> <span class="n">names2</span><span class="p">),</span> <span class="p">(</span><span class="n">names2</span><span class="p">,</span> <span class="n">names1</span><span class="p">)]:</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">cis</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">non_targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cis</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">target</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">non_targets</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">non_target</span> <span class="ow">in</span> <span class="n">non_targets</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">non_target</span><span class="p">)</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+                        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">lines</span><span class="p">,</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;target_label&#39;</span><span class="p">,</span> <span class="s">&#39;target_name&#39;</span><span class="p">,</span> <span class="s">&#39;cis_label&#39;</span><span class="p">,</span> <span class="s">&#39;cis_name&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;distal_label&#39;</span><span class="p">,</span> <span class="s">&#39;distal_name&#39;</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">])</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../pybedtools.html">pybedtools</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
+      </ul>
+    </div>
+
+
+    <div class="footer">
+      &copy;2010-2015, Ryan Dale.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

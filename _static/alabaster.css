@@ -15,9 +15,6 @@
 
 
 
-
-
-
 @import url("basic.css");
 
 /* -- page layout ----------------------------------------------------------- */
@@ -59,6 +56,10 @@ div.body {
     padding: 0 30px 0 30px;
 }
 
+div.body > .section {
+    text-align: left;
+}
+
 div.footer {
     width: 940px;
     margin: 20px auto 30px auto;
@@ -71,9 +72,11 @@ div.footer a {
     color: #888;
 }
 
-div.related {
+
+div.relations {
     display: none;
 }
+
 
 div.sphinxsidebar a {
     color: #444;
@@ -169,8 +172,8 @@ div.sphinxsidebar input {
 div.sphinxsidebar hr {
     border: none;
     height: 1px;
-    color: #999;
-    background: #999;
+    color: #AAA;
+    background: #AAA;
 
     text-align: left;
     margin-left: 0;
@@ -287,6 +290,13 @@ pre, tt, code {
     font-size: 0.9em;
 }
 
+.hll {
+    background-color: #FFC;
+    margin: 0 -12px;
+    padding: 0 12px;
+    display: block;
+}
+
 img.screenshot {
 }
 
@@ -344,6 +354,10 @@ table.field-list td {
     padding: 0;
 }
 
+table.field-list p {
+    margin-bottom: 0.8em;
+}
+
 table.footnote td.label {
     width: 0px;
     padding: 0.3em 0 0.3em 0.5em;
@@ -380,8 +394,8 @@ pre {
 }
 
 dl pre, blockquote pre, li pre {
-    margin-left: -60px;
-    padding-left: 60px;
+    margin-left: 0;
+    padding-left: 30px;
 }
 
 dl dl pre {
@@ -518,18 +532,6 @@ a:hover tt, a:hover code {
     div.document {
         width: 100%;
         margin: 0;
-    }
-
-    div.related {
-        display: block;
-        margin: 0;
-        padding: 10px 0 20px 0;
-    }
-
-    div.related ul,
-    div.related ul li {
-        margin: 0;
-        padding: 0;
     }
 
     div.footer {

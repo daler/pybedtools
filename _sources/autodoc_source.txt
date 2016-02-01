@@ -362,6 +362,14 @@ its source for more details.
     pybedtools.contrib.venn_maker.venn_maker
     pybedtools.contrib.venn_maker.cleaned_intersect
 
+:mod:`contrib.long_range_interaction`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autosummary::
+    :toctree: autodocs
+
+    pybedtools.contrib.long_range_interaction.tag_bedpe
+    pybedtools.contrib.long_range_interaction.cis_trans_interactions
+
 Scripts
 -------
 These scripts demonstrate ways of using :mod:`pybedtools` for genomic analyses.

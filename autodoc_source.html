@@ -28,28 +28,10 @@
     <link rel="prev" title="Scripts" href="scripts.html" />
    
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="autodocs/pybedtools.bedtool.BedTool.html" title="pybedtools.bedtool.BedTool"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="scripts.html" title="Scripts"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.5 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
@@ -90,9 +72,10 @@ function name to see the complete documentation.</p>
 <li><a class="reference internal" href="#multiclassifier" id="id22"><code class="xref py py-class docutils literal"><span class="pre">MultiClassifier</span></code></a></li>
 <li><a class="reference internal" href="#intersectionmatrix" id="id23"><code class="xref py py-class docutils literal"><span class="pre">IntersectionMatrix</span></code></a></li>
 <li><a class="reference internal" href="#contrib-venn-maker" id="id24"><code class="xref py py-mod docutils literal"><span class="pre">contrib.venn_maker</span></code></a></li>
+<li><a class="reference internal" href="#contrib-long-range-interaction" id="id25"><code class="xref py py-mod docutils literal"><span class="pre">contrib.long_range_interaction</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#scripts" id="id25">Scripts</a></li>
+<li><a class="reference internal" href="#scripts" id="id26">Scripts</a></li>
 </ul>
 </li>
 </ul>
@@ -708,6 +691,15 @@ distribution of ChIP-seq peaks in introns/exons/intergenic space.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autodocs/pybedtools.contrib.MultiClassifier.html#pybedtools.contrib.MultiClassifier" title="pybedtools.contrib.MultiClassifier"><code class="xref py py-obj docutils literal"><span class="pre">pybedtools.contrib.MultiClassifier</span></code></a></td>
+<td>alias of <code class="xref py py-class docutils literal"><span class="pre">BasePairClassifier</span></code></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autodocs/pybedtools.contrib.MultiClassifier.classify.html#pybedtools.contrib.MultiClassifier.classify" title="pybedtools.contrib.MultiClassifier.classify"><code class="xref py py-obj docutils literal"><span class="pre">pybedtools.contrib.MultiClassifier.classify</span></code></a>(...)</td>
+<td>Classify the features in self.bed, populating several dictionaries in self.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="autodocs/pybedtools.contrib.MultiClassifier.print_table.html#pybedtools.contrib.MultiClassifier.print_table" title="pybedtools.contrib.MultiClassifier.print_table"><code class="xref py py-obj docutils literal"><span class="pre">pybedtools.contrib.MultiClassifier.print_table</span></code></a>([...])</td>
+<td>Returns a string containing a tab-delimited table, including header, with classes sorted by total bp in each class.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -721,6 +713,9 @@ of interval files with each other.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autodocs/pybedtools.contrib.IntersectionMatrix.html#pybedtools.contrib.IntersectionMatrix" title="pybedtools.contrib.IntersectionMatrix"><code class="xref py py-obj docutils literal"><span class="pre">pybedtools.contrib.IntersectionMatrix</span></code></a>(beds,&nbsp;...)</td>
+<td>Class to handle many pairwise comparisons of interval files</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -749,9 +744,26 @@ its source for more details.</p>
 </tbody>
 </table>
 </div>
+<div class="section" id="contrib-long-range-interaction">
+<h3><a class="toc-backref" href="#id25"><code class="xref py py-mod docutils literal"><span class="pre">contrib.long_range_interaction</span></code></a><a class="headerlink" href="#contrib-long-range-interaction" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="autodocs/pybedtools.contrib.long_range_interaction.tag_bedpe.html#pybedtools.contrib.long_range_interaction.tag_bedpe" title="pybedtools.contrib.long_range_interaction.tag_bedpe"><code class="xref py py-obj docutils literal"><span class="pre">pybedtools.contrib.long_range_interaction.tag_bedpe</span></code></a>(b,&nbsp;beds)</td>
+<td>Tag each end of a BEDPE with a set of (possibly many) query BED files.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html#pybedtools.contrib.long_range_interaction.cis_trans_interactions" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions"><code class="xref py py-obj docutils literal"><span class="pre">pybedtools.contrib.long_range_interaction.cis_trans_interactions</span></code></a>(...)</td>
+<td>Converts the output from <code class="docutils literal"><span class="pre">tag_bedpe</span></code> into a pandas DataFrame containing information about regions that contact each other in cis (same fragment) or trans (different fragments).</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section" id="scripts">
-<h2><a class="toc-backref" href="#id25">Scripts</a><a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id26">Scripts</a><a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h2>
 <p>These scripts demonstrate ways of using <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> for genomic analyses.</p>
 <p>Typically a script will be added here and if the functionality is useful, it is
 abstracted out into a more powerful and flexible module.  For example, the
@@ -828,19 +840,22 @@ results.</p>
 <li><a class="reference internal" href="#multiclassifier"><code class="docutils literal"><span class="pre">MultiClassifier</span></code></a></li>
 <li><a class="reference internal" href="#intersectionmatrix"><code class="docutils literal"><span class="pre">IntersectionMatrix</span></code></a></li>
 <li><a class="reference internal" href="#contrib-venn-maker"><code class="docutils literal"><span class="pre">contrib.venn_maker</span></code></a></li>
+<li><a class="reference internal" href="#contrib-long-range-interaction"><code class="docutils literal"><span class="pre">contrib.long_range_interaction</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#scripts">Scripts</a></li>
 </ul>
 </li>
 </ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="scripts.html"
-                        title="previous chapter">Scripts</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="autodocs/pybedtools.bedtool.BedTool.html"
-                        title="next chapter">pybedtools.bedtool.BedTool</a></p>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="scripts.html" title="previous chapter">Scripts</a></li>
+      <li>Next: <a href="autodocs/pybedtools.bedtool.BedTool.html" title="next chapter">pybedtools.bedtool.BedTool</a></li>
+  </ul></li>
+</ul>
+</div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -871,16 +886,16 @@ results.</p>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="autodocs/pybedtools.bedtool.BedTool.html" title="pybedtools.bedtool.BedTool"
-             >next</a> |</li>
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="scripts.html" title="Scripts"
-             >previous</a> |</li>
+             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
@@ -890,12 +905,12 @@ results.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
       
       |
       <a href="_sources/autodoc_source.txt"
-          rel="nofollow">Page source</a></li>
+          rel="nofollow">Page source</a>
     </div>
 
     

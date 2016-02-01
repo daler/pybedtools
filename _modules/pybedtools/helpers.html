@@ -27,24 +27,10 @@
     <link rel="up" title="pybedtools" href="../pybedtools.html" />
    
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
@@ -224,16 +210,16 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tempdir</span><span class="p">):</span>
         <span class="n">errstr</span> <span class="o">=</span> <span class="s">&#39;The tempdir you specified, </span><span class="si">%s</span><span class="s">, does not exist&#39;</span> <span class="o">%</span> <span class="n">tempdir</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errstr</span><span class="p">)</span>
-    <span class="n">tempfile</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">=</span> <span class="n">tempdir</span>
+    <span class="n">tempfile</span><span class="o">.</span><span class="n">tempdir</span> <span class="o">=</span> <span class="n">tempdir</span></div>
 
-</div>
+
 <div class="viewcode-block" id="get_tempdir"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.get_tempdir.html#pybedtools.helpers.get_tempdir">[docs]</a><span class="k">def</span> <span class="nf">get_tempdir</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the current tempdir for the module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span></div>
 
-</div>
+
 <div class="viewcode-block" id="cleanup"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.cleanup.html#pybedtools.helpers.cleanup">[docs]</a><span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">remove_all</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes all temp files from the current session (or optionally *all* \</span>
@@ -254,9 +240,9 @@
     <span class="k">if</span> <span class="n">remove_all</span><span class="p">:</span>
         <span class="n">fns</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_tempdir</span><span class="p">(),</span> <span class="s">&#39;pybedtools.*.tmp&#39;</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
 
-</div>
+
 <span class="k">def</span> <span class="nf">_version_2_15_plus_names</span><span class="p">(</span><span class="n">prog_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">_bedtools_installed</span><span class="p">:</span>
         <span class="n">_check_for_bedtools</span><span class="p">()</span>
@@ -441,9 +427,9 @@
 <span class="sd">    To reset and use the default system path, call this function with no</span>
 <span class="sd">    arguments or use path=&quot;&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">settings</span><span class="o">.</span><span class="n">_bedtools_path</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">_bedtools_path</span> <span class="o">=</span> <span class="n">path</span></div>
 
-</div>
+
 <span class="k">def</span> <span class="nf">set_R_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Explicitly set path to `R` installation dir.</span>
@@ -689,9 +675,9 @@
                           <span class="s">&quot; manually, or &quot;</span>
                           <span class="s">&quot;specify the path with the &#39;mysql&#39; kwarg.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span>
+            <span class="k">raise</span></div>
 
-</div>
+
 <div class="viewcode-block" id="chromsizes_to_file"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.chromsizes_to_file.html#pybedtools.helpers.chromsizes_to_file">[docs]</a><span class="k">def</span> <span class="nf">chromsizes_to_file</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a *chromsizes* dictionary to a file.  If *fn* is None, then a</span>
@@ -712,9 +698,9 @@
         <span class="n">line</span> <span class="o">=</span> <span class="n">chrom</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
         <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">fn</span>
+    <span class="k">return</span> <span class="n">fn</span></div>
 
-</div>
+
 <div class="viewcode-block" id="chromsizes"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.chromsizes.html#pybedtools.helpers.chromsizes">[docs]</a><span class="k">def</span> <span class="nf">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Looks for a *genome* already included in the genome registry; if not found</span>
@@ -751,8 +737,8 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">genome_registry</span><span class="p">,</span> <span class="n">genome</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">get_chromsizes_from_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="n">get_chromsizes_from_ucsc</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span></div>
+
 <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
 </pre></div>
 
@@ -760,7 +746,17 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../pybedtools.html">pybedtools</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
@@ -784,13 +780,13 @@
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../pybedtools.html" >pybedtools</a> &raquo;</li> 
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -799,8 +795,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
       
     </div>
 
