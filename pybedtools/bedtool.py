@@ -1413,7 +1413,7 @@ class BedTool(object):
             kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
 
         if not os.path.exists(kwargs['g']):
-            raise ValueError('Genome file "%s" does not exist')
+            raise ValueError('Genome file "%s" does not exist' % (kwargs['g']))
 
         return kwargs
 
@@ -1608,7 +1608,7 @@ class BedTool(object):
             text_header = '\n'.join(text_header) + '\n'
 
             # The strategy is to write an actual SAM file to disk, along with
-            # a header, and then read that back in. 
+            # a header, and then read that back in.
             #
             # Painfully inefficient, but this will change once all py2 tests
             # pass.
