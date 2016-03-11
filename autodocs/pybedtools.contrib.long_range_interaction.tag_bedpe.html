@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.contrib.long_range_interaction.tag_bedpe &mdash; pybedtools 0.7.5 documentation</title>
+    <title>pybedtools.contrib.long_range_interaction.tag_bedpe &mdash; pybedtools 0.7.6 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.5',
+        VERSION:     '0.7.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.5 documentation" href="../index.html" />
+    <link rel="top" title="pybedtools 0.7.6 documentation" href="../index.html" />
     <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
     <link rel="next" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions" href="pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" />
     <link rel="prev" title="pybedtools.contrib.venn_maker.cleaned_intersect" href="pybedtools.contrib.venn_maker.cleaned_intersect.html" />
@@ -43,7 +43,7 @@
 <h1>pybedtools.contrib.long_range_interaction.tag_bedpe<a class="headerlink" href="#pybedtools-contrib-long-range-interaction-tag-bedpe" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="pybedtools.contrib.long_range_interaction.tag_bedpe">
-<code class="descclassname">pybedtools.contrib.long_range_interaction.</code><code class="descname">tag_bedpe</code><span class="sig-paren">(</span><em>b</em>, <em>beds</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/long_range_interaction.html#tag_bedpe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.long_range_interaction.tag_bedpe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pybedtools.contrib.long_range_interaction.</code><code class="descname">tag_bedpe</code><span class="sig-paren">(</span><em>bedpe</em>, <em>queries</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/long_range_interaction.html#tag_bedpe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.long_range_interaction.tag_bedpe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tag each end of a BEDPE with a set of (possibly many) query BED files.</p>
 <p>For example, given a BEDPE of interacting fragments from a Hi-C experiment,
 identify the contacts between promoters and ChIP-seq peaks. In this case,
@@ -65,7 +65,10 @@ iterator that is returned (see example below).</p>
 <div><p>Dictionary of BED/GFF/GTF/VCF files to use. After splitting the BEDPE,
 these query files (values in the dictionary) will be passed as the <code class="docutils literal"><span class="pre">-b</span></code>
 arg to <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">intersect</span></code>. The keys are passed as the <code class="docutils literal"><span class="pre">names</span></code>
-argument for <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">intersect</span></code>.</p>
+argument for <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">intersect</span></code></p>
+<p><em>Features in each file must have unique names</em>. Use
+<code class="xref py py-func docutils literal"><span class="pre">pybedtools.featurefuncs.UniqueID()</span></code> to help fix this.</p>
+<p><em>Each file must be BED3 to BED6</em>.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -176,7 +179,7 @@ fields_from_query_intersecting_end2</p>
         <li class="right" >
           <a href="pybedtools.contrib.venn_maker.cleaned_intersect.html" title="pybedtools.contrib.venn_maker.cleaned_intersect"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.5 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
       </ul>
     </div>
