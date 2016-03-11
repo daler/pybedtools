@@ -33,7 +33,12 @@ def tag_bedpe(bedpe, queries, verbose=False):
         Dictionary of BED/GFF/GTF/VCF files to use. After splitting the BEDPE,
         these query files (values in the dictionary) will be passed as the `-b`
         arg to `bedtools intersect`. The keys are passed as the `names`
-        argument for `bedtools intersect`.
+        argument for `bedtools intersect`
+
+        *Features in each file must have unique names*. Use
+        :func:`pybedtools.featurefuncs.UniqueID` to help fix this.
+
+        *Each file must be BED3 to BED6*.
 
     Returns
     -------
@@ -157,6 +162,7 @@ def tag_bedpe(bedpe, queries, verbose=False):
     observed = b.field_count()
     extra = observed - 10
     extra_inds = [10 + i for i in range(extra)]
+
 
     end1_fn = pybedtools.BedTool._tmp()
     end2_fn = pybedtools.BedTool._tmp()

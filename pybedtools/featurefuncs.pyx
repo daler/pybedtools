@@ -316,3 +316,39 @@ cpdef bed2gff(Interval feature):
         feature.strand,
         '.',
         attributes])
+
+
+class UniqueID(object):
+    def __init__(self, pattern="%d", first=0):
+        """
+        Class to help create uniquely-named features.
+
+        Example usage:
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> uid = UniqueID("f_%d")
+        >>> print(a.each(uid))  # doctest: +NORMALIZE_WHITESPACE
+        chr1    1    100    f_0    0    +
+        chr1  100    200    f_1    0    +
+        chr1  150    500    f_2    0    -
+        chr1  900    950    f_3    0    +
+
+        Parameters
+        ----------
+        pattern : str
+
+            Pattern will be filled in using `% self.count`
+
+        first : int
+            `self.count` will be initialzed to this value.
+
+        """
+        self.pattern = pattern
+        self.first = first
+        self.count = first
+
+    def __call__(self, feature):
+        feature.name = self.pattern % self.count
+        self.count += 1
+        return feature
+
