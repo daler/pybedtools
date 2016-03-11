@@ -2,6 +2,14 @@
 
 Changelog
 =========
+Changes in v0.7.7
+-----------------
+* Chromsizes for dm6 and mm10 assemblies added to `genome_registry`
+* Better Python 3 compatibility in the `long_range_interaction` module
+* New `featurefuncs.UniqueID` class, useful for ensuring all features in a file
+  have a unique ID in their name field.
+* Fix error message when a specified genome file doesn't exist (thanks Saket Choudhary)
+
 Changes in v0.7.6
 -----------------
 * New module `pybedtools.contrib.long_range_interaction` for working with
