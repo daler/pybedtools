@@ -2020,3 +2020,15 @@ def test_PR_158():
     # This used to crash with "OverflowError: can't convert negative value to CHRPOS"
     b = pybedtools.example_bedtool('issue_121.bam')
     print(b)
+
+def test_issue_162():
+    a = pybedtools.BedTool("", from_string=True)
+    b = pybedtools.example_bedtool("b.bed")
+    c = pybedtools.BedTool()
+    assert_raises(ValueError, b.cat, c)
+    assert str(b.cat(a)) == fix(
+        """
+        chr1	155	200
+        chr1	800	901
+        """)
+
