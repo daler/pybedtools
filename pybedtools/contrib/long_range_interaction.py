@@ -2,6 +2,7 @@ from __future__ import print_function
 import os
 import sys
 import itertools
+import six
 import time
 import numpy as np
 import pandas
@@ -9,7 +10,7 @@ import pysam
 import pybedtools
 
 
-def tag_bedpe(b, beds, verbose=False):
+def tag_bedpe(bedpe, queries, verbose=False):
     """
     Tag each end of a BEDPE with a set of (possibly many) query BED files.
 
@@ -149,7 +150,7 @@ def tag_bedpe(b, beds, verbose=False):
     See the `cis_trans_interactions()` function for one way of summarizing
     these data.
     """
-    b = pybedtools.BedTool(b)
+    b = pybedtools.BedTool(bedpe)
 
     # Figure out if the supplied bedpe had any extra fields. If so, the fields
     # are repeated in each of the split output files.
@@ -165,7 +166,10 @@ def tag_bedpe(b, beds, verbose=False):
     # a pybedtools.Interval object just so we can grab the fields. Doing so
     # takes 3.5x more time than simply splitting each line on a tab.
     if verbose:
-        print('splitting BEDPE into separate files')
+        print('splitting BEDPE into separate files.')
+        print('end1 is going to %s' % end1_fn)
+        print('end2 is going to %s' % end2_fn)
+
 
     n = 0
     with open(end1_fn, 'w') as end1_out, open(end2_fn, 'w') as end2_out:
@@ -196,7 +200,7 @@ def tag_bedpe(b, beds, verbose=False):
     end1_bt = pybedtools.BedTool(end1_fn)
     end2_bt = pybedtools.BedTool(end2_fn)
     names, fns = [], []
-    for name, fn in beds.items():
+    for name, fn in queries.items():
         names.append(name)
         if isinstance(fn, pybedtools.BedTool):
             fns.append(fn.fn)
@@ -209,13 +213,16 @@ def tag_bedpe(b, beds, verbose=False):
     if verbose:
         print('intersecting end 2')
     end2_hits = end2_bt.intersect(list(fns), names=names, wao=True)
+    if verbose:
+        print('intersection with end1 is in %s' % (end1_hits.fn))
+        print('intersection with end2 is in %s' % (end2_hits.fn))
 
     grouped_end1 = itertools.groupby(end1_hits, lambda f: f[3])
     grouped_end2 = itertools.groupby(end2_hits, lambda f: f[3])
 
     def gen():
         for (label1, group1), (label2, group2) \
-            in itertools.izip(grouped_end1, grouped_end2):
+            in six.moves.zip(grouped_end1, grouped_end2):
             assert label1 == label2
             yield label1, group1, group2
 
@@ -309,7 +316,7 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     for label, end1_hits, end2_hits in iterator:
         c += 1
         if c % 1000 == 0:
-            print('%d (%.1f%%)\r' % (c, c / float(n) * 100))
+            print('%d (%.1f%%)\r' % (c, c / float(n) * 100), end='')
             sys.stdout.flush()
 
         # end1_hits has the full lines of all intersections with end1
@@ -328,9 +335,9 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
             return ([f[6 + extra], interval.name])
 
         names1 = set(
-            itertools.imap(tuple, itertools.imap(get_name_hits, end1_hits)))
+            six.moves.map(tuple, six.moves.map(get_name_hits, end1_hits)))
         names2 = set(
-            itertools.imap(tuple, itertools.imap(get_name_hits, end2_hits)))
+            six.moves.map(tuple, six.moves.map(get_name_hits, end2_hits)))
 
         for cis, others in [(names1, names2), (names2, names1)]:
             for target in cis:
