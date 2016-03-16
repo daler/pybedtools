@@ -1,0 +1,5 @@
+chr3	gffutils_derived	gene	108107280	108146146	.	-	.	gene_id "ENSMUSG00000000001";
+chrX	gffutils_derived	gene	77837901	77853623	.	-	.	gene_id "ENSMUSG00000000003";
+chr16	gffutils_derived	gene	18780447	18811987	.	-	.	gene_id "ENSMUSG00000000028";
+chr7	gffutils_derived	gene	142575529	142578143	.	-	.	gene_id "ENSMUSG00000000031";
+chrX	gffutils_derived	gene	161117193	161258213	.	+	.	gene_id "ENSMUSG00000000037";
