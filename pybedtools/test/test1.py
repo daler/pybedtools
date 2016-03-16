@@ -2032,3 +2032,14 @@ def test_issue_162():
         chr1	800	901
         """)
 
+def test_issue_164():
+    a = pybedtools.example_bedtool('164.gtf')
+    y = a.filter(lambda gene: gene.name in ['ENSMUSG00000000003', 'ENSMUSG00000000037']).saveas()
+    # don't use the fix() convenience function because we have both tabs (field
+    # sep) and spaces (attributes sep)
+    expected = dedent(
+    """\
+    chrX	gffutils_derived	gene	77837901	77853623	.	-	.	gene_id "ENSMUSG00000000003";
+    chrX	gffutils_derived	gene	161117193	161258213	.	+	.	gene_id "ENSMUSG00000000037";
+    """)
+    assert str(y) == expected
