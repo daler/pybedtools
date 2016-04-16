@@ -1,6 +1,7 @@
 from __future__ import print_function
 import sys
 import os
+import gzip
 import tempfile
 import subprocess
 import random
@@ -117,16 +118,16 @@ def isBGZIP(fn):
 
 
 def isBAM(fn):
-    if not isBGZIP(fn):
-        return False
-
-    # Need to differentiate between BAM and plain 'ol BGZIP. Try reading header
-    # . . .
-    try:
-        pysam.Samfile(fn, 'rb')
+    """
+    Returns True if the file is both BGZIPed and the compressed contents have
+    start with the magic number `BAM\\x01`.
+    """
+    # Note: previously we were catching ValueError when trying to open
+    # a non-BAM with pysam.Samfile. That started segfaulting, so now do it the
+    # right way with magic number.
+    if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4) == 'BAM\x01'):
         return True
-    except ValueError:
-        return False
+
 
 
 def find_tagged(tag):

@@ -2043,3 +2043,11 @@ def test_issue_164():
     chrX	gffutils_derived	gene	161117193	161258213	.	+	.	gene_id "ENSMUSG00000000037";
     """)
     assert str(y) == expected
+
+def test_issue_168():
+    # Regression test:
+    # this would previously segfault in at least pysam 0.8.4
+    #
+    x = pybedtools.example_bedtool("1000genomes-example.vcf")
+    fn = x.bgzip(is_sorted=True, force=True)
+    y = pybedtools.BedTool(fn)
