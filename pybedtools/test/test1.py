@@ -2051,3 +2051,11 @@ def test_issue_168():
     x = pybedtools.example_bedtool("1000genomes-example.vcf")
     fn = x.bgzip(is_sorted=True, force=True)
     y = pybedtools.BedTool(fn)
+
+
+def test_issue_169():
+    x = pybedtools.example_bedtool("1000genomes-example.vcf")
+    fn = x.bgzip(is_sorted=False, force=True)
+    line = gzip.open(fn).readline()
+    assert line.startswith('#'), line
+

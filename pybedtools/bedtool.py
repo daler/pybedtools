@@ -673,7 +673,8 @@ class BedTool(object):
         `in_place` will put the BGZIPed file in the same dir (possibly after
         sorting to tempfile).
 
-        If `is_sorted`, then assume the file is already sorted.
+        If `is_sorted`, then assume the file is already sorted. Otherwise call
+        bedtools sort with the `-header` option.
 
         `force` will overwrite without asking.
         """
@@ -691,7 +692,7 @@ class BedTool(object):
         if not in_place:
             # Get tempfile name, sorted or not
             if not is_sorted:
-                fn = self.sort().fn
+                fn = self.sort(header=True).fn
             else:
                 fn = self._tmp()
 
@@ -707,7 +708,7 @@ class BedTool(object):
         # current BedTool's file
         if in_place:
             if not is_sorted:
-                fn = self.sort().saveas().fn
+                fn = self.sort(header=True).saveas().fn
             else:
                 fn = self.fn
             outfn = self.fn + '.gz'
