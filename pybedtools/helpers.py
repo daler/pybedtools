@@ -125,7 +125,7 @@ def isBAM(fn):
     # Note: previously we were catching ValueError when trying to open
     # a non-BAM with pysam.Samfile. That started segfaulting, so now do it the
     # right way with magic number.
-    if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4) == 'BAM\x01'):
+    if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4).decode() == 'BAM\x01'):
         return True
 
 
