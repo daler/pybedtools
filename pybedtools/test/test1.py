@@ -2057,5 +2057,5 @@ def test_issue_169():
     x = pybedtools.example_bedtool("1000genomes-example.vcf")
     fn = x.bgzip(is_sorted=False, force=True)
     line = gzip.open(fn).readline()
-    assert line.startswith('#'), line
+    assert str(line).startswith('#'), line
 
