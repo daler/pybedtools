@@ -158,7 +158,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         p = subprocess.Popen(helpers._version_2_15_plus_names(prog) + ['-h'],
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
-        help_str = str(p.communicate()[1])
+        help_str = p.communicate()[1].decode()
 
         # underscores throw off ReStructuredText syntax of docstrings, so
         # replace 'em
