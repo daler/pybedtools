@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 import tempfile
 from textwrap import dedent
 import shutil
@@ -2677,7 +2677,7 @@ class BedTool(object):
         """
         if processes is not None:
             p = multiprocessing.Pool(processes)
-            iterations_each = [iterations / processes] * processes
+            iterations_each = [iterations // processes] * processes
             iterations_each[-1] += iterations % processes
             results = [
                 p.apply_async(
