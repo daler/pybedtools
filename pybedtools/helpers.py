@@ -367,7 +367,13 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
             13: ('* Do you have permission to write '
                  'to the output file ("%s")?' % tmpfn,),
             24: ('* Too many files open -- please submit '
-                 'a bug report so that this can be fixed',)
+                 'a bug report so that this can be fixed',),
+            32: ('* Broken pipe -- if you passed a BedTool object '
+                 'that was created using a generator function, '
+                 'please try saving it to disk first using the '
+                 '.saveas() method before calling this bedtools '
+                 'command. See issue #49 for more.' ,),
+
         }
 
         print('Things to check:')
