@@ -3192,12 +3192,12 @@ class BedTool(object):
                 _names = \
                     settings._column_names[self.file_type][:self.field_count()]
                 if len(_names) < self.field_count():
-                    _names = None
                     warn(
                         'Default names for filetype %s are:\n%s\nbut file has '
                         '%s fields; you can supply custom names with the '
                         '`names` kwarg'
                         % (self.file_type, _names, self.field_count()))
+                    _names = None
             except KeyError:
                 _names = None
 
