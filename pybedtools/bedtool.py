@@ -14,6 +14,7 @@ import multiprocessing
 import six
 import gzip
 import pysam
+from warnings import warn
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
@@ -3191,9 +3192,10 @@ class BedTool(object):
                 _names = \
                     settings._column_names[self.file_type][:self.field_count()]
                 if len(_names) < self.field_count():
-                    raise ValueError(
+                    _names = None
+                    warn(
                         'Default names for filetype %s are:\n%s\nbut file has '
-                        '%s fields; please supply custom names with the '
+                        '%s fields; you can supply custom names with the '
                         '`names` kwarg'
                         % (self.file_type, _names, self.field_count()))
             except KeyError:
