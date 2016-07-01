@@ -17,6 +17,7 @@ from six.moves import socketserver
 from six.moves import BaseHTTPServer
 
 import threading
+import warnings
 
 
 
@@ -1655,7 +1656,13 @@ def test_to_dataframe():
     # get a gff file with too many fields...
     x = pybedtools.example_bedtool('c.gff')
     x = x.intersect(x, c=True)
-    assert_raises(ValueError, x.to_dataframe)
+    with warnings.catch_warnings(record=True) as w:
+        #trigger the warning
+        x.to_dataframe()
+        #assert a few things
+        assert len(w) == 1
+        assert issubclass(w[-1].category, UserWarning)
+        assert str(w[-1].message).startswith('Default names for filetype')
 
     names = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand',
              'frame', 'attributes', 'count']
