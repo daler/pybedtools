@@ -263,6 +263,19 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     chr1  3  4  peak1  50  .
     <BLANKLINE>
 
+    Here's what the tracks look like. Note that pair1 is evidence of
+    a gene1-gene2 interaction and a gene1-gene3 interaction::
+
+        TRACKS:
+
+                      1         2  /         5         6    / 8         9     / 20
+            0123456789012345678901 / 2345678901234567890123 / 012345678901234 / 0123456789
+       pair1 |||||||||------------ / --------|||||||||||||| / ||||||||||||||| /
+       pair2  |||||||||||||------- / ---------------------- / --------------- / ||||||||||
+       tsses     1                 /                   2    /         3
+       peaks   1
+
+
     >>> from pybedtools.contrib.long_range_interaction import tag_bedpe
     >>> from pybedtools.contrib.long_range_interaction import cis_tran_interactions
     >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
@@ -280,6 +293,11 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1
     chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0
 
+    Now we run the same thing, but now aggregate it. Note that each piece of
+    interaction evidence has its own line. The first line shows that pair1 has
+    gene1 and peak1 in the same fragment, and that they are connected to gene2.
+    The second line shows again that gene1 and peak1 are in the same fragmet
+    and that they are also connected to gene3:
 
     >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
     >>> df =  cis_trans_interactions(iterator, n, extra)
