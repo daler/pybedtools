@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.contrib.venn_maker &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.contrib.venn_maker &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,16 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../../../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../../../index.html" />
     <link rel="up" title="pybedtools" href="../../pybedtools.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -38,7 +40,7 @@
           <div class="body" role="main">
             
   <h1>Source code for pybedtools.contrib.venn_maker</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Interface between pybedtools and the R package VennDiagram.</span>
 
 <span class="sd">Rather than depend on the user to have rpy2 installed, this simply writes an</span>
@@ -53,17 +55,17 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<span class="c"># really just fill in x and filename...leave the rest up to the user.</span>
-<span class="c">#</span>
-<span class="c"># Note that the closing parentheses is missing -- that&#39;s so the user can add</span>
-<span class="c"># kwargs from the calling function</span>
-<span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
-<span class="s">library(VennDiagram)</span>
-<span class="s">venn.diagram(</span>
-<span class="s">    x=$x,</span>
-<span class="s">    filename=$filename,</span>
-<span class="s">    category.names = $names</span>
-<span class="s">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="c1"># really just fill in x and filename...leave the rest up to the user.</span>
+<span class="c1">#</span>
+<span class="c1"># Note that the closing parentheses is missing -- that&#39;s so the user can add</span>
+<span class="c1"># kwargs from the calling function</span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">library(VennDiagram)</span>
+<span class="s2">venn.diagram(</span>
+<span class="s2">    x=$x,</span>
+<span class="s2">    filename=$filename,</span>
+<span class="s2">    category.names = $names</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_list_to_R_syntax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -75,9 +77,9 @@
     <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">Interval</span><span class="p">):</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;|&#39;</span><span class="p">)</span>
-        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s">&#39;c(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">)</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;c(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_dict_to_R_named_list</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
@@ -86,8 +88,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot; = </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">_list_to_R_syntax</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="s">&#39;list(</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">_list_to_R_syntax</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="s1">&#39;list(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">truncator</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
@@ -154,8 +156,8 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
 
-        <span class="c"># Combine the unique-to-y intervals with the shared-with-x intervals.</span>
-        <span class="c"># Since x is first in x+y, resulting features are from x.</span>
+        <span class="c1"># Combine the unique-to-y intervals with the shared-with-x intervals.</span>
+        <span class="c1"># Since x is first in x+y, resulting features are from x.</span>
         <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">new_y</span>
 
@@ -164,14 +166,14 @@
         <span class="n">y</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
 
-        <span class="c"># Same as above.  Don&#39;t care about z yet; this means that y will not</span>
-        <span class="c"># change because of z.</span>
+        <span class="c1"># Same as above.  Don&#39;t care about z yet; this means that y will not</span>
+        <span class="c1"># change because of z.</span>
         <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
 
-        <span class="c"># Combine:</span>
-        <span class="c">#  unique-to-z</span>
-        <span class="c">#  shared-with-any-x</span>
-        <span class="c">#  shared-with-unique-to-y</span>
+        <span class="c1"># Combine:</span>
+        <span class="c1">#  unique-to-z</span>
+        <span class="c1">#  shared-with-any-x</span>
+        <span class="c1">#  shared-with-unique-to-y</span>
         <span class="n">new_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">,</span> <span class="n">new_z</span>
 
@@ -181,17 +183,17 @@
         <span class="n">z</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">truncator</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
 
-        <span class="c"># Same as 2-way</span>
+        <span class="c1"># Same as 2-way</span>
         <span class="n">new_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
 
-        <span class="c"># Same as 3-way</span>
+        <span class="c1"># Same as 3-way</span>
         <span class="n">new_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
 
-        <span class="c"># Combine:</span>
-        <span class="c">#  unique-to-q</span>
-        <span class="c">#  shared-with-any-x</span>
-        <span class="c">#  shared-with-unique-to-y</span>
-        <span class="c">#  shared-with-unique-to-z</span>
+        <span class="c1"># Combine:</span>
+        <span class="c1">#  unique-to-q</span>
+        <span class="c1">#  shared-with-any-x</span>
+        <span class="c1">#  shared-with-unique-to-y</span>
+        <span class="c1">#  shared-with-unique-to-z</span>
         <span class="n">new_q</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="n">z</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>\
                 <span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>\
                 <span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">q</span><span class="p">)</span>\
@@ -233,12 +235,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">figure_filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">figure_filename</span> <span class="o">=</span> <span class="s">&#39;NULL&#39;</span>
+        <span class="n">figure_filename</span> <span class="o">=</span> <span class="s1">&#39;NULL&#39;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">figure_filename</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">figure_filename</span>
+        <span class="n">figure_filename</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">figure_filename</span>
 
     <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="s">&quot;abcd&quot;</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">beds</span><span class="p">)]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="s2">&quot;abcd&quot;</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">beds</span><span class="p">)]</span>
 
     <span class="n">_beds</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">bed</span> <span class="ow">in</span> <span class="n">beds</span><span class="p">:</span>
@@ -254,34 +256,34 @@
             <span class="n">filename</span><span class="o">=</span><span class="n">figure_filename</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="n">_list_to_R_syntax</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">additional_args</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;,&#39;</span> <span class="o">+</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">additional_args</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">additional_args</span><span class="p">)</span>
 
-    <span class="n">s</span> <span class="o">+=</span> <span class="s">&quot;)&quot;</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">script_filename</span><span class="p">:</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fn</span> <span class="o">=</span> <span class="n">script_filename</span>
 
-    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
     <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s">&#39;.Rout&#39;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s1">&#39;.Rout&#39;</span>
     <span class="k">if</span> <span class="n">run</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_R_installed</span><span class="p">:</span>
             <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_R</span><span class="p">()</span>
 
-        <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_R_path</span><span class="p">,</span> <span class="s">&#39;R&#39;</span><span class="p">),</span> <span class="s">&#39;CMD&#39;</span><span class="p">,</span> <span class="s">&#39;BATCH&#39;</span><span class="p">,</span>
+        <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_R_path</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">),</span> <span class="s1">&#39;CMD&#39;</span><span class="p">,</span> <span class="s1">&#39;BATCH&#39;</span><span class="p">,</span>
                 <span class="n">fn</span><span class="p">,</span> <span class="n">out</span><span class="p">]</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
                 <span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
 
         <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">stdout</span> <span class="ow">or</span> <span class="n">stderr</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout:&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr:&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;stdout:&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;stderr:&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">script_filename</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">s</span>
@@ -312,9 +314,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -331,7 +330,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
       </ul>
@@ -342,8 +341,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
     </div>
 

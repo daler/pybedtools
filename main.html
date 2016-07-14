@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; pybedtools 0.7.6 documentation</title>
+    <title>Installation &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,17 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
     <link rel="next" title="Three brief examples" href="3-brief-examples.html" />
     <link rel="prev" title="pybedtools documentation" href="index.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -46,11 +48,11 @@ installed.</p>
 <span id="condainstall"></span><h2>Quick install via <code class="docutils literal"><span class="pre">conda</span></code><a class="headerlink" href="#quick-install-via-conda" title="Permalink to this headline">¶</a></h2>
 <p>If you're usng the <a class="reference external" href="http://continuum.io/downloads">Anaconda Python distribution</a> on Linux, then the following will install
 <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda install -c bioconda pybedtools
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">bioconda</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
 <p>You can also install Tabix and BEDTools via conda:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda install -c bioconda bedtools htslib
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">bioconda</span> <span class="n">bedtools</span> <span class="n">htslib</span>
 </pre></div>
 </div>
 <p>Otherwise, read on for installation on other platforms and in other
@@ -108,12 +110,12 @@ call <code class="docutils literal"><span class="pre">tabix</span></code> from a
 <div class="section" id="install-latest-release-via-conda-recommended">
 <h3>Install latest release via <code class="docutils literal"><span class="pre">conda</span></code> (recommended)<a class="headerlink" href="#install-latest-release-via-conda-recommended" title="Permalink to this headline">¶</a></h3>
 <p>Use the Anaconda channel <code class="docutils literal"><span class="pre">daler</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda install -c daler pybedtools
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">daler</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
 <p>This example installs <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> and BEDTools into an isolated
 environment called <code class="docutils literal"><span class="pre">myenv</span></code> running Python 3:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda create -n myenv -c daler pybedtools bedtools python=3
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">myenv</span> <span class="o">-</span><span class="n">c</span> <span class="n">daler</span> <span class="n">pybedtools</span> <span class="n">bedtools</span> <span class="n">python</span><span class="o">=</span><span class="mi">3</span>
 </pre></div>
 </div>
 </div>
@@ -122,7 +124,7 @@ environment called <code class="docutils literal"><span class="pre">myenv</span>
 <p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> is on PyPI, so you can install via <code class="docutils literal"><span class="pre">pip</span></code> like most Python
 packages. Depending on your Python installation, this may require admin
 rights:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install pybedtools
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
 </div>
@@ -133,8 +135,8 @@ rights:</p>
 <li><code class="docutils literal"><span class="pre">git</span></code> is installed</li>
 <li>Cython is installed (<code class="docutils literal"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">cython</span></code> or <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">cython</span></code>)</li>
 </ol>
-<div class="highlight-bash"><div class="highlight"><pre>git clone https://github.com/daler/pybedtools.git
-<span class="nb">cd </span>pybedtools
+<div class="highlight-bash"><div class="highlight"><pre><span></span>git clone https://github.com/daler/pybedtools.git
+<span class="nb">cd</span> pybedtools
 git pull
 python setup.py develop
 </pre></div>
@@ -144,16 +146,16 @@ python setup.py develop
 <div class="section" id="quick-test">
 <h2>Quick test<a class="headerlink" href="#quick-test" title="Permalink to this headline">¶</a></h2>
 <p>Paste the following into a new file called <code class="docutils literal"><span class="pre">mytest.py</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Run the script with <code class="docutils literal"><span class="pre">python</span> <span class="pre">mytest.py</span></code>. You should get the results:</p>
-<div class="highlight-python"><div class="highlight"><pre>chr1        155     200     feature2        0       +
-chr1        155     200     feature3        0       -
-chr1        900     901     feature4        0       +
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">chr1</span>        <span class="mi">155</span>     <span class="mi">200</span>     <span class="n">feature2</span>        <span class="mi">0</span>       <span class="o">+</span>
+<span class="n">chr1</span>        <span class="mi">155</span>     <span class="mi">200</span>     <span class="n">feature3</span>        <span class="mi">0</span>       <span class="o">-</span>
+<span class="n">chr1</span>        <span class="mi">900</span>     <span class="mi">901</span>     <span class="n">feature4</span>        <span class="mi">0</span>       <span class="o">+</span>
 </pre></div>
 </div>
 </div>
@@ -165,8 +167,8 @@ tests and doctests can be run.</p>
 <p>The following instructions assume that you have a working copy of the
 <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> repository and that you're in the top-level dir of repo,
 e.g., by running:</p>
-<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/daler/pybedtools.git
-cd pybedtools
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">daler</span><span class="o">/</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
 <div class="section" id="test-current-installation">
@@ -174,15 +176,15 @@ cd pybedtools
 <p>Testing the &quot;current installation&quot; means testing the installation into the
 current environment, whether this is the system-wide Python, a virtualenv, or
 a conda environment.  It requires some additional packages to be installed:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install -r dev-requirements.txt
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">dev</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 <p>Run unit tests:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">nosetests</span> <span class="o">-</span><span class="n">v</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="o">-</span><span class="n">v</span>
 </pre></div>
 </div>
 <p>Run doctests:</p>
-<div class="highlight-python"><div class="highlight"><pre>(cd docs &amp;&amp; make doctest)
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">cd</span> <span class="n">docs</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">doctest</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -191,11 +193,11 @@ a conda environment.  It requires some additional packages to be installed:</p>
 <p>Run the <code class="docutils literal"><span class="pre">condatest.sh</span></code> script in the top-level dir of the repo. This script
 creates a new isolated conda environment and runs both unit tests and doctests.</p>
 <p>To run tests under Python 2:</p>
-<div class="highlight-python"><div class="highlight"><pre>./condatest.sh 2
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">condatest</span><span class="o">.</span><span class="n">sh</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p>To run tests under Python 3:</p>
-<div class="highlight-python"><div class="highlight"><pre>./condatest.sh 3
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">condatest</span><span class="o">.</span><span class="n">sh</span> <span class="mi">3</span>
 </pre></div>
 </div>
 </div>
@@ -207,14 +209,14 @@ one for Python 3 -- starting with the base Ubuntu 14.04 container. The first
 time the containers are built it will take some time, but they are cached so
 subsequent tests will run quickly. Within each of these containers, unit tests
 and doctests are run:</p>
-<div class="highlight-python"><div class="highlight"><pre>(cd docker &amp;&amp; ./full-test.sh)
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">cd</span> <span class="n">docker</span> <span class="o">&amp;&amp;</span> <span class="o">./</span><span class="n">full</span><span class="o">-</span><span class="n">test</span><span class="o">.</span><span class="n">sh</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="compile-docs">
 <h2>Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this headline">¶</a></h2>
 <p>To compile the docs, from the top-level <code class="docutils literal"><span class="pre">pybedtools</span></code> directory:</p>
-<div class="highlight-python"><div class="highlight"><pre>(cd docs &amp;&amp; make html)
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">cd</span> <span class="n">docs</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">html</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Then point a browser to <code class="docutils literal"><span class="pre">docs/build/html/index.html</span></code>.</p>
@@ -298,9 +300,6 @@ the commit and I can integrate them later)</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -323,7 +322,7 @@ the commit and I can integrate them later)</p>
         <li class="right" >
           <a href="index.html" title="pybedtools documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.6 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -332,8 +331,8 @@ the commit and I can integrate them later)</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/main.txt"

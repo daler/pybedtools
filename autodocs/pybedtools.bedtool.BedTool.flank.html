@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool.BedTool.flank &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.bedtool.BedTool.flank &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../index.html" />
     <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.sort" href="pybedtools.bedtool.BedTool.sort.html" />
     <link rel="prev" title="pybedtools.bedtool.BedTool.slop" href="pybedtools.bedtool.BedTool.slop.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -44,88 +46,7 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.flank">
 <code class="descclassname">BedTool.</code><code class="descname">flank</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.flank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.flank" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">flank</span></code>.</p>
-<p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">flank</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span> 
-<span class="go">chr1    0       1       feature1        0       +</span>
-<span class="go">chr1    100     200     feature1        0       +</span>
-<span class="go">chr1    0       100     feature2        0       +</span>
-<span class="go">chr1    200     300     feature2        0       +</span>
-<span class="go">chr1    50      150     feature3        0       -</span>
-<span class="go">chr1    500     600     feature3        0       -</span>
-<span class="go">chr1    800     900     feature4        0       +</span>
-<span class="go">chr1    950     1050    feature4        0       +</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p>For convenience, the file or stream this BedTool points to
-is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">flankBed</span></code></p>
-<p>There are two alternatives for supplying a genome.  Use
-<code class="docutils literal"><span class="pre">g=&quot;genome.filename&quot;</span></code> if you have a genome's chrom sizes
-saved as a file. This is the what BEDTools expects when
-using it from the command line. Alternatively, use the
-<code class="docutils literal"><span class="pre">genome=&quot;assembly.name&quot;</span></code> (for example, <code class="docutils literal"><span class="pre">genome=&quot;hg19&quot;</span></code>) to
-use chrom sizes for that assembly without having to manage
-a separate file.  The <code class="docutils literal"><span class="pre">genome</span></code> argument triggers a call
-<code class="docutils literal"><span class="pre">pybedtools.chromsizes</span></code>, so see that method for more
-details.</p>
-<p><strong>Original BEDTools help:</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools flank (aka flankBed)
-Version: v2.25.0
-Summary: Creates flanking interval(s) for each BED/GFF/VCF feature.
-
-Usage:   bedtools flank [OPTIONS] -i &lt;bed/gff/vcf&gt; -g &lt;genome&gt; [-b &lt;int&gt; or (-l and -r)]
-
-Options: 
-        -b      Create flanking interval(s) using -b base pairs in each direction.
-                - (Integer) or (Float, e.g. 0.1) if used with -pct.
-
-        -l      The number of base pairs that a flank should start from
-                orig. start coordinate.
-                - (Integer) or (Float, e.g. 0.1) if used with -pct.
-
-        -r      The number of base pairs that a flank should end from
-                orig. end coordinate.
-                - (Integer) or (Float, e.g. 0.1) if used with -pct.
-
-        -s      Define -l and -r based on strand.
-                E.g. if used, -l 500 for a negative-stranded feature, 
-                it will start the flank 500 bp downstream.  Default = false.
-
-        -pct    Define -l and -r as a fraction of the feature&#39;s length.
-                E.g. if used on a 1000bp feature, -l 0.50, 
-                will add 500 bp &quot;upstream&quot;.  Default = false.
-
-        -header Print the header from the input file prior to results.
-
-Notes: 
-        (1)  Starts will be set to 0 if options would force it below 0.
-        (2)  Ends will be set to the chromosome length if requested flank would
-        force it above the max chrom length.
-        (3)  In contrast to slop, which **extends** intervals, bedtools flank
-        creates new intervals from the regions just up- and down-stream
-        of your existing intervals.
-        (4)  The genome file should tab delimited and structured as follows:
-
-        &lt;chromName&gt;&lt;TAB&gt;&lt;chromSize&gt;
-
-        For example, Human (hg19):
-        chr1    249250621
-        chr2    243199373
-        ...
-        chr18**gl000207**random 4262
-
-Tips: 
-        One can use the UCSC Genome Browser&#39;s MySQL database to extract
-        chromosome sizes. For example, H. sapiens:
-
-        mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -e \
-        &quot;select chrom, size from hg19.chromInfo&quot;  &gt; hg19.genome
-</pre></div>
-</div>
-</dd></dl>
+<dd></dd></dl>
 
 </div>
 
@@ -160,9 +81,6 @@ Tips:
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -185,7 +103,7 @@ Tips:
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.slop.html" title="pybedtools.bedtool.BedTool.slop"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
       </ul>
     </div>
@@ -195,8 +113,8 @@ Tips:
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.flank.txt"

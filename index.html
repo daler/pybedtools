@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools documentation &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools documentation &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,16 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="#" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="#" />
     <link rel="next" title="Installation" href="main.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -55,17 +57,17 @@ Python.</p>
 <h2>Why <code class="docutils literal"><span class="pre">pybedtools</span></code>?<a class="headerlink" href="#why-pybedtools" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example to get the names of genes that are &lt;5 kb away from
 intergenic SNPs:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">BedTool</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">BedTool</span>
 
-<span class="n">snps</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;snps.bed.gz&#39;</span><span class="p">)</span>  <span class="c"># [1]</span>
-<span class="n">genes</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;hg19.gff&#39;</span><span class="p">)</span>    <span class="c"># [1]</span>
+<span class="n">snps</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;snps.bed.gz&#39;</span><span class="p">)</span>  <span class="c1"># [1]</span>
+<span class="n">genes</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;hg19.gff&#39;</span><span class="p">)</span>    <span class="c1"># [1]</span>
 
-<span class="n">intergenic_snps</span> <span class="o">=</span> <span class="n">snps</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>                       <span class="c"># [2]</span>
-<span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># [2, 3]</span>
+<span class="n">intergenic_snps</span> <span class="o">=</span> <span class="n">snps</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>                       <span class="c1"># [2]</span>
+<span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># [2, 3]</span>
 
-<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>             <span class="c"># [4]</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>    <span class="c"># [4]</span>
-        <span class="k">print</span> <span class="n">gene</span><span class="o">.</span><span class="n">name</span>         <span class="c"># [4]</span>
+<span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>             <span class="c1"># [4]</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>    <span class="c1"># [4]</span>
+        <span class="k">print</span> <span class="n">gene</span><span class="o">.</span><span class="n">name</span>         <span class="c1"># [4]</span>
 </pre></div>
 </div>
 <p>Useful features shown here include:</p>
@@ -80,7 +82,7 @@ access (here <code class="docutils literal"><span class="pre">[-1]</span></code>
 <p>In contrast, here is the same analysis using shell scripting.  Note that this
 requires knowledge in Perl, bash, and awk.  The run time is identical to the
 <code class="docutils literal"><span class="pre">pybedtools</span></code> version above:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">snps</span><span class="o">=</span>snps.bed.gz
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">snps</span><span class="o">=</span>snps.bed.gz
 <span class="nv">genes</span><span class="o">=</span>hg19.gff
 <span class="nv">intergenic_snps</span><span class="o">=</span>/tmp/intergenic_snps
 
@@ -121,11 +123,11 @@ for comparing genomic features</em>. Bioinformatics 26(6):841–842.</p>
 <p>The documentation is separated into 4 main parts, depending on the depth you'd
 like to cover:</p>
 <ul class="simple">
-<li>Lazy, or just want to jump in?  Check out <a class="reference internal" href="3-brief-examples.html#examples"><span>Three brief examples</span></a> to
+<li>Lazy, or just want to jump in?  Check out <a class="reference internal" href="3-brief-examples.html#examples"><span class="std std-ref">Three brief examples</span></a> to
 get a feel for the package.</li>
-<li>Want a guided tour?  Give the <a class="reference internal" href="tutorial-contents.html#tutorial"><span>Tutorial Contents</span></a> a shot.</li>
-<li>More advanced features are described in the <a class="reference internal" href="topical-documentation-contents.html#topical"><span>Topical Documentation</span></a> section.</li>
-<li>Finally, doctested module documentation can be found in <a class="reference internal" href="autodoc_source.html#autodoc"><span>pybedtools Reference</span></a>.</li>
+<li>Want a guided tour?  Give the <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a> a shot.</li>
+<li>More advanced features are described in the <a class="reference internal" href="topical-documentation-contents.html#topical"><span class="std std-ref">Topical Documentation</span></a> section.</li>
+<li>Finally, doctested module documentation can be found in <a class="reference internal" href="autodoc_source.html#autodoc"><span class="std std-ref">pybedtools Reference</span></a>.</li>
 </ul>
 </div>
 <div class="section" id="contents">
@@ -210,6 +212,7 @@ get a feel for the package.</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-7-8">Changes in v0.7.8</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-7-7">Changes in v0.7.7</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-7-6">Changes in v0.7.6</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-7-5">Changes in v0.7.5</a></li>
@@ -237,9 +240,9 @@ get a feel for the package.</li>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 </div>
 
@@ -283,9 +286,6 @@ get a feel for the package.</li>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -305,7 +305,7 @@ get a feel for the package.</li>
         <li class="right" >
           <a href="main.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pybedtools 0.7.6 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">pybedtools 0.7.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -314,8 +314,8 @@ get a feel for the package.</li>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/index.txt"

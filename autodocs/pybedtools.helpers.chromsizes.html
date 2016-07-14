@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.helpers.chromsizes &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.helpers.chromsizes &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../index.html" />
     <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
     <link rel="next" title="pybedtools.helpers.chromsizes_to_file" href="pybedtools.helpers.chromsizes_to_file.html" />
     <link rel="prev" title="pybedtools.helpers.get_chromsizes_from_ucsc" href="pybedtools.helpers.get_chromsizes_from_ucsc.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -51,7 +53,7 @@ where each tuple has (start,stop).</p>
 within specified regions; e. g., you can make a chromsizes dictionary that
 represents the extent of a tiling array.</p>
 <p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dm3_chromsizes</span> <span class="o">=</span> <span class="n">chromsizes</span><span class="p">(</span><span class="s">&#39;dm3&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm3_chromsizes</span> <span class="o">=</span> <span class="n">chromsizes</span><span class="p">(</span><span class="s1">&#39;dm3&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dm3_chromsizes</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
 <span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 <span class="go">(&#39;chr2L&#39;, (0, 23011544))</span>
@@ -106,9 +108,6 @@ represents the extent of a tiling array.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -131,7 +130,7 @@ represents the extent of a tiling array.</p>
         <li class="right" >
           <a href="pybedtools.helpers.get_chromsizes_from_ucsc.html" title="pybedtools.helpers.get_chromsizes_from_ucsc"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
       </ul>
     </div>
@@ -141,8 +140,8 @@ represents the extent of a tiling array.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.helpers.chromsizes.txt"

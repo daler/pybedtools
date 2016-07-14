@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool.BedTool.tag_bam &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.bedtool.BedTool.tag_bam &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../index.html" />
     <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.jaccard" href="pybedtools.bedtool.BedTool.jaccard.html" />
     <link rel="prev" title="pybedtools.bedtool.BedTool.multi_bam_coverage" href="pybedtools.bedtool.BedTool.multi_bam_coverage.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -44,45 +46,7 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.tag_bam">
 <code class="descclassname">BedTool.</code><code class="descname">tag_bam</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.tag_bam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.tag_bam" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">tag</span></code>.</p>
-<p><code class="docutils literal"><span class="pre">files</span></code> and <code class="docutils literal"><span class="pre">labels</span></code> should lists of equal length.</p>
-</div></blockquote>
-<p>For convenience, the file or stream this BedTool points to
-is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">tagBam</span></code></p>
-<p><strong>Original BEDTools help:</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools tag (aka tagBam)
-Version: v2.25.0
-Summary: Annotates a BAM file based on overlaps with multiple BED/GFF/VCF files
-         on the intervals in -i.
-
-Usage:   bedtools tag [OPTIONS] -i &lt;BAM&gt; -files FILE1 .. FILEn  -labels LAB1 .. LABn
-
-Options: 
-        -s      Require overlaps on the same strand.  That is, only tag alignments that have the same
-                strand as a feature in the annotation file(s).
-
-        -S      Require overlaps on the opposite strand.  That is, only tag alignments that have the opposite
-                strand as a feature in the annotation file(s).
-
-        -f      Minimum overlap required as a fraction of the alignment.
-                - Default is 1E-9 (i.e., 1bp).
-                - FLOAT (e.g. 0.50)
-
-        -tag    Dictate what the tag should be. Default is YB.
-                - STRING (two characters, e.g., YK)
-
-        -names  Use the name field from the annotation files to populate tags.
-                By default, the -labels values are used.
-
-        -scores Use the score field from the annotation files to populate tags.
-                By default, the -labels values are used.
-
-        -intervals      Use the full interval (including name, score, and strand) to populate tags.
-                        Requires the -labels option to identify from which file the interval came.
-</pre></div>
-</div>
-</dd></dl>
+<dd></dd></dl>
 
 </div>
 
@@ -117,9 +81,6 @@ Options:
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -142,7 +103,7 @@ Options:
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.multi_bam_coverage.html" title="pybedtools.bedtool.BedTool.multi_bam_coverage"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
       </ul>
     </div>
@@ -152,8 +113,8 @@ Options:
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.tag_bam.txt"

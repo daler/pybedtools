@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &mdash; pybedtools 0.7.6 documentation</title>
+    <title>Changelog &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,16 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
     <link rel="prev" title="pybedtools.scripts.py_ms_example" href="autodocs/pybedtools.scripts.py_ms_example.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -39,6 +41,17 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-v0-7-8">
+<h2>Changes in v0.7.8<a class="headerlink" href="#changes-in-v0-7-8" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Be more careful about BAM vs bgzipped files (#168)</li>
+<li><code class="docutils literal"><span class="pre">BedTool.bgzip</span></code> now preserves the header when sorting</li>
+<li>In Python 3, parsed BEDTools help string is decoded properly</li>
+<li>Ensure integer number of processes in Python 3 (thanks Illa Shamovsky)</li>
+<li>Add details on IOError messages for broken pipe error</li>
+<li>Make converting to pandas.DataFrames easier with non-standard BED files (thanks Panos Firmpas)</li>
+</ul>
+</div>
 <div class="section" id="changes-in-v0-7-7">
 <h2>Changes in v0.7.7<a class="headerlink" href="#changes-in-v0-7-7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -108,13 +121,13 @@ except those noted below.</p>
 <h3>Strings from Interval fields are unicode<a class="headerlink" href="#strings-from-interval-fields-are-unicode" title="Permalink to this headline">¶</a></h3>
 <p>For consistency between Python 2 and 3, all strings from Interval objects are
 now unicode. That is, in Python 2, previously we would get this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 <span class="go">&#39;feature1&#39;</span>
 </pre></div>
 </div>
 <p>Now, we get this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
 <span class="go">u&#39;feature1&#39;</span>
 </pre></div>
@@ -176,8 +189,8 @@ up a complete environment starting from a base Ubuntu install.</p>
 compatible and all previous tests pass.</p>
 <p>If you have docker installed, from the top level directory, you can run the
 full tests like this:</p>
-<div class="highlight-python"><div class="highlight"><pre>cd docker
-./full-tests.sh
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docker</span>
+<span class="o">./</span><span class="n">full</span><span class="o">-</span><span class="n">tests</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>This will build docker containers for Python 2 and Python 3 with all
@@ -192,12 +205,12 @@ mechanisms are used for automated testing as well (see the <code class="docutils
 script in the github repo).</p>
 <p>To use these packages in your own environment(s), specify the <code class="docutils literal"><span class="pre">daler</span></code> conda
 channel like this:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda install -c daler pybedtools
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">daler</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
 <p>Note that this will not install BEDTools or tabix unless you explicitly say
 so:</p>
-<div class="highlight-python"><div class="highlight"><pre>conda install -c daler pybedtools bedtools tabix
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">daler</span> <span class="n">pybedtools</span> <span class="n">bedtools</span> <span class="n">tabix</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -425,7 +438,7 @@ the default temp dir</li>
 <h2>Changes in v0.6<a class="headerlink" href="#changes-in-v0-6" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p class="first">Overhaul in online documentation to hopefully make functionality easier to
-find and/or discover.  See <a class="reference internal" href="autodoc_source.html#pybedtools-reference"><span>pybedtools Reference</span></a> for summary tables of
+find and/or discover.  See <a class="reference internal" href="autodoc_source.html#pybedtools-reference"><span class="std std-ref">pybedtools Reference</span></a> for summary tables of
 the different parts of <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>; each entry is linked to further
 class/method/function-specific docs.  These more detailed docs also have
 links to view the source code from within the HTML docs for more exploration.</p>
@@ -530,9 +543,9 @@ make Attribute class properly dict-like (thanks Libor Mořkovský)</p>
 BEDTools programs.  This is necessary for arguments like
 <code class="docutils literal"><span class="pre">genomeCoverageBed</span></code>'s <code class="docutils literal"><span class="pre">-5</span></code> argument, since <code class="docutils literal"><span class="pre">5=True</span></code> is not a valid Python
 expression.  For example, you can use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="s">&#39;-5&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="s1">&#39;-5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -540,8 +553,8 @@ expression.  For example, you can use:</p>
 </li>
 <li><p class="first"><code class="xref py py-meth docutils literal"><span class="pre">BedTool.all_hits()</span></code> uses the underlying BEDTools C++ API to get all hits
 in a file for a particular Interval:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="n">interval</span> <span class="o">=</span> <span class="n">Interval</span><span class="p">(</span><span class="s">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="n">interval</span> <span class="o">=</span> <span class="n">Interval</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
 <span class="n">a</span><span class="o">.</span><span class="n">all_hits</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -578,11 +591,11 @@ where to save output -- no more moving tempfiles</p>
 <dt>docs improvements:</dt>
 <dd><ul class="first last simple">
 <li>direct comparison with a shell script to illustrate benefit of
-<code class="docutils literal"><span class="pre">pybedtools</span></code>; see <a class="reference internal" href="sh-comparison.html#shell-comparison"><span>Shell script comparison</span></a></li>
+<code class="docutils literal"><span class="pre">pybedtools</span></code>; see <a class="reference internal" href="sh-comparison.html#shell-comparison"><span class="std std-ref">Shell script comparison</span></a></li>
 <li>more installation details</li>
 <li>0- and 1-based coordinates discussed early on (the 3 brief examples page,
-<a class="reference internal" href="3-brief-examples.html#examples"><span>Three brief examples</span></a>)</li>
-<li>development history and open collaboration model (see <a class="reference internal" href="pybedtools-dev-history.html#devmodel"><span>pybedtools development model</span></a>)</li>
+<a class="reference internal" href="3-brief-examples.html#examples"><span class="std std-ref">Three brief examples</span></a>)</li>
+<li>development history and open collaboration model (see <a class="reference internal" href="pybedtools-dev-history.html#devmodel"><span class="std std-ref">pybedtools development model</span></a>)</li>
 </ul>
 </dd>
 </dl>
@@ -600,6 +613,7 @@ where to save output -- no more moving tempfiles</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#changes-in-v0-7-8">Changes in v0.7.8</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-7">Changes in v0.7.7</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-6">Changes in v0.7.6</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-5">Changes in v0.7.5</a></li>
@@ -655,9 +669,6 @@ where to save output -- no more moving tempfiles</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -677,7 +688,7 @@ where to save output -- no more moving tempfiles</p>
         <li class="right" >
           <a href="autodocs/pybedtools.scripts.py_ms_example.html" title="pybedtools.scripts.py_ms_example"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.6 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -686,8 +697,8 @@ where to save output -- no more moving tempfiles</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/changes.txt"

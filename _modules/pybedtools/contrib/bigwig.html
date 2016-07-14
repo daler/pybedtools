@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.contrib.bigwig &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.contrib.bigwig &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,16 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../../../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../../../index.html" />
     <link rel="up" title="pybedtools" href="../../pybedtools.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -38,7 +40,7 @@
           <div class="body" role="main">
             
   <h1>Source code for pybedtools.contrib.bigwig</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module to help create scaled bigWig files from BAM</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pybedtools</span>
@@ -51,32 +53,32 @@
 <span class="sd">    Scale is cached in a bam.scale file containing the number of mapped reads.</span>
 <span class="sd">    Use force=True to override caching.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">scale_fn</span> <span class="o">=</span> <span class="n">bam</span> <span class="o">+</span> <span class="s">&#39;.scale&#39;</span>
+    <span class="n">scale_fn</span> <span class="o">=</span> <span class="n">bam</span> <span class="o">+</span> <span class="s1">&#39;.scale&#39;</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">scale_fn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">scale_fn</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="n">readcount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
             <span class="k">return</span> <span class="n">readcount</span>
 
-    <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;samtools&#39;</span><span class="p">,</span>
-            <span class="s">&#39;view&#39;</span><span class="p">,</span>
-            <span class="s">&#39;-c&#39;</span><span class="p">,</span>
-            <span class="s">&#39;-F&#39;</span><span class="p">,</span> <span class="s">&#39;0x4&#39;</span><span class="p">,</span>
+    <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;samtools&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;view&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;-c&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;-F&#39;</span><span class="p">,</span> <span class="s1">&#39;0x4&#39;</span><span class="p">,</span>
             <span class="n">bam</span><span class="p">]</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
                          <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
     <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">stderr</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;samtools says: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">stderr</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;samtools says: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">stderr</span><span class="p">)</span>
 
     <span class="n">readcount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">stdout</span><span class="p">)</span>
 
-    <span class="c"># write to file so the next time you need the lib size you can access</span>
-    <span class="c"># it quickly</span>
+    <span class="c1"># write to file so the next time you need the lib size you can access</span>
+    <span class="c1"># it quickly</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">scale_fn</span><span class="p">):</span>
-        <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">scale_fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
-        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">readcount</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">scale_fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">readcount</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">readcount</span>
 
@@ -84,22 +86,22 @@
 <div class="viewcode-block" id="bedgraph_to_bigwig"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.bigwig.bedgraph_to_bigwig.html#pybedtools.contrib.bigwig.bedgraph_to_bigwig">[docs]</a><span class="k">def</span> <span class="nf">bedgraph_to_bigwig</span><span class="p">(</span><span class="n">bedgraph</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
     <span class="n">genome_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span>
     <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s">&#39;bedGraphToBigWig&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bedGraphToBigWig&#39;</span><span class="p">,</span>
         <span class="n">bedgraph</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span>
         <span class="n">genome_file</span><span class="p">,</span>
         <span class="n">output</span><span class="p">]</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="wig_to_bigwig"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.bigwig.wig_to_bigwig.html#pybedtools.contrib.bigwig.wig_to_bigwig">[docs]</a><span class="k">def</span> <span class="nf">wig_to_bigwig</span><span class="p">(</span><span class="n">wig</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
     <span class="n">genome_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span>
     <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s">&#39;wigToBigWig&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;wigToBigWig&#39;</span><span class="p">,</span>
         <span class="n">wig</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span>
         <span class="n">genome_file</span><span class="p">,</span>
         <span class="n">output</span><span class="p">]</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">output</span></div>
 
 
@@ -121,14 +123,14 @@
     <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
         <span class="n">readcount</span> <span class="o">=</span> <span class="n">mapped_read_count</span><span class="p">(</span><span class="n">bam</span><span class="p">)</span>
         <span class="n">_scale</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">readcount</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_scale</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_scale</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">bam</span><span class="p">)</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s">&#39;bedGraphToBigWig&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bedGraphToBigWig&#39;</span><span class="p">,</span>
         <span class="n">x</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span>
         <span class="n">genome_file</span><span class="p">,</span>
         <span class="n">output</span><span class="p">]</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span></div>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span></div>
 </pre></div>
 
           </div>
@@ -154,9 +156,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -173,7 +172,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
       </ul>
@@ -184,8 +183,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
     </div>
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.contrib.long_range_interaction &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.contrib.long_range_interaction &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,16 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../../../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../../../index.html" />
     <link rel="up" title="pybedtools" href="../../pybedtools.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -38,7 +40,7 @@
           <div class="body" role="main">
             
   <h1>Source code for pybedtools.contrib.long_range_interaction</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -197,8 +199,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">bedpe</span><span class="p">)</span>
 
-    <span class="c"># Figure out if the supplied bedpe had any extra fields. If so, the fields</span>
-    <span class="c"># are repeated in each of the split output files.</span>
+    <span class="c1"># Figure out if the supplied bedpe had any extra fields. If so, the fields</span>
+    <span class="c1"># are repeated in each of the split output files.</span>
     <span class="n">observed</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">field_count</span><span class="p">()</span>
     <span class="n">extra</span> <span class="o">=</span> <span class="n">observed</span> <span class="o">-</span> <span class="mi">10</span>
     <span class="n">extra_inds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">extra</span><span class="p">)]</span>
@@ -207,41 +209,41 @@
     <span class="n">end1_fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
     <span class="n">end2_fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
 
-    <span class="c"># Performance notes:</span>
-    <span class="c"># We don&#39;t need the overhead of converting every line into</span>
-    <span class="c"># a pybedtools.Interval object just so we can grab the fields. Doing so</span>
-    <span class="c"># takes 3.5x more time than simply splitting each line on a tab.</span>
+    <span class="c1"># Performance notes:</span>
+    <span class="c1"># We don&#39;t need the overhead of converting every line into</span>
+    <span class="c1"># a pybedtools.Interval object just so we can grab the fields. Doing so</span>
+    <span class="c1"># takes 3.5x more time than simply splitting each line on a tab.</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;splitting BEDPE into separate files.&#39;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;end1 is going to </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">end1_fn</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;end2 is going to </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">end2_fn</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;splitting BEDPE into separate files.&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;end1 is going to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">end1_fn</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;end2 is going to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">end2_fn</span><span class="p">)</span>
 
 
     <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">end1_fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">end1_out</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">end2_fn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">end2_out</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">end1_fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">end1_out</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">end2_fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">end2_out</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">fn</span><span class="p">):</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">end1_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_inds</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_inds</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">end2_out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_inds</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_inds</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="c"># Performance notes:</span>
-    <span class="c">#</span>
-    <span class="c"># For small BEDPE and large set of query files, it would be faster to sort</span>
-    <span class="c"># these independently, intersect with sorted=True, and then re-sort by name</span>
-    <span class="c"># for the grouping. For large BEDPE, I don&#39;t think the sorted=True</span>
-    <span class="c"># performance gain outweighs the hit from sorting twice.</span>
-    <span class="c">#</span>
-    <span class="c"># On the other hand, if BEDPE was coord-sorted in the first place, only</span>
-    <span class="c"># end2 would need to be sorted and re-sorted. On the other (third!?) hand,</span>
-    <span class="c"># BEDPE creation from BAM implies name-sorting, so it&#39;s probably not</span>
-    <span class="c"># reasonable to assume coord-sorted.</span>
-    <span class="c">#</span>
-    <span class="c"># In the end: don&#39;t do any sorting.</span>
+    <span class="c1"># Performance notes:</span>
+    <span class="c1">#</span>
+    <span class="c1"># For small BEDPE and large set of query files, it would be faster to sort</span>
+    <span class="c1"># these independently, intersect with sorted=True, and then re-sort by name</span>
+    <span class="c1"># for the grouping. For large BEDPE, I don&#39;t think the sorted=True</span>
+    <span class="c1"># performance gain outweighs the hit from sorting twice.</span>
+    <span class="c1">#</span>
+    <span class="c1"># On the other hand, if BEDPE was coord-sorted in the first place, only</span>
+    <span class="c1"># end2 would need to be sorted and re-sorted. On the other (third!?) hand,</span>
+    <span class="c1"># BEDPE creation from BAM implies name-sorting, so it&#39;s probably not</span>
+    <span class="c1"># reasonable to assume coord-sorted.</span>
+    <span class="c1">#</span>
+    <span class="c1"># In the end: don&#39;t do any sorting.</span>
 
     <span class="n">end1_bt</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">end1_fn</span><span class="p">)</span>
     <span class="n">end2_bt</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">end2_fn</span><span class="p">)</span>
@@ -254,14 +256,14 @@
             <span class="n">fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;intersecting end 1&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;intersecting end 1&#39;</span><span class="p">)</span>
     <span class="n">end1_hits</span> <span class="o">=</span> <span class="n">end1_bt</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">wao</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;intersecting end 2&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;intersecting end 2&#39;</span><span class="p">)</span>
     <span class="n">end2_hits</span> <span class="o">=</span> <span class="n">end2_bt</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">wao</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;intersection with end1 is in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end1_hits</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&#39;intersection with end2 is in </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end2_hits</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;intersection with end1 is in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end1_hits</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;intersection with end2 is in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end2_hits</span><span class="o">.</span><span class="n">fn</span><span class="p">))</span>
 
     <span class="n">grouped_end1</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">end1_hits</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     <span class="n">grouped_end2</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">end2_hits</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
@@ -303,6 +305,19 @@
 <span class="sd">    chr1  3  4  peak1  50  .</span>
 <span class="sd">    &lt;BLANKLINE&gt;</span>
 
+<span class="sd">    Here&#39;s what the tracks look like. Note that pair1 is evidence of</span>
+<span class="sd">    a gene1-gene2 interaction and a gene1-gene3 interaction::</span>
+
+<span class="sd">        TRACKS:</span>
+
+<span class="sd">                      1         2  /         5         6    / 8         9     / 20</span>
+<span class="sd">            0123456789012345678901 / 2345678901234567890123 / 012345678901234 / 0123456789</span>
+<span class="sd">       pair1 |||||||||------------ / --------|||||||||||||| / ||||||||||||||| /</span>
+<span class="sd">       pair2  |||||||||||||------- / ---------------------- / --------------- / ||||||||||</span>
+<span class="sd">       tsses     1                 /                   2    /         3</span>
+<span class="sd">       peaks   1</span>
+
+
 <span class="sd">    &gt;&gt;&gt; from pybedtools.contrib.long_range_interaction import tag_bedpe</span>
 <span class="sd">    &gt;&gt;&gt; from pybedtools.contrib.long_range_interaction import cis_tran_interactions</span>
 <span class="sd">    &gt;&gt;&gt; iterator, n, extra = tag_bedpe(bedpe, {&#39;tss&#39;: tsses, &#39;pk&#39;: peaks})</span>
@@ -320,6 +335,11 @@
 <span class="sd">    chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1</span>
 <span class="sd">    chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0</span>
 
+<span class="sd">    Now we run the same thing, but now aggregate it. Note that each piece of</span>
+<span class="sd">    interaction evidence has its own line. The first line shows that pair1 has</span>
+<span class="sd">    gene1 and peak1 in the same fragment, and that they are connected to gene2.</span>
+<span class="sd">    The second line shows again that gene1 and peak1 are in the same fragmet</span>
+<span class="sd">    and that they are also connected to gene3:</span>
 
 <span class="sd">    &gt;&gt;&gt; iterator, n, extra = tag_bedpe(bedpe, {&#39;tss&#39;: tsses, &#39;pk&#39;: peaks})</span>
 <span class="sd">    &gt;&gt;&gt; df =  cis_trans_interactions(iterator, n, extra)</span>
@@ -362,10 +382,10 @@
     <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">end1_hits</span><span class="p">,</span> <span class="n">end2_hits</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
         <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">c</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> (</span><span class="si">%.1f%%</span><span class="s">)</span><span class="se">\r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> (</span><span class="si">%.1f%%</span><span class="s1">)</span><span class="se">\r</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-        <span class="c"># end1_hits has the full lines of all intersections with end1</span>
+        <span class="c1"># end1_hits has the full lines of all intersections with end1</span>
         <span class="n">end1_hits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">end1_hits</span><span class="p">)</span>
         <span class="n">end2_hits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">end2_hits</span><span class="p">)</span>
 
@@ -374,9 +394,9 @@
 <span class="sd">            Returns the key (from which file the interval came) and the name</span>
 <span class="sd">            (of the individual feature).</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="c"># this is the &quot;name&quot; reported if there was no hit.</span>
-            <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">6</span> <span class="o">+</span> <span class="n">extra</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;.&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+            <span class="c1"># this is the &quot;name&quot; reported if there was no hit.</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">6</span> <span class="o">+</span> <span class="n">extra</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
             <span class="n">interval</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">7</span> <span class="o">+</span> <span class="n">extra</span><span class="p">:])</span>
             <span class="k">return</span> <span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="mi">6</span> <span class="o">+</span> <span class="n">extra</span><span class="p">],</span> <span class="n">interval</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
 
@@ -387,11 +407,11 @@
 
         <span class="k">for</span> <span class="n">cis</span><span class="p">,</span> <span class="n">others</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">names1</span><span class="p">,</span> <span class="n">names2</span><span class="p">),</span> <span class="p">(</span><span class="n">names2</span><span class="p">,</span> <span class="n">names1</span><span class="p">)]:</span>
             <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">cis</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">non_targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cis</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">target</span><span class="p">])</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">non_targets</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)]</span>
+                    <span class="n">non_targets</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)]</span>
                 <span class="k">for</span> <span class="n">non_target</span> <span class="ow">in</span> <span class="n">non_targets</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
                         <span class="n">line</span> <span class="o">=</span> <span class="p">[]</span>
@@ -403,8 +423,8 @@
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">lines</span><span class="p">,</span>
-        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;target_label&#39;</span><span class="p">,</span> <span class="s">&#39;target_name&#39;</span><span class="p">,</span> <span class="s">&#39;cis_label&#39;</span><span class="p">,</span> <span class="s">&#39;cis_name&#39;</span><span class="p">,</span>
-                 <span class="s">&#39;distal_label&#39;</span><span class="p">,</span> <span class="s">&#39;distal_name&#39;</span><span class="p">,</span> <span class="s">&#39;label&#39;</span><span class="p">])</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;target_label&#39;</span><span class="p">,</span> <span class="s1">&#39;target_name&#39;</span><span class="p">,</span> <span class="s1">&#39;cis_label&#39;</span><span class="p">,</span> <span class="s1">&#39;cis_name&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;distal_label&#39;</span><span class="p">,</span> <span class="s1">&#39;distal_name&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">])</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">df</span></div>
 </pre></div>
@@ -432,9 +452,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -451,7 +468,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
       </ul>
@@ -462,8 +479,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
     </div>
 

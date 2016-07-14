@@ -2,6 +2,15 @@
 
 Changelog
 =========
+Changes in v0.7.8
+-----------------
+* Be more careful about BAM vs bgzipped files (#168)
+* `BedTool.bgzip` now preserves the header when sorting
+* In Python 3, parsed BEDTools help string is decoded properly
+* Ensure integer number of processes in Python 3 (thanks Illa Shamovsky)
+* Add details on IOError messages for broken pipe error
+* Make converting to pandas.DataFrames easier with non-standard BED files (thanks Panos Firmpas)
+
 Changes in v0.7.7
 -----------------
 * Chromsizes for dm6 and mm10 assemblies added to `genome_registry`

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Design principles &mdash; pybedtools 0.7.6 documentation</title>
+    <title>Design principles &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
     <link rel="up" title="Topical Documentation" href="topical-documentation-contents.html" />
     <link rel="next" title="Creating a BedTool" href="topical-create-a-bedtool.html" />
     <link rel="prev" title="Topical Documentation" href="topical-documentation-contents.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -49,13 +51,13 @@ efficiently.</p>
 <p>Using <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instances typically has the side effect of creating
 temporary files on disk.  Even when using the iterator protocol of
 <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects, temporary files may be created in order to run
-BEDTools programs (see <a class="reference internal" href="topical-iterators.html#bedtools-as-iterators"><span>Using BedTool objects as iterators/generators</span></a> for more on this latter topic).</p>
+BEDTools programs (see <a class="reference internal" href="topical-iterators.html#bedtools-as-iterators"><span class="std std-ref">Using BedTool objects as iterators/generators</span></a> for more on this latter topic).</p>
 <p>Let's illustrate some of the design principles behind <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> by
 merging features in <code class="file docutils literal"><span class="pre">a.bed</span></code> that are 100 bp or less apart (<code class="docutils literal"><span class="pre">d=100</span></code>)
 in a strand-specific way (<code class="docutils literal"><span class="pre">s=True</span></code>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">BedTool</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">BedTool</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">merged_a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -65,7 +67,7 @@ merge.</p>
 example above, <code class="docutils literal"><span class="pre">merged_a</span></code> is a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>, but what file does it
 point to?  You can always check the <code class="xref py py-attr docutils literal"><span class="pre">BedTool.fn</span></code> attribute to find
 out:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># what file does `merged_a` point to?</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># what file does `merged_a` point to?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">merged_a</span><span class="o">.</span><span class="n">fn</span>
 <span class="go">&#39;/tmp/pybedtools.MPPp5f.tmp&#39;</span>
 </pre></div>
@@ -79,16 +81,16 @@ default, and have the form <code class="file docutils literal"><span class="pre"
 However, if Python does not exit cleanly (e.g., from a bug in client code),
 then the temp files will not be deleted.</p>
 <p>If this happens, from the command line you can always do a:</p>
-<div class="highlight-python"><div class="highlight"><pre>rm /tmp/pybedtools.*.tmp
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pybedtools</span><span class="o">.*.</span><span class="n">tmp</span>
 </pre></div>
 </div>
 <p>In the middle of a session, you can force a deletion of all tempfiles created thus far:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Don&#39;t do this yet if you&#39;re following the tutorial!</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Don&#39;t do this yet if you&#39;re following the tutorial!</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Alternatively, in this session or another session you can use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">remove_all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="n">remove_all</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>to remove all files that match the pattern
@@ -96,7 +98,7 @@ then the temp files will not be deleted.</p>
 of <code class="docutils literal"><span class="pre">pybedtools.get_tempdir()</span></code>.</p>
 <p>If you need to specify a different directory than that used by default by
 Python's <a class="reference external" href="http://docs.python.org/library/tempfile.html#tempfile.tempdir">tempdir</a> module, then you can set it with:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">set_tempdir</span><span class="p">(</span><span class="s">&#39;/scratch&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">set_tempdir</span><span class="p">(</span><span class="s1">&#39;/scratch&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You'll need write permissions to this directory, and it needs to already
@@ -108,7 +110,7 @@ tempdir is changed again.</p>
 <p>As much as possible, BEDTools programs and <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> methods share
 the same names and arguments.</p>
 <p>Returning again to this example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">merged_a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">merged_a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This demonstrates that the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> methods that wrap <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a>
@@ -116,7 +118,7 @@ programs do the same thing and take the exact same arguments as the
 <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> program.  Here we can pass <code class="docutils literal"><span class="pre">d=100</span></code> and <code class="docutils literal"><span class="pre">s=True</span></code> only because the
 underlying <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> program, <code class="docutils literal"><span class="pre">mergeBed</span></code>, can accept these arguments.
 Need to know what arguments <code class="docutils literal"><span class="pre">mergeBed</span></code> can take?  See the docs for
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.merge()</span></code>; for more on this see <a class="reference internal" href="#good-docs-principle"><span>Principle 7: Check the help</span></a>.</p>
+<code class="xref py py-meth docutils literal"><span class="pre">BedTool.merge()</span></code>; for more on this see <a class="reference internal" href="#good-docs-principle"><span class="std std-ref">Principle 7: Check the help</span></a>.</p>
 <p>In general, remove the &quot;Bed&quot; from the end of the <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> program to get
 the corresponding <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> method.  So there's a
 <code class="xref py py-meth docutils literal"><span class="pre">BedTool.subtract()</span></code> method for <code class="docutils literal"><span class="pre">subtractBed</span></code>, a
@@ -145,22 +147,22 @@ file (indicated in the <code class="xref py py-attr docutils literal"><span clas
 <p>We can still pass a file using the <code class="docutils literal"><span class="pre">i</span></code> keyword argument if we wanted to be
 absolutely explicit.  In fact, the following two versions produce the same
 output:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># The default is to use existing file for input -- no need</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># to specify &quot;i&quot; . . .</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># The default is to use existing file for input -- no need</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># to specify &quot;i&quot; . . .</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># . . . but you can always be explicit if you&#39;d like</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># . . . but you can always be explicit if you&#39;d like</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result2</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># Confirm that the output is identical</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Confirm that the output is identical</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">==</span> <span class="n">result2</span>
 <span class="go">True</span>
 </pre></div>
 </div>
 <p>Methods that have this type of default behavior are indicated by the following text in their docstring:</p>
-<div class="highlight-python"><div class="highlight"><pre>.. note::
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">note</span><span class="p">::</span>
 
-    For convenience, the file this BedTool object points to is passed as &quot;-i&quot;
+    <span class="n">For</span> <span class="n">convenience</span><span class="p">,</span> <span class="n">the</span> <span class="nb">file</span> <span class="n">this</span> <span class="n">BedTool</span> <span class="nb">object</span> <span class="n">points</span> <span class="n">to</span> <span class="ow">is</span> <span class="n">passed</span> <span class="k">as</span> <span class="s2">&quot;-i&quot;</span>
 </pre></div>
 </div>
 <p>There are some <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> programs that accept two BED files as input, like
@@ -168,12 +170,12 @@ output:</p>
 second file with <code class="docutils literal"><span class="pre">-b</span></code>.  The default behavior for <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> is to
 consider the <code class="xref py py-mod docutils literal"><span class="pre">BedTool</span></code>'s file as <code class="docutils literal"><span class="pre">-a</span></code> and the first non-keyword
 argument to the method as <code class="docutils literal"><span class="pre">-b</span></code>, like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result3</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is exactly the same as passing the <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">b</span></code> arguments explicitly:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">result4</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result4</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result3</span> <span class="o">==</span> <span class="n">result4</span>
 <span class="go">True</span>
 </pre></div>
@@ -181,7 +183,7 @@ argument to the method as <code class="docutils literal"><span class="pre">-b</s
 <p>Furthermore, the first non-keyword argument used as <code class="docutils literal"><span class="pre">-b</span></code> can either be a
 filename <em>or</em> another <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object; that is, these commands also
 do the same thing:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">result5</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result5</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result6</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">result5</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">result6</span><span class="p">)</span>
 <span class="go">True</span>
@@ -190,10 +192,10 @@ do the same thing:</p>
 <p>Methods that accept either a filename or another <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instance
 as their first non-keyword argument are indicated by the following text in
 their docstring:</p>
-<div class="highlight-python"><div class="highlight"><pre>.. note::
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">note</span><span class="p">::</span>
 
-    This method accepts either a BedTool or a file name as the first
-    unnamed argument
+    <span class="n">This</span> <span class="n">method</span> <span class="n">accepts</span> <span class="n">either</span> <span class="n">a</span> <span class="n">BedTool</span> <span class="ow">or</span> <span class="n">a</span> <span class="nb">file</span> <span class="n">name</span> <span class="k">as</span> <span class="n">the</span> <span class="n">first</span>
+    <span class="n">unnamed</span> <span class="n">argument</span>
 </pre></div>
 </div>
 </div>
@@ -213,8 +215,8 @@ and boolean values (<code class="docutils literal"><span class="pre">True</span>
 <code class="docutils literal"><span class="pre">-s</span></code>.</p>
 <p>Here's another example using both types of keyword arguments; the
 <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object <code class="docutils literal"><span class="pre">b</span></code> (or it could be a string filename too) is
-implicitly passed to <code class="docutils literal"><span class="pre">intersectBed</span></code> as <code class="docutils literal"><span class="pre">-b</span></code> (see <a class="reference internal" href="#default-args-principle"><span>Principle 4: Sensible default args</span></a> above):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+implicitly passed to <code class="docutils literal"><span class="pre">intersectBed</span></code> as <code class="docutils literal"><span class="pre">-b</span></code> (see <a class="reference internal" href="#default-args-principle"><span class="std std-ref">Principle 4: Sensible default args</span></a> above):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Again, any option that can be passed to a <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> program can be passed
@@ -228,18 +230,18 @@ give you a flavor of this, here is how you would get the merged regions of
 features shared between <code class="file docutils literal"><span class="pre">a.bed</span></code> (as referred to by the
 <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> <code class="docutils literal"><span class="pre">a</span></code> we made previously) and <code class="file docutils literal"><span class="pre">b.bed</span></code>: (as referred to
 by the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> <code class="docutils literal"><span class="pre">b</span></code>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;shared_merged.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;shared_merged.bed&#39;</span><span class="p">)</span>
 <span class="go">&lt;BedTool(shared_merged.bed)&gt;</span>
 </pre></div>
 </div>
 <p>This is equivalent to the following <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> commands:</p>
-<div class="highlight-python"><div class="highlight"><pre>intersectBed -a a.bed -b b.bed | merge -i stdin &gt; shared_merged.bed
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">intersectBed</span> <span class="o">-</span><span class="n">a</span> <span class="n">a</span><span class="o">.</span><span class="n">bed</span> <span class="o">-</span><span class="n">b</span> <span class="n">b</span><span class="o">.</span><span class="n">bed</span> <span class="o">|</span> <span class="n">merge</span> <span class="o">-</span><span class="n">i</span> <span class="n">stdin</span> <span class="o">&gt;</span> <span class="n">shared_merged</span><span class="o">.</span><span class="n">bed</span>
 </pre></div>
 </div>
 <p>Methods that return a new <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instance are indicated with the following text in their docstring:</p>
-<div class="highlight-python"><div class="highlight"><pre>.. note::
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">note</span><span class="p">::</span>
 
-    This method returns a new BedTool instance
+    <span class="n">This</span> <span class="n">method</span> <span class="n">returns</span> <span class="n">a</span> <span class="n">new</span> <span class="n">BedTool</span> <span class="n">instance</span>
 </pre></div>
 </div>
 </div>
@@ -300,9 +302,6 @@ up-to-date.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -325,7 +324,7 @@ up-to-date.</p>
         <li class="right" >
           <a href="topical-documentation-contents.html" title="Topical Documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &raquo;</li> 
       </ul>
     </div>
@@ -335,8 +334,8 @@ up-to-date.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/topical-design-principles.txt"

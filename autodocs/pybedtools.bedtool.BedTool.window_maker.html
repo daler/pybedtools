@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool.BedTool.window_maker &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.bedtool.BedTool.window_maker &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../index.html" />
     <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.groupby" href="pybedtools.bedtool.BedTool.groupby.html" />
     <link rel="prev" title="pybedtools.bedtool.BedTool.igv" href="pybedtools.bedtool.BedTool.igv.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -44,174 +46,7 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.window_maker">
 <code class="descclassname">BedTool.</code><code class="descname">window_maker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.window_maker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.window_maker" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">makewindows</span></code>.</div></blockquote>
-<p>There are two alternatives for supplying a genome.  Use
-<code class="docutils literal"><span class="pre">g=&quot;genome.filename&quot;</span></code> if you have a genome's chrom sizes
-saved as a file. This is the what BEDTools expects when
-using it from the command line. Alternatively, use the
-<code class="docutils literal"><span class="pre">genome=&quot;assembly.name&quot;</span></code> (for example, <code class="docutils literal"><span class="pre">genome=&quot;hg19&quot;</span></code>) to
-use chrom sizes for that assembly without having to manage
-a separate file.  The <code class="docutils literal"><span class="pre">genome</span></code> argument triggers a call
-<code class="docutils literal"><span class="pre">pybedtools.chromsizes</span></code>, so see that method for more
-details.</p>
-<p><strong>Original BEDTools help:</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Tool: bedtools makewindows
-Version: v2.25.0
-Summary: Makes adjacent or sliding windows across a genome or BED file.
-
-Usage: bedtools makewindows [OPTIONS] [-g &lt;genome&gt; OR -b &lt;bed&gt;]
- [ -w &lt;window**size&gt; OR -n &lt;number of windows&gt; ]
-
-Input Options: 
-        -g &lt;genome&gt;
-                Genome file size (see notes below).
-                Windows will be created for each chromosome in the file.
-
-        -b &lt;bed&gt;
-                BED file (with chrom,start,end fields).
-                Windows will be created for each interval in the file.
-
-Windows Output Options: 
-        -w &lt;window**size&gt;
-                Divide each input interval (either a chromosome or a BED interval)
-                to fixed-sized windows (i.e. same number of nucleotide in each window).
-                Can be combined with -s &lt;step**size&gt;
-
-        -s &lt;step**size&gt;
-                Step size: i.e., how many base pairs to step before
-                creating a new window. Used to create &quot;sliding&quot; windows.
-                - Defaults to window size (non-sliding windows).
-
-        -n &lt;number**of**windows&gt;
-                Divide each input interval (either a chromosome or a BED interval)
-                to fixed number of windows (i.e. same number of windows, with
-                varying window sizes).
-
-        -reverse
-                 Reverse numbering of windows in the output, i.e. report 
-                 windows in decreasing order
-
-ID Naming Options: 
-        -i src|winnum|srcwinnum
-                The default output is 3 columns: chrom, start, end .
-                With this option, a name column will be added.
-                 &quot;-i src&quot; - use the source interval&#39;s name.
-                 &quot;-i winnum&quot; - use the window number as the ID (e.g. 1,2,3,4...).
-                 &quot;-i srcwinnum&quot; - use the source interval&#39;s name with the window number.
-                See below for usage examples.
-
-Notes: 
-        (1) The genome file should tab delimited and structured as follows:
-         &lt;chromName&gt;&lt;TAB&gt;&lt;chromSize&gt;
-
-        For example, Human (hg19):
-        chr1    249250621
-        chr2    243199373
-        ...
-        chr18**gl000207**random 4262
-
-Tips: 
-        One can use the UCSC Genome Browser&#39;s MySQL database to extract
-        chromosome sizes. For example, H. sapiens:
-
-        mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -e \
-        &quot;select chrom, size from hg19.chromInfo&quot; &gt; hg19.genome
-
-Examples: 
- # Divide the human genome into windows of 1MB:
- $ bedtools makewindows -g hg19.txt -w 1000000
- chr1 0 1000000
- chr1 1000000 2000000
- chr1 2000000 3000000
- chr1 3000000 4000000
- chr1 4000000 5000000
- ...
-
- # Divide the human genome into sliding (=overlapping) windows of 1MB, with 500KB overlap:
- $ bedtools makewindows -g hg19.txt -w 1000000 -s 500000
- chr1 0 1000000
- chr1 500000 1500000
- chr1 1000000 2000000
- chr1 1500000 2500000
- chr1 2000000 3000000
- ...
-
- # Divide each chromosome in human genome to 1000 windows of equal size:
- $ bedtools makewindows -g hg19.txt -n 1000
- chr1 0 249251
- chr1 249251 498502
- chr1 498502 747753
- chr1 747753 997004
- chr1 997004 1246255
- ...
-
- # Divide each interval in the given BED file into 10 equal-sized windows:
- $ cat input.bed
- chr5 60000 70000
- chr5 73000 90000
- chr5 100000 101000
- $ bedtools makewindows -b input.bed -n 10
- chr5 60000 61000
- chr5 61000 62000
- chr5 62000 63000
- chr5 63000 64000
- chr5 64000 65000
- ...
-
- # Add a name column, based on the window number: 
- $ cat input.bed
- chr5  60000  70000 AAA
- chr5  73000  90000 BBB
- chr5 100000 101000 CCC
- $ bedtools makewindows -b input.bed -n 3 -i winnum
- chr5        60000   63334   1
- chr5        63334   66668   2
- chr5        66668   70000   3
- chr5        73000   78667   1
- chr5        78667   84334   2
- chr5        84334   90000   3
- chr5        100000  100334  1
- chr5        100334  100668  2
- chr5        100668  101000  3
- ...
-
- # Reverse window numbers: 
- $ cat input.bed
- chr5  60000  70000 AAA
- chr5  73000  90000 BBB
- chr5 100000 101000 CCC
- $ bedtools makewindows -b input.bed -n 3 -i winnum -reverse
- chr5        60000   63334   3
- chr5        63334   66668   2
- chr5        66668   70000   1
- chr5        73000   78667   3
- chr5        78667   84334   2
- chr5        84334   90000   1
- chr5        100000  100334  3
- chr5        100334  100668  2
- chr5        100668  101000  1
- ...
-
- # Add a name column, based on the source ID + window number: 
- $ cat input.bed
- chr5  60000  70000 AAA
- chr5  73000  90000 BBB
- chr5 100000 101000 CCC
- $ bedtools makewindows -b input.bed -n 3 -i srcwinnum
- chr5        60000   63334   AAA**1
- chr5        63334   66668   AAA**2
- chr5        66668   70000   AAA**3
- chr5        73000   78667   BBB**1
- chr5        78667   84334   BBB**2
- chr5        84334   90000   BBB**3
- chr5        100000  100334  CCC**1
- chr5        100334  100668  CCC**2
- chr5        100668  101000  CCC**3
- ...
-</pre></div>
-</div>
-</dd></dl>
+<dd></dd></dl>
 
 </div>
 
@@ -246,9 +81,6 @@ Examples:
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -271,7 +103,7 @@ Examples:
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.igv.html" title="pybedtools.bedtool.BedTool.igv"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
       </ul>
     </div>
@@ -281,8 +113,8 @@ Examples:
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.window_maker.txt"

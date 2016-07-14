@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Default arguments &mdash; pybedtools 0.7.6 documentation</title>
+    <title>Default arguments &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
     <link rel="up" title="Tutorial Contents" href="tutorial-contents.html" />
     <link rel="next" title="Chaining methods together (pipe)" href="piping.html" />
     <link rel="prev" title="Saving the results" href="save-results.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -41,18 +43,18 @@
             
   <div class="section" id="default-arguments">
 <h1>Default arguments<a class="headerlink" href="#default-arguments" title="Permalink to this headline">¶</a></h1>
-<p>Recall in the earlier <a class="reference internal" href="intersections.html#intersections"><span>Intersections</span></a> section that we passed the <code class="docutils literal"><span class="pre">u=True</span></code> argument to <code class="xref py py-meth docutils literal"><span class="pre">a.intersect()</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+<p>Recall in the earlier <a class="reference internal" href="intersections.html#intersections"><span class="std std-ref">Intersections</span></a> section that we passed the <code class="docutils literal"><span class="pre">u=True</span></code> argument to <code class="xref py py-meth docutils literal"><span class="pre">a.intersect()</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a_with_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Let's do the same thing but use different variable names for the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects so that
 the next section is less confusing:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">snps</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;b.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snps</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -60,11 +62,11 @@ the next section is less confusing:</p>
 <code class="docutils literal"><span class="pre">-a</span></code> or <code class="docutils literal"><span class="pre">-b</span></code> arguments, like you would need if calling <code class="docutils literal"><span class="pre">intersectBed</span></code> from the
 command line.  In other words, since <code class="docutils literal"><span class="pre">exons</span></code> refers to the file <code class="docutils literal"><span class="pre">a.bed</span></code> and
 <code class="docutils literal"><span class="pre">snps</span></code> refers to the file <code class="docutils literal"><span class="pre">b.bed</span></code>, the following line:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>is equivalent to the command line usage of:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ intersectBed -a a.bed -b b.bed -u &gt; tmpfile
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ intersectBed -a a.bed -b b.bed -u &gt; tmpfile
 </pre></div>
 </div>
 <p>But we didn't have to explicitly pass the argument for <code class="docutils literal"><span class="pre">-a</span></code> because
@@ -84,7 +86,7 @@ file in the <code class="docutils literal"><span class="pre">fn</span></code> at
 <p>An example may help to illustrate: these different ways of calling
 <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code> all have the same results, with the first version
 being the most compact (and probably most convenient):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># these all have identical results</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># these all have identical results</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">exons</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">snps</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x3</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">snps</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
@@ -99,12 +101,12 @@ non-keyword arguments must come before keyword arguments, but
 <p>If you're ever unsure, the docstring for these methods indicates which, if
 any, arguments are used as default.  For example, in the
 <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code> help, it says:</p>
-<div class="highlight-python"><div class="highlight"><pre>For convenience, the file or stream this BedTool points to is implicitly
-passed as the -a argument to intersectBed
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">For</span> <span class="n">convenience</span><span class="p">,</span> <span class="n">the</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">stream</span> <span class="n">this</span> <span class="n">BedTool</span> <span class="n">points</span> <span class="n">to</span> <span class="ow">is</span> <span class="n">implicitly</span>
+<span class="n">passed</span> <span class="k">as</span> <span class="n">the</span> <span class="o">-</span><span class="n">a</span> <span class="n">argument</span> <span class="n">to</span> <span class="n">intersectBed</span>
 </pre></div>
 </div>
 <p>OK, enough about arguments for now, but you can read more about them in
-<a class="reference internal" href="topical-design-principles.html#similarity-principle"><span>Principle 2: Names and arguments are as similar as possible to BEDTools</span></a>, <a class="reference internal" href="topical-design-principles.html#default-args-principle"><span>Principle 4: Sensible default args</span></a> and <a class="reference internal" href="topical-design-principles.html#non-defaults-principle"><span>Principal 5: Other arguments have no defaults</span></a>.</p>
+<a class="reference internal" href="topical-design-principles.html#similarity-principle"><span class="std std-ref">Principle 2: Names and arguments are as similar as possible to BEDTools</span></a>, <a class="reference internal" href="topical-design-principles.html#default-args-principle"><span class="std std-ref">Principle 4: Sensible default args</span></a> and <a class="reference internal" href="topical-design-principles.html#non-defaults-principle"><span class="std std-ref">Principal 5: Other arguments have no defaults</span></a>.</p>
 </div>
 
 
@@ -138,9 +140,6 @@ passed as the -a argument to intersectBed
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -163,7 +162,7 @@ passed as the -a argument to intersectBed
         <li class="right" >
           <a href="save-results.html" title="Saving the results"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &raquo;</li> 
       </ul>
     </div>
@@ -173,8 +172,8 @@ passed as the -a argument to intersectBed
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/default-arguments.txt"

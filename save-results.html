@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Saving the results &mdash; pybedtools 0.7.6 documentation</title>
+    <title>Saving the results &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
     <link rel="up" title="Tutorial Contents" href="tutorial-contents.html" />
     <link rel="next" title="Default arguments" href="default-arguments.html" />
     <link rel="prev" title="Intersections" href="intersections.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -46,12 +48,12 @@ the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.sav
 pointed to by the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>. This method also lets you optionally specify a
 trackline for directly uploading to the UCSC Genome Browser, instead of
 opening up the files afterward and manually adding a trackline:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a_with_b</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;intersection-of-a-and-b.bed&#39;</span><span class="p">,</span> <span class="n">trackline</span><span class="o">=</span><span class="s">&#39;track name=&quot;a and b&quot;&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a_with_b</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;intersection-of-a-and-b.bed&#39;</span><span class="p">,</span> <span class="n">trackline</span><span class="o">=</span><span class="s1">&#39;track name=&quot;a and b&quot;&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
 <span class="go">intersection-of-a-and-b.bed</span>
 
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># opening the underlying file shows the track line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># opening the underlying file shows the track line</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 <span class="go">track name=&quot;a and b&quot;</span>
 <span class="go">chr1        155     200     feature2        0       +</span>
@@ -59,7 +61,7 @@ opening up the files afterward and manually adding a trackline:</p>
 <span class="go">chr1        900     901     feature4        0       +</span>
 
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c"># printing file-based BedTool objects will not print the track line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># printing file-based BedTool objects will not print the track line</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 <span class="go">chr1        155     200     feature2        0       +</span>
 <span class="go">chr1        155     200     feature3        0       -</span>
@@ -75,7 +77,7 @@ insert a <code class="xref py py-meth docutils literal"><span class="pre">BedToo
 files.  This does rename operation rather than a copy operation, which means
 that trying to call <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> methods on the original will no longer
 work because the underlying file no longer exists:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a_with_b</span><span class="o">.</span><span class="n">moveto</span><span class="p">(</span><span class="s">&#39;another_location.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a_with_b</span><span class="o">.</span><span class="n">moveto</span><span class="p">(</span><span class="s1">&#39;another_location.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -111,9 +113,6 @@ work because the underlying file no longer exists:</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -136,7 +135,7 @@ work because the underlying file no longer exists:</p>
         <li class="right" >
           <a href="intersections.html" title="Intersections"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &raquo;</li> 
       </ul>
     </div>
@@ -146,8 +145,8 @@ work because the underlying file no longer exists:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/save-results.txt"

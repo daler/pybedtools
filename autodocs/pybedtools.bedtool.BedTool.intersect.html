@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool.BedTool.intersect &mdash; pybedtools 0.7.6 documentation</title>
+    <title>pybedtools.bedtool.BedTool.intersect &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,16 +23,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="../index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="../index.html" />
     <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.window" href="pybedtools.bedtool.BedTool.window.html" />
     <link rel="prev" title="pybedtools.bedtool.BedTool" href="pybedtools.bedtool.BedTool.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -44,119 +46,7 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.intersect">
 <code class="descclassname">BedTool.</code><code class="descname">intersect</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.intersect" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">intersect</span></code>.</div></blockquote>
-<p>For convenience, the file or stream this BedTool points to
-is implicitly passed as the <code class="docutils literal"><span class="pre">-a</span></code> argument to <code class="docutils literal"><span class="pre">intersectBed</span></code></p>
-<p><strong>Original BEDTools help:</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre>Tool:    bedtools intersect (aka intersectBed)
-Version: v2.25.0
-Summary: Report overlaps between two feature files.
-
-Usage:   bedtools intersect [OPTIONS] -a &lt;bed/gff/vcf/bam&gt; -b &lt;bed/gff/vcf/bam&gt;
-
-        Note: -b may be followed with multiple databases and/or 
-        wildcard (*) character(s). 
-Options: 
-        -wa     Write the original entry in A for each overlap.
-
-        -wb     Write the original entry in B for each overlap.
-                - Useful for knowing **what** A overlaps. Restricted by -f and -r.
-
-        -loj    Perform a &quot;left outer join&quot;. That is, for each feature in A
-                report each overlap with B.  If no overlaps are found, 
-                report a NULL feature for B.
-
-        -wo     Write the original A and B entries plus the number of base
-                pairs of overlap between the two features.
-                - Overlaps restricted by -f and -r.
-                  Only A features with overlap are reported.
-
-        -wao    Write the original A and B entries plus the number of base
-                pairs of overlap between the two features.
-                - Overlapping features restricted by -f and -r.
-                  However, A features w/o overlap are also reported
-                  with a NULL B feature and overlap = 0.
-
-        -u      Write the original A entry **once** if **any** overlaps found in B.
-                - In other words, just report the fact &gt;=1 hit was found.
-                - Overlaps restricted by -f and -r.
-
-        -c      For each entry in A, report the number of overlaps with B.
-                - Reports 0 for A entries that have no overlap with B.
-                - Overlaps restricted by -f and -r.
-
-        -v      Only report those entries in A that have **no overlaps** with B.
-                - Similar to &quot;grep -v&quot; (an homage).
-
-        -ubam   Write uncompressed BAM output. Default writes compressed BAM.
-
-        -s      Require same strandedness.  That is, only report hits in B
-                that overlap A on the **same** strand.
-                - By default, overlaps are reported without respect to strand.
-
-        -S      Require different strandedness.  That is, only report hits in B
-                that overlap A on the **opposite** strand.
-                - By default, overlaps are reported without respect to strand.
-
-        -f      Minimum overlap required as a fraction of A.
-                - Default is 1E-9 (i.e., 1bp).
-                - FLOAT (e.g. 0.50)
-
-        -F      Minimum overlap required as a fraction of B.
-                - Default is 1E-9 (i.e., 1bp).
-                - FLOAT (e.g. 0.50)
-
-        -r      Require that the fraction overlap be reciprocal for A AND B.
-                - In other words, if -f is 0.90 and -r is used, this requires
-                  that B overlap 90% of A and A **also** overlaps 90% of B.
-
-        -e      Require that the minimum fraction be satisfied for A OR B.
-                - In other words, if -e is used with -f 0.90 and -F 0.10 this requires
-                  that either 90% of A is covered OR 10% of  B is covered.
-                  Without -e, both fractions would have to be satisfied.
-
-        -split  Treat &quot;split&quot; BAM or BED12 entries as distinct BED intervals.
-
-        -g      Provide a genome file to enforce consistent chromosome sort order
-                across input files. Only applies when used with -sorted option.
-
-        -nonamecheck    For sorted data, don&#39;t throw an error if the file has different naming conventions
-                        for the same chromosome. ex. &quot;chr1&quot; vs &quot;chr01&quot;.
-
-        -sorted Use the &quot;chromsweep&quot; algorithm for sorted (-k1,1 -k2,2n) input.
-
-        -names  When using multiple databases, provide an alias for each that
-                will appear instead of a fileId when also printing the DB record.
-
-        -filenames      When using multiple databases, show each complete filename
-                        instead of a fileId when also printing the DB record.
-
-        -sortout        When using multiple databases, sort the output DB hits
-                        for each record.
-
-        -bed    If using BAM input, write output as BED.
-
-        -header Print the header from the A file prior to results.
-
-        -nobuf  Disable buffered output. Using this option will cause each line
-                of output to be printed as it is generated, rather than saved
-                in a buffer. This will make printing large output files 
-                noticeably slower, but can be useful in conjunction with
-                other software tools and scripts that need to process one
-                line of bedtools output at a time.
-
-        -iobuf  Specify amount of memory to use for input buffer.
-                Takes an integer argument. Optional suffixes K/M/G supported.
-                Note: currently has no effect with compressed files.
-
-Notes: 
-        (1) When a BAM file is used for the A file, the alignment is retained if overlaps exist,
-        and exlcuded if an overlap cannot be found.  If multiple overlaps exist, they are not
-        reported, as we are only testing for one or more overlaps.
-</pre></div>
-</div>
-</dd></dl>
+<dd></dd></dl>
 
 </div>
 
@@ -191,9 +81,6 @@ Notes:
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -216,7 +103,7 @@ Notes:
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.html" title="pybedtools.bedtool.BedTool"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.6 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
       </ul>
     </div>
@@ -226,8 +113,8 @@ Notes:
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.intersect.txt"

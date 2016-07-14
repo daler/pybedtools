@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>FAQs &mdash; pybedtools 0.7.6 documentation</title>
+    <title>FAQs &mdash; pybedtools 0.7.8 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.6',
+        VERSION:     '0.7.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,15 +23,17 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.6 documentation" href="index.html" />
+    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
     <link rel="next" title="Scripts" href="scripts.html" />
     <link rel="prev" title="Under the hood" href="flow-of-commands.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -52,47 +54,47 @@ function can be easily used for other things.</p>
 a <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> object.  You can then manipulate this or access the fields
 as needed.</p>
 <p>For example:</p>
-<div class="highlight-python"><div class="highlight"><pre>x = pybedtools.example_bedtool(&#39;a.bed&#39;)
-for interval in x:
-    # do something with interval
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+    <span class="c1"># do something with interval</span>
 </pre></div>
 </div>
 <p>However, if you're planning on writing the results out to file, it may be more
 useful to write a transformation function along with the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.each()</span></code>
 method.  This allows you to read, transform, and write all in one command:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_func</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adds 10 bp to the stop</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">f</span><span class="o">.</span><span class="n">stop</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">f</span>
 
-<span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">)</span>\
+<span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>\
     <span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">my_func</span><span class="p">)</span>\
-    <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;out.bed&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;out.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Another useful idiom is creating a generator function.  For example, here we
 change the name field to reflect the value of a counter.  We create a BedTool
 from the iterator and then save it:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
     <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s">&#39;a.bed&#39;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">):</span>
         <span class="n">i</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
         <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">yield</span> <span class="n">i</span>
 
-<span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;counted.bed&#39;</span><span class="p">)</span>
+<span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;counted.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="save-results.html#saveresults"><span>Saving the results</span></a> for more on saving the results.</p>
+<p>See <a class="reference internal" href="save-results.html#saveresults"><span class="std std-ref">Saving the results</span></a> for more on saving the results.</p>
 </div>
 <div class="section" id="can-i-create-a-bedtool-object-from-an-existing-list">
 <h2>&quot;Can I create a BedTool object from an existing list?&quot;<a class="headerlink" href="#can-i-create-a-bedtool-object-from-an-existing-list" title="Permalink to this headline">¶</a></h2>
 <p>Sure, the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> constructor will figure it out:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
-    <span class="p">(</span><span class="s">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
@@ -108,12 +110,12 @@ completely consume it.</p>
 <p>It's probably best to save intermediate versions to file using
 <code class="xref py py-meth docutils literal"><span class="pre">BedTool.saveas()</span></code>.  If you don't provide a filename, it'll save to an
 automatically cleaned up tempfile:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">my_bedtool</span>\
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">my_bedtool</span>\
  <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">my_filter_func</span><span class="p">)</span>\
  <span class="o">.</span><span class="n">saveas</span><span class="p">()</span>\
  <span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>\
  <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">)</span>\
- <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;filtered-intersected-large.bed&#39;</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;filtered-intersected-large.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -135,13 +137,13 @@ complex manipulations on an iterating <code class="xref py py-class docutils lit
 <h2>&quot;Can I add extra information to FASTA headers when using BedTool.sequence()?&quot;<a class="headerlink" href="#can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence" title="Permalink to this headline">¶</a></h2>
 <p>Since BEDTools adds the feature name to the FASTA header, you can manipulate
 the feature name on the fly with a custom modifier function:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fields2name</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="s">&quot;replace GFF featuretype field with the attributes field&quot;</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fields2name</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="s2">&quot;replace GFF featuretype field with the attributes field&quot;</span>
     <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">f</span>
 
 <span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&quot;my.gff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">fields2name</span><span class="p">)</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="s">&#39;my.fasta&#39;</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s2">&quot;my.gff&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">fields2name</span><span class="p">)</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="s1">&#39;my.fasta&#39;</span><span class="p">)</span>
 
 <span class="k">print</span> <span class="nb">open</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">seqfn</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 </pre></div>
@@ -150,7 +152,7 @@ the feature name on the fly with a custom modifier function:</p>
 <div class="section" id="too-many-files-open-error">
 <h2>&quot;Too many files open&quot; error<a class="headerlink" href="#too-many-files-open-error" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes you may get the error:</p>
-<div class="highlight-python"><div class="highlight"><pre>* Too many files open -- please submit a bug report so that this can be fixed
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Too</span> <span class="n">many</span> <span class="n">files</span> <span class="nb">open</span> <span class="o">--</span> <span class="n">please</span> <span class="n">submit</span> <span class="n">a</span> <span class="n">bug</span> <span class="n">report</span> <span class="n">so</span> <span class="n">that</span> <span class="n">this</span> <span class="n">can</span> <span class="n">be</span> <span class="n">fixed</span>
 </pre></div>
 </div>
 <p>This error occurs because you have hit your operating system's limit on the
@@ -169,22 +171,22 @@ a BEDTools program that already does what you want, and will do it faster.</p>
 <p>Here is a first draft.  Note that the for-loop creates a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>
 object each iteration, and the <code class="docutils literal"><span class="pre">result</span></code> is yet another <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>.  This
 will version will raise the &quot;Too many files open&quot; error.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># This version will be slow and, with many exons, will raise the &quot;Too many</span>
-<span class="c"># files open&quot; error</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># This version will be slow and, with many exons, will raise the &quot;Too many</span>
+<span class="c1"># files open&quot; error</span>
 
 <span class="kn">import</span> <span class="nn">pybedtools</span>
-<span class="n">all_features</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;annotations.gff&#39;</span><span class="p">)</span>
-<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;exons.gff&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">all_features</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;annotations.gff&#39;</span><span class="p">)</span>
+<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;exons.gff&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">all_features</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;exon&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;exon&#39;</span><span class="p">:</span>
         <span class="k">continue</span>
 
     <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
 
     <span class="n">bt</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">([</span><span class="n">feature</span><span class="p">])</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">bt</span><span class="o">.</span><span class="n">multi_bam_coverage</span><span class="p">(</span><span class="n">bams</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;reads1.bam&#39;</span><span class="p">,</span> <span class="s">&#39;reads2.bam&#39;</span><span class="p">])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">bt</span><span class="o">.</span><span class="n">multi_bam_coverage</span><span class="p">(</span><span class="n">bams</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;reads1.bam&#39;</span><span class="p">,</span> <span class="s1">&#39;reads2.bam&#39;</span><span class="p">])</span>
 
-    <span class="c"># ...do something with result</span>
+    <span class="c1"># ...do something with result</span>
 
 <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -197,17 +199,17 @@ one that opens <code class="docutils literal"><span class="pre">annotations.gff<
 saved, and <code class="docutils literal"><span class="pre">result</span></code>.  (Note that the one created from the filter operation is
 a &quot;streaming&quot; BedTool, so there is no open file that will contribute to the
 total).</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># This is the recommended way.</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># This is the recommended way.</span>
 
 <span class="kn">import</span> <span class="nn">pybedtools</span>
 
-<span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s">&#39;annotations.gff&#39;</span><span class="p">)</span>\
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;exon&#39;</span><span class="p">)</span>\
-    <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s">&#39;exons.gff&#39;</span><span class="p">)</span>
+<span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;annotations.gff&#39;</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;exon&#39;</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;exons.gff&#39;</span><span class="p">)</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">multi_bam_coverage</span><span class="p">(</span><span class="n">bams</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;reads1.bam&#39;</span><span class="p">,</span> <span class="s">&#39;reads2.bam&#39;</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">multi_bam_coverage</span><span class="p">(</span><span class="n">bams</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;reads1.bam&#39;</span><span class="p">,</span> <span class="s1">&#39;reads2.bam&#39;</span><span class="p">])</span>
 
-<span class="c"># ...do something with result</span>
+<span class="c1"># ...do something with result</span>
 </pre></div>
 </div>
 </div>
@@ -256,9 +258,6 @@ total).</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -281,7 +280,7 @@ total).</p>
         <li class="right" >
           <a href="flow-of-commands.html" title="Under the hood"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.6 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li> 
       </ul>
     </div>
 
@@ -290,8 +289,8 @@ total).</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
       <a href="_sources/FAQs.txt"
