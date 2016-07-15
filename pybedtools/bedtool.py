@@ -890,8 +890,8 @@ class BedTool(object):
         # iterate over all the features in the gene.
         s = self.sort()
         if self.file_type == "gff":
-            exon_iter = BedTool((f for f in s if f[2] == gene)).saveas()
-            gene_iter = BedTool((f for f in s if f[2] == exon)).saveas()
+            exon_iter = BedTool((f for f in s if f[2] == exon)).saveas()
+            gene_iter = BedTool((f for f in s if f[2] == gene)).saveas()
 
         elif self.file_type == "bed":
             if s.field_count() == 12:
