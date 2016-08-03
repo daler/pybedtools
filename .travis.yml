@@ -9,6 +9,7 @@ python:
     - "2.7"
     - "3.3"
     - "3.4"
+    - "3.5"
 
 notifications:
     email:
@@ -44,7 +45,3 @@ install:
 
 script:
     - ./condatest.sh "$TRAVIS_PYTHON_VERSION"
-
-branches:
-    only:
-        - master
