@@ -4,8 +4,6 @@ import sys
 import itertools
 import six
 import time
-import numpy as np
-import pandas
 import pysam
 import pybedtools
 
@@ -335,6 +333,10 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     set([u'gene1', u'peak1'])
 
     """
+    try:
+        import pandas
+    except ImportError:
+        raise ImportError("pandas must be installed to use this function")
     c = 0
     lines = []
     for label, end1_hits, end2_hits in iterator:

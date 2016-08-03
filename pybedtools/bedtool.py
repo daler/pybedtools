@@ -529,7 +529,10 @@ class BedTool(object):
         The fields of the resulting BedTool will match the order of columns in
         the dataframe.
         """
-        import pandas
+        try:
+            import pandas
+        except ImportError:
+            raise ImportError("pandas must be installed to use dataframes")
         if outfile is None:
             outfile = self._tmp()
         default_kwargs = dict(sep='\t', header=False, index=False)

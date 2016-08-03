@@ -322,7 +322,7 @@ for name, data in ext_data.items():
 if __name__ == "__main__":
     min_versions = {
         'pysam': '0.8.1',
-        'pandas': '0.16',
+        #'pandas': '0.16',
     }
     (setup_requires,
      install_requires) = check_dependency_versions(min_versions)
