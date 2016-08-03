@@ -1,4 +1,5 @@
-six
-numpydoc
-pyyaml
 cython
+numpy
+pandas
+pysam
+six
