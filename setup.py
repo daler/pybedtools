@@ -29,19 +29,13 @@ try:
         from ez_setup import use_setuptools
         use_setuptools(version="0.6c5")
     from setuptools import setup, Command, find_packages
-    _have_setuptools = True
 except ImportError:
-    # no setuptools installed
-    from distutils.core import setup, Command
-    _have_setuptools = False
+    sys.exit(
+        'pybedtools uses setuptools (https://packaging.python.org/installing/) '
+        'for installation but setuptools was not found')
 
-if _have_setuptools:
-    setuptools_kwargs = {"zip_safe": False,
-                         "test_suite": "nose.collector"}
-else:
-    setuptools_kwargs = {}
-    if sys.version_info[0] >= 3:
-        sys.exit("Need setuptools to install pybedtools for Python 3.x")
+setuptools_kwargs = {"zip_safe": False,
+                     "test_suite": "nose.collector"}
 
 
 curdir = os.path.abspath(os.path.dirname(__file__))
@@ -118,6 +112,17 @@ def check_dependency_versions(min_versions):
             if not (LooseVersion(pysam_version) >= min_versions['pysam']):
                 raise ImportError("Pysam version is %s. Requires >= %s" %
                                   (pysam_version, min_versions['pysam']))
+
+    if 'numpy' in min_versions:
+        try:
+            from numpy import __version__ as numpy_version
+        except ImportError:
+            install_requires.append('numpy')
+        else:
+            if not (LooseVersion(numpy_version) >= min_versions['numpy']):
+                raise ImportError("numpy version is %s. Requires >= %s" %
+                                  (numpy_version, min_versions['numpy']))
+
 
     if 'pandas' in min_versions:
         try:
@@ -317,13 +322,13 @@ for name, data in ext_data.items():
 if __name__ == "__main__":
     min_versions = {
         'pysam': '0.8.1',
+        'pandas': '0.16',
     }
     (setup_requires,
      install_requires) = check_dependency_versions(min_versions)
-    if _have_setuptools:
-        setuptools_kwargs['setup_requires'] = setup_requires
-        setuptools_kwargs['install_requires'] = install_requires
-        write_version_py()
+    setuptools_kwargs['setup_requires'] = setup_requires
+    setuptools_kwargs['install_requires'] = install_requires
+    write_version_py()
 
     cwd = os.path.abspath(os.path.dirname(__file__))
     if not os.path.exists(os.path.join(cwd, 'PKG-INFO')) and not no_frills:
