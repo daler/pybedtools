@@ -21,7 +21,7 @@ log () {
 
 log "removing existing env pbtpy${PY_VERSION}"
 name=pbtpy${PY_VERSION}
-conda env remove -y -n $name
+conda env list | grep -q $name && conda env remove -y -n $name
 
 log "starting with basic environment"
 conda create -y -n $name --channel bioconda python=${PY_VERSION} bedtools=2.25.0
@@ -48,7 +48,7 @@ python setup.py clean
 
 log "install test requirements"
 source deactivate
-conda env remove -y -n $name
+conda env list | grep -q $name && conda env remove -y -n $name
 conda create -y -n $name --channel bioconda python=${PY_VERSION} \
     --file "requirements.txt" \
     --file "test-requirements.txt" \
