@@ -1,4 +1,4 @@
-#1/bin/bash
+#!/bin/bash
 
 # Installs pybedtools and requirements into a fresh Python 2 or 3 environment
 # and runs tests.
