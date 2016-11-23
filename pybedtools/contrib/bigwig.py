@@ -51,6 +51,28 @@ def bedgraph_to_bigwig(bedgraph, genome, output):
     os.system(' '.join(cmds))
     return output
 
+def bigwig_to_bedgraph(fn, chrom=None, start=None, end=None, udcDir=None):
+    cmds = [
+        'bigWigToBedGraph',
+        fn]
+    if chrom is not None:
+        cmds.extend(['-chrom', chrom])
+    if start is not None:
+        cmds.extend(['-start', start])
+    if end is not None:
+        cmds.extend(['-end', end])
+    if udcDir is not None:
+        cmds.extend(['-udcDir', udcDir])
+
+    outfn = pybedtools.BedTool._tmp()
+    cmds.append(outfn)
+
+    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if p.returncode:
+        raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
+                         % (" ".join(cmds), stderr, stdout))
+    return pybedtools.BedTool(outfn)
 
 def wig_to_bigwig(wig, genome, output):
     genome_file = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
