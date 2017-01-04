@@ -1683,7 +1683,6 @@ class BedTool(object):
         'GATGAGTCT'
         >>> BedTool.seq(('chr1', 1, 10), fn)
         'GATGAGTCT'
-
         """
         if isinstance(loc, six.string_types):
             chrom, start_end = loc.split(":")
@@ -1695,7 +1694,7 @@ class BedTool(object):
         loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
         lseq = loc.sequence(fi=fasta)
         return "".join(
-            [l.rstrip() for l in open(lseq.seqfn, 'rb')
+            [l.rstrip() for l in open(lseq.seqfn, 'r')
              if l[0] != ">"])
 
     @_log_to_history
