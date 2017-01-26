@@ -46,7 +46,48 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.overlap">
 <code class="descclassname">BedTool.</code><code class="descname">overlap</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.overlap" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><blockquote>
+<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">overlap</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> 
+<span class="go">chr1    100     200     feature2        0       +       chr1    155     200     feature5        0       -       45</span>
+<span class="go">chr1    150     500     feature3        0       -       chr1    155     200     feature5        0       -       45</span>
+<span class="go">chr1    900     950     feature4        0       +       chr1    800     901     feature6        0       +       1</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">getOverlap</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Tool:    bedtools overlap (aka getOverlap)
+Version: v2.25.0
+Summary: Computes the amount of overlap (positive values)
+         or distance (negative values) between genome features
+         and reports the result at the end of the same line.
+
+Options: 
+        -i      Input file. Use &quot;stdin&quot; for pipes.
+
+        -cols   Specify the columns (1-based) for the starts and ends of the
+                features for which you&#39;d like to compute the overlap/distance.
+                The columns must be listed in the following order: 
+
+                start1,end1,start2,end2
+
+Example: 
+        $ windowBed -a A.bed -b B.bed -w 10
+        chr1 10  20  A   chr1    15  25  B
+        chr1 10  20  C   chr1    25  35  D
+
+        $ windowBed -a A.bed -b B.bed -w 10 | overlap -i stdin -cols 2,3,6,7
+        chr1 10  20  A   chr1    15  25  B   5
+        chr1 10  20  C   chr1    25  35  D   -5
+</pre></div>
+</div>
+</dd></dl>
 
 </div>
 

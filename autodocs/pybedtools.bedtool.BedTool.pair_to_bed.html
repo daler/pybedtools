@@ -46,7 +46,71 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.pair_to_bed">
 <code class="descclassname">BedTool.</code><code class="descname">pair_to_bed</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.pair_to_bed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.pair_to_bed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><blockquote>
+<div>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">pairtobed</span></code>.</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-a</span></code> argument to <code class="docutils literal"><span class="pre">pairToBed</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">pairtobed</span> <span class="p">(</span><span class="n">aka</span> <span class="n">pairToBed</span><span class="p">)</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">25.0</span>
+<span class="n">Summary</span><span class="p">:</span> <span class="n">Report</span> <span class="n">overlaps</span> <span class="n">between</span> <span class="n">a</span> <span class="n">BEDPE</span> <span class="nb">file</span> <span class="ow">and</span> <span class="n">a</span> <span class="n">BED</span><span class="o">/</span><span class="n">GFF</span><span class="o">/</span><span class="n">VCF</span> <span class="nb">file</span><span class="o">.</span>
+
+<span class="n">Usage</span><span class="p">:</span>   <span class="n">bedtools</span> <span class="n">pairtobed</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">a</span> <span class="o">&lt;</span><span class="n">bedpe</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span>
+
+<span class="n">Options</span><span class="p">:</span> 
+        <span class="o">-</span><span class="n">abam</span>   <span class="n">The</span> <span class="n">A</span> <span class="nb">input</span> <span class="nb">file</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">BAM</span> <span class="n">format</span><span class="o">.</span>  <span class="n">Output</span> <span class="n">will</span> <span class="n">be</span> <span class="n">BAM</span> <span class="k">as</span> <span class="n">well</span><span class="o">.</span> <span class="n">Replaces</span> <span class="o">-</span><span class="n">a</span><span class="o">.</span>
+                <span class="o">-</span> <span class="n">Requires</span> <span class="n">BAM</span> <span class="n">to</span> <span class="n">be</span> <span class="n">grouped</span> <span class="ow">or</span> <span class="nb">sorted</span> <span class="n">by</span> <span class="n">query</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="n">ubam</span>   <span class="n">Write</span> <span class="n">uncompressed</span> <span class="n">BAM</span> <span class="n">output</span><span class="o">.</span> <span class="n">Default</span> <span class="n">writes</span> <span class="n">compressed</span> <span class="n">BAM</span><span class="o">.</span>
+
+                <span class="ow">is</span> <span class="n">to</span> <span class="n">write</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">BAM</span> <span class="n">when</span> <span class="n">using</span> <span class="o">-</span><span class="n">abam</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="n">bedpe</span>  <span class="n">When</span> <span class="n">using</span> <span class="n">BAM</span> <span class="nb">input</span> <span class="p">(</span><span class="o">-</span><span class="n">abam</span><span class="p">),</span> <span class="n">write</span> <span class="n">output</span> <span class="k">as</span> <span class="n">BEDPE</span><span class="o">.</span> <span class="n">The</span> <span class="n">default</span>
+                <span class="ow">is</span> <span class="n">to</span> <span class="n">write</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">BAM</span> <span class="n">when</span> <span class="n">using</span> <span class="o">-</span><span class="n">abam</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="n">ed</span>     <span class="n">Use</span> <span class="n">BAM</span> <span class="n">total</span> <span class="n">edit</span> <span class="n">distance</span> <span class="p">(</span><span class="n">NM</span> <span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">BEDPE</span> <span class="n">score</span><span class="o">.</span>
+                <span class="o">-</span> <span class="n">Default</span> <span class="k">for</span> <span class="n">BEDPE</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">of</span>
+                  <span class="n">of</span> <span class="n">the</span> <span class="n">two</span> <span class="n">mapping</span> <span class="n">qualities</span> <span class="k">for</span> <span class="n">the</span> <span class="n">pair</span><span class="o">.</span>
+                <span class="o">-</span> <span class="n">When</span> <span class="o">-</span><span class="n">ed</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">the</span> <span class="n">total</span> <span class="n">edit</span> <span class="n">distance</span>
+                  <span class="kn">from</span> <span class="nn">the</span> <span class="nn">two</span> <span class="nn">mates</span> <span class="nn">is</span> <span class="nn">reported</span> <span class="nn">as</span> <span class="nn">the</span> <span class="nn">score.</span>
+
+        <span class="o">-</span><span class="n">f</span>      <span class="n">Minimum</span> <span class="n">overlap</span> <span class="n">required</span> <span class="k">as</span> <span class="n">fraction</span> <span class="n">of</span> <span class="n">A</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="mf">0.05</span><span class="p">)</span><span class="o">.</span>
+                <span class="n">Default</span> <span class="ow">is</span> <span class="mf">1E-9</span> <span class="p">(</span><span class="n">effectively</span> <span class="mi">1</span><span class="n">bp</span><span class="p">)</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="n">s</span>      <span class="n">Require</span> <span class="n">same</span> <span class="n">strandedness</span> <span class="n">when</span> <span class="n">finding</span> <span class="n">overlaps</span><span class="o">.</span>
+                <span class="n">Default</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">ignore</span> <span class="n">stand</span><span class="o">.</span>
+                <span class="n">Not</span> <span class="n">applicable</span> <span class="k">with</span> <span class="o">-</span><span class="nb">type</span> <span class="n">inspan</span> <span class="ow">or</span> <span class="o">-</span><span class="nb">type</span> <span class="n">outspan</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="n">S</span>      <span class="n">Require</span> <span class="n">different</span> <span class="n">strandedness</span> <span class="n">when</span> <span class="n">finding</span> <span class="n">overlaps</span><span class="o">.</span>
+                <span class="n">Default</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">ignore</span> <span class="n">stand</span><span class="o">.</span>
+                <span class="n">Not</span> <span class="n">applicable</span> <span class="k">with</span> <span class="o">-</span><span class="nb">type</span> <span class="n">inspan</span> <span class="ow">or</span> <span class="o">-</span><span class="nb">type</span> <span class="n">outspan</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="nb">type</span>   <span class="n">Approach</span> <span class="n">to</span> <span class="n">reporting</span> <span class="n">overlaps</span> <span class="n">between</span> <span class="n">BEDPE</span> <span class="ow">and</span> <span class="n">BED</span><span class="o">.</span>
+
+                <span class="n">either</span>  <span class="n">Report</span> <span class="n">overlaps</span> <span class="k">if</span> <span class="n">either</span> <span class="n">end</span> <span class="n">of</span> <span class="n">A</span> <span class="n">overlaps</span> <span class="n">B</span><span class="o">.</span>
+                        <span class="o">-</span> <span class="n">Default</span><span class="o">.</span>
+                <span class="n">neither</span> <span class="n">Report</span> <span class="n">A</span> <span class="k">if</span> <span class="n">neither</span> <span class="n">end</span> <span class="n">of</span> <span class="n">A</span> <span class="n">overlaps</span> <span class="n">B</span><span class="o">.</span>
+                <span class="n">both</span>    <span class="n">Report</span> <span class="n">overlaps</span> <span class="k">if</span> <span class="n">both</span> <span class="n">ends</span> <span class="n">of</span> <span class="n">A</span> <span class="n">overlap</span>  <span class="n">B</span><span class="o">.</span>
+                <span class="n">xor</span>     <span class="n">Report</span> <span class="n">overlaps</span> <span class="k">if</span> <span class="n">one</span> <span class="ow">and</span> <span class="n">only</span> <span class="n">one</span> <span class="n">end</span> <span class="n">of</span> <span class="n">A</span> <span class="n">overlaps</span> <span class="n">B</span><span class="o">.</span>
+                <span class="n">notboth</span> <span class="n">Report</span> <span class="n">overlaps</span> <span class="k">if</span> <span class="n">neither</span> <span class="n">end</span> <span class="ow">or</span> <span class="n">one</span> <span class="ow">and</span> <span class="n">only</span> <span class="n">one</span> 
+                        <span class="n">end</span> <span class="n">of</span> <span class="n">A</span> <span class="n">overlap</span> <span class="n">B</span><span class="o">.</span>  <span class="n">That</span> <span class="ow">is</span><span class="p">,</span> <span class="n">xor</span> <span class="o">+</span> <span class="n">neither</span><span class="o">.</span>
+
+                <span class="n">ispan</span>   <span class="n">Report</span> <span class="n">overlaps</span> <span class="n">between</span> <span class="p">[</span><span class="n">end1</span><span class="p">,</span> <span class="n">start2</span><span class="p">]</span> <span class="n">of</span> <span class="n">A</span> <span class="ow">and</span> <span class="n">B</span><span class="o">.</span>
+                        <span class="o">-</span> <span class="n">Note</span><span class="p">:</span> <span class="n">If</span> <span class="n">chrom1</span> <span class="o">&lt;&gt;</span> <span class="n">chrom2</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">.</span>
+
+                <span class="n">ospan</span>   <span class="n">Report</span> <span class="n">overlaps</span> <span class="n">between</span> <span class="p">[</span><span class="n">start1</span><span class="p">,</span> <span class="n">end2</span><span class="p">]</span> <span class="n">of</span> <span class="n">A</span> <span class="ow">and</span> <span class="n">B</span><span class="o">.</span>
+                        <span class="o">-</span> <span class="n">Note</span><span class="p">:</span> <span class="n">If</span> <span class="n">chrom1</span> <span class="o">&lt;&gt;</span> <span class="n">chrom2</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">.</span>
+
+                <span class="n">notispan</span>        <span class="n">Report</span> <span class="n">A</span> <span class="k">if</span> <span class="n">ispan</span> <span class="n">of</span> <span class="n">A</span> <span class="n">doesn</span><span class="s1">&#39;t overlap B.</span>
+                                <span class="o">-</span> <span class="n">Note</span><span class="p">:</span> <span class="n">If</span> <span class="n">chrom1</span> <span class="o">&lt;&gt;</span> <span class="n">chrom2</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">.</span>
+
+                <span class="n">notospan</span>        <span class="n">Report</span> <span class="n">A</span> <span class="k">if</span> <span class="n">ospan</span> <span class="n">of</span> <span class="n">A</span> <span class="n">doesn</span><span class="s1">&#39;t overlap B.</span>
+                                <span class="o">-</span> <span class="n">Note</span><span class="p">:</span> <span class="n">If</span> <span class="n">chrom1</span> <span class="o">&lt;&gt;</span> <span class="n">chrom2</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">.</span>
+
+<span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">BEDTools</span> <span class="n">manual</span> <span class="k">for</span> <span class="n">BEDPE</span> <span class="n">format</span><span class="o">.</span>
+</pre></div>
+</div>
+</dd></dl>
 
 </div>
 

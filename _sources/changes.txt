@@ -2,6 +2,17 @@
 
 Changelog
 =========
+Changes in v0.7.9
+-----------------
+Minor bugfix release:
+
+* add `contrib.bigwig.bigwigtobedgraph` (thanks Justin Fear)
+* fix `BedTool.seq()` in Python 3
+* fix intron creation (`#182 <https://github.com/daler/pybedtools/pull/182>`_, thanks @mmendez12)
+* add `six` as an explicit requirement (`#184 <https://github.com/daler/pybedtools/pull/184>`_, thanks @jrdemasi)
+* improvements to setup (`<https://github.com/daler/pybedtools/issues/185>`_)
+* make pandas fully optional
+
 Changes in v0.7.8
 -----------------
 * Be more careful about BAM vs bgzipped files (#168)

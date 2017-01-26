@@ -93,6 +93,28 @@
     <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">output</span></div>
 
+<span class="k">def</span> <span class="nf">bigwig_to_bedgraph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">udcDir</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;bigWigToBedGraph&#39;</span><span class="p">,</span>
+        <span class="n">fn</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">chrom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-chrom&#39;</span><span class="p">,</span> <span class="n">chrom</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-start&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-end&#39;</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">udcDir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-udcDir&#39;</span><span class="p">,</span> <span class="n">udcDir</span><span class="p">])</span>
+
+    <span class="n">outfn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
+    <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outfn</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cmds: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">stderr:</span><span class="si">%s</span><span class="se">\n</span><span class="s2">stdout:</span><span class="si">%s</span><span class="s2">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">),</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">outfn</span><span class="p">)</span>
 
 <div class="viewcode-block" id="wig_to_bigwig"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.bigwig.wig_to_bigwig.html#pybedtools.contrib.bigwig.wig_to_bigwig">[docs]</a><span class="k">def</span> <span class="nf">wig_to_bigwig</span><span class="p">(</span><span class="n">wig</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
     <span class="n">genome_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span>

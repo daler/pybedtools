@@ -46,7 +46,44 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.expand">
 <code class="descclassname">BedTool.</code><code class="descname">expand</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.expand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.expand" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><blockquote>
+<div>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">expand</span></code></div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">expandCols</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Tool:    bedtools expand 
+Version: v2.25.0
+Summary: Replicate lines in a file based on columns of comma-separated values.
+
+Usage:   bedtools expand -c [COLS] 
+Options: 
+        -i      Input file. Assumes &quot;stdin&quot; if omitted.
+
+        -c      Specify the column (1-based) that should be summarized.
+                - Required.
+Examples: 
+  $ cat test.txt
+  chr1  10      20      1,2,3   10,20,30
+  chr1  40      50      4,5,6   40,50,60
+
+  $ bedtools expand test.txt -c 5
+  chr1  10      20      1,2,3   10
+  chr1  10      20      1,2,3   20
+  chr1  10      20      1,2,3   30
+  chr1  40      50      4,5,6   40
+  chr1  40      50      4,5,6   50
+  chr1  40      50      4,5,6   60
+
+  $ bedtools expand test.txt -c 4,5
+  chr1  10      20      1       10
+  chr1  10      20      2       20
+  chr1  10      20      3       30
+  chr1  40      50      4       40
+  chr1  40      50      5       50
+  chr1  40      50      6       60
+</pre></div>
+</div>
+</dd></dl>
 
 </div>
 

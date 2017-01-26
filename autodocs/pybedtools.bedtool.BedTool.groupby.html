@@ -46,7 +46,120 @@
 <dl class="method">
 <dt id="pybedtools.bedtool.BedTool.groupby">
 <code class="descclassname">BedTool.</code><code class="descname">groupby</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.groupby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.groupby" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><blockquote>
+<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">groupby</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> 
+<span class="go">chr2L   41      70      0</span>
+<span class="go">chr2L   71      130     2</span>
+<span class="go">chr2L   131     170     4</span>
+<span class="go">chr2L   171     200     0</span>
+<span class="go">chr2L   201     220     1</span>
+<span class="go">chr2L   41      130     2</span>
+<span class="go">chr2L   171     220     1</span>
+<span class="go">chr2L   41      220     7</span>
+<span class="go">chr2L   161     230     6</span>
+<span class="go">chr2L   41      220     7</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>For convenience, the file or stream this BedTool points to
+is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">groupBy</span></code></p>
+<p><strong>Original BEDTools help:</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Tool:    bedtools groupby 
+Version: v2.25.0
+Summary: Summarizes a dataset column based upon
+         common column groupings. Akin to the SQL &quot;group by&quot; command.
+
+Usage:   bedtools groupby -g [group**column(s)] -c [op**column(s)] -o [ops] 
+         cat [FILE] | bedtools groupby -g [group**column(s)] -c [op**column(s)] -o [ops] 
+
+Options: 
+        -i              Input file. Assumes &quot;stdin&quot; if omitted.
+
+        -g -grp         Specify the columns (1-based) for the grouping.
+                        The columns must be comma separated.
+                        - Default: 1,2,3
+
+        -c -opCols      Specify the column (1-based) that should be summarized.
+                        - Required.
+
+        -o -ops         Specify the operation that should be applied to opCol.
+                        Valid operations:
+                            sum, count, count**distinct, min, max,
+                            mean, median, mode, antimode,
+                            stdev, sstdev (sample standard dev.),
+                            collapse (i.e., print a comma separated list (duplicates allowed)), 
+                            distinct (i.e., print a comma separated list (NO duplicates allowed)), 
+                            distinct**sort**num (as distinct, but sorted numerically, ascending), 
+                            distinct**sort**num**desc (as distinct, but sorted numerically, descending), 
+                            concat   (i.e., merge values into a single, non-delimited string), 
+                            freqdesc (i.e., print desc. list of values:freq)
+                            freqasc (i.e., print asc. list of values:freq)
+                            first (i.e., print first value)
+                            last (i.e., print last value)
+                        - Default: sum
+
+                If there is only column, but multiple operations, all operations will be
+                applied on that column. Likewise, if there is only one operation, but
+                multiple columns, that operation will be applied to all columns.
+                Otherwise, the number of columns must match the the number of operations,
+                and will be applied in respective order.
+                E.g., &quot;-c 5,4,6 -o sum,mean,count&quot; will give the sum of column 5,
+                the mean of column 4, and the count of column 6.
+                The order of output columns will match the ordering given in the command.
+
+        -full           Print all columns from input file.  The first line in the group is used.
+                        Default: print only grouped columns.
+
+        -inheader       Input file has a header line - the first line will be ignored.
+
+        -outheader      Print header line in the output, detailing the column names. 
+                        If the input file has headers (-inheader), the output file
+                        will use the input&#39;s column names.
+                        If the input file has no headers, the output file
+                        will use &quot;col**1&quot;, &quot;col**2&quot;, etc. as the column names.
+
+        -header         same as &#39;-inheader -outheader&#39;
+
+        -ignorecase     Group values regardless of upper/lower case.
+
+        -prec   Sets the decimal precision for output (Default: 5)
+
+        -delim  Specify a custom delimiter for the collapse operations.
+                - Example: -delim &quot;|&quot;
+                - Default: &quot;,&quot;.
+
+Examples: 
+        $ cat ex1.out
+        chr1 10  20  A   chr1    15  25  B.1 1000    ATAT
+        chr1 10  20  A   chr1    25  35  B.2 10000   CGCG
+
+        $ groupBy -i ex1.out -g 1,2,3,4 -c 9 -o sum
+        chr1 10  20  A   11000
+
+        $ groupBy -i ex1.out -grp 1,2,3,4 -opCols 9,9 -ops sum,max
+        chr1 10  20  A   11000   10000
+
+        $ groupBy -i ex1.out -g 1,2,3,4 -c 8,9 -o collapse,mean
+        chr1 10  20  A   B.1,B.2,    5500
+
+        $ cat ex1.out | groupBy -g 1,2,3,4 -c 8,9 -o collapse,mean
+        chr1 10  20  A   B.1,B.2,    5500
+
+        $ cat ex1.out | groupBy -g 1,2,3,4 -c 10 -o concat
+        chr1 10  20  A   ATATCGCG
+
+Notes: 
+        (1)  The input file/stream should be sorted/grouped by the -grp. columns
+        (2)  If -i is unspecified, input is assumed to come from stdin.
+</pre></div>
+</div>
+</dd></dl>
 
 </div>
 

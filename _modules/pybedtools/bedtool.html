@@ -571,7 +571,10 @@
 <span class="sd">        The fields of the resulting BedTool will match the order of columns in</span>
 <span class="sd">        the dataframe.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">pandas</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pandas</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;pandas must be installed to use dataframes&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">outfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
         <span class="n">default_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -932,8 +935,8 @@
         <span class="c1"># iterate over all the features in the gene.</span>
         <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;gff&quot;</span><span class="p">:</span>
-            <span class="n">exon_iter</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">gene</span><span class="p">))</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
-            <span class="n">gene_iter</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">exon</span><span class="p">))</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+            <span class="n">exon_iter</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">exon</span><span class="p">))</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+            <span class="n">gene_iter</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">((</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">gene</span><span class="p">))</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;bed&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">field_count</span><span class="p">()</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
@@ -1722,7 +1725,6 @@
 <span class="sd">        &#39;GATGAGTCT&#39;</span>
 <span class="sd">        &gt;&gt;&gt; BedTool.seq((&#39;chr1&#39;, 1, 10), fn)</span>
 <span class="sd">        &#39;GATGAGTCT&#39;</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
             <span class="n">chrom</span><span class="p">,</span> <span class="n">start_end</span> <span class="o">=</span> <span class="n">loc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
@@ -1734,7 +1736,7 @@
         <span class="n">loc</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%i</span><span class="se">\t</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span> <span class="n">from_string</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">lseq</span> <span class="o">=</span> <span class="n">loc</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="n">fasta</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">lseq</span><span class="o">.</span><span class="n">seqfn</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">lseq</span><span class="o">.</span><span class="n">seqfn</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
              <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">])</span></div>
 
     <span class="nd">@_log_to_history</span>
