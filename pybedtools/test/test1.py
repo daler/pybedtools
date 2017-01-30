@@ -1952,50 +1952,55 @@ def test_issue_156():
     # that lists of filenames works.
     a = pybedtools.example_bedtool('a.bed')
     b = [pybedtools.example_filename('b.bed'), pybedtools.example_filename('c.gff')]
-    assert str(a.intersect(b)) == fix(
+    res = str(a.intersect(b))
+    assert res == fix(
         """
-        chr1	60	100	feature1	0	+
-        chr1	155	200	feature2	0	+
-        chr1	174	200	feature2	0	+
-        chr1	174	200	feature2	0	+
-        chr1	100	200	feature2	0	+
-        chr1	155	200	feature3	0	-
-        chr1	465	500	feature3	0	-
-        chr1	486	500	feature3	0	-
-        chr1	174	326	feature3	0	-
-        chr1	439	500	feature3	0	-
-        chr1	496	500	feature3	0	-
-        chr1	486	500	feature3	0	-
-        chr1	174	326	feature3	0	-
-        chr1	439	500	feature3	0	-
-        chr1	150	269	feature3	0	-
-        chr1	900	901	feature4	0	+
-        chr1	900	913	feature4	0	+
-        chr1	900	913	feature4	0	+
-        chr1	900	950	feature4	0	+
-        """)
-    assert str(a.intersect(b, wb=True, names=['B', 'C'])) == fix(
+        chr1    59      100     feature1        0       +
+        chr1    155     200     feature2        0       +
+        chr1    173     200     feature2        0       +
+        chr1    173     200     feature2        0       +
+        chr1    100     200     feature2        0       +
+        chr1    155     200     feature3        0       -
+        chr1    464     500     feature3        0       -
+        chr1    485     500     feature3        0       -
+        chr1    173     326     feature3        0       -
+        chr1    438     500     feature3        0       -
+        chr1    495     500     feature3        0       -
+        chr1    485     500     feature3        0       -
+        chr1    173     326     feature3        0       -
+        chr1    438     500     feature3        0       -
+        chr1    150     269     feature3        0       -
+        chr1    900     901     feature4        0       +
+        chr1    900     913     feature4        0       +
+        chr1    900     913     feature4        0       +
+        chr1    900     950     feature4        0       +
+        """), res
+
+    res = str(a.intersect(b, wb=True, names=['B', 'C']))
+    assert res == fix(
         """
-        chr1	60	100	feature1	0	+	C	chr1	ucb	gene	60	269	.	-	.	ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_scaffold_1000119;rname=thaliana_1_6160_6269
+        chr1	59	100	feature1	0	+	C	chr1	ucb	gene	60	269	.	-	.	ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_scaffold_1000119;rname=thaliana_1_6160_6269
         chr1	155	200	feature2	0	+	B	chr1	155	200	feature5	0	-
-        chr1	174	200	feature2	0	+	C	chr1	ucb	CDS	174	326	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
-        chr1	174	200	feature2	0	+	C	chr1	ucb	mRNA	174	326	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
+        chr1	173	200	feature2	0	+	C	chr1	ucb	CDS	174	326	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
+        chr1	173	200	feature2	0	+	C	chr1	ucb	mRNA	174	326	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
         chr1	100	200	feature2	0	+	C	chr1	ucb	gene	60	269	.	-	.	ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_scaffold_1000119;rname=thaliana_1_6160_6269
         chr1	155	200	feature3	0	-	B	chr1	155	200	feature5	0	-
-        chr1	465	500	feature3	0	-	C	chr1	ucb	gene	465	805	.	+	.	ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805
-        chr1	486	500	feature3	0	-	C	chr1	ucb	CDS	486	605	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
-        chr1	174	326	feature3	0	-	C	chr1	ucb	CDS	174	326	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
-        chr1	439	500	feature3	0	-	C	chr1	ucb	CDS	439	630	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
-        chr1	496	500	feature3	0	-	C	chr1	ucb	mRNA	496	576	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
-        chr1	486	500	feature3	0	-	C	chr1	ucb	mRNA	486	605	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
-        chr1	174	326	feature3	0	-	C	chr1	ucb	mRNA	174	326	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
-        chr1	439	500	feature3	0	-	C	chr1	ucb	mRNA	439	899	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
+        chr1	464	500	feature3	0	-	C	chr1	ucb	gene	465	805	.	+	.	ID=thaliana_1_465_805;match=scaffold_801404.1;rname=thaliana_1_465_805
+        chr1	485	500	feature3	0	-	C	chr1	ucb	CDS	486	605	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
+        chr1	173	326	feature3	0	-	C	chr1	ucb	CDS	174	326	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
+        chr1	438	500	feature3	0	-	C	chr1	ucb	CDS	439	630	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
+        chr1	495	500	feature3	0	-	C	chr1	ucb	mRNA	496	576	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
+        chr1	485	500	feature3	0	-	C	chr1	ucb	mRNA	486	605	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
+        chr1	173	326	feature3	0	-	C	chr1	ucb	mRNA	174	326	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
+        chr1	438	500	feature3	0	-	C	chr1	ucb	mRNA	439	899	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
         chr1	150	269	feature3	0	-	C	chr1	ucb	gene	60	269	.	-	.	ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_scaffold_1000119;rname=thaliana_1_6160_6269
         chr1	900	901	feature4	0	+	B	chr1	800	901	feature6	0	+
         chr1	900	913	feature4	0	+	C	chr1	ucb	mRNA	631	913	.	+	.	ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G01010
         chr1	900	913	feature4	0	+	C	chr1	ucb	CDS	760	913	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
         chr1	900	950	feature4	0	+	C	chr1	ucb	CDS	706	1095	.	+	.	Parent=AT1G01010.mRNA;rname=AT1G01010
-        """)
+        """), res
+
+
 
 def test_issue_157():
     # the problem here was that converting to file from dataframe didn't pass
