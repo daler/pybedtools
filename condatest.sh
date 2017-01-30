@@ -24,7 +24,7 @@ name=pbtpy${PY_VERSION}
 conda env list | grep -q $name && conda env remove -y -n $name
 
 log "starting with basic environment"
-conda create -y -n $name --channel bioconda python=${PY_VERSION} bedtools=2.25.0
+conda create -y -n $name --channel bioconda python=${PY_VERSION} bedtools
 source activate $name
 
 log "temporarily install cython"
