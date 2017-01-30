@@ -25,6 +25,7 @@ pybedtools.contrib.plotting.Track
       ~Track.convert_yunits
       ~Track.draw
       ~Track.findobj
+      ~Track.format_cursor_data
       ~Track.get_agg_filter
       ~Track.get_alpha
       ~Track.get_animated
@@ -37,6 +38,7 @@ pybedtools.contrib.plotting.Track
       ~Track.get_clip_path
       ~Track.get_cmap
       ~Track.get_contains
+      ~Track.get_cursor_data
       ~Track.get_dashes
       ~Track.get_datalim
       ~Track.get_edgecolor
@@ -44,6 +46,7 @@ pybedtools.contrib.plotting.Track
       ~Track.get_facecolor
       ~Track.get_facecolors
       ~Track.get_figure
+      ~Track.get_fill
       ~Track.get_gid
       ~Track.get_hatch
       ~Track.get_label
@@ -95,7 +98,6 @@ pybedtools.contrib.plotting.Track
       ~Track.set_clip_path
       ~Track.set_cmap
       ~Track.set_color
-      ~Track.set_colorbar
       ~Track.set_contains
       ~Track.set_dashes
       ~Track.set_edgecolor
@@ -110,7 +112,6 @@ pybedtools.contrib.plotting.Track
       ~Track.set_linestyles
       ~Track.set_linewidth
       ~Track.set_linewidths
-      ~Track.set_lod
       ~Track.set_lw
       ~Track.set_norm
       ~Track.set_offset_position
@@ -127,6 +128,7 @@ pybedtools.contrib.plotting.Track
       ~Track.set_url
       ~Track.set_urls
       ~Track.set_verts
+      ~Track.set_verts_and_codes
       ~Track.set_visible
       ~Track.set_zorder
       ~Track.to_rgba
@@ -143,7 +145,11 @@ pybedtools.contrib.plotting.Track
    .. autosummary::
    
       ~Track.aname
+      ~Track.axes
       ~Track.midpoint
+      ~Track.mouseover
+      ~Track.stale
+      ~Track.sticky_edges
       ~Track.zorder
    
    
