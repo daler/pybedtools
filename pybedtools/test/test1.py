@@ -2071,3 +2071,26 @@ def test_issue_169():
     line = gzip.open(fn, 'rt').readline()
     assert str(line).startswith('#'), line
 
+def test_issue_196():
+    bed = pybedtools.BedTool(
+        '''
+        8 129185980 129186130 A 0.1
+        8 129185980 129186130 B 0.2
+        ''', from_string=True)
+    bed = bed.tabix()
+    snp = pybedtools.BedTool("8\t129186110\t129186111\trs72722756", from_string=True)
+    intersection = bed.tabix_intervals('{}:{}-{}'.format("8",129186110,129186111)).intersect(snp, wa=True, wb=True)
+
+    # prior to fixing this issue, intervals would be concatenated. This was
+    # because pysam.ctabix.tabixIterator does not include newlines when
+    # yielding. The incorrect output was this:
+    '''
+    8   129185980   129186130   A   0.18   129185980   129186130   B   0.2   8   129186110   129186111   rs72722756
+    '''
+
+    # but should be this:
+    assert intersection == fix(
+        '''
+        8       129185980       129186130       A       0.1     8       129186110       129186111       rs72722756
+        8       129185980       129186130       B       0.2     8       129186110       129186111       rs72722756
+        ''')

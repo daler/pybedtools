@@ -620,7 +620,13 @@ class BedTool(object):
         interval = helpers.string_to_interval(interval_or_string)
         tbx = pysam.TabixFile(self.fn)
         results = tbx.fetch(str(interval.chrom), interval.start, interval.stop)
-        return BedTool(results)
+
+        # pysam.ctabix.TabixIterator does not include newlines when yielding so
+        # we need to add them.
+        def gen():
+            for i in results:
+                yield i + '\n'
+        return BedTool(gen())
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
