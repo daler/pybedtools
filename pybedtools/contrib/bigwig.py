@@ -48,8 +48,13 @@ def bedgraph_to_bigwig(bedgraph, genome, output):
         bedgraph.fn,
         genome_file,
         output]
-    os.system(' '.join(cmds))
+    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if p.returncode:
+        raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
+                         % (" ".join(cmds), stderr, stdout))
     return output
+
 
 def bigwig_to_bedgraph(fn, chrom=None, start=None, end=None, udcDir=None):
     cmds = [
@@ -74,6 +79,7 @@ def bigwig_to_bedgraph(fn, chrom=None, start=None, end=None, udcDir=None):
                          % (" ".join(cmds), stderr, stdout))
     return pybedtools.BedTool(outfn)
 
+
 def wig_to_bigwig(wig, genome, output):
     genome_file = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
     cmds = [
@@ -81,7 +87,11 @@ def wig_to_bigwig(wig, genome, output):
         wig.fn,
         genome_file,
         output]
-    os.system(' '.join(cmds))
+    subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = p.communicate()
+    if p.returncode:
+        raise ValueError('cmds: %s\nstderr:%s\nstdout:%s'
+                         % (' '.join(cmds), stderr, stdout))
     return output
 
 
@@ -110,4 +120,16 @@ def bam_to_bigwig(bam, genome, output, scale=False):
         x.fn,
         genome_file,
         output]
-    os.system(' '.join(cmds))
+    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    stdout, stderr = p.communicate()
+
+    if p.returncode and  'bedSort' in stderr:
+        print('BAM header was not sorted; sorting bedGraph')
+        y = x.sort()
+        cmds[1] = y.fn
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        stdout, stderr = p.communicate()
+
+    if p.returncode:
+        raise ValueError('cmds: %s\nstderr: %s\nstdout: %s'
+                         % (' '.join(cmds), stderr, stdout))
