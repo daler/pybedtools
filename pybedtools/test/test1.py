@@ -2094,3 +2094,21 @@ def test_issue_196():
         8       129185980       129186130       A       0.1     8       129186110       129186111       rs72722756
         8       129185980       129186130       B       0.2     8       129186110       129186111       rs72722756
         ''')
+
+
+def test_issue_178():
+    fn = pybedtools.example_filename('gdc.othersort.bam')
+    pybedtools.contrib.bigwig.bam_to_bigwig(fn, genome='dm3', output='tmp.bw')
+    x = pybedtools.contrib.bigwig.bigwig_to_bedgraph('tmp.bw')
+    assert x == fix(
+        '''
+        chr2L   70      75      1
+        chr2L   140     145     1
+        chr2L   150     155     1
+        chr2L   160     165     1
+        chr2L   210     215     1
+        chrX    10      15      1
+        chrX    70      75      1
+        chrX    140     145     1
+        ''')
+    os.unlink('tmp.bw')
