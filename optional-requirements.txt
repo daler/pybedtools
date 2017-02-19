@@ -1,3 +1,6 @@
 bedtools
 matplotlib
 htslib
+ucsc-bigwigtobedgraph
+ucsc-bedgraphtobigwig
+ucsc-wigtobigwig
