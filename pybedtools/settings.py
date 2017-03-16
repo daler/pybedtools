@@ -31,6 +31,7 @@ _prog_names = {
     'complementBed': 'complement',
     'subtractBed': 'subtract',
     'slopBed': 'slop',
+    'shiftBed': 'shift',
     'flankBed': 'flank',
     'sortBed': 'sort',
     'randomBed': 'random',
