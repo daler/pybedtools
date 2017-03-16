@@ -1761,6 +1761,51 @@ class BedTool(object):
         """
 
     @_log_to_history
+    @_wraps(prog='shiftBed', implicit='i', other=None, bam=None,
+            uses_genome=True)
+    def shift(self):
+        """
+        Wraps `bedtools shift`.
+
+        Shift each feature by user-defined number of bases. Returns a new BedTool object.
+
+        Example usage:
+
+            >>> a = pybedtools.example_bedtool('a.bed')
+
+            Shift every feature by 5bp:
+
+            >>> b = a.shift(genome='hg19', s=5)
+            >>> print(b) #doctest: +NORMALIZE_WHITESPACE
+            chr1	6	105	feature1	0	+
+            chr1	105	205	feature2	0	+
+            chr1	155	505	feature3	0	-
+            chr1	905	955	feature4	0	+
+            <BLANKLINE>
+
+            Shift features on the '+' strand by -1bp and on '-' strand by +3bp:
+
+            >>> b = a.shift(genome='hg19', p=-1, m=3)
+            >>> print(b) #doctest: +NORMALIZE_WHITESPACE
+            chr1	0	99	feature1	0	+
+            chr1	99	199	feature2	0	+
+            chr1	153	503	feature3	0	-
+            chr1	899	949	feature4	0	+
+            <BLANKLINE>
+
+            Shift features by a fraction of their length (0.50):
+
+            >>> b = a.shift(genome='hg19', pct=True, s=0.50)
+            >>> print(b) #doctest: +NORMALIZE_WHITESPACE
+            chr1	50	149	feature1	0	+
+            chr1	150	250	feature2	0	+
+            chr1	325	675	feature3	0	-
+            chr1	925	975	feature4	0	+
+            <BLANKLINE>
+
+        """
+
+    @_log_to_history
     @_wraps(prog='mergeBed', implicit='i', other=None, bam=None)
     def merge(self):
         """
