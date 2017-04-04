@@ -1,0 +1,6 @@
+pybedtools\.contrib\.long\_range\_interaction\.cis\_trans\_interactions
+=======================================================================
+
+.. currentmodule:: pybedtools.contrib.long_range_interaction
+
+.. autofunction:: cis_trans_interactions

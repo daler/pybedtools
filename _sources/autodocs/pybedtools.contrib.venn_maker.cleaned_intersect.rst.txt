@@ -1,0 +1,6 @@
+pybedtools\.contrib\.venn\_maker\.cleaned\_intersect
+====================================================
+
+.. currentmodule:: pybedtools.contrib.venn_maker
+
+.. autofunction:: cleaned_intersect

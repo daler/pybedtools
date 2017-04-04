@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.with\_attrs
+=========================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.with_attrs

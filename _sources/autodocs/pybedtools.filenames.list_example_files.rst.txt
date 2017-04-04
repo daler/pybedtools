@@ -1,0 +1,6 @@
+pybedtools\.filenames\.list\_example\_files
+===========================================
+
+.. currentmodule:: pybedtools.filenames
+
+.. autofunction:: list_example_files

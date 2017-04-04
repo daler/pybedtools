@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.genome\_coverage
+==============================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.genome_coverage

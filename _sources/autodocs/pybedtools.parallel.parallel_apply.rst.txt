@@ -1,0 +1,6 @@
+pybedtools\.parallel\.parallel\_apply
+=====================================
+
+.. currentmodule:: pybedtools.parallel
+
+.. autofunction:: parallel_apply

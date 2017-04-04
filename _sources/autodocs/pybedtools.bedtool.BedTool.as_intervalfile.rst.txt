@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.as\_intervalfile
+==============================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.as_intervalfile

@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.random\_op
+========================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.random_op

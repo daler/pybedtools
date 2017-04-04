@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.example\_bedtool
+=====================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. autofunction:: example_bedtool

@@ -1,0 +1,6 @@
+pybedtools\.debug\_mode
+=======================
+
+.. currentmodule:: pybedtools
+
+.. autofunction:: debug_mode

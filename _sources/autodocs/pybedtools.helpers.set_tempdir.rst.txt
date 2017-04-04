@@ -1,0 +1,6 @@
+pybedtools\.helpers\.set\_tempdir
+=================================
+
+.. currentmodule:: pybedtools.helpers
+
+.. autofunction:: set_tempdir

@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.total\_coverage
+=============================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.total_coverage

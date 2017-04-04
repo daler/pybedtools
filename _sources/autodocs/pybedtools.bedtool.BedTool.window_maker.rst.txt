@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.window\_maker
+===========================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.window_maker

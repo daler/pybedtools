@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.set\_chromsizes
+=============================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.set_chromsizes

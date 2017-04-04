@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool &mdash; pybedtools 0.7.8 documentation</title>
+    <title>pybedtools.bedtool &#8212; pybedtools 0.7.9 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,17 +14,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.8',
+        VERSION:     '0.7.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.8 documentation" href="../../index.html" />
-    <link rel="up" title="pybedtools" href="../pybedtools.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -634,7 +635,7 @@
             <span class="n">chromdict</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span>
 
         <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
-        <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">chromdict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="n">coords</span>
             <span class="n">start</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
@@ -645,7 +646,7 @@
 
 <div class="viewcode-block" id="BedTool.tabix_intervals"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.tabix_intervals.html#pybedtools.bedtool.BedTool.tabix_intervals">[docs]</a>    <span class="k">def</span> <span class="nf">tabix_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval_or_string</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve all intervals within cooridnates from a &quot;tabixed&quot; BedTool.</span>
+<span class="sd">        Retrieve all intervals within coordinates from a &quot;tabixed&quot; BedTool.</span>
 
 <span class="sd">        Given either a string in &quot;chrom:start-stop&quot; format, or an interval-like</span>
 <span class="sd">        object with chrom, start, stop attributes, return a *streaming* BedTool</span>
@@ -662,7 +663,17 @@
         <span class="n">interval</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">string_to_interval</span><span class="p">(</span><span class="n">interval_or_string</span><span class="p">)</span>
         <span class="n">tbx</span> <span class="o">=</span> <span class="n">pysam</span><span class="o">.</span><span class="n">TabixFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">tbx</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">chrom</span><span class="p">),</span> <span class="n">interval</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+        <span class="c1"># pysam.ctabix.TabixIterator does not include newlines when yielding so</span>
+        <span class="c1"># we need to add them.</span>
+        <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">i</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="c1"># xref #190</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">gen</span><span class="p">())</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+        <span class="n">tbx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="BedTool.tabix"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.tabix.html#pybedtools.bedtool.BedTool.tabix">[docs]</a>    <span class="k">def</span> <span class="nf">tabix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">is_sorted</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1795,6 +1806,51 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools slop`.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="nd">@_log_to_history</span>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s1">&#39;shiftBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">uses_genome</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wraps `bedtools shift`.</span>
+
+<span class="sd">        Shift each feature by user-defined number of bases. Returns a new BedTool object.</span>
+
+<span class="sd">        Example usage:</span>
+
+<span class="sd">            &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;a.bed&#39;)</span>
+
+<span class="sd">            Shift every feature by 5bp:</span>
+
+<span class="sd">            &gt;&gt;&gt; b = a.shift(genome=&#39;hg19&#39;, s=5)</span>
+<span class="sd">            &gt;&gt;&gt; print(b) #doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">            chr1	6	105	feature1	0	+</span>
+<span class="sd">            chr1	105	205	feature2	0	+</span>
+<span class="sd">            chr1	155	505	feature3	0	-</span>
+<span class="sd">            chr1	905	955	feature4	0	+</span>
+<span class="sd">            &lt;BLANKLINE&gt;</span>
+
+<span class="sd">            Shift features on the &#39;+&#39; strand by -1bp and on &#39;-&#39; strand by +3bp:</span>
+
+<span class="sd">            &gt;&gt;&gt; b = a.shift(genome=&#39;hg19&#39;, p=-1, m=3)</span>
+<span class="sd">            &gt;&gt;&gt; print(b) #doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">            chr1	0	99	feature1	0	+</span>
+<span class="sd">            chr1	99	199	feature2	0	+</span>
+<span class="sd">            chr1	153	503	feature3	0	-</span>
+<span class="sd">            chr1	899	949	feature4	0	+</span>
+<span class="sd">            &lt;BLANKLINE&gt;</span>
+
+<span class="sd">            Shift features by a fraction of their length (0.50):</span>
+
+<span class="sd">            &gt;&gt;&gt; b = a.shift(genome=&#39;hg19&#39;, pct=True, s=0.50)</span>
+<span class="sd">            &gt;&gt;&gt; print(b) #doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">            chr1	50	149	feature1	0	+</span>
+<span class="sd">            chr1	150	250	feature2	0	+</span>
+<span class="sd">            chr1	325	675	feature3	0	-</span>
+<span class="sd">            chr1	925	975	feature4	0	+</span>
+<span class="sd">            &lt;BLANKLINE&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@_log_to_history</span>
     <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s1">&#39;mergeBed&#39;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
@@ -3488,8 +3544,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -3509,9 +3565,9 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.7.9 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li> 
       </ul>
     </div>
 
@@ -3520,7 +3576,7 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
     </div>

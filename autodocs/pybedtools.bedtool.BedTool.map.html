@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pybedtools.bedtool.BedTool.map &mdash; pybedtools 0.7.8 documentation</title>
+    <title>pybedtools.bedtool.BedTool.map &#8212; pybedtools 0.7.9 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,17 +14,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.8',
+        VERSION:     '0.7.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.8 documentation" href="../index.html" />
-    <link rel="up" title="pybedtools Reference" href="../autodoc_source.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.genome_coverage" href="pybedtools.bedtool.BedTool.genome_coverage.html" />
     <link rel="prev" title="pybedtools.bedtool.BedTool.coverage" href="pybedtools.bedtool.BedTool.coverage.html" />
    
@@ -52,7 +53,7 @@
 is implicitly passed as the <code class="docutils literal"><span class="pre">-a</span></code> argument to <code class="docutils literal"><span class="pre">mapBed</span></code></p>
 <p><strong>Original BEDTools help:</strong>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="nb">map</span> <span class="p">(</span><span class="n">aka</span> <span class="n">mapBed</span><span class="p">)</span>
-<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">25.0</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">26.0</span>
 <span class="n">Summary</span><span class="p">:</span> <span class="n">Apply</span> <span class="n">a</span> <span class="n">function</span> <span class="n">to</span> <span class="n">a</span> <span class="n">column</span> <span class="kn">from</span> <span class="nn">B</span> <span class="nn">intervals</span> <span class="nn">that</span> <span class="nn">overlap</span> <span class="nn">A.</span>
 
 <span class="n">Usage</span><span class="p">:</span>   <span class="n">bedtools</span> <span class="nb">map</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">a</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span>
@@ -65,7 +66,8 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-a<
         <span class="o">-</span><span class="n">o</span>      <span class="n">Specify</span> <span class="n">the</span> <span class="n">operation</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span> <span class="n">applied</span> <span class="n">to</span> <span class="o">-</span><span class="n">c</span><span class="o">.</span>
                 <span class="n">Valid</span> <span class="n">operations</span><span class="p">:</span>
                     <span class="nb">sum</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">absmin</span><span class="p">,</span> <span class="n">absmax</span><span class="p">,</span>
-                    <span class="n">mean</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span>
+                    <span class="n">mean</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">antimode</span>
+                    <span class="n">stdev</span><span class="p">,</span> <span class="n">sstdev</span>
                     <span class="n">collapse</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span> <span class="k">print</span> <span class="n">a</span> <span class="n">delimited</span> <span class="nb">list</span> <span class="p">(</span><span class="n">duplicates</span> <span class="n">allowed</span><span class="p">)),</span> 
                     <span class="n">distinct</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span> <span class="k">print</span> <span class="n">a</span> <span class="n">delimited</span> <span class="nb">list</span> <span class="p">(</span><span class="n">NO</span> <span class="n">duplicates</span> <span class="n">allowed</span><span class="p">)),</span> 
                     <span class="n">distinct</span><span class="o">**</span><span class="n">sort</span><span class="o">**</span><span class="n">num</span> <span class="p">(</span><span class="k">as</span> <span class="n">distinct</span><span class="p">,</span> <span class="nb">sorted</span> <span class="n">numerically</span><span class="p">,</span> <span class="n">ascending</span><span class="p">),</span>
@@ -168,15 +170,15 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-a<
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.map.txt"
+      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.map.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -202,8 +204,8 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-a<
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.coverage.html" title="pybedtools.bedtool.BedTool.coverage"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.9 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
       </ul>
     </div>
 
@@ -212,11 +214,11 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-a<
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
-      <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.map.txt"
+      <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.map.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

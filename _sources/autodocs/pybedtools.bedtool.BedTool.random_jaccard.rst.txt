@@ -1,0 +1,6 @@
+pybedtools\.bedtool\.BedTool\.random\_jaccard
+=============================================
+
+.. currentmodule:: pybedtools.bedtool
+
+.. automethod:: BedTool.random_jaccard

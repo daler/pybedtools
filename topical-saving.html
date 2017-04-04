@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Saving BedTool results &mdash; pybedtools 0.7.8 documentation</title>
+    <title>Saving BedTool results &#8212; pybedtools 0.7.9 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,17 +14,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.8',
+        VERSION:     '0.7.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pybedtools 0.7.8 documentation" href="index.html" />
-    <link rel="up" title="Topical Documentation" href="topical-documentation-contents.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Using BedTool objects as iterators/generators" href="topical-iterators.html" />
     <link rel="prev" title="Creating a BedTool" href="topical-create-a-bedtool.html" />
    
@@ -97,22 +98,33 @@ a 2-column file containing the number of intervals in each featuretype:</p>
 </pre></div>
 </div>
 <p>We can read the file created by <code class="docutils literal"><span class="pre">d</span></code> looks like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-<span class="go">UTR 0</span>
-<span class="go">CDS 2</span>
-<span class="go">intron      4</span>
-<span class="go">CDS 0</span>
-<span class="go">UTR 1</span>
-<span class="go">exon        3</span>
-<span class="go">mRNA        7</span>
-<span class="go">CDS 2</span>
-<span class="go">exon        2</span>
-<span class="go">tRNA        2</span>
-<span class="go">gene        7</span>
+<p>(note: the latest version of BEDTools, v2.26.0, causes this to fail. This will
+be fixed in the next BEDTools release (see
+<a class="reference external" href="https://github.com/arq5x/bedtools2/issues/453">https://github.com/arq5x/bedtools2/issues/453</a>,
+<a class="reference external" href="https://github.com/arq5x/bedtools2/issues/450">https://github.com/arq5x/bedtools2/issues/450</a>,
+<a class="reference external" href="https://github.com/arq5x/bedtools2/issues/435">https://github.com/arq5x/bedtools2/issues/435</a>,
+<a class="reference external" href="https://github.com/arq5x/bedtools2/issues/436">https://github.com/arq5x/bedtools2/issues/436</a> for details).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># bedtools v2.26.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="go">30</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># bedtools != v2.26.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># UTR   0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># CDS   2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># intron        4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># CDS   0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># UTR   1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># exon  3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># mRNA  7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># CDS   2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># exon  2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># tRNA  2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># gene  7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># &lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
-<p>Trying to iterate over <code class="docutils literal"><span class="pre">d</span></code> (<code class="docutils literal"><span class="pre">[i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">d]</span></code>) or save it (<code class="docutils literal"><span class="pre">d.saveas()</span></code>) raises
-exceptions. This is because:</p>
+<p>Tryi&gt;&gt;&gt; # ng to iterate over <code class="docutils literal"><span class="pre">d</span></code> (<code class="docutils literal"><span class="pre">[i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">d]</span></code>) or save it (<code class="docutils literal"><span class="pre">d.saveas()</span></code>) raises
+exce&gt;&gt;&gt; # ptions. This is because:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">saveas()</span></code> is expected to return a <code class="docutils literal"><span class="pre">BedTool</span></code> object that can be
 used with other <code class="docutils literal"><span class="pre">BEDTools</span></code> tools. We can't create a <code class="docutils literal"><span class="pre">BedTool</span></code> object out of
@@ -122,13 +134,15 @@ but these lines can't be converted into the supported formats</li>
 </ul>
 <p>To save the output to a filename of your choosing, provide the <code class="docutils literal"><span class="pre">output</span></code>
 argument instead of <code class="docutils literal"><span class="pre">saveas()</span></code>, like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">],</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;counts.txt&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># only works with bedtools != v2.26.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># d = c.groupby(g=[3], c=10, o=[&#39;sum&#39;], output=&#39;counts.txt&#39;)</span>
 </pre></div>
 </div>
 <p>To iterate over the lines of the file, you can use standard Python
 tools, e.g.:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">fn</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">featuretype</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># only works with bedtools != v2.26.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># for line in open(d.fn):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#     featuretype, count = line.strip().split()</span>
 </pre></div>
 </div>
 </div>
@@ -164,15 +178,15 @@ tools, e.g.:</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/topical-saving.txt"
+      <li><a href="_sources/topical-saving.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -198,8 +212,8 @@ tools, e.g.:</p>
         <li class="right" >
           <a href="topical-create-a-bedtool.html" title="Creating a BedTool"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.8 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.9 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
       </ul>
     </div>
 
@@ -208,11 +222,11 @@ tools, e.g.:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
-      <a href="_sources/topical-saving.txt"
+      <a href="_sources/topical-saving.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
