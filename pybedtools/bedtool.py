@@ -592,7 +592,7 @@ class BedTool(object):
             chromdict = helpers.chromsizes(genome)
 
         tmp = self._tmp()
-        fout = open(tmp, 'wb')
+        fout = open(tmp, 'w')
         for chrom, coords in list(chromdict.items()):
             start, stop = coords
             start = str(start)
