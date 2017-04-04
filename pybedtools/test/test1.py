@@ -2112,3 +2112,7 @@ def test_issue_178():
         chrX    140     145     1
         ''')
     os.unlink('tmp.bw')
+
+def test_issue_203():
+    x = pybedtools.example_bedtool('x.bed')
+    x.truncate_to_chrom(genome='hg19')
