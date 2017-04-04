@@ -26,6 +26,7 @@ conda env list | grep -q $name && conda env remove -y -n $name
 log "starting with basic environment"
 conda create -y -n $name --channel bioconda python=${PY_VERSION} \
     bedtools \
+    "htslib<1.4" \
     ucsc-bedgraphtobigwig \
     ucsc-bigwigtobedgraph
 source activate $name
@@ -56,6 +57,7 @@ conda create -y -n $name --channel bioconda python=${PY_VERSION} \
     --file "requirements.txt" \
     --file "test-requirements.txt" \
     --file "optional-requirements.txt"
+
 source activate $name
 
 log "install pybedtools from setup.py in develop mode to trigger re-cythonizing"

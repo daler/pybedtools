@@ -1,6 +1,6 @@
 bedtools
 matplotlib
-htslib
+htslib <1.4
 ucsc-bigwigtobedgraph
 ucsc-bedgraphtobigwig
 ucsc-wigtobigwig
