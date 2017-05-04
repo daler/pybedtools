@@ -152,7 +152,6 @@ def test_tabix_intervals():
 
     # permit fetching of a contig without a specified region
     assert len(a.tabix_intervals('chr1')) == 1
-    assert len(a.tabix_intervals('chr2')) == 0
 
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests
