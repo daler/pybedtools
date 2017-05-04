@@ -617,9 +617,24 @@ class BedTool(object):
         # tabix expects 1-based coords, but BEDTools works with
         # zero-based. pybedtools and pysam also work with zero-based. So we can
         # pass zero-based directly to the pysam tabix interface.
-        interval = helpers.string_to_interval(interval_or_string)
         tbx = pysam.TabixFile(self.fn)
-        results = tbx.fetch(str(interval.chrom), interval.start, interval.stop)
+
+        # If an interval is passed, use its coordinates directly
+        if isinstance(interval_or_string, Interval):
+            interval = interval_or_string
+            chrom, start, end = interval.chrom, interval.start, interval.stop
+        # Otherwise, we can't create an Interval if no start/end are specified,
+        # so parse coordinates from the region string.
+        elif ':' in interval_or_string:
+            chrom, coords = interval_or_string.split(':')
+            start, end = [int(x) for x in coords.split('-')]
+        # If no start/end specified, tabix will return full chromosome
+        else:
+            chrom = interval_or_string
+            start, end = None, None
+
+        # Fetch results.
+        results = tbx.fetch(str(chrom), start, end)
 
         # pysam.ctabix.TabixIterator does not include newlines when yielding so
         # we need to add them.
