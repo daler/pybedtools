@@ -8,6 +8,7 @@ import os
 import sys
 import random
 import string
+import re
 import pprint
 from itertools import islice
 import multiprocessing
@@ -619,19 +620,24 @@ class BedTool(object):
         # pass zero-based directly to the pysam tabix interface.
         tbx = pysam.TabixFile(self.fn)
 
+        coord_re = re.compile(r"(.+):(\d+)-(\d+)?", re.VERBOSE)
+
         # If an interval is passed, use its coordinates directly
         if isinstance(interval_or_string, Interval):
             interval = interval_or_string
             chrom, start, end = interval.chrom, interval.start, interval.stop
-        # Otherwise, we can't create an Interval if no start/end are specified,
-        # so parse coordinates from the region string.
-        elif ':' in interval_or_string:
-            chrom, coords = interval_or_string.split(':')
-            start, end = [int(x) for x in coords.split('-')]
-        # If no start/end specified, tabix will return full chromosome
+        # Parse string directly instead of relying on Interval, in order to
+        # permit full chromosome fetching
         else:
-            chrom = interval_or_string
-            start, end = None, None
+            match = coord_re.search(interval_or_string)
+            # Assume string is contig if it doesn't fit chrom:start-end format
+            if match is None:
+                chrom = interval_or_string
+                start, end = None, None
+            # Otherwise parse the coordinates
+            else:
+                chrom, start, end = match.group(1, 2, 3)
+                start, end = int(start), int(end)
 
         # Fetch results.
         results = tbx.fetch(str(chrom), start, end)
