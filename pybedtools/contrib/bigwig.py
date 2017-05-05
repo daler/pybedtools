@@ -27,7 +27,7 @@ def mapped_read_count(bam, force=False):
     p = subprocess.Popen(cmds, stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
-    if stderr:
+    if p.returncode:
         raise ValueError('samtools says: %s' % stderr)
 
     readcount = float(stdout)
