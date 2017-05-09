@@ -603,7 +603,7 @@ class BedTool(object):
 
     def tabix_intervals(self, interval_or_string):
         """
-        Retrieve all intervals within cooridnates from a "tabixed" BedTool.
+        Retrieve all intervals within coordinates from a "tabixed" BedTool.
 
         Given either a string in "chrom:start-stop" format, or an interval-like
         object with chrom, start, stop attributes, return a *streaming* BedTool
@@ -626,7 +626,11 @@ class BedTool(object):
         def gen():
             for i in results:
                 yield i + '\n'
-        return BedTool(gen())
+
+        # xref #190
+        x = BedTool(gen()).saveas()
+        tbx.close()
+        return x
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
