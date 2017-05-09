@@ -1973,6 +1973,14 @@ class BedTool(object):
         """
         Wraps `bedtools genomecov`.
 
+        Note that some invocations of `bedtools genomecov` do not result in
+        a properly-formatted BED file. For example, the default behavior is to
+        report a histogram of coverage. Iterating over the resulting,
+        non-BED-format file will raise exceptions in pybedtools' parser.
+
+        Consider using the `BedTool.to_dataframe` method to convert these
+        non-BED files into a pandas DataFrame for further use.
+
         Example usage:
 
         BAM file input does not require a genome:
@@ -1993,6 +2001,10 @@ class BedTool(object):
         chr2L	10212	10248	1
         chr2L	10255	10291	1
 
+        Non-BED format results:
+        >>> a = pybedtools.example_bedtool('x.bed')
+        >>> b = a.genome_coverage(genome='dm3')
+        >>> df = b.to_dataframe(names=['chrom', 'depth', 'n', 'chromsize', 'fraction'])
 
 
         """
