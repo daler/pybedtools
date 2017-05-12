@@ -1276,6 +1276,7 @@ class BedTool(object):
             'multiIntersectBed': ' ',
             'mergeBed': ',',
             'intersectBed': ' ',
+            'mapBed': ',',
         }
         stdin = None
 
