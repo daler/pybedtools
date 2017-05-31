@@ -1,4 +1,5 @@
 import pybedtools
+from textwrap import dedent
 from .tfuncs import setup, teardown
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises, assert_equal
@@ -150,21 +151,21 @@ def test_intron_exon_reads():
         'intron_exon_reads.py',
         '--gff', gff, '--bam', bam, '--processes', '2']
     out =  sp.check_output(cmds, universal_newlines=True)
-    assert out == (
-"""\
-      exon only: 3
-    intron only: 3
-intron and exon: 1
-""")
+    assert out == dedent(
+        """\
+        exon_only	3
+        intron_only	3
+        intron_and_exon	1
+        """)
 
 
     cmds = [
         'intron_exon_reads.py',
         '--gff', gff, '--bam', bam, '--processes', '2', '--stranded']
     out =  sp.check_output(cmds, universal_newlines=True)
-    assert out == (
-"""\
-      exon only: 0
-    intron only: 0
-intron and exon: 0
-""")
+    assert out == dedent(
+        """\
+        exon_only	0
+        intron_only	0
+        intron_and_exon	0
+        """)
