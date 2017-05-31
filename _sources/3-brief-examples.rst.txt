@@ -85,6 +85,14 @@ features of :mod:`pybedtools` such as:
 * streaming (for more, see :ref:`BedTools as iterators`)
 * ability to use parallel processing
 
+The first listing has many explanatory comments, and the second listing shows
+the same code with no comments to give more of a feel for :mod:`pybedtools`.
+
 .. literalinclude:: example_3
 
-For more on using :mod:`pybedtools`, continue on to the :ref:`tutorial` . .  .
+Here's the same code but with no comments:
+
+.. literalinclude:: example_3_no_comments
+
+For more on using :mod:`pybedtools`, continue on to the :ref:`tutorial` . .
+.

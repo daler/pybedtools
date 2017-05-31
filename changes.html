@@ -43,6 +43,23 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-v0-7-10">
+<h2>Changes in v0.7.10<a class="headerlink" href="#changes-in-v0-7-10" title="Permalink to this headline">¶</a></h2>
+<p>Various bug fixes and some minor feature additions:</p>
+<ul class="simple">
+<li>Support for comma-separated lists for <code class="docutils literal"><span class="pre">mapBed</span></code> (thanks Chuan-Sheng Foo)</li>
+<li>Support many calls to <code class="docutils literal"><span class="pre">tabix_intervals</span></code> without hitting a &quot;Too many open
+files&quot; error (<a class="reference external" href="https://github.com/daler/pybedtools/issues/190">#190</a>)</li>
+<li>Clarify documentation for <code class="docutils literal"><span class="pre">genome_coverage</span></code> when used with default
+parameters (<a class="reference external" href="https://github.com/daler/pybedtools/issues/113">#113</a>)</li>
+<li>Ignore stderr from samtools on older zlib versions (<a class="reference external" href="https://github.com/daler/pybedtools/issues/209">#209</a>, thanks Gert Hulselmans)</li>
+<li>Support fetching all regions from a chromosome (<a class="reference external" href="https://github.com/daler/pybedtools/issues/210">#201</a>, thanks Matt Stone)</li>
+<li>Add wrapper for <code class="docutils literal"><span class="pre">shiftBed</span></code> (<a class="reference external" href="https://github.com/daler/pybedtools/issues/200">#200</a>, thanks Saket Choudhary)</li>
+<li>Fix <code class="docutils literal"><span class="pre">truncate_to_chrom</span></code> in Python 3 (<a class="reference external" href="https://github.com/daler/pybedtools/issues/203">#203</a>, thanks Saulius Lukauskas)</li>
+<li>When making bigWigs, use <code class="docutils literal"><span class="pre">bedSort</span></code> to ensure the sort order matches that expected by UCSC tools (<a class="reference external" href="https://github.com/daler/pybedtools/issues/178">#178</a>)</li>
+<li>Fix newline handling of <code class="docutils literal"><span class="pre">pysam.ctabix.TabixIterator</span></code> output (<a class="reference external" href="https://github.com/daler/pybedtools/issues/196">#196</a>)</li>
+</ul>
+</div>
 <div class="section" id="changes-in-v0-7-9">
 <h2>Changes in v0.7.9<a class="headerlink" href="#changes-in-v0-7-9" title="Permalink to this headline">¶</a></h2>
 <p>Minor bugfix release:</p>
@@ -627,6 +644,7 @@ where to save output -- no more moving tempfiles</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#changes-in-v0-7-10">Changes in v0.7.10</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-9">Changes in v0.7.9</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-8">Changes in v0.7.8</a></li>
 <li><a class="reference internal" href="#changes-in-v0-7-7">Changes in v0.7.7</a></li>
