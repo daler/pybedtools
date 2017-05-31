@@ -660,9 +660,27 @@
         <span class="c1"># tabix expects 1-based coords, but BEDTools works with</span>
         <span class="c1"># zero-based. pybedtools and pysam also work with zero-based. So we can</span>
         <span class="c1"># pass zero-based directly to the pysam tabix interface.</span>
-        <span class="n">interval</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">string_to_interval</span><span class="p">(</span><span class="n">interval_or_string</span><span class="p">)</span>
         <span class="n">tbx</span> <span class="o">=</span> <span class="n">pysam</span><span class="o">.</span><span class="n">TabixFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">tbx</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">chrom</span><span class="p">),</span> <span class="n">interval</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+
+        <span class="c1"># If an interval is passed, use its coordinates directly</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval_or_string</span><span class="p">,</span> <span class="n">Interval</span><span class="p">):</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="n">interval_or_string</span>
+            <span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">interval</span><span class="o">.</span><span class="n">chrom</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">stop</span>
+        <span class="c1"># Parse string directly instead of relying on Interval, in order to</span>
+        <span class="c1"># permit full chromosome fetching</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">coord_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">interval_or_string</span><span class="p">)</span>
+            <span class="c1"># Assume string is contig if it doesn&#39;t fit chrom:start-end format</span>
+            <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">chrom</span> <span class="o">=</span> <span class="n">interval_or_string</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+            <span class="c1"># Otherwise parse the coordinates</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
+
+        <span class="c1"># Fetch results.</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">tbx</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
 
         <span class="c1"># pysam.ctabix.TabixIterator does not include newlines when yielding so</span>
         <span class="c1"># we need to add them.</span>
@@ -1301,6 +1319,7 @@
             <span class="s1">&#39;multiIntersectBed&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="p">,</span>
             <span class="s1">&#39;mergeBed&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span>
             <span class="s1">&#39;intersectBed&#39;</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="p">,</span>
+            <span class="s1">&#39;mapBed&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="n">stdin</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -2020,6 +2039,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools genomecov`.</span>
 
+<span class="sd">        Note that some invocations of `bedtools genomecov` do not result in</span>
+<span class="sd">        a properly-formatted BED file. For example, the default behavior is to</span>
+<span class="sd">        report a histogram of coverage. Iterating over the resulting,</span>
+<span class="sd">        non-BED-format file will raise exceptions in pybedtools&#39; parser.</span>
+
+<span class="sd">        Consider using the `BedTool.to_dataframe` method to convert these</span>
+<span class="sd">        non-BED files into a pandas DataFrame for further use.</span>
+
 <span class="sd">        Example usage:</span>
 
 <span class="sd">        BAM file input does not require a genome:</span>
@@ -2040,6 +2067,10 @@
 <span class="sd">        chr2L	10212	10248	1</span>
 <span class="sd">        chr2L	10255	10291	1</span>
 
+<span class="sd">        Non-BED format results:</span>
+<span class="sd">        &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;x.bed&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; b = a.genome_coverage(genome=&#39;dm3&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df = b.to_dataframe(names=[&#39;chrom&#39;, &#39;depth&#39;, &#39;n&#39;, &#39;chromsize&#39;, &#39;fraction&#39;])</span>
 
 
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -3576,7 +3607,7 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
     </div>

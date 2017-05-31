@@ -120,7 +120,7 @@ interconversions of BedTool types . . . .</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">filename -&gt; filename:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="docutils literal"><span class="pre">stream=False</span></code>.</p>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="docutils literal"><span class="pre">stream=False</span></code>.</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">stdin</span></code>: <code class="docutils literal"><span class="pre">None</span></code> (the filenames are provided in the BEDTools command)</li>
 <li><code class="docutils literal"><span class="pre">stdout</span></code>: open tempfile object</li>
@@ -129,7 +129,7 @@ interconversions of BedTool types . . . .</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">filename -&gt; open file object:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="docutils literal"><span class="pre">stream=True</span></code> is requested.</p>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="docutils literal"><span class="pre">stream=True</span></code> is requested.</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">stdin</span></code>: None (provided in the cmds)</li>
 <li><code class="docutils literal"><span class="pre">stdout</span></code>: open file object -- specifically, subprocess.PIPE</li>
@@ -139,7 +139,7 @@ next line in subprocess.PIPE</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">open file object -&gt; filename:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">The calling BedTool is from, e.g., subprocess.PIPE and there's
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is from, e.g., subprocess.PIPE and there's
 a saveas() call to &quot;render&quot; to file.</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">stdin</span></code>: each line in the open file object is written to subprocess.PIPE</li>
@@ -150,7 +150,7 @@ supplied filename</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">open file object -&gt; iterator:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">The calling BedTool is usually based on subprocess.PIPE, and the output
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is usually based on subprocess.PIPE, and the output
 will <em>also</em> come from subprocess.PIPE.</p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">stdin</span></code>: each line from the open file is written to subprocess.PIPE</li>
@@ -241,7 +241,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |

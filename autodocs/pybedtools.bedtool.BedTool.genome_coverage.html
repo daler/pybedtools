@@ -49,6 +49,12 @@
 <code class="descclassname">BedTool.</code><code class="descname">genome_coverage</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.genome_coverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.genome_coverage" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">genomecov</span></code>.</p>
+<p>Note that some invocations of <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">genomecov</span></code> do not result in
+a properly-formatted BED file. For example, the default behavior is to
+report a histogram of coverage. Iterating over the resulting,
+non-BED-format file will raise exceptions in pybedtools' parser.</p>
+<p>Consider using the <code class="docutils literal"><span class="pre">BedTool.to_dataframe</span></code> method to convert these
+non-BED files into a pandas DataFrame for further use.</p>
 <p>Example usage:</p>
 <p>BAM file input does not require a genome:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bam&#39;</span><span class="p">)</span>
@@ -68,6 +74,10 @@
 <span class="go">chr2L   10255   10291   1</span>
 </pre></div>
 </div>
+<p>Non-BED format results:
+&gt;&gt;&gt; a = pybedtools.example_bedtool('x.bed')
+&gt;&gt;&gt; b = a.genome_coverage(genome='dm3')
+&gt;&gt;&gt; df = b.to_dataframe(names=['chrom', 'depth', 'n', 'chromsize', 'fraction'])</p>
 </div></blockquote>
 <p>For convenience, the file or stream this BedTool points to
 is implicitly passed as the <code class="docutils literal"><span class="pre">-i</span></code> argument to <code class="docutils literal"><span class="pre">genomeCoverageBed</span></code></p>
@@ -243,7 +253,7 @@ details.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
