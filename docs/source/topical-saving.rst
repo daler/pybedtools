@@ -98,8 +98,8 @@ https://github.com/arq5x/bedtools2/issues/436 for details).
     >>> # <BLANKLINE>
 
 
-Tryi>>> # ng to iterate over `d` (`[i for i in d]`) or save it (`d.saveas()`) raises
-exce>>> # ptions. This is because:
+Trying to iterate over `d` (`[i for i in d]`) or save it (`d.saveas()`) raises
+exceptions. This is because:
 
 * `saveas()` is expected to return a `BedTool` object that can be
   used with other `BEDTools` tools. We can't create a `BedTool` object out of
