@@ -4,6 +4,7 @@ from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises, assert_equal
 from nose.plugins.attrib import attr
 from nose.plugins.skip import SkipTest
+import subprocess as sp
 import os
 import sys
 
@@ -140,3 +141,30 @@ def test_venn_gchart_main():
     assert_raises(SystemExit, venn_gchart.main)
     sys.stderr = orig_stderr
     os.unlink('gcharttmp')
+
+
+def test_intron_exon_reads():
+    gff = pybedtools.example_filename('gdc.gff')
+    bam = pybedtools.example_filename('gdc.bam')
+    cmds = [
+        'intron_exon_reads.py',
+        '--gff', gff, '--bam', bam, '--processes', '2']
+    out =  sp.check_output(cmds, universal_newlines=True)
+    assert out == (
+"""\
+      exon only: 3
+    intron only: 3
+intron and exon: 1
+""")
+
+
+    cmds = [
+        'intron_exon_reads.py',
+        '--gff', gff, '--bam', bam, '--processes', '2', '--stranded']
+    out =  sp.check_output(cmds, universal_newlines=True)
+    assert out == (
+"""\
+      exon only: 0
+    intron only: 0
+intron and exon: 0
+""")
