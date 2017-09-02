@@ -1236,8 +1236,8 @@ class BedTool(object):
 
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
             if compressed:
-                with gzip.open(fn, 'wb') as out_:
-                    with open(iterable.fn, 'rb') as in_:
+                with gzip.open(fn, 'wt') as out_:
+                    with open(iterable.fn, 'rt') as in_:
                         if trackline:
                             out_.write(trackline.strip() + '\n')
                         out_.writelines(in_)
@@ -1249,11 +1249,18 @@ class BedTool(object):
                         out_.writelines(in_)
 
         else:
-            with open(fn, 'w') as out_:
-                for i in iterable:
-                    if isinstance(i, (list, tuple)):
-                        i = create_interval_from_list(list(i))
-                    out_.write(str(i))
+            if compressed:
+                with gzip.open(fn, 'wt') as out_:
+                    for i in iterable:
+                        if isinstance(i, (list, tuple)):
+                            i = create_interval_from_list(list(i))
+                        out_.write(str(i))
+            else:
+                with open(fn, 'w') as out_:
+                    for i in iterable:
+                        if isinstance(i, (list, tuple)):
+                            i = create_interval_from_list(list(i))
+                        out_.write(str(i))
         return fn
 
     def handle_kwargs(self, prog, **kwargs):
