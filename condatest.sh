@@ -32,7 +32,7 @@ conda create -y -n $name --channel bioconda python=${PY_VERSION} \
 source activate $name
 
 log "temporarily install cython"
-conda install cython
+conda install -y cython
 
 log "force re-cythonizing"
 rm -rf dist build
@@ -41,7 +41,7 @@ python setup.py build
 python setup.py sdist
 
 log "uninstall cython"
-conda remove cython
+conda remove -y cython
 
 log "test installation of sdist"
 set -x
