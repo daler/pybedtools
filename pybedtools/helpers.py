@@ -18,11 +18,47 @@ from . import filenames
 from . import genome_registry
 from .logger import logger
 from .cbedtools import create_interval_from_list
-
+import pybedtools
 
 BUFSIZE = 1
 
 _tags = {}
+
+
+def set_bedtools_path(path=""):
+    """
+    Explicitly set path to `BEDTools` installation dir.
+
+    If BEDTools is not available on your system path, specify the path to the
+    dir containing the BEDTools executables (intersectBed, subtractBed, etc)
+    with this function.
+
+    To reset and use the default system path, call this function with no
+    arguments or use path="".
+    """
+    from . import paths
+    paths._set_bedtools_path(path)
+
+
+def get_bedtools_path():
+    """
+    Returns the currently-set path to bedtools
+    """
+    from . import paths
+    return paths._get_bedtools_path()
+
+
+def set_R_path(path=""):
+    """
+    Explicitly set path to `R` installation dir.
+
+    If R is not available on the path, then it can be explicitly
+    specified here.
+
+    Use path="" to reset to default system path.
+    """
+    from . import paths
+    paths._set_R_path(path)
 
 
 def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
@@ -383,32 +419,6 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
     return output
 
 
-def set_bedtools_path(path=""):
-    """
-    Explicitly set path to `BEDTools` installation dir.
-
-    If BEDTools is not available on your system path, specify the path to the
-    dir containing the BEDTools executables (intersectBed, subtractBed, etc)
-    with this function.
-
-    To reset and use the default system path, call this function with no
-    arguments or use path="".
-    """
-    settings._bedtools_path = path
-
-
-def set_R_path(path=""):
-    """
-    Explicitly set path to `R` installation dir.
-
-    If R is not available on the path, then it can be explicitly
-    specified here.
-
-    Use path="" to reset to default system path.
-    """
-    settings._R_path = path
-
-
 def _check_sequence_stderr(x):
     """
     If stderr created by fastaFromBed starts with 'index file', then don't
@@ -706,4 +716,8 @@ def chromsizes(genome):
     except AttributeError:
         return get_chromsizes_from_ucsc(genome)
 
+
+
+
 atexit.register(cleanup)
+

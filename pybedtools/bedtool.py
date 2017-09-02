@@ -152,6 +152,13 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     and `kwargs` are passed verbatim from the wrapped method call. This is used
     for jaccard and reldist methods.
     """
+
+    # NOTE: We are calling each BEDTools program to get its help and adding
+    # that to the docstring of each method. This is run at import time. However
+    # if BEDTools is not on the path at import time, `not_implemented` is set
+    # to True and isn't reset later until the module is reloaded.
+    #
+    # helpers.set_bedtools_path therefore will trigger a module reload.
     not_implemented = False
 
     # Call the program with -h to get help, which prints to stderr.
