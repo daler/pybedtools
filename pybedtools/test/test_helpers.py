@@ -86,8 +86,9 @@ def test_call():
 
     pybedtools.set_bedtools_path('nonexistent')
     a = pybedtools.example_bedtool('a.bed')
-    assert_raises(OSError, a.intersect, a)
+    assert_raises(NotImplementedError, a.intersect, a)
     pybedtools.set_bedtools_path()
+    a = pybedtools.example_bedtool('a.bed')
     assert a.intersect(a,u=True) == a
 
 
