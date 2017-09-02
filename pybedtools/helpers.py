@@ -18,7 +18,6 @@ from . import filenames
 from . import genome_registry
 from .logger import logger
 from .cbedtools import create_interval_from_list
-import pybedtools
 
 BUFSIZE = 1
 
