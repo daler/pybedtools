@@ -2,6 +2,23 @@
 
 Changelog
 =========
+Changes in v0.7.10
+------------------
+Various bug fixes and some minor feature additions:
+
+* Support for comma-separated lists for `mapBed` (thanks Chuan-Sheng Foo)
+* Support many calls to `tabix_intervals` without hitting a "Too many open
+  files" error (`#190 <https://github.com/daler/pybedtools/issues/190>`_)
+* Clarify documentation for `genome_coverage` when used with default
+  parameters (`#113 <https://github.com/daler/pybedtools/issues/113>`_)
+* Ignore stderr from samtools on older zlib versions (`#209 <https://github.com/daler/pybedtools/issues/209>`_, thanks Gert Hulselmans)
+* Support fetching all regions from a chromosome (`#201 <https://github.com/daler/pybedtools/issues/210>`_, thanks Matt Stone)
+* Add wrapper for `shiftBed` (`#200 <https://github.com/daler/pybedtools/issues/200>`_, thanks Saket Choudhary)
+* Fix `truncate_to_chrom` in Python 3 (`#203 <https://github.com/daler/pybedtools/issues/203>`_, thanks Saulius Lukauskas)
+* When making bigWigs, use `bedSort` to ensure the sort order matches that expected by UCSC tools (`#178 <https://github.com/daler/pybedtools/issues/178>`_)
+* Fix newline handling of `pysam.ctabix.TabixIterator` output (`#196 <https://github.com/daler/pybedtools/issues/196>`_)
+
+
 Changes in v0.7.9
 -----------------
 Minor bugfix release:
