@@ -2125,32 +2125,46 @@ def test_issue_218():
 
     orig_path = get_bedtools_path()
 
-    x = pybedtools.example_bedtool('x.bed')
-    x.sort()
+    # As pointed out in #222, example_bedtool behaves differently from BedTool.
+    # example_bedtool is defined in pybedtools.bedtool but pybedtools.BedTool
+    # is imported in pybedtools.__init__. Check both of these methods as x1 and
+    # x2.
+    x1 = pybedtools.example_bedtool('x.bed')
+    x2 = pybedtools.BedTool(pybedtools.example_filename('x.bed'))
+    x1.sort()
+    x2.sort()
     assert "Original BEDTools help" in pybedtools.bedtool.BedTool.sort.__doc__
-    assert "Original BEDTools help" in x.sort.__doc__
+    assert "Original BEDTools help" in x1.sort.__doc__
+    assert "Original BEDTools help" in x2.sort.__doc__
 
     set_bedtools_path('nonexistent')
 
     # the BedTool object that was previously successfully created will now have
     # OSError...
-    assert_raises(OSError, x.sort)
+    assert_raises(OSError, x1.sort)
+    assert_raises(OSError, x2.sort)
 
     # ...but docstring was already created for `x`, so it should stay the same.
     # The class docstring should have been reset.
-    assert "Original BEDTools help" in x.sort.__doc__
+    assert "Original BEDTools help" in x1.sort.__doc__
+    assert "Original BEDTools help" in x2.sort.__doc__
     assert pybedtools.bedtool.BedTool.sort.__doc__ is None
 
     # Creating a new BedTool object now that bedtools is not on the path should
     # detect that, adding a method that raises NotImplementedError...
-    y = pybedtools.example_bedtool('x.bed')
-    assert_raises(NotImplementedError, y.sort)
+    y1 = pybedtools.example_bedtool('x.bed')
+    y2 = pybedtools.BedTool(pybedtools.example_filename('x.bed'))
+    assert_raises(NotImplementedError, y1.sort)
+    assert_raises(NotImplementedError, y2.sort)
 
     # ...and correspondingly no docstring
-    assert y.sort.__doc__ is None
+    assert y1.sort.__doc__ is None
+    assert y2.sort.__doc__ is None
     assert pybedtools.bedtool.BedTool.sort.__doc__ is None
 
     # Reset, and ensure the resetting works
     set_bedtools_path()
-    z = pybedtools.example_bedtool('x.bed')
-    z.sort()
+    z1 = pybedtools.example_bedtool('x.bed')
+    z2 = pybedtools.BedTool(pybedtools.example_filename('x.bed'))
+    z1.sort()
+    z2.sort()

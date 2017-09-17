@@ -5,7 +5,8 @@ This is kept separate from helpers module in order to avoid circular imports in
 setting the bedtools path.
 """
 
-from . import bedtool
+import pybedtools
+from pybedtools import bedtool
 from . import settings
 from six.moves import reload_module
 
@@ -15,6 +16,7 @@ def _set_bedtools_path(path=""):
     settings._bedtools_path = path
     if old_path != path:
         reload_module(bedtool)
+        reload_module(pybedtools)
         return True
 
 
