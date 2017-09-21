@@ -2122,35 +2122,50 @@ def test_issue_203():
 
 def test_issue_218():
     from pybedtools.helpers import set_bedtools_path, get_bedtools_path
+    from pybedtools import BedTool
 
     orig_path = get_bedtools_path()
 
-    x = pybedtools.example_bedtool('x.bed')
-    x.sort()
-    assert "Original BEDTools help" in pybedtools.bedtool.BedTool.sort.__doc__
-    assert "Original BEDTools help" in x.sort.__doc__
+    # As pointed out in #222, example_bedtool behaves differently from BedTool.
+    # example_bedtool is defined in pybedtools.bedtool but pybedtools.BedTool
+    # is imported in pybedtools.__init__. So check various constructors here.
+    for constructor in (
+        lambda x: pybedtools.example_bedtool(x),
+        lambda x: pybedtools.BedTool(pybedtools.example_filename(x)),
+        lambda x: pybedtools.bedtool.BedTool(pybedtools.example_filename(x)),
 
-    set_bedtools_path('nonexistent')
+        # NOTE: we likely need recursive reloading (like IPython.deepreload)
+        # for this to work:
+        #
+        # lambda x: BedTool(pybedtools.example_filename(x)),
+    ):
 
-    # the BedTool object that was previously successfully created will now have
-    # OSError...
-    assert_raises(OSError, x.sort)
+        x = constructor('x.bed')
+        x.sort()
+        assert "Original BEDTools help" in pybedtools.bedtool.BedTool.sort.__doc__
+        assert "Original BEDTools help" in x.sort.__doc__
 
-    # ...but docstring was already created for `x`, so it should stay the same.
-    # The class docstring should have been reset.
-    assert "Original BEDTools help" in x.sort.__doc__
-    assert pybedtools.bedtool.BedTool.sort.__doc__ is None
+        set_bedtools_path('nonexistent')
 
-    # Creating a new BedTool object now that bedtools is not on the path should
-    # detect that, adding a method that raises NotImplementedError...
-    y = pybedtools.example_bedtool('x.bed')
-    assert_raises(NotImplementedError, y.sort)
+        # Calling BEDTools with non-existent path, but the docstring should not
+        # have been changed.
+        assert_raises(OSError, x.sort)
+        assert "Original BEDTools help" in x.sort.__doc__
 
-    # ...and correspondingly no docstring
-    assert y.sort.__doc__ is None
-    assert pybedtools.bedtool.BedTool.sort.__doc__ is None
+        # The class's docstring should have been reset though.
+        assert pybedtools.bedtool.BedTool.sort.__doc__ is None
 
-    # Reset, and ensure the resetting works
-    set_bedtools_path()
-    z = pybedtools.example_bedtool('x.bed')
-    z.sort()
+        # Creating a new BedTool object now that bedtools is not on the path
+        # should detect that, adding a method that raises
+        # NotImplementedError...
+        y = constructor('x.bed')
+        assert_raises(NotImplementedError, y.sort)
+
+        # ...and correspondingly no docstring
+        assert y.sort.__doc__ is None
+        assert pybedtools.bedtool.BedTool.sort.__doc__ is None
+
+        # Reset the path, and ensure the resetting works
+        set_bedtools_path()
+        z = constructor('x.bed')
+        z.sort()
