@@ -2100,21 +2100,27 @@ def test_issue_196():
 
 
 def test_issue_178():
-    fn = pybedtools.example_filename('gdc.othersort.bam')
-    pybedtools.contrib.bigwig.bam_to_bigwig(fn, genome='dm3', output='tmp.bw')
-    x = pybedtools.contrib.bigwig.bigwig_to_bedgraph('tmp.bw')
-    assert x == fix(
-        '''
-        chr2L   70      75      1
-        chr2L   140     145     1
-        chr2L   150     155     1
-        chr2L   160     165     1
-        chr2L   210     215     1
-        chrX    10      15      1
-        chrX    70      75      1
-        chrX    140     145     1
-        ''')
-    os.unlink('tmp.bw')
+    try:
+        fn = pybedtools.example_filename('gdc.othersort.bam')
+        pybedtools.contrib.bigwig.bam_to_bigwig(fn, genome='dm3', output='tmp.bw')
+        x = pybedtools.contrib.bigwig.bigwig_to_bedgraph('tmp.bw')
+        assert x == fix(
+            '''
+            chr2L   70      75      1
+            chr2L   140     145     1
+            chr2L   150     155     1
+            chr2L   160     165     1
+            chr2L   210     215     1
+            chrX    10      15      1
+            chrX    70      75      1
+            chrX    140     145     1
+            ''')
+        os.unlink('tmp.bw')
+
+    # If bedGraphToBigWig is not on the path, see
+    # https://github.com/daler/pybedtools/issues/227
+    except FileNotFoundError:
+        pass
 
 def test_issue_203():
     x = pybedtools.example_bedtool('x.bed')

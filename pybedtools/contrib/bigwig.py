@@ -48,8 +48,17 @@ def bedgraph_to_bigwig(bedgraph, genome, output):
         bedgraph.fn,
         genome_file,
         output]
-    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
+    try:
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            "bedGraphToBigWig was not found on the path. This is an external "
+            "tool from UCSC which can be downloaded from "
+            "http://hgdownload.soe.ucsc.edu/admin/exe/. Alternatatively, use "
+            "`conda install ucsc-bedgraphtobigwig`"
+        )
+
     if p.returncode:
         raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
                          % (" ".join(cmds), stderr, stdout))
@@ -72,8 +81,16 @@ def bigwig_to_bedgraph(fn, chrom=None, start=None, end=None, udcDir=None):
     outfn = pybedtools.BedTool._tmp()
     cmds.append(outfn)
 
-    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
+    try:
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            "bigWigToBedGraph was not found on the path. This is an external "
+            "tool from UCSC which can be downloaded from "
+            "http://hgdownload.soe.ucsc.edu/admin/exe/. Alternatatively, use "
+            "`conda install ucsc-bedgraphtobigwig`"
+        )
     if p.returncode:
         raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
                          % (" ".join(cmds), stderr, stdout))
@@ -87,8 +104,17 @@ def wig_to_bigwig(wig, genome, output):
         wig.fn,
         genome_file,
         output]
-    subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
+
+    try:
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            "bigWigToBedGraph was not found on the path. This is an external "
+            "tool from UCSC which can be downloaded from "
+            "http://hgdownload.soe.ucsc.edu/admin/exe/. Alternatatively, use "
+            "`conda install ucsc-bedgraphtobigwig`"
+        )
     if p.returncode:
         raise ValueError('cmds: %s\nstderr:%s\nstdout:%s'
                          % (' '.join(cmds), stderr, stdout))
@@ -120,15 +146,31 @@ def bam_to_bigwig(bam, genome, output, scale=False):
         x.fn,
         genome_file,
         output]
-    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    stdout, stderr = p.communicate()
+    try:
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        stdout, stderr = p.communicate()
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            "bedGraphToBigWig was not found on the path. This is an external "
+            "tool from UCSC which can be downloaded from "
+            "http://hgdownload.soe.ucsc.edu/admin/exe/. Alternatatively, use "
+            "`conda install ucsc-bedgraphtobigwig`"
+        )
 
     if p.returncode and  'bedSort' in stderr:
         print('BAM header was not sorted; sorting bedGraph')
         y = x.sort()
         cmds[1] = y.fn
-        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        stdout, stderr = p.communicate()
+        try:
+            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            stdout, stderr = p.communicate()
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                "bedSort was not found on the path. This is an external "
+                "tool from UCSC which can be downloaded from "
+                "http://hgdownload.soe.ucsc.edu/admin/exe/. Alternatatively, use "
+                "`conda install ucsc-bedgraphtobigwig`"
+            )
 
     if p.returncode:
         raise ValueError('cmds: %s\nstderr: %s\nstdout: %s'
