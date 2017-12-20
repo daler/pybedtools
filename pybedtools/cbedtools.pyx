@@ -766,7 +766,7 @@ cdef class IntervalIterator:
                 break
 
             if self._itemtype == 1:
-                if line.startswith(('@', '#', 'track', 'browser')):
+                if line.startswith(('@', '#', 'track', 'browser')) or len(line.strip()) == 0:
                     continue
             break
 

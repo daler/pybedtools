@@ -2175,3 +2175,19 @@ def test_issue_218():
         set_bedtools_path()
         z = constructor('x.bed')
         z.sort()
+
+def test_issue_233():
+    tmp = pybedtools.BedTool._tmp()
+    with open(tmp, 'w') as fout:
+        fout.write(dedent(
+            """
+
+            chr1\t1\t5
+
+            # chr2\t5\t9
+            """))
+    x = pybedtools.BedTool(tmp)
+
+    # Previously raised IndexError:
+    print(x)
+

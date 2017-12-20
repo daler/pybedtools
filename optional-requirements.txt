@@ -1,4 +1,4 @@
-bedtools
+bedtools <2.27
 matplotlib
 htslib <1.4
 ucsc-bigwigtobedgraph
