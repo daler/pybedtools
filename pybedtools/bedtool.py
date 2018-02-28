@@ -2207,6 +2207,8 @@ class BedTool(object):
             chr1	901	950	1	1	1	0
             <BLANKLINE>
 
+        Note that if `header=True` is used, the resulting output will not be
+        a valid BED file (due to the header not starting with "#" or "track").
         """
 
     @_log_to_history
