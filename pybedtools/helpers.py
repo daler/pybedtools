@@ -139,7 +139,9 @@ def isBGZIP(fn):
     """
     Reads a filename to see if it's a BGZIPed file or not.
     """
-    header_str = open(fn, 'rb').read(15)
+    with open(fn, 'rb') as fh:
+        header_str = fh.read(15)
+
     if len(header_str) < 15:
         return False
 
