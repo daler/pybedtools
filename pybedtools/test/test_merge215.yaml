@@ -1,0 +1,27 @@
+# each test will be expanded into 6 tests, to check stream, file, and generator
+# versions of input and output BedTools
+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# merge - as functional up to 2.26
+#
+-   method: merge
+    kwargs:
+        i: a.bed
+        s: True
+        c: [4, 5, 6]
+        o: 'distinct'
+    expected: |
+        chr1	1	200	+	feature1,feature2	0	+
+        chr1	150	500	-	feature3	0	-
+        chr1	900	950	+	feature4	0	+
+
+-   method: merge
+    kwargs:
+        i: a.bed
+        s: True
+    expected: |
+        chr1	1	200	+
+        chr1	150	500	-
+        chr1	900	950	+
+

@@ -1,0 +1,21 @@
+# each test will be expanded into 6 tests, to check stream, file, and generator
+# versions of input and output BedTools
+
+# This file knows the correct output for version 2.27 of bedtools and later
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# shuffle
+#
+#
+-   method: shuffle
+    kwargs:
+        i: a.bed
+        seed: 1
+        genome: hg19
+        chrom: True
+    expected: |
+        chr1    46341498        46341597        feature1        0       +
+        chr1    45615582        45615682        feature2        0       +
+        chr1    102762672       102763022       feature3        0       -
+        chr1    17293432        17293482        feature4        0       +
+

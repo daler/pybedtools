@@ -12,7 +12,13 @@ import pybedtools
 from functools import partial
 
 this_dir = os.path.dirname(__file__)
-config_fn = os.path.join(this_dir, 'test_cases.yaml')
+yamltestdesc = [os.path.join(this_dir, 'test_cases.yaml')]
+if pybedtools.settings._v_2_27_plus:
+    yamltestdesc.append(os.path.join(this_dir, 'test_merge227.yaml'))
+    yamltestdesc.append(os.path.join(this_dir, 'test_shuffle227.yaml'))
+elif pybedtools.settings._v_2_15_plus and not pybedtools.settings._v_2_27_plus:
+    yamltestdesc.append(os.path.join(this_dir, 'test_merge215.yaml'))
+    yamltestdesc.append(os.path.join(this_dir, 'test_shuffle215.yaml'))
 
 def gz(x):
     """
@@ -117,6 +123,10 @@ def test_a_b_methods():
     Generator that yields tests, inserting different versions of `a` and `b` as
     needed
     """
+    for config_fn in yamltestdesc:
+        _test_a_b_methods(config_fn)
+
+def _test_a_b_methods(config_fn):
     for method, send_kwargs, expected in parse_yaml(config_fn):
         a_isbam = False
         b_isbam = False
@@ -167,6 +177,10 @@ def test_i_methods():
     """
     Generator that yields tests, inserting different versions of `i` as needed
     """
+    for config_fn in yamltestdesc:
+        _test_i_methods(config_fn)
+
+def _test_i_methods(config_fn):
     for method, send_kwargs, expected in parse_yaml(config_fn):
         i_isbam = False
         if 'ibam' in send_kwargs:
@@ -204,6 +218,10 @@ def test_bed_methods():
     """
     Generator that yields tests, inserting different versions of `bed` as needed
     """
+    for config_fn in yamltestdesc:
+        _test_bed_methods(config_fn)
+
+def _test_bed_methods(config_fn):
     for method, send_kwargs, expected in parse_yaml(config_fn):
         ignore = ['a', 'b','abam','i']
         skip_test = False

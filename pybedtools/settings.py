@@ -4,12 +4,13 @@ _R_path = ""
 tempfile_prefix = 'pybedtools.'
 tempfile_suffix = '.tmp'
 
-
 # Checking for BEDTools will happen when creating the first BedTool; other
 # checks happen at first use (BAM object creation; tabix-ing a BedTool)
 _bedtools_installed = False
 _R_installed = False
 _v_2_15_plus = False
+_v_2_27_plus = False
+bedtools_version = []
 
 KEEP_TEMPFILES = False
 _DEBUG = True

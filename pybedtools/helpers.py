@@ -68,6 +68,38 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     if settings._bedtools_installed and not force_check:
         return True
 
+    if 0==len(settings.bedtools_version):
+        # let us quickly determine the program version by calling without specifying application
+        try:
+            v = subprocess.check_output([os.path.join(settings._bedtools_path, 'bedtools'),'--version'])
+            settings._bedtools_installed = True
+            settings._v_2_15_plus = True
+            settings.bedtools_version = []
+            vv = v.decode().split('v')[1]
+            for i in vv.split("."):
+                settings.bedtools_version.append(int(i))
+            if settings.bedtools_version[0]>2:
+                settings._v_2_27_plus = True
+                settings._v_2_15_plus = True
+            elif settings.bedtools_version[0]>=2 and settings.bedtools_version[1]>=27:
+                settings._v_2_27_plus = True
+                settings._v_2_15_plus = True
+            elif settings.bedtools_version[0]>=2 and settings.bedtools_version[1]>=15:
+                settings._v_2_27_plus = False
+                settings._v_2_15_plus = True
+            else:
+                settings._v_2_27_plus = False
+                settings._v_2_15_plus = False
+            #print("Found BEDtools installed, settings._v_2_27_plus=%d, settings._v_2_15_plus=%d\n" % (settings._v_2_27_plus,settings._v_2_15_plus))
+        except(subprocess.CalledProcessError):
+            if settings._bedtools_path:
+                add_msg = "(tried path '%s')" % settings._bedtools_path
+            else:
+                add_msg = ""
+            raise OSError("Please make sure you have installed BEDTools"
+                          "(https://github.com/arq5x/bedtools) and that "
+                          "it's on the path. %s" % add_msg)
+
     try:
         p = subprocess.Popen(
             [os.path.join(settings._bedtools_path, 'bedtools'),
@@ -77,7 +109,6 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
         settings._v_2_15_plus = True
 
     except (OSError, KeyError) as err:
-
         try:
             p = subprocess.Popen(
                 [os.path.join(settings._bedtools_path, program_to_check)],
@@ -87,14 +118,9 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
 
         except OSError as err:
             if err.errno == 2:
-                if settings._bedtools_path:
-                    add_msg = "(tried path '%s')" % settings._bedtools_path
-                else:
-                    add_msg = ""
-                raise OSError("Please make sure you have installed BEDTools"
-                              "(https://github.com/arq5x/bedtools) and that "
-                              "it's on the path. %s" % add_msg)
-
+                raise OSError("BEDTools exists as a binary but seems otherwise incompatible. "
+                              "Please check that what is installed in '%s' is indeed from "
+                              "https://github.com/arq5x/bedtools." % settings._bedtools_path)
 
 def _check_for_R():
     try:
