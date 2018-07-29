@@ -1,4 +1,4 @@
-from __future__ import print_function 
+from __future__ import print_function
 import difflib
 import itertools
 import yaml
@@ -11,14 +11,18 @@ import pybedtools
 #   http://code.google.com/p/python-nose/issues/detail?id=244#c1
 from functools import partial
 
-this_dir = os.path.dirname(__file__)
-yamltestdesc = [os.path.join(this_dir, 'test_cases.yaml')]
+yamltestdesc = ['test_cases.yaml')]
+
 if pybedtools.settings._v_2_27_plus:
-    yamltestdesc.append(os.path.join(this_dir, 'test_merge227.yaml'))
-    yamltestdesc.append(os.path.join(this_dir, 'test_shuffle227.yaml'))
+    yamltestdesc.append('test_merge227.yaml'))
+    yamltestdesc.append('test_shuffle227.yaml'))
+
 elif pybedtools.settings._v_2_15_plus and not pybedtools.settings._v_2_27_plus:
-    yamltestdesc.append(os.path.join(this_dir, 'test_merge215.yaml'))
-    yamltestdesc.append(os.path.join(this_dir, 'test_shuffle215.yaml'))
+    yamltestdesc.append('test_merge215.yaml'))
+    yamltestdesc.append('test_shuffle215.yaml'))
+
+this_dir = os.path.dirname(__file__)
+yamltestdesc = [os.path.join(this_dir, i) for i in yamltestdesc]
 
 def gz(x):
     """
