@@ -2051,6 +2051,14 @@ def test_issue_196():
 
 
 def test_issue_178():
+
+    # Compatibility between py2/py3: py27 does not have FileNotFoundError, so
+    # set it to IOError (which does exist) for this function.
+    try:
+        FileNotFoundError
+    except NameError:
+        FileNotFoundError = IOError
+
     try:
         fn = pybedtools.example_filename('gdc.othersort.bam')
         pybedtools.contrib.bigwig.bam_to_bigwig(fn, genome='dm3', output='tmp.bw')
