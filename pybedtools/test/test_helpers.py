@@ -63,12 +63,16 @@ def test_cleanup():
     assert os.path.exists(a.fn)
     assert os.path.exists(b.fn)
 
-def test_bedtools_check():
-    # this should run fine (especially since we've already imported pybedtools)
-    pybedtools.check_for_bedtools()
-
-    # but this should crap out
-    assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent', force_check=True))
+# Test disabled, since we are no longer checking for pre-v2.15 versions by using
+# separate program calls
+#
+# TODO: remove this once v2.15 support is fully deprecated.
+#
+# def test_bedtools_check():
+#     # this should run fine (especially since we've already imported pybedtools)
+#     pybedtools.check_for_bedtools()
+#
+#     assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent', force_check=True))
 
 def test_call():
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
@@ -120,7 +124,7 @@ def test_chromsizes():
         assert expected == results
 
         assert_raises(OSError,
-                      pybedtools.get_chromsizes_from_ucsc, 
+                      pybedtools.get_chromsizes_from_ucsc,
                       **dict(genome='hg17', mysql='nonexistent'))
 
         os.unlink('hg17.genome')

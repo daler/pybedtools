@@ -11,7 +11,7 @@ import pybedtools
 #   http://code.google.com/p/python-nose/issues/detail?id=244#c1
 from functools import partial
 
-yamltestdesc = ['test_cases.yaml')]
+yamltestdesc = ['test_cases.yaml']
 
 if pybedtools.settings._v_2_27_plus:
     yamltestdesc.append('test_merge227.yaml'))
