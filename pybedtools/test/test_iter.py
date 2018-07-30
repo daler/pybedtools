@@ -14,12 +14,12 @@ from functools import partial
 yamltestdesc = ['test_cases.yaml']
 
 if pybedtools.settings._v_2_27_plus:
-    yamltestdesc.append('test_merge227.yaml'))
-    yamltestdesc.append('test_shuffle227.yaml'))
+    yamltestdesc.append('test_merge227.yaml')
+    yamltestdesc.append('test_shuffle227.yaml')
 
 elif pybedtools.settings._v_2_15_plus and not pybedtools.settings._v_2_27_plus:
-    yamltestdesc.append('test_merge215.yaml'))
-    yamltestdesc.append('test_shuffle215.yaml'))
+    yamltestdesc.append('test_merge215.yaml')
+    yamltestdesc.append('test_shuffle215.yaml')
 
 this_dir = os.path.dirname(__file__)
 yamltestdesc = [os.path.join(this_dir, i) for i in yamltestdesc]
