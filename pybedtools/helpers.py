@@ -68,33 +68,72 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     if settings._bedtools_installed and not force_check:
         return True
 
-    try:
-        p = subprocess.Popen(
-            [os.path.join(settings._bedtools_path, 'bedtools'),
-             settings._prog_names[program_to_check]],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        settings._bedtools_installed = True
-        settings._v_2_15_plus = True
-
-    except (OSError, KeyError) as err:
-
+    if len(settings.bedtools_version) == 0:
+        # let us quickly determine the program version by calling without
+        # specifying application
         try:
-            p = subprocess.Popen(
-                [os.path.join(settings._bedtools_path, program_to_check)],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            v = subprocess.check_output(
+                [
+                    os.path.join(
+                        settings._bedtools_path, 'bedtools'),
+                    '--version'])
+
             settings._bedtools_installed = True
-            settings._v_2_15_plus = False
 
-        except OSError as err:
-            if err.errno == 2:
-                if settings._bedtools_path:
-                    add_msg = "(tried path '%s')" % settings._bedtools_path
-                else:
-                    add_msg = ""
-                raise OSError("Please make sure you have installed BEDTools"
-                              "(https://github.com/arq5x/bedtools) and that "
-                              "it's on the path. %s" % add_msg)
+            # e.g.,
+            #
+            #  bedtools v2.26.0
+            #
+            vv = v.decode().split('v')[1]
 
+            settings.bedtools_version = [int(i) for i in vv.split(".")]
+
+            settings._v_2_27_plus = (
+                settings.bedtools_version[0] >= 2 and
+                settings.bedtools_version[1] >= 27
+            )
+
+            settings._v_2_15_plus = (
+                settings.bedtools_version[0] >= 2 and
+                settings.bedtools_version[1] >= 15
+            )
+
+        except subprocess.CalledProcessError:
+            if settings._bedtools_path:
+                add_msg = "(tried path '%s')" % settings._bedtools_path
+            else:
+                add_msg = ""
+            raise OSError("Please make sure you have installed BEDTools"
+                          "(https://github.com/arq5x/bedtools) and that "
+                          "it's on the path. %s" % add_msg)
+
+    # Disabling the additional pre-2.15 check since the above code is now
+    # handling it based on what --version reports.
+    #
+    # TODO: fully deprecate this, and eventually remove v2.15 support.
+    #
+    # try:
+    #     p = subprocess.Popen(
+    #         [os.path.join(settings._bedtools_path, 'bedtools'),
+    #          settings._prog_names[program_to_check]],
+    #         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #     settings._bedtools_installed = True
+    #     settings._v_2_15_plus = True
+    #     settings._v_2_27_plus = False
+
+    # except (OSError, KeyError) as err:
+    #     try:
+    #         p = subprocess.Popen(
+    #             [os.path.join(settings._bedtools_path, program_to_check)],
+    #             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #         settings._bedtools_installed = True
+    #         settings._v_2_15_plus = False
+
+    #     except OSError as err:
+    #         if err.errno == 2:
+    #             raise OSError("BEDTools exists as a binary but seems otherwise incompatible. "
+    #                           "Please check that what is installed in '%s' is indeed from "
+    #                           "https://github.com/arq5x/bedtools." % settings._bedtools_path)
 
 def _check_for_R():
     try:

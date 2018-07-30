@@ -204,6 +204,26 @@
 
 -   method: merge
     kwargs:
+        i: a.bed
+        s: True
+    expected: |
+        chr1	1	200	+
+        chr1	150	500	-
+        chr1	900	950	+
+
+-   method: merge
+    kwargs:
+        i: a.bed
+        s: True
+        c: [4, 5, 6]
+        o: 'distinct'
+    expected: |
+        chr1	1	200	+	feature1,feature2	0	+
+        chr1	150	500	-	feature3	0	-
+        chr1	900	950	+	feature4	0	+
+
+-   method: merge
+    kwargs:
         i: b.bed
         d: 700
     expected: |
@@ -283,6 +303,23 @@
         chr1	5133830	5133932	Atp6v1h,uc007afn.1	1	+
         chr1	5140028	5140142	Atp6v1h,uc007afn.1	1	+
         chr1	5152185	5152630	Atp6v1h,uc007afn.1	1	+
+
+
+#88888888888888888888888888888888888888888888888888888888888888888888888888888
+# shuffle
+#
+#
+-   method: shuffle
+    kwargs:
+        i: a.bed
+        seed: 1
+        genome: hg19
+        chrom: True
+    expected: |
+        chr1	59535036	59535135	feature1	0	+
+        chr1	99179023	99179123	feature2	0	+
+        chr1	186189051	186189401	feature3	0	-
+        chr1	219133189	219133239	feature4	0	+
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
 # annotate

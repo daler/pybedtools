@@ -1610,25 +1610,17 @@ def test_to_dataframe():
 
     a = pybedtools.example_bedtool('a.bed')
 
-    results = str(a.to_dataframe())
-
-
-
-    expected = fix_dataframe("""
-  chrom  start  end      name  score strand
-0  chr1      1  100  feature1      0      +
-1  chr1    100  200  feature2      0      +
-2  chr1    150  500  feature3      0      -
-3  chr1    900  950  feature4      0      +""")
-    assert results == expected
-
+    results = a.to_dataframe()
+    assert results.loc[0, 'name'] == 'feature1'
+    assert list(results.columns) == ['chrom', 'start', 'end', 'name', 'score', 'strand']
+    assert results.loc[3, 'strand'] == '+'
 
     # reverse should work, too:
     df = a.to_dataframe()
     a2 = pybedtools.BedTool.from_dataframe(df)
     assert a2 == a
 
-    # try only part of the dataframe
+    # try converting only part of the dataframe to a BedTool
     a3 = pybedtools.BedTool.from_dataframe(
         df.ix[df.start < 100, ['chrom', 'start', 'end', 'name']]
     )
@@ -1638,23 +1630,12 @@ def test_to_dataframe():
         """), str(a3)
 
     d = pybedtools.example_bedtool('d.gff')
-    results = str(d.to_dataframe())
-    expected = fix_dataframe("""
-  seqname source feature  start   end score strand frame  \\
-0    chr1   fake    gene     50   300     .      +     .   
-1    chr1   fake    mRNA     50   300     .      +     .   
-2    chr1   fake     CDS     75   150     .      +     .   
-3    chr1   fake     CDS    200   275     .      +     .   
-4    chr1   fake    rRNA   1200  1275     .      +     .   
-
-               attributes  
-0                ID=gene1  
-1  ID=mRNA1;Parent=gene1;  
-2   ID=CDS1;Parent=mRNA1;  
-3   ID=CDS2;Parent=mRNA1;  
-4               ID=rRNA1;  """)
-    assert results == expected
-
+    results = d.to_dataframe()
+    assert list(results.columns) == [
+        'seqname', 'source', 'feature', 'start', 'end', 'score', 'strand',
+        'frame', 'attributes']
+    assert results.loc[0, 'seqname'] == 'chr1'
+    assert results.loc[4, 'attributes'] == 'ID=rRNA1;'
 
     # get a gff file with too many fields...
     x = pybedtools.example_bedtool('c.gff')
@@ -1669,42 +1650,12 @@ def test_to_dataframe():
 
     names = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand',
              'frame', 'attributes', 'count']
-    results = str(x.to_dataframe(names=names))
-    expected = fix_dataframe("""
-   seqname source feature  start   end score strand frame  \\
-0     chr1    ucb    gene    465   805     .      +     .   
-1     chr1    ucb    gene    631   899     .      +     .   
-2     chr1    ucb    mRNA    631   913     .      +     .   
-3     chr1    ucb     CDS    760   913     .      +     .   
-4     chr1    ucb     CDS    486   605     .      +     .   
-5     chr1    ucb     CDS    706  1095     .      +     .   
-6     chr1    ucb     CDS    174   326     .      +     .   
-7     chr1    ucb     CDS    439   630     .      +     .   
-8     chr1    ucb    mRNA    496   576     .      +     .   
-9     chr1    ucb    mRNA    486   605     .      +     .   
-10    chr1    ucb    mRNA    706   895     .      +     .   
-11    chr1    ucb    mRNA    174   326     .      +     .   
-12    chr1    ucb    mRNA    439   899     .      +     .   
-13    chr1    ucb    gene     60   269     .      -     .   
-
-                                           attributes  count  
-0   ID=thaliana_1_465_805;match=scaffold_801404.1;...     11  
-1         ID=AT1G01010;Name=AT1G01010;rname=AT1G01010      7  
-2   ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      7  
-3               Parent=AT1G01010.mRNA;rname=AT1G01010      7  
-4               Parent=AT1G01010.mRNA;rname=AT1G01010      6  
-5               Parent=AT1G01010.mRNA;rname=AT1G01010      7  
-6               Parent=AT1G01010.mRNA;rname=AT1G01010      3  
-7               Parent=AT1G01010.mRNA;rname=AT1G01010      6  
-8   ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      6  
-9   ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      6  
-10  ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      7  
-11  ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...      3  
-12  ID=AT1G01010.mRNA;Parent=AT1G01010;rname=AT1G0...     11  
-13  ID=thaliana_1_6160_6269;match=fgenesh1_pg.C_sc...      3  """)
-    assert results == expected
-
-
+    results = x.to_dataframe(names=names)
+    assert list(results.columns) == ['seqname', 'source', 'feature', 'start',
+                                     'end', 'score', 'strand', 'frame',
+                                     'attributes', 'count']
+    assert results.loc[0, 'seqname'] == 'chr1'
+    assert results.loc[13, 'count'] == 3
 
 
 def test_tail():
@@ -2100,6 +2051,14 @@ def test_issue_196():
 
 
 def test_issue_178():
+
+    # Compatibility between py2/py3: py27 does not have FileNotFoundError, so
+    # set it to IOError (which does exist) for this function.
+    try:
+        FileNotFoundError
+    except NameError:
+        FileNotFoundError = IOError
+
     try:
         fn = pybedtools.example_filename('gdc.othersort.bam')
         pybedtools.contrib.bigwig.bam_to_bigwig(fn, genome='dm3', output='tmp.bw')
