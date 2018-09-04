@@ -630,7 +630,8 @@ def test_bedtool_creation():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.BedTool(a)
     assert b.fn == a.fn
-    assert_raises(ValueError, pybedtools.BedTool,'nonexistent.bed')
+    e = FileNotFoundError if six.PY3 else ValueError
+    assert_raises(e, pybedtools.BedTool,'nonexistent.bed')
 
     # note that *s* has both tabs and spaces....
     s = """

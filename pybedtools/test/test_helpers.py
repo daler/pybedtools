@@ -1,4 +1,5 @@
 import pybedtools
+import six
 import sys
 import os, difflib
 from nose.tools import assert_raises
@@ -152,9 +153,10 @@ def test_getting_example_beds():
     assert a.fn == os.path.join(testdir, 'data', 'a.bed')
 
     # complain appropriately if nonexistent paths are asked for
-    assert_raises(ValueError, pybedtools.example_filename, 'nonexistent')
-    assert_raises(ValueError, pybedtools.example_bedtool, 'nonexistent')
-    assert_raises(ValueError, pybedtools.set_tempdir, 'nonexistent')
+    e = FileNotFoundError if six.PY3 else ValueError
+    assert_raises(e, pybedtools.example_filename, 'nonexistent')
+    assert_raises(e, pybedtools.example_bedtool, 'nonexistent')
+    assert_raises(e, pybedtools.set_tempdir, 'nonexistent')
 
 
 def teardown():
