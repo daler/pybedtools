@@ -83,7 +83,7 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
 
     >>> # get results
     >>> print(list(results))
-    [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
+    [2, 1, 2, 1, 1, 1, 1, 1, 1, 2]
 
     >>> # We can compare this to the actual intersection:
     >>> reduce_func(a.intersect(**method_kwargs))
@@ -100,9 +100,9 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
     >>> for i in results:
     ...     print(sorted(i.items()))
-    [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
-    [('intersection', 15), ('jaccard', 0.0238095), ('n_intersections', 2), ('union-intersection', 630)]
-    [('intersection', 45), ('jaccard', 0.0818182), ('n_intersections', 1), ('union-intersection', 550)]
+    [('intersection', 101), ('jaccard', 0.226966), ('n_intersections', 1), ('union-intersection', 445)]
+    [('intersection', 20), ('jaccard', 0.0296296), ('n_intersections', 1), ('union-intersection', 675)]
+    [('intersection', 45), ('jaccard', 0.0725806), ('n_intersections', 1), ('union-intersection', 620)]
 
     Parameters
     ----------

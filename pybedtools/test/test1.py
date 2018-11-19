@@ -793,7 +793,7 @@ def test_randomstats():
         results = a.randomstats(b, 100, debug=True)
         assert results['actual'] == 3
         assert results['median randomized'] == 2.0
-        assert results['percentile'] == 89.5
+        assert results['percentile'] == 91.0
 
     except ImportError:
         # allow doctests to pass if SciPy not installed
