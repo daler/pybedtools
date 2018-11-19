@@ -20,6 +20,19 @@ import pytest
 import threading
 import warnings
 
+testdir = os.path.dirname(__file__)
+tempdir = os.path.join(os.path.abspath(testdir), 'tmp')
+unwriteable = 'unwriteable'
+
+def setup_module():
+    if not os.path.exists(tempdir):
+        os.system('mkdir -p %s' % tempdir)
+    pybedtools.set_tempdir(tempdir)
+
+def teardown_module():
+    if os.path.exists(tempdir):
+        os.system('rm -r %s' % tempdir)
+    pybedtools.cleanup()
 
 
 def fix(x):
@@ -59,13 +72,15 @@ def make_unwriteable():
     os.system('chmod -w %s' % unwriteable)
     pybedtools.set_tempdir(unwriteable)
 
+
 def cleanup_unwriteable():
     """
     Reset to normal tempdir operation....
     """
     if os.path.exists(unwriteable):
         os.system('rm -rf %s' % unwriteable)
-    pybedtools.set_tempdir(test_tempdir)
+    pybedtools.set_tempdir(tempdir)
+
 
 def test_interval_index():
     """
@@ -158,7 +173,6 @@ def test_tabix_intervals():
 # Streaming and non-file BedTool tests
 # ----------------------------------------------------------------------------
 
-@with_setup(make_unwriteable, cleanup_unwriteable)
 def test_stream():
     """
     Stream and file-based equality, both whole-file and Interval by
@@ -209,6 +223,7 @@ def test_stream():
     for row in a.cut([0, 1, 2, 5], stream=True):
         row[0], row[1], row[2]
         assert_raises(IndexError, row.__getitem__, 4)
+    cleanup_unwriteable()
 
 def test_stream_of_stream():
     """
@@ -1624,7 +1639,7 @@ def test_to_dataframe():
 
     # try converting only part of the dataframe to a BedTool
     a3 = pybedtools.BedTool.from_dataframe(
-        df.ix[df.start < 100, ['chrom', 'start', 'end', 'name']]
+        df.loc[df.start < 100, ['chrom', 'start', 'end', 'name']]
     )
     assert a3 == fix(
         """
