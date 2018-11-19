@@ -417,7 +417,7 @@ class BedTool(object):
             ... chrX  1  100
             ... chrX 25  800
             ... '''
-            >>> a = BedTool(s,from_string=True)
+            >>> a = BedTool(s, from_string=True)
 
         Or use examples that come with pybedtools::
 

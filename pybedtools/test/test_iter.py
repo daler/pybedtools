@@ -5,11 +5,7 @@ import yaml
 import os
 import gzip
 import pybedtools
-
-# The functools.partial trick to get descriptions to be valid is from:
-#
-#   http://code.google.com/p/python-nose/issues/detail?id=244#c1
-from functools import partial
+from .tfuncs import setup_module, teardown_module
 
 yamltestdesc = ['test_cases.yaml']
 
@@ -24,17 +20,18 @@ elif pybedtools.settings._v_2_15_plus and not pybedtools.settings._v_2_27_plus:
 this_dir = os.path.dirname(__file__)
 yamltestdesc = [os.path.join(this_dir, i) for i in yamltestdesc]
 
+
 def gz(x):
     """
     Gzips a file to a tempfile, and returns a new BedTool using the gzipped
     version.
     """
-    fin = open(x.fn)
     gzfn = pybedtools.BedTool._tmp()
     with gzip.open(gzfn, 'wb') as out_:
         with open(x.fn, 'rb') as in_:
             out_.writelines(in_)
     return pybedtools.BedTool(gzfn)
+
 
 def fix(x):
     """

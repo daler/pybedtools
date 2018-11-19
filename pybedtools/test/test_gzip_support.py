@@ -10,8 +10,8 @@ import pybedtools.test.tfuncs as tfuncs
 import pybedtools
 import gzip
 
-setup = tfuncs.setup
-teardown = tfuncs.teardown
+setup = tfuncs.setup_module
+teardown = tfuncs.teardown_module
 
 def _make_temporary_gzip(bed_filename):
     """

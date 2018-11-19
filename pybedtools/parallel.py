@@ -217,4 +217,3 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
         if report_iterations:
             sys.stderr.write('%s\r' % i)
             sys.stderr.flush()
-    raise StopIteration

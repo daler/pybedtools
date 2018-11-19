@@ -3,7 +3,7 @@ import sys
 import os, difflib
 from nose.tools import assert_raises
 from nose.plugins.attrib import attr
-from .tfuncs import setup, teardown, testdir, test_tempdir, unwriteable
+from .tfuncs import setup_module, teardown_module, testdir, test_tempdir, unwriteable
 
 def fix(x):
     """
@@ -98,7 +98,7 @@ def test_call():
 
 @attr('url')
 def test_chromsizes():
-    assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path')
+    assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path', fetchchromsizes='wrongtoo')
     assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc, 'dm3', timeout=0)
     try:
 
@@ -125,7 +125,7 @@ def test_chromsizes():
 
         assert_raises(OSError,
                       pybedtools.get_chromsizes_from_ucsc,
-                      **dict(genome='hg17', mysql='nonexistent'))
+                      **dict(genome='hg17', mysql='nonexistent', fetchchromsizes='missing'))
 
         os.unlink('hg17.genome')
     except OSError:

@@ -5,7 +5,7 @@ import os
 from pybedtools import Interval, IntervalFile
 import pybedtools
 from nose.tools import assert_raises, raises
-from .tfuncs import setup, teardown
+from .tfuncs import setup_module, teardown_module
 
 
 PATH = os.path.dirname(__file__)
@@ -17,29 +17,29 @@ class IntervalFileTest(unittest.TestCase):
         self.bed = IntervalFile(self.file)
 
     def testFileType(self):
-        self.assert_(self.bed.file_type == "bed", (self.bed.file_type, self.file))
+        self.assertTrue(self.bed.file_type == "bed", (self.bed.file_type, self.file))
 
         gff = os.path.join(PATH, "data/c.gff")
         i = IntervalFile(gff)
-        self.assert_(i.file_type == "gff", (i.file_type, gff))
+        self.assertTrue(i.file_type == "gff", (i.file_type, gff))
 
     def testOverlaps(self):
         i    = Interval("chr21", 9719768, 9739768)
         hits = self.bed.all_hits(i)
         self.assertEqual(len(hits), 8)
         for hit in hits:
-            self.assert_(hit.start <= 9739768 and hit.end >= 9719768)
+            self.assertTrue(hit.start <= 9739768 and hit.end >= 9719768)
 
     def testStrands(self):
         i = Interval("chr21", 9719768, 9739768, "+")
         hits = self.bed.all_hits(i, same_strand=True)
         for hit in hits:
-            self.assert_(hit.strand == '+')
+            self.assertTrue(hit.strand == '+')
 
         i = Interval("chr21", 9719768, 9739768, "-")
         hits = self.bed.all_hits(i, same_strand=True)
         for hit in hits:
-            self.assert_(hit.strand == '-')
+            self.assertTrue(hit.strand == '-')
 
     def testRichCmp(self):
 
@@ -48,19 +48,19 @@ class IntervalFileTest(unittest.TestCase):
         # ==
         a = Interval("chr21", 100, 200)
         b = Interval("chr21", 100, 200)
-        self.assert_(a == b)
+        self.assertTrue(a == b)
         self.assertFalse(a != b)
-        self.assert_(a <= b)
-        self.assert_(a >= b)
+        self.assertTrue(a <= b)
+        self.assertTrue(a >= b)
         self.assertFalse(a < b)
         self.assertFalse(a > b)
 
         a = Interval("chr21", 100, 100)
         b = Interval("chr21", 100, 100)
-        self.assert_(a == b)
+        self.assertTrue(a == b)
         self.assertFalse(a != b)
-        self.assert_(a <= b)
-        self.assert_(a >= b)
+        self.assertTrue(a <= b)
+        self.assertTrue(a >= b)
         self.assertFalse(a < b)
         self.assertFalse(a > b)
 
@@ -69,7 +69,7 @@ class IntervalFileTest(unittest.TestCase):
         a = Interval("chr21", 100, 200, strand='+')
         b = Interval("chr21", 100, 200, strand='-')
         self.assertFalse(a == b)
-        self.assert_(a != b)
+        self.assertTrue(a != b)
         self.assertFalse(a <= b)
         self.assertFalse(a >= b)
         self.assertFalse(a < b)
@@ -79,9 +79,9 @@ class IntervalFileTest(unittest.TestCase):
         a = Interval("chr21", 100, 300)
         b = Interval("chr21", 100, 200)
         self.assertFalse(a == b)
-        self.assert_(a != b)
+        self.assertTrue(a != b)
         self.assertFalse(a <= b)
-        self.assert_(a >= b)
+        self.assertTrue(a >= b)
         self.assertFalse(a < b)
         self.assertFalse(a > b)
 
@@ -89,8 +89,8 @@ class IntervalFileTest(unittest.TestCase):
         a = Interval("chr21", 100, 300)
         b = Interval("chr21", 300, 300)
         self.assertFalse(a == b)
-        self.assert_(a != b)
-        self.assert_(a <= b)
+        self.assertTrue(a != b)
+        self.assertTrue(a <= b)
         self.assertFalse(a >= b)
         self.assertFalse(a < b)
         self.assertFalse(a > b)
@@ -100,8 +100,8 @@ class IntervalFileTest(unittest.TestCase):
         a = Interval("chr21", 100, 300)
         b = Interval("chr21", 250, 300)
         self.assertFalse(a == b)
-        self.assert_(a != b)
-        self.assert_(a <= b)
+        self.assertTrue(a != b)
+        self.assertTrue(a <= b)
         self.assertFalse(a >= b)
         self.assertFalse(a < b)
         self.assertFalse(a > b)
@@ -110,27 +110,27 @@ class IntervalFileTest(unittest.TestCase):
         a = Interval("chr21", 100, 200)
         b = Interval("chr21", 201, 300)
         self.assertFalse(a == b)
-        self.assert_(a != b)
-        self.assert_(a <= b)
+        self.assertTrue(a != b)
+        self.assertTrue(a <= b)
         self.assertFalse(a >= b)
-        self.assert_(a < b)
+        self.assertTrue(a < b)
         self.assertFalse(a > b)
 
         # a > b
         a = Interval("chr21", 201, 300)
         b = Interval("chr21", 100, 200)
         self.assertFalse(a == b)
-        self.assert_(a != b)
+        self.assertTrue(a != b)
         self.assertFalse(a <= b)
-        self.assert_(a >= b)
+        self.assertTrue(a >= b)
         self.assertFalse(a < b)
-        self.assert_(a > b)
+        self.assertTrue(a > b)
 
         # a != b
         a = Interval("none", 1, 100)
         b = Interval("chr21", 1, 100)
         self.assertFalse(a == b)
-        self.assert_(a != b)
+        self.assertTrue(a != b)
         self.assertFalse(a <= b)
         self.assertFalse(a >= b)
         self.assertFalse(a < b)
@@ -175,17 +175,17 @@ class IntervalTest(unittest.TestCase):
         "getitem now supports direct access to the line."
         ivf = IntervalFile(self.file)
         iv = next(ivf)
-        self.assert_(iv[self.chrpos].startswith("chr"))
-        self.assert_(iv[self.startpos].isdigit())
-        self.assert_(iv[self.startpos].isdigit())
+        self.assertTrue(iv[self.chrpos].startswith("chr"))
+        self.assertTrue(iv[self.startpos].isdigit())
+        self.assertTrue(iv[self.startpos].isdigit())
 
     def testGetItemNegative(self):
         "test negative indexes to feature."
         ivf = IntervalFile(self.file)
         iv = next(ivf)
-        self.assert_(iv[-self.fieldcount+self.chrpos].startswith("chr"), iv[-self.fieldcount+self.chrpos])
-        self.assert_(iv[-self.fieldcount+self.startpos].isdigit(), iv[-self.fieldcount+self.startpos])
-        self.assert_(iv[-self.fieldcount+self.stoppos].isdigit())
+        self.assertTrue(iv[-self.fieldcount+self.chrpos].startswith("chr"), iv[-self.fieldcount+self.chrpos])
+        self.assertTrue(iv[-self.fieldcount+self.startpos].isdigit(), iv[-self.fieldcount+self.startpos])
+        self.assertTrue(iv[-self.fieldcount+self.stoppos].isdigit())
 
     def testGetItemSlice(self):
         "getitem now supports direct access to the line."
@@ -193,7 +193,7 @@ class IntervalTest(unittest.TestCase):
         iv = next(ivf)
         seqid, = iv[self.chrpos:self.chrpos+1]
         start, end = iv[self.startpos:self.stoppos+1]
-        self.assert_(start.isdigit())
+        self.assertTrue(start.isdigit())
 
         self.assertEqual(int(end), iv.end)
         self.assertEqual(seqid, iv.chrom)
@@ -242,8 +242,8 @@ class IntervalTest(unittest.TestCase):
         iv.attrs['ID'] = 'fake'
         iv.attrs['field0'] = 'asdf'
         self.assertEqual(str(iv.attrs), iv[8])
-        self.assert_('field0=asdf' in iv[8])
-        self.assert_('ID=fake' in iv[8])
+        self.assertTrue('field0=asdf' in iv[8])
+        self.assertTrue('ID=fake' in iv[8])
 
     def testAppend(self):
         ivf = IntervalFile(self.file)
@@ -259,7 +259,7 @@ class IntervalTest(unittest.TestCase):
         iv.name = "bart simpson"
         self.assertEqual(iv.name, "bart simpson")
         if iv.file_type == "gff":
-            self.assert_("bart" in iv.fields[8])
+            self.assertTrue("bart" in iv.fields[8])
 
     def testStart(self):
         ivf = IntervalFile(self.file)
@@ -273,8 +273,8 @@ class IntervalTest(unittest.TestCase):
         print('   orig:', '(start=%s)'%orig_start, orig_string)
         print(' second:', '(start=%s)'%second_start, second_string)
         print('current:', '(start=%s)'%iv.start, str(iv))
-        self.assert_(orig_start == second_start == iv.start)
-        self.assert_(orig_string == second_string == str(iv))
+        self.assertTrue(orig_start == second_start == iv.start)
+        self.assertTrue(orig_string == second_string == str(iv))
 
 
 class IntervalFileGzTest(IntervalFileTest):
@@ -319,8 +319,8 @@ class IntervalFileGFFTest(IntervalTest):
         print('   orig:', '(start=%s)'%orig_start, orig_string)
         print(' second:', '(start=%s)'%second_start, second_string)
         print('current:', '(start=%s)'%iv.start, str(iv))
-        self.assert_(orig_start == second_start == iv.start)
-        self.assert_(orig_string == second_string == str(iv))
+        self.assertTrue(orig_start == second_start == iv.start)
+        self.assertTrue(orig_string == second_string == str(iv))
 
 
 def test_zero_length_regression():

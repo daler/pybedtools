@@ -1,6 +1,6 @@
 import pybedtools
 from textwrap import dedent
-from .tfuncs import setup, teardown
+from .tfuncs import setup_module, teardown_module
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
 from nose.tools import assert_raises, assert_equal
 from nose.plugins.attrib import attr

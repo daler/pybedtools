@@ -33,6 +33,7 @@ def list_example_files():
 
     Example usage:
 
+        >>> from pybedtools import BedTool
         >>> choices = list_example_files()
         >>> assert 'a.bed' in choices
         >>> bedfn = example_filename('a.bed')
