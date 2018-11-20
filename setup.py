@@ -1,26 +1,62 @@
-"""
-Much help from statsmodels, numpy, scipy, pandas, pyzmq, lxml
-http://pages.uoregon.edu/cfulton/posts/building_python_modules.html
-https://github.com/statsmodels/statsmodels/blob/master/setup.py
-
-The idea is to provide just the .cpp files in the distribution, and only run
-Cython when creating an sdist.
-"""
-
 import os
-from os.path import relpath, join as pjoin
 import sys
-import subprocess
-import re
-from distutils.version import StrictVersion, LooseVersion
 import glob
 
-no_frills = (len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
-                                     sys.argv[1] in ('--help-commands',
-                                                     'egg_info', '--version',
-                                                     'clean')))
+usage = """
 
-# try bootstrapping setuptools if it doesn't exist
+Cython .pyx files as well as the created .cpp files are included in the source
+distribution. The following information is useful for developers working on the
+Cython source code.
+
+    Rebuild .cpp files from .pyx, and then stop:
+
+        python setup.py cythonize
+
+    Install in development mode. Will cythonize .pyx files first if needed.
+
+        python setup.py develop
+
+    Build extensions from .pyx
+
+        python setup.py build_ext --cython
+
+    Build extensions from existing .cpp:
+
+        python setup.py build_ext
+
+    Source distribution:
+
+        python setup.py clean cythonize sdist
+"""
+
+try:
+    from Cython.Build import build_ext as cython_build_ext
+    from Cython.Build import cythonize
+    HAVE_CYTHON = True
+except ImportError:
+    HAVE_CYTHON = False
+
+if '--usage' in sys.argv:
+    print(usage)
+    sys.exit(0)
+
+if '--cython' in sys.argv:
+    sys.argv.remove('--cython')
+    USE_CYTHON = True
+elif 'cythonize' in sys.argv or 'develop' in sys.argv:
+    USE_CYTHON = True
+else:
+    USE_CYTHON = False
+
+if USE_CYTHON and not HAVE_CYTHON:
+    raise ValueError(
+        '''
+        Cython could not be found. Please install Cython and try again.
+        ''')
+
+
+# Try bootstrapping setuptools if it doesn't exist. This is for using the
+# `develop` command, which is very useful for in-place development work.
 try:
     import pkg_resources
     try:
@@ -28,196 +64,47 @@ try:
     except pkg_resources.VersionConflict:
         from ez_setup import use_setuptools
         use_setuptools(version="0.6c5")
-    from setuptools import setup, Command, find_packages
+    from setuptools import setup, Command
 except ImportError:
     sys.exit(
-        'pybedtools uses setuptools (https://packaging.python.org/installing/) '
+        'pybedtools uses setuptools '
+        '(https://packaging.python.org/installing/) '
         'for installation but setuptools was not found')
 
-setuptools_kwargs = {"zip_safe": False,
-                     "test_suite": "nose.collector"}
-
-
 curdir = os.path.abspath(os.path.dirname(__file__))
-README = open(pjoin(curdir, "README.rst")).read()
-
-
-DISTNAME = 'pybedtools'
-DESCRIPTION = 'Wrapper around BEDTools for bioinformatics work'
-LONG_DESCRIPTION = README
-MAINTAINER = 'Ryan Dale'
-MAINTAINER_EMAIL = 'dalerr@niddk.nih.gov'
-URL = 'https://github.com/daler/pybedtools'
-LICENSE = 'GPLv2'
-DOWNLOAD_URL = ''
-
 
 # These imports need to be here; setuptools needs to be imported first.
-from distutils.extension import Extension
-from distutils.command.build import build
-from distutils.command.build_ext import build_ext as _build_ext
-
-
-class build_ext(_build_ext):
-    def build_extensions(self):
-
-        # Pybedtools doesn't need NumPy. Comment out adding the include files,
-        # but keep this wrapped function so that later calls still work.
-        #
-        # numpy_incl = pkg_resources.resource_filename('numpy', 'core/include')
-        # for ext in self.extensions:
-        #     if (hasattr(ext, 'include_dirs') and
-        #             not numpy_incl in ext.include_dirs):
-        #         ext.include_dirs.append(numpy_incl)
-        #
-        _build_ext.build_extensions(self)
-
-
-def generate_cython():
-    cwd = os.path.abspath(os.path.dirname(__file__))
-    print("Cythonizing sources")
-    p = subprocess.call([sys.executable,
-                         os.path.join(cwd, 'tools', 'cythonize.py'),
-                         'pybedtools'],
-                        cwd=cwd)
-    if p != 0:
-        raise RuntimeError("Running cythonize failed!")
-
-
-def strip_rc(version):
-    return re.sub(r"rc\d+$", "", version)
-
-
-def check_dependency_versions(min_versions):
-    """
-    Don't let pip/setuptools do this all by itself.  It's rude.
-    For all dependencies, try to import them and check if the versions of
-    installed dependencies match the minimum version requirements.  If
-    installed but version too low, raise an error.  If not installed at all,
-    return the correct ``setup_requires`` and ``install_requires`` arguments to
-    be added to the setuptools kwargs.  This prevents upgrading installed
-    dependencies like numpy (that should be an explicit choice by the user and
-    never happen automatically), but make things work when installing into an
-    empty virtualenv for example.
-    """
-    setup_requires = []
-    install_requires = ['six']
-
-    if 'pysam' in min_versions:
-        try:
-            from pysam import __version__ as pysam_version
-        except ImportError:
-            install_requires.append('pysam')
-        else:
-            if not (LooseVersion(pysam_version) >= min_versions['pysam']):
-                raise ImportError("Pysam version is %s. Requires >= %s" %
-                                  (pysam_version, min_versions['pysam']))
-
-    if 'numpy' in min_versions:
-        try:
-            from numpy import __version__ as numpy_version
-        except ImportError:
-            install_requires.append('numpy')
-        else:
-            if not (LooseVersion(numpy_version) >= min_versions['numpy']):
-                raise ImportError("numpy version is %s. Requires >= %s" %
-                                  (numpy_version, min_versions['numpy']))
-
-
-    if 'pandas' in min_versions:
-        try:
-            from pandas import __version__ as pandas_version
-        except ImportError:
-            install_requires.append('pandas')
-        else:
-            if not (LooseVersion(pandas_version) >= min_versions['pandas']):
-                raise ImportError("pandas version is %s. Requires >= %s" %
-                                  (pandas_version, min_versions['pandas']))
-
-    return setup_requires, install_requires
+from distutils.extension import Extension  # noqa: E402
+from distutils.command.build import build  # noqa: E402
+from distutils.command.build_ext import build_ext  # noqa: E402
+from distutils.command.sdist import sdist  # noqa: E402
 
 
 MAJ = 0
-MIN = 7
-REV = 10
-ISRELEASED = True
+MIN = 8
+REV = 0
 VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
 
 
-def git_version():
-    """Return the git revision as a string"""
-    def _minimal_ext_cmd(cmd):
-        """construct minimal environment"""
-        env = {}
-        for k in ['SYSTEMROOT', 'PATH']:
-            v = os.environ.get(k)
-            if v is not None:
-                env[k] = v
-
-        # LANGUAGE is used on win32
-        env['LANGUAGE'] = 'C'
-        env['LANG'] = 'C'
-        env['LC_ALL'] = 'C'
-        out = subprocess.Popen(" ".join(cmd), stdout=subprocess.PIPE, env=env,
-                               shell=True).communicate()[0]
-        return out
-
-    try:
-        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
-        GIT_REVISION = out.strip().decode('ascii')
-    except OSError:
-        GIT_REVISION = "Unknown"
-    return GIT_REVISION
-
-
-def write_version_py(filename=pjoin(curdir, 'pybedtools/version.py')):
-    cnt = "\n".join(["",
-                     "# THIS FILE IS GENERATED FROM SETUP.PY",
-                     "short_version = '%(version)s'",
-                     "version = '%(version)s'",
-                     "full_version = '%(full_version)s'",
-                     "git_revision = '%(git_revision)s'",
-                     "release = %(isrelease)s", "",
-                     "__version__ = version",
-                     "if not release:",
-                     "    version = full_version"])
-
-    # Adding the git rev number needs to be done inside write_version_py(),
-    # otherwise the import of numpy.version messes up the build under Python 3.
-    FULLVERSION = VERSION
-    dowrite = True
-    if os.path.exists('.git'):
-        GIT_REVISION = git_version()
-    elif os.path.exists(filename):
-        # must be a source distribution, use existing version file
-        try:
-            from pybedtools.version import git_revision as GIT_REVISION
-        except ImportError:
-            dowrite = False
-            GIT_REVISION = "Unknown"
-    else:
-        GIT_REVISION = "Unknown"
-
-    if not ISRELEASED:
-        FULLVERSION += '.dev0+' + GIT_REVISION[:7]
-
-    if dowrite:
-        with open(filename, 'w') as a:
-            a.write(cnt % {'version': VERSION,
-                           'full_version': FULLVERSION,
-                           'git_revision': GIT_REVISION,
-                           'isrelease': str(ISRELEASED)})
-
-
 class CleanCommand(Command):
-    """Custom distutils command to clean the .so and .pyc files."""
+    """
+    Custom distutils command to clean the various files created by cython.
 
-    user_options = [("all", "a", "")]
+    E.g.,
+
+        pybedtools/featurefuncs.cpp
+        pybedtools/cbedtools.cpp
+        pybedtools/cbedtools.cpython-36m-x86_64-linux-gnu.so
+        pybedtools/featurefuncs.cpython-36m-x86_64-linux-gnu.so
+
+    """
+    user_options = []
 
     def initialize_options(self):
-        self.all = True
         self._clean_me = []
         self._clean_trees = []
+
+        # Add files to be protected here
         self._clean_exclude = []
 
         for root, dirs, files in list(os.walk('pybedtools')):
@@ -227,10 +114,10 @@ class CleanCommand(Command):
                 if os.path.splitext(f)[-1] in ('.pyc', '.so', '.o', '.pyo',
                                                '.pyd', '.c', '.cpp', '.cxx',
                                                '.orig'):
-                    self._clean_me.append(pjoin(root, f))
+                    self._clean_me.append(os.path.join(root, f))
             for d in dirs:
                 if d == '__pycache__':
-                    self._clean_trees.append(pjoin(root, d))
+                    self._clean_trees.append(os.path.join(root, d))
 
         for d in ('build',):
             if os.path.exists(d):
@@ -242,110 +129,133 @@ class CleanCommand(Command):
     def run(self):
         for clean_me in self._clean_me:
             try:
+                print('removing', clean_me)
                 os.unlink(clean_me)
             except Exception:
                 pass
         for clean_tree in self._clean_trees:
             try:
                 import shutil
+                print('removing directory', clean_tree)
                 shutil.rmtree(clean_tree)
             except Exception:
                 pass
 
 
-class CheckingBuildExt(build_ext):
-    """Subclass build_ext to get clearer report if Cython is necessary."""
-
-    def check_cython_extensions(self, extensions):
-        for ext in extensions:
-            for src in ext.sources:
-                if not os.path.exists(src):
-                    raise Exception("""Cython-generated file '%s' not found.
-        Cython is required to compile pybedtools from a development branch.
-        Please install Cython or download a source release of pybedtools.
-                """ % src)
-
+class CythonBuildExt(build_ext):
+    """
+    Subclass build_ext to get clearer report if Cython is necessary.
+    """
     def build_extensions(self):
-        self.check_cython_extensions(self.extensions)
+        for ext in self.extensions:
+            cythonize(ext)
         build_ext.build_extensions(self)
 
 
-class DummyBuildSrc(Command):
-    """ numpy's build_src command interferes with Cython's build_ext.
+class Cythonize(Command):
+    """
+    Generate .cpp files and then stop
     """
     user_options = []
 
     def initialize_options(self):
-        self.py_modules_dict = {}
+        pass
 
     def finalize_options(self):
         pass
 
     def run(self):
-        pass
+        cythonize(extensions)
 
 
-cmdclass = {'clean': CleanCommand,
-            'build': build}
+class InformativeBuildExt(build_ext):
+    def build_extensions(self):
+        for ext in self.extensions:
+            for src in ext.sources:
+                if not os.path.exists(src):
+                    raise Exception(
+                        """
+                        Cython-generated file '%s' not found.
 
-cmdclass["build_src"] = DummyBuildSrc
-cmdclass["build_ext"] = CheckingBuildExt
+                        Please install Cython and run
+
+                            python setup.py cythonize
+
+                        """ % src)
+        build_ext.build_extensions(self)
+
+class SDist(sdist):
+
+    def run(self):
+        cythonize(extensions)
+        for ext in extensions:
+            for src in ext.sources:
+                if not os.path.exists(src):
+                    raise Exception(
+                        "Cython-generated file '{0}' not found. "
+                        "Run 'python setup.py --usage' for details.".format(src, usage))
+        sdist.run(self)
 
 
-ext_data = dict(
-    cbedtools={
-        'name': 'pybedtools/cbedtools.cxx',
-        'depends': glob.glob('src/*.h'),
-        'libraries': ["stdc++", 'z'],
-        'include_dirs': ['src/'],
-        'sources': glob.glob("src/*.cpp"),
-        'language': 'c++'},
+EXT = '.pyx' if USE_CYTHON else '.cpp'
 
-    featurefuncs={
-        'name': 'pybedtools/featurefuncs.cxx',
-        'depends': glob.glob('src/*.h'),
-        'libraries': ["stdc++", 'z'],
-        'include_dirs': ['src/'],
-        'sources': glob.glob("src/*.cpp"),
-        'language': 'c++'},
-)
+extensions = [
+    Extension(
+        'pybedtools.cbedtools',
+        depends=glob.glob('src/*h'),
+        libraries=['stdc++', 'z'],
+        include_dirs=['src/'],
+        sources=['pybedtools/cbedtools' + EXT] + glob.glob('src/*.cpp'),
+        language='c++'),
 
-extensions = []
-for name, data in ext_data.items():
-    data['sources'] = data.get('sources', []) + [data['name']]
-    destdir = '.'.join(os.path.dirname(data['name']).split('/'))
-    data.pop('name')
-    obj = Extension('%s.%s' % (destdir, name), **data)
-    extensions.append(obj)
+    Extension(
+        'pybedtools.featurefuncs',
+        depends=glob.glob('src/*h'),
+        libraries=['stdc++', 'z'],
+        include_dirs=['src/'],
+        sources=['pybedtools/featurefuncs' + EXT] + glob.glob('src/*.cpp'),
+        language='c++'),
+]
 
+
+cmdclass = {
+    'clean': CleanCommand,
+    'build': build,
+    'sdist': SDist,
+}
+
+if USE_CYTHON:
+    cmdclass['build_ext'] = cython_build_ext
+    cmdclass['cythonize'] = Cythonize
+else:
+    cmdclass['build_ext'] = InformativeBuildExt
 
 if __name__ == "__main__":
-    min_versions = {
-        'pysam': '0.8.1',
-        #'pandas': '0.16',
-    }
-    (setup_requires,
-     install_requires) = check_dependency_versions(min_versions)
-    setuptools_kwargs['setup_requires'] = setup_requires
-    setuptools_kwargs['install_requires'] = install_requires
-    write_version_py()
 
-    cwd = os.path.abspath(os.path.dirname(__file__))
-    if not os.path.exists(os.path.join(cwd, 'PKG-INFO')) and not no_frills:
-        # Generate Cython sources, unless building from source release
-        generate_cython()
+    with open(os.path.join(curdir, 'pybedtools/version.py'), 'w') as fout:
+        fout.write(
+            "\n".join(["",
+                       "# THIS FILE IS GENERATED FROM SETUP.PY",
+                       "version = '{version}'",
+                       "__version__ = version"]).format(version=VERSION)
+        )
+
+    README = open(os.path.join(curdir, "README.rst")).read()
 
     setup(
-        name=DISTNAME,
-        maintainer=MAINTAINER,
+        name='pybedtools',
+        maintainer='Ryan Dale',
         version=VERSION,
         ext_modules=extensions,
-        maintainer_email=MAINTAINER_EMAIL,
-        description=DESCRIPTION,
-        license=LICENSE,
-        url=URL,
-        download_url=DOWNLOAD_URL,
-        long_description=LONG_DESCRIPTION,
+        maintainer_email='ryan.dale@nih.gov',
+        description='Wrapper around BEDTools for bioinformatics work',
+        license='GPLv2',
+        url='https://github.com/daler/pybedtools',
+        download_url='',
+        long_description=README,
+        zip_safe=False,
+        setup_requires=[],
+        install_requires=['six', 'pysam'],
         classifiers=[
             'Development Status :: 4 - Beta',
             'Intended Audience :: Science/Research',
@@ -382,4 +292,4 @@ if __name__ == "__main__":
                  'pybedtools/scripts/intron_exon_reads.py',
                  'pybedtools/scripts/examples/pbt_plotting_example.py',
                  'pybedtools/scripts/pybedtools'],
-        **setuptools_kwargs)
+    )
