@@ -324,17 +324,6 @@ Working with bigBed files
     pybedtools.contrib.bigbed.bigbed
     pybedtools.contrib.bigbed.bigbed_to_bed
 
-:class:`MultiClassifier`
-~~~~~~~~~~~~~~~~~~~~~~~~
-An example use-case of the :class:`MultiClassifier` class would be to determine the
-distribution of ChIP-seq peaks in introns/exons/intergenic space.
-
-.. autosummary::
-    :toctree: autodocs
-
-    pybedtools.contrib.MultiClassifier
-    pybedtools.contrib.MultiClassifier.classify
-    pybedtools.contrib.MultiClassifier.print_table
 
 :class:`IntersectionMatrix`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

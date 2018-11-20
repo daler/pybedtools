@@ -49,14 +49,12 @@ pybedtools.contrib.plotting.Track
       ~Track.get_fill
       ~Track.get_gid
       ~Track.get_hatch
-      ~Track.get_in_layout
       ~Track.get_joinstyle
       ~Track.get_label
       ~Track.get_linestyle
       ~Track.get_linestyles
       ~Track.get_linewidth
       ~Track.get_linewidths
-      ~Track.get_lw
       ~Track.get_offset_position
       ~Track.get_offset_transform
       ~Track.get_offsets
@@ -68,7 +66,6 @@ pybedtools.contrib.plotting.Track
       ~Track.get_sizes
       ~Track.get_sketch_params
       ~Track.get_snap
-      ~Track.get_tightbbox
       ~Track.get_transform
       ~Track.get_transformed_clip_path_and_affine
       ~Track.get_transforms
@@ -111,7 +108,6 @@ pybedtools.contrib.plotting.Track
       ~Track.set_figure
       ~Track.set_gid
       ~Track.set_hatch
-      ~Track.set_in_layout
       ~Track.set_joinstyle
       ~Track.set_label
       ~Track.set_linestyle
