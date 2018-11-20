@@ -14,6 +14,8 @@ python:
     #- "3.3"
     - "3.4"
     - "3.5"
+    - "3.6"
+    - "3.7"
 
 notifications:
     email:
@@ -43,9 +45,5 @@ install:
     - conda update -q conda
     - conda info -a
 
-    # Base env only needs to cythonize sources; test script takes care of
-    # everything else.
-    - conda install cython
-
 script:
-    - ./condatest.sh "$TRAVIS_PYTHON_VERSION"
+    - ./test_conda.sh "$TRAVIS_PYTHON_VERSION"
