@@ -8,19 +8,15 @@ Cython .pyx files as well as the created .cpp files are included in the source
 distribution. The following information is useful for developers working on the
 Cython source code.
 
-    Rebuild .cpp files from .pyx, and then stop:
-
-        python setup.py cythonize
-
     Install in development mode. Will cythonize .pyx files first if needed.
 
         python setup.py develop
 
-    Build extensions from .pyx
+    Rebuild .cpp files from .pyx, and then stop:
 
-        python setup.py build_ext --cython
+        python setup.py cythonize
 
-    Build extensions from existing .cpp:
+    Build extensions from existing .cpp
 
         python setup.py build_ext
 
@@ -40,11 +36,9 @@ if '--usage' in sys.argv:
     print(usage)
     sys.exit(0)
 
-if '--cython' in sys.argv:
-    sys.argv.remove('--cython')
-    USE_CYTHON = True
 elif 'cythonize' in sys.argv or 'develop' in sys.argv:
     USE_CYTHON = True
+
 else:
     USE_CYTHON = False
 
