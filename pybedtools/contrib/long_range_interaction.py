@@ -130,16 +130,16 @@ def tag_bedpe(bedpe, queries, verbose=False):
     Note that the sorting is necessary only for the doctests to be output in
     consistent format; this not typically needed:
 
-    >>> for (label, end1_hits, end2_hits) in iterator:
-    ...    end1_hits = sorted(end1_hits, key=lambda x: str(x))
-    ...    end2_hits = sorted(end2_hits, key=lambda x: str(x))
-    ...    print('PAIR = {}'.format(label))
-    ...    print('end1_hits:')
-    ...    for i in end1_hits:
-    ...        print(i, end='')
-    ...    print('end2_hits:')
-    ...    for i in end2_hits:
-    ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
+    for (label, end1_hits, end2_hits) in iterator:
+       end1_hits = sorted(end1_hits, key=lambda x: str(x))
+       end2_hits = sorted(end2_hits, key=lambda x: str(x))
+       print('PAIR = {}'.format(label))
+       print('end1_hits:')
+       for i in end1_hits:
+           print(i, end='')
+       print('end2_hits:')
+       for i in end2_hits:
+           print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
     PAIR = pair1
     end1_hits:
     chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1
@@ -278,14 +278,14 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
        peaks   1
 
 
-    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
-    >>> for (label, group1, group2) in iterator:
-    ...    group1 = sorted(group1, key=lambda x: str(x))
-    ...    group2 = sorted(group2, key=lambda x: str(x))
-    ...    for i in group1:
-    ...        print(i, end='')
-    ...    for i in group2:
-    ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
+    iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
+    for (label, group1, group2) in iterator:
+       group1 = sorted(group1, key=lambda x: str(x))
+       group2 = sorted(group2, key=lambda x: str(x))
+       for i in group1:
+           print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
+       for i in group2:
+           print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
     chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1
     chr1       1       10      pair1   5       +       x1      tss     chr1    5       6       gene1   1
     chr1       50      90      pair1   5       -       x1      tss     chr1    60      61      gene2   1

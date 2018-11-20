@@ -638,27 +638,6 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
     timeout : float
         How long to wait for a response; mostly used for testing.
 
-    Example usage:
-
-        >>> dm3_chromsizes = get_chromsizes_from_ucsc('dm3')
-        >>> for i in sorted(dm3_chromsizes.items()):
-        ...     print('{0}: {1}'.format(*i))
-        chr2L: (0, 23011544)
-        chr2LHet: (0, 368872)
-        chr2R: (0, 21146708)
-        chr2RHet: (0, 3288761)
-        chr3L: (0, 24543557)
-        chr3LHet: (0, 2555491)
-        chr3R: (0, 27905053)
-        chr3RHet: (0, 2517507)
-        chr4: (0, 1351857)
-        chrM: (0, 19517)
-        chrU: (0, 10049037)
-        chrUextra: (0, 29004656)
-        chrX: (0, 22422827)
-        chrXHet: (0, 204112)
-        chrYHet: (0, 347038)
-
     """
     if not internet_on(timeout=timeout):
         raise ValueError('It appears you don\'t have an internet connection '
