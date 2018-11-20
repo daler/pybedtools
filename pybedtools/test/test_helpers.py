@@ -1,9 +1,8 @@
 import pybedtools
 import sys
 import os, difflib
-from nose.tools import assert_raises
-from nose.plugins.attrib import attr
 from .tfuncs import setup_module, teardown_module, testdir, test_tempdir, unwriteable
+import pytest
 
 def fix(x):
     """
@@ -77,7 +76,8 @@ def test_cleanup():
 def test_call():
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
     from pybedtools.helpers import call_bedtools, BEDToolsError
-    assert_raises(BEDToolsError, call_bedtools, *(['intersectBe'], tmp))
+    with pytest.raises(BEDToolsError):
+        call_bedtools(*(['intersectBe'], tmp))
 
     a = pybedtools.example_bedtool('a.bed')
 
@@ -85,21 +85,22 @@ def test_call():
     # over the place when testing
     orig_stderr = sys.stderr
     sys.stderr = open(a._tmp(), 'w')
-    #assert_raises(BEDToolsError, a.intersect, a=a.fn, b=a.fn, z=True)
     sys.stderr = orig_stderr
 
     pybedtools.set_bedtools_path('nonexistent')
     a = pybedtools.example_bedtool('a.bed')
-    assert_raises(NotImplementedError, a.intersect, a)
+    with pytest.raises(NotImplementedError):
+        a.intersect(a)
     pybedtools.set_bedtools_path()
     a = pybedtools.example_bedtool('a.bed')
     assert a.intersect(a,u=True) == a
 
 
-@attr('url')
 def test_chromsizes():
-    assert_raises(OSError, pybedtools.get_chromsizes_from_ucsc, 'dm3', mysql='wrong path', fetchchromsizes='wrongtoo')
-    assert_raises(ValueError, pybedtools.get_chromsizes_from_ucsc, 'dm3', timeout=0)
+    with pytest.raises(OSError):
+        pybedtools.get_chromsizes_from_ucsc('dm3', mysql='wrong path', fetchchromsizes='wrongtoo')
+    with pytest.raises(ValueError):
+        pybedtools.get_chromsizes_from_ucsc('dm3', timeout=0)
     try:
 
         print(pybedtools.chromsizes('dm3'))
@@ -123,9 +124,9 @@ def test_chromsizes():
         print(results)
         assert expected == results
 
-        assert_raises(OSError,
-                      pybedtools.get_chromsizes_from_ucsc,
-                      **dict(genome='hg17', mysql='nonexistent', fetchchromsizes='missing'))
+        with pytest.raises(OSError):
+            pybedtools.get_chromsizes_from_ucsc(
+                **dict(genome='hg17', mysql='nonexistent', fetchchromsizes='missing'))
 
         os.unlink('hg17.genome')
     except OSError:
@@ -152,9 +153,12 @@ def test_getting_example_beds():
     assert a.fn == os.path.join(testdir, 'data', 'a.bed')
 
     # complain appropriately if nonexistent paths are asked for
-    assert_raises(ValueError, pybedtools.example_filename, 'nonexistent')
-    assert_raises(ValueError, pybedtools.example_bedtool, 'nonexistent')
-    assert_raises(ValueError, pybedtools.set_tempdir, 'nonexistent')
+    with pytest.raises(ValueError):
+        pybedtools.example_filename('nonexistent')
+    with pytest.raises(ValueError):
+        pybedtools.example_bedtool('nonexistent')
+    with pytest.raises(ValueError):
+        pybedtools.set_tempdir('nonexistent')
 
 
 def teardown():

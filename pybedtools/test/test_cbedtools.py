@@ -4,8 +4,8 @@ import unittest
 import os
 from pybedtools import Interval, IntervalFile
 import pybedtools
-from nose.tools import assert_raises, raises
 from .tfuncs import setup_module, teardown_module
+import pytest
 
 
 PATH = os.path.dirname(__file__)
@@ -376,7 +376,8 @@ def test_missing_files():
     def crashes():
         list(iter(a))
 
-    assert_raises(BedToolsFileError, crashes)
+    with pytest.raises(BedToolsFileError):
+        crashes()
 
 if __name__ == "__main__":
     unittest.main()

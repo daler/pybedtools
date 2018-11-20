@@ -3,16 +3,10 @@ import pybedtools
 import gzip
 import os, difflib, sys
 from textwrap import dedent
-from nose import with_setup
-from nose.tools import assert_raises, raises
 from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
 import six
 import pysam
-#from .tfuncs import setup_module, teardown_module, testdir, test_tempdir, unwriteable
-from nose.plugins.attrib import attr
-from nose.plugins.skip import SkipTest
-from nose.tools import assert_equal
 from six.moves import socketserver
 from six.moves import BaseHTTPServer
 import pytest
@@ -187,7 +181,8 @@ def test_stream():
     # this should really not be written anywhere
     d = a.intersect(b, stream=True)
 
-    assert_raises(NotImplementedError, c.__eq__, d)
+    with pytest.raises(NotImplementedError):
+        c.__eq__(d)
     d = d.saveas()
     d_contents = open(d.fn).read()
     c_contents = open(c.fn).read()
@@ -222,7 +217,8 @@ def test_stream():
 
     for row in a.cut([0, 1, 2, 5], stream=True):
         row[0], row[1], row[2]
-        assert_raises(IndexError, row.__getitem__, 4)
+        with pytest.raises(IndexError):
+            row.__getitem__(4)
     cleanup_unwriteable()
 
 def test_stream_of_stream():
@@ -273,7 +269,6 @@ def test_stream_of_generator():
     print(sb2)
     assert sb1 == sb2
 
-@attr('slow')
 def test_many_files():
     """regression test to make sure many files can be created
     """
@@ -302,7 +297,8 @@ def test_malformed():
     print(six.advance_iterator(a_i))
 
     # but next one is not and should raise exception
-    assert_raises(pybedtools.MalformedBedLineError, a_i.__next__)
+    with pytest.raises(pybedtools.MalformedBedLineError):
+        a_i.__next__()
 
 def test_remove_invalid():
     """
@@ -328,7 +324,8 @@ def test_remove_invalid():
     chr1 100 200
     chr1 100 200""", from_string=True)
 
-    assert_raises(NotImplementedError, b.__eq__, cleaned)
+    with pytest.raises(NotImplementedError):
+        b.__eq__(cleaned)
     assert str(b) == str(cleaned)
 
 def test_create_from_list_long_features():
@@ -388,7 +385,8 @@ def test_indexing():
     assert a[0] == interval
 
     # only slices and integers allowed....
-    assert_raises(ValueError, a.__getitem__, 'key')
+    with pytest.raises(ValueError):
+        a.__getitem__('key')
 
 def test_repr_and_printing():
     """
@@ -404,7 +402,6 @@ def test_repr_and_printing():
     assert 'MISSING FILE' in repr(c)
     assert 'stream' in repr(d)
 
-@attr('slow')
 def test_file_type():
     """
     Regression test on file_type checks
@@ -443,7 +440,8 @@ def test_slop():
     a = pybedtools.example_bedtool('a.bed')
 
     # Make sure it complains if no genome is set
-    assert_raises(ValueError, a.slop, **dict(l=100, r=1))
+    with pytest.raises(ValueError):
+        a.slop(**dict(l=100, r=1))
 
 def test_closest():
     a = pybedtools.example_bedtool('a.bed')
@@ -483,7 +481,8 @@ def test_sequence():
     AAAAAAAAAAAAAAAAAAAAAAAAAAAATCT
     """
     a = pybedtools.BedTool(s, from_string=True)
-    assert_raises(ValueError, a.save_seqs, ('none',))
+    with pytest.raises(ValueError):
+        a.save_seqs(('none',))
 
     fout = open(fi,'w')
     for line in fasta.splitlines(True):
@@ -590,13 +589,18 @@ chr1	900	950	feature4	0	+
     # Don't allow testing equality on streams
     c = a.intersect(b, stream=True)
     d = a.intersect(b)
-    assert_raises(NotImplementedError, c.__eq__, d)
-    assert_raises(NotImplementedError, d.__eq__, c)
+    with pytest.raises(NotImplementedError):
+        c == d
+    with pytest.raises(NotImplementedError):
+        d == c
 
     # Test it on iterator, too....
     e = pybedtools.BedTool((i for i in a))
-    assert_raises(NotImplementedError, e.__eq__, a)
-    assert_raises(NotImplementedError, a.__eq__, e)
+    with pytest.raises(NotImplementedError):
+        a == e
+    with pytest.raises(NotImplementedError):
+        e == a
+
 
     # Make sure that if we force the iterator to be consumed, it is in fact
     # equal
@@ -646,7 +650,8 @@ def test_bedtool_creation():
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.BedTool(a)
     assert b.fn == a.fn
-    assert_raises(ValueError, pybedtools.BedTool,'nonexistent.bed')
+    with pytest.raises(ValueError):
+        pybedtools.BedTool('nonexistend.bed')
 
     # note that *s* has both tabs and spaces....
     s = """
@@ -856,7 +861,8 @@ def test_history_step():
     tag = c.history[0].result_tag
     assert pybedtools.find_tagged(tag) == c
 
-    assert_raises(ValueError, pybedtools.find_tagged, 'nonexistent')
+    with pytest.raises(ValueError):
+        pybedtools.find_tagged('nonexistent')
 
 
     print(d.history)
@@ -1049,12 +1055,10 @@ def test_bam_to_sam_to_bam2():
     assert e.file_type == 'bam'
 
     # everybody should be the same
-    assert_equal_with_pretty_message = lambda expected, actual: assert_equal(expected, actual,
-                                                                             '{0!r} != {1!r}\nExpected:\n{0}\n\nActual:\n{1}'.format(expected, actual))
-    assert_equal_with_pretty_message(a, b)
-    assert_equal_with_pretty_message(a, c)
-    assert_equal_with_pretty_message(a, d)
-    assert_equal_with_pretty_message(a, e)
+    assert a == b
+    assert a == c
+    assert a == d
+    assert a == e
 
 
 def test_bam_to_sam_to_bam():
@@ -1487,9 +1491,8 @@ def test_reldist():
 
 def test_remote_bam_raises_exception_when_file_doesnt_exist():
     "from #134"
-    def f():
+    with pytest.raises(ValueError):
         pybedtools.BedTool('ftp://ftp-trace.ncbi.nih.gov/this/url/clearly/does/not/exist.bam', remote=True)
-    assert_raises(ValueError, f)
 
 
 def test_issue_131():
@@ -1498,17 +1501,16 @@ def test_issue_131():
     """
     from itertools import groupby
 
-    x = pybedtools.BedTool([('chr1', 12, 13, 'N', 1000, '+'), 
-                            ('chr1', 12, 13, 'N', 1000, '-'), 
-                            ('chr1', 12, 13, 'N', 1000, '-'), 
+    x = pybedtools.BedTool([('chr1', 12, 13, 'N', 1000, '+'),
+                            ('chr1', 12, 13, 'N', 1000, '-'),
+                            ('chr1', 12, 13, 'N', 1000, '-'),
                             ('chr1', 115, 116, 'N', 1000, '+')])
 
     for key, group_ in groupby(x, key=lambda r: (r.chrom, r.start, r.end)):
         print(key, map(lambda r: r.strand, group_))
 
-@attr('url')
+@pytest.mark.xfail(reason="Known failure: no support in BEDTools for remote BAM")
 def test_remote_bam():
-    raise SkipTest("Known failure: no support in BEDTools for remote BAM")
     url = 'http://genome.ucsc.edu/goldenPath/help/examples/bamExample.bam'
     x = pybedtools.BedTool(url, remote=True)
     #for i in x:
@@ -1622,8 +1624,7 @@ def test_to_dataframe():
     try:
         import pandas
     except ImportError:
-        from nose.plugins.skip import SkipTest
-        raise SkipTest("pandas not installed; skipping test")
+        pytest.xfail("pandas not installed; skipping test")
 
     a = pybedtools.example_bedtool('a.bed')
 
@@ -1817,7 +1818,8 @@ def test_issue_141():
 
     # "adding" a malformed file raises MalformedBedLineError
     # (an uncaught exception raised when trying to intersect)
-    assert_raises(pybedtools.MalformedBedLineError, a.__add__, malformed)
+    with pytest.raises(pybedtools.MalformedBedLineError):
+        a + malformed
 
     x = pybedtools.example_bedtool('x.bam')
     x + a
@@ -1854,7 +1856,8 @@ def test_issue_145():
 
     # trying to print causes pybedtools to interpret as a BED file, but it's
     # a histogram so line 2 raises error
-    assert_raises(pybedtools.MalformedBedLineError, print, y)
+    with pytest.raises(pybedtools.MalformedBedLineError):
+        print(y)
 
     # solution is to iterate over lines of file; make sure this works
     for line in open(y.fn):
@@ -1979,8 +1982,7 @@ def test_issue_157():
     try:
         import pandas
     except ImportError:
-        from nose.plugins.skip import SkipTest
-        raise SkipTest("pandas not installed; skipping test")
+        pytest.xfail("pandas not installed; skipping test")
     vcf = pybedtools.example_bedtool('1000genomes-example.vcf')
     bed = pybedtools.BedTool('20\t14300\t17000', from_string=True)
     non_dataframe = str(vcf.intersect(bed))
@@ -2008,7 +2010,8 @@ def test_issue_162():
     a = pybedtools.BedTool("", from_string=True)
     b = pybedtools.example_bedtool("b.bed")
     c = pybedtools.BedTool()
-    assert_raises(ValueError, b.cat, c)
+    with pytest.raises(ValueError):
+        b.cat(c)
     assert str(b.cat(a)) == fix(
         """
         chr1	155	200
@@ -2131,7 +2134,8 @@ def test_issue_218():
 
         # Calling BEDTools with non-existent path, but the docstring should not
         # have been changed.
-        assert_raises(OSError, x.sort)
+        with pytest.raises(OSError):
+            x.sort()
         assert "Original BEDTools help" in x.sort.__doc__
 
         # The class's docstring should have been reset though.
@@ -2141,7 +2145,8 @@ def test_issue_218():
         # should detect that, adding a method that raises
         # NotImplementedError...
         y = constructor('x.bed')
-        assert_raises(NotImplementedError, y.sort)
+        with pytest.raises(NotImplementedError):
+            y.sort()
 
         # ...and correspondingly no docstring
         assert y.sort.__doc__ is None

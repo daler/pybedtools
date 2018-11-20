@@ -2,9 +2,7 @@ import pybedtools
 from textwrap import dedent
 from .tfuncs import setup_module, teardown_module
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
-from nose.tools import assert_raises, assert_equal
-from nose.plugins.attrib import attr
-from nose.plugins.skip import SkipTest
+import pytest
 import subprocess as sp
 import os
 import sys
@@ -14,7 +12,8 @@ def test_annotate_main():
     # exits after printing help when sys.argv is not as it should be.
     orig_stderr = sys.stderr
     sys.stderr = open('annotmp','w')
-    assert_raises(SystemExit, annotate.main)
+    with pytest.raises(SystemExit):
+        annotate.main()
     sys.stderr = orig_stderr
     os.unlink('annotmp')
 
@@ -100,12 +99,14 @@ def test_venn_gchart_data_is_correct():
     for key in expected_data.keys():
         e = expected_data[key]
         o = data[key]
-        assert_equal(e, o, 'Key:{!r}\nExpected:{!r}\nObserved:{!r}\n'.format(key, e, o))
+        assert e == o
 
 
+@pytest.mark.skip(
+    'Small differences between fonts in PNG are sometimes produced and need to be accounted for'
+)
 def test_venn_gchart_png_is_saved_correctly():
-    from nose.plugins.skip import SkipTest
-    raise SkipTest('Small differences between fonts in PNG are sometimes produced and need to be accounted for')
+
     here = os.path.dirname(__file__)
     expected = open(os.path.join(here, 'gchart-expected.png')).read()
 
@@ -132,14 +133,16 @@ def test_venn_gchart_png_is_saved_correctly():
 def test_venn_mpl_main():
     orig_stderr = sys.stderr
     sys.stderr = open('mpltmp','w')
-    assert_raises(SystemExit, venn_mpl.main)
+    with pytest.raises(SystemExit):
+        venn_mpl.main()
     sys.stderr = orig_stderr
     os.unlink('mpltmp')
 
 def test_venn_gchart_main():
     orig_stderr = sys.stderr
     sys.stderr = open('gcharttmp','w')
-    assert_raises(SystemExit, venn_gchart.main)
+    with pytest.raises(SystemExit):
+        venn_gchart.main()
     sys.stderr = orig_stderr
     os.unlink('gcharttmp')
 
