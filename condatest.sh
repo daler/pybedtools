@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Installs pybedtools and requirements into a fresh Python 2 or 3 environment
-# and runs tests.
-#
-# Note that this script needs to be called from an environment with Cython
-# since this does a clean/sdist operation which will Cythonize the source
-
 set -e
 
 PY_VERSION=$1
@@ -13,56 +7,81 @@ PY_VERSION=$1
 usage="Usage: $0 py_version[2|3]"
 : ${PY_VERSION:?$usage}
 
+
 log () {
     echo
     echo "[`date`] TEST HARNESS: $1"
     echo
 }
 
-log "removing existing env pbtpy${PY_VERSION}"
-name=pbtpy${PY_VERSION}
-conda env list | grep -q $name && conda env remove -y -n $name
+# ----------------------------------------------------------------------------
+# sdist and pip install tests
+# ----------------------------------------------------------------------------
+# Build an environment with just Python and Cython. We do this fresh each time.
+log "building fresh environment with just python and cython"
+with_cy="pbtpy${PY_VERSION}_sdist_cython"
+if conda env list | grep -q $with_cy; then
+    conda env remove -y -n $with_cy
+fi
+conda create -n $with_cy -y --channel conda-forge --channel bioconda python=${PY_VERSION} cython
+source activate $with_cy
 
-log "starting with basic environment"
-conda create -y -n $name --channel bioconda python=${PY_VERSION} \
-    bedtools \
-    "htslib<1.4" \
-    ucsc-bedgraphtobigwig \
-    ucsc-bigwigtobedgraph
-source activate $name
+# Clone the repo -- so we're only catching things committed to git -- into
+# a temp dir
+log "cloning into temp dir"
+HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TMP=/tmp/pybedtools-deploy
+rm -rf $TMP
+git clone $HERE $TMP
+cd $TMP
 
-log "temporarily install cython"
-conda install -y cython
+log "cythonizing source files and building source package"
+# Cythonize the .pyx filex to .cpp, and build a source package
+python setup.py clean cythonize sdist
 
-log "force re-cythonizing"
-rm -rf dist build
-python setup.py clean
-python setup.py build
-python setup.py sdist
+log "installing source package with pip"
+# Install into the environment to verify that everything works (just an import
+# test)
+(cd dist && pip install pybedtools-*.tar.gz && python -c 'import pybedtools; print(pybedtools.__file__)')
 
-log "uninstall cython"
-conda remove -y cython
 
-log "test installation of sdist"
-set -x
-(cd dist && pip install pybedtools-*.tar.gz && python -c 'import pybedtools')
-set +x
-
-python setup.py clean
-
-log "install test requirements"
+# ----------------------------------------------------------------------------
+# Unit tests
+# ----------------------------------------------------------------------------
+# Deactivate that env, and build another one with all requirements that we'll
+# use for unit tests.
 source deactivate
-conda env list | grep -q $name && conda env remove -y -n $name
-conda create -y -n $name --channel bioconda python=${PY_VERSION} \
-    --file "requirements.txt" \
-    --file "test-requirements.txt" \
-    --file "optional-requirements.txt"
+no_cy="pbtpy${PY_VERSION}_conda_no_cython"
+if ! conda env list | grep -q $no_cy; then
+    log "creating environment"
+    conda create -n $no_cy -y \
+        --channel conda-forge \
+        --channel bioconda python=${PY_VERSION} \
+        --file requirements.txt \
+        --file test-requirements.txt \
+        --file optional-requirements.txt
+else
+    echo "Using existing environment '${no_cy}'"
+fi
+source activate $no_cy
 
-source activate $name
+log "unpacking source package and install with pip install -e into $no_cy env"
+mkdir -p /tmp/pybedtools-uncompressed
+cd /tmp/pybedtools-uncompressed
+tar -xf $TMP/dist/pybedtools-*.tar.gz
+cd pybedtools-*
+pip install -e .
 
-log "install pybedtools from setup.py in develop mode to trigger re-cythonizing"
-python setup.py develop
+log "Unit tests"
+pytest -v --doctest-modules
 
-log "run tests"
-nosetests
-(cd docs && make clean && make doctest)
+# ----------------------------------------------------------------------------
+# sphinx doctests
+# ----------------------------------------------------------------------------
+# Since the docs aren't included in the MANIFEST and therefore aren't included
+# in the source distribution, we copy them over from the repo we checked out.
+log "copying over docs directory from repo"
+cp -r $TMP/docs .
+
+log "sphinx doctests"
+(cd docs && make clean doctest)
