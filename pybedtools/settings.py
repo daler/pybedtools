@@ -38,6 +38,7 @@ _prog_names = {
     'randomBed': 'random',
     'shuffleBed': 'shuffle',
     'annotateBed': 'annotate',
+    'spacing': 'spacing',
 
     # multi-way
     'multiIntersectBed': 'multiinter',
@@ -76,6 +77,8 @@ _prog_names = {
     'expandCols': 'expand',
     'sample': 'sample',
     'fisher': 'fisher',
+
+    'split': 'split',
 }
 
 _old_names = list(_prog_names.keys())

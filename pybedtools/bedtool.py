@@ -18,7 +18,7 @@ from warnings import warn
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
-    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect)
+    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect, SplitOutput)
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list, BedToolsFileError
 from . import filenames
@@ -149,8 +149,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     *does_not_return_bedtool*, if not None, should be a function that handles
     the returned output.  Its signature should be ``func(output, kwargs)``,
     where `output` is the output from the [possibly streaming] call to BEDTools
-    and `kwargs` are passed verbatim from the wrapped method call. This is used
-    for jaccard and reldist methods.
+    and `kwargs` are passed verbatim from the wrapped method call. Some
+    examples of methods that use this are jaccard, reldist, fisher, and split
+    methods.
     """
 
     # NOTE: We are calling each BEDTools program to get its help and adding
@@ -2394,6 +2395,54 @@ class BedTool(object):
         >>> f.two_tail
         8.8247e-21
         """
+
+    @_wraps(prog='split', implicit='i',
+            does_not_return_bedtool=helpers.SplitOutput)
+    def splitbed(self):
+        """
+        Wraps 'bedtools split'.
+
+        BedTool objects have long had a `split` method which splits intervals
+        according to a custom function. Now that BEDTools has a `split` tool,
+        the method name conflicts. To maintain backwards compatibility, the
+        method wrapping the BEDTools command is called `splitbed`.
+
+        Since this tool does not return a single BED file, the method parses
+        the output and returns a SplitOutput object, which includes an
+        attribute, `bedtools`, that is a list of BedTool objects created from
+        the split files.
+
+        To keep the working directory clean, you may want to consider using
+        `prefix=BedTool._tmp()` to get a temp file that will be deleted when
+        Python exits cleanly.
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> s = a.splitbed(n=2, p="split")
+        >>> assert len(a) == 4, len(a)
+        >>> assert len(s.bedtools) == 2
+        >>> print(s.bedtools[0]) # doctest: +NORMALIZE_WHITESPACE
+        chr1	150	500	feature3	0	-
+        <BLANKLINE>
+        >>> print(s.bedtools[1]) # doctest: +NORMALIZE_WHITESPACE
+        chr1	100	200	feature2	0	+
+        chr1	1	100	feature1	0	+
+        chr1	900	950	feature4	0	+
+        <BLANKLINE>
+        """
+
+    @_wraps(prog='spacing', implicit='i')
+    def spacing(self):
+        """
+        Wraps `bedtools spacing`
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> print(a.spacing())  # doctest: +NORMALIZE_WHITESPACE
+        chr1	1	100	feature1	0	+	.
+        chr1	100	200	feature2	0	+	0
+        chr1	150	500	feature3	0	-	-1
+        chr1	900	950	feature4	0	+	400
+        """
+
 
     def count(self):
         """

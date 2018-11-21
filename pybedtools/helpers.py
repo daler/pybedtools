@@ -608,6 +608,45 @@ class FisherOutput(object):
         return '<%s at %s>\n%s' % (self.__class__.__name__, id(self), self.text)
 
 
+class SplitOutput(object):
+    def __init__(self, output, **kwargs):
+        """
+        Handles output from bedtools split, which sends a report of files to
+        stdout. This class parses that list into something more convenient to
+        use within pybedtools.
+
+        Most useful is probably the .bedtools attribute, which is a list of
+        BedTool objects.
+        """
+        from .bedtool import BedTool
+
+        if isinstance(output, str):
+            output = open(output).read()
+        if hasattr(output, 'next'):
+            output = ''.join(i for i in output)
+
+        #: store a copy of the output
+        self.text = output
+
+        #: BedTool objects created from output
+        self.bedtools = []
+
+        #: Filenames that were created from the split
+        self.files = []
+
+        #: number of bases in each file
+        self.nbases = []
+
+        #: number of features in each file
+        self.counts = []
+
+        for line in output.splitlines():
+            toks = line.split()
+            self.files.append(toks[0])
+            self.nbases.append(int(toks[1]))
+            self.counts.append(int(toks[2]))
+            self.bedtools.append(BedTool(toks[0]))
+
 
 def internet_on(timeout=1):
     try:
