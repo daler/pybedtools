@@ -3272,9 +3272,17 @@ class BedTool(object):
                         break
         return BedTool(_gen()).saveas()
 
-    def to_dataframe(self, *args, **kwargs):
+    def to_dataframe(self, disable_auto_names=False, *args, **kwargs):
         """
         create a pandas.DataFrame, passing args and kwargs to pandas.read_table
+
+        Parameters
+        ----------
+        disable_auto_names : bool
+            By default, the created dataframe fills in column names
+            automatically according to the detected filetype (e.g., "chrom",
+            "start", "end" for a BED3 file). Set this argument to True to
+            disable this behavior.
         """
         # Complain if BAM or if not a file
         if self._isbam:
@@ -3288,8 +3296,8 @@ class BedTool(object):
             raise ImportError(
                 "pandas must be installed to convert to pandas.DataFrame")
         # Otherwise we're good:
-        _names = kwargs.pop('names', None)
-        if _names is None:
+        names = kwargs.get('names', None)
+        if names is None and not disable_auto_names:
             try:
                 _names = \
                     settings._column_names[self.file_type][:self.field_count()]
@@ -3302,8 +3310,9 @@ class BedTool(object):
                     _names = None
             except KeyError:
                 _names = None
+            kwargs['names'] = _names
 
-        return pandas.read_table(self.fn, names=_names, header=None, *args, **kwargs)
+        return pandas.read_table(self.fn, *args, **kwargs)
 
     def tail(self, lines=10, as_string=False):
         """
