@@ -196,18 +196,18 @@ EXT = '.pyx' if USE_CYTHON else '.cpp'
 extensions = [
     Extension(
         'pybedtools.cbedtools',
-        depends=glob.glob('src/*h'),
+        depends=glob.glob('pybedtools/include/*h'),
         libraries=['stdc++', 'z'],
-        include_dirs=['src/'],
-        sources=['pybedtools/cbedtools' + EXT] + glob.glob('src/*.cpp'),
+        include_dirs=['pybedtools/include/'],
+        sources=['pybedtools/cbedtools' + EXT] + glob.glob('pybedtools/include/*.cpp'),
         language='c++'),
 
     Extension(
         'pybedtools.featurefuncs',
-        depends=glob.glob('src/*h'),
+        depends=glob.glob('pybedtools/include/*h'),
         libraries=['stdc++', 'z'],
-        include_dirs=['src/'],
-        sources=['pybedtools/featurefuncs' + EXT] + glob.glob('src/*.cpp'),
+        include_dirs=['pybedtools/include/'],
+        sources=['pybedtools/featurefuncs' + EXT] + glob.glob('pybedtools/include/*.cpp'),
         language='c++'),
 ]
 
@@ -275,9 +275,10 @@ if __name__ == "__main__":
                                      "*.pxd",
                                      "*.cxx",
                                      "*.c",
-                                     "*.cpp"]
+                                     "*.cpp"],
+                      'src': ['src/*'],
                       },
-        include_package_data=False,
+        include_package_data=True,
         scripts=['pybedtools/scripts/venn_gchart.py',
                  'pybedtools/scripts/venn_mpl.py',
                  'pybedtools/scripts/annotate.py',
