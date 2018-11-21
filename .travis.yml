@@ -45,4 +45,4 @@ install:
     - conda info -a
 
 script:
-    - ./test_conda.sh "$TRAVIS_PYTHON_VERSION"
+    - ./condatest.sh "$TRAVIS_PYTHON_VERSION"
