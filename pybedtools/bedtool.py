@@ -1741,7 +1741,8 @@ class BedTool(object):
              if l[0] != ">"])
 
     @_log_to_history
-    @_wraps(prog='nucBed', implicit='bed', other='fi')
+    @_wraps(prog='nucBed', implicit='bed', other='fi',
+            check_stderr=_check_sequence_stderr)
     def nucleotide_content(self):
         """
         Wraps `bedtools nuc`.
