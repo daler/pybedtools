@@ -1598,12 +1598,17 @@ class BedTool(object):
         """
         pass
 
+    # Alias for backward compatibility
+    bed12tobed6 = bed6
+
     @_log_to_history
     @_wraps(prog='bamToBed', implicit='i', other=None, nonbam='ALL', bam='i')
     def bam_to_bed(self, **kwargs):
         """
         Wraps `bedtools bamtobed`.
         """
+    # Alias for backward compatibility
+    bamtobed = bam_to_bed
 
     @_wraps(prog='bedToBam', implicit='i', uses_genome=True, force_bam=True)
     def _bed_to_bam(self):
@@ -1677,6 +1682,8 @@ class BedTool(object):
             new_bedtool = BedTool(bam_tmp)
             new_bedtool._isbam = True
             return new_bedtool
+    # Alias for backward compatibility
+    bedtobam = to_bam
 
     @_log_to_history
     @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam',
@@ -1716,6 +1723,8 @@ class BedTool(object):
         <BLANKLINE>
 
         '''
+    # Alias for backwards compatibility
+    getfasta = sequence
 
     @staticmethod
     def seq(loc, fasta):
@@ -1750,6 +1759,8 @@ class BedTool(object):
         Profiles nucleotide content.  The returned BED file contains extra
         information about the nucleotide content
         """
+    # Alias for backwards compatibility
+    nuc = nucleotide_content
 
     @_log_to_history
     @_wraps(prog='multiBamCov', implicit='bed')
@@ -1759,6 +1770,8 @@ class BedTool(object):
 
         Pass a list of sorted and indexed BAM files as `bams`
         """
+    # Alias for backwards compatibility
+    multicov = multi_bam_coverage
 
     @_log_to_history
     @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
@@ -2043,9 +2056,9 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('x.bed')
         >>> b = a.genome_coverage(genome='dm3')
         >>> df = b.to_dataframe(names=['chrom', 'depth', 'n', 'chromsize', 'fraction'])
-
-
         """
+    # Alias for backwards compatibility
+    genomecov = genome_coverage
 
     @_log_to_history
     @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam',
@@ -2091,6 +2104,8 @@ class BedTool(object):
         >>> if os.path.exists('masked.fa.example.fai'):
         ...     os.unlink('masked.fa.example.fai')
         """
+    # Alias for backwards compatibility
+    maskfasta = mask_fasta
 
     @_log_to_history
     @_wraps(prog='complementBed', implicit='i', uses_genome=True)
@@ -2134,6 +2149,8 @@ class BedTool(object):
         """
         Wraps `bedtools pairtobed`.
         """
+    # Alias for backwards compatibility
+    pairtobed = pair_to_bed
 
     @_log_to_history
     @_wraps(prog='pairToPair', implicit='a', other='b')
@@ -2141,6 +2158,8 @@ class BedTool(object):
         """
         Wraps `bedtools pairtopair`.
         """
+    # Alias for backwards compatibility
+    pairtopair = pair_to_pair
 
     @_log_to_history
     @_wraps(prog='groupBy', implicit='i')
@@ -2178,6 +2197,8 @@ class BedTool(object):
         `files` and `labels` should lists of equal length.
 
         """
+    # Alias for backwards compatibility
+    tag = tag_bam
 
     @_log_to_history
     @_wraps(prog='mapBed', implicit='a', other='b')
@@ -2210,6 +2231,9 @@ class BedTool(object):
 
         """
 
+    # Alias for backwards compatibility
+    multiinter = multi_intersect
+
     @_log_to_history
     @_wraps(prog='randomBed', uses_genome=True)
     def random(self):
@@ -2229,6 +2253,8 @@ class BedTool(object):
         """
         Wraps `bedtools bedpetobam`.
         """
+    # Alias for backwards compatibility
+    bedpetobam = bedpe_to_bam
 
     @_log_to_history
     @_wraps(prog='clusterBed', implicit='i')
@@ -2246,6 +2272,8 @@ class BedTool(object):
         Warning: using the `header=True` kwarg will result in a file that is
         not in true BED format, which may break downstream analysis.
         """
+    # Alias for backwards compatibility
+    unionbedg = union_bedgraphs
 
     @_log_to_history
     @_wraps(prog='windowMaker', uses_genome=True, genome_none_if=['b'],
@@ -2254,6 +2282,8 @@ class BedTool(object):
         """
         Wraps `bedtools makewindows`.
         """
+    # Alias for backwards compatibility
+    makewindows = window_maker
 
     @_log_to_history
     @_wraps(prog='expandCols', implicit='i')
@@ -2295,6 +2325,8 @@ class BedTool(object):
 
         The resulting BedTool will have a new attribute, `fastq`.
         """
+    # Alias for backwards compatibility
+    bamtofastq = bam_to_fastq
 
     @_wraps(prog='jaccard', implicit='a', other='b',
             does_not_return_bedtool=_jaccard_output_to_dict)
