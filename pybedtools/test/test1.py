@@ -2158,6 +2158,9 @@ def test_issue_218():
         z.sort()
 
 def test_issue_233():
+    """
+    Make sure hitting a blank line while iterating does not raise IndexError.
+    """
     tmp = pybedtools.BedTool._tmp()
     with open(tmp, 'w') as fout:
         fout.write(dedent(
@@ -2171,4 +2174,29 @@ def test_issue_233():
 
     # Previously raised IndexError:
     print(x)
+
+
+def test_issue_258():
+    """
+    Non-BED format BedTool objects can still use to_dataframe and use their own
+    header
+    """
+    a = pybedtools.BedTool(
+        """
+        chr1  1 5
+        chr1  5 10
+        """, from_string=True)
+    tmp = pybedtools.BedTool._tmp()
+    with open(tmp, 'w') as fout:
+        fout.write(
+            '>chr1\n'
+            'ACACGACTACACTGACTGTGTCGACTAGCACTACGACTGCAGGCATATAC\n'
+        )
+    b = a.nucleotide_content(fi=tmp)
+    df = b.to_dataframe(disable_auto_names=True)
+    assert list(df.columns) == ['#1_usercol', '2_usercol', '3_usercol',
+                                '4_pct_at', '5_pct_gc', '6_num_A', '7_num_C',
+                                '8_num_G', '9_num_T', '10_num_N', '11_num_oth',
+                                '12_seq_len']
+
 
