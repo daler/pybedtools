@@ -456,7 +456,10 @@ class BedTool(object):
                     self._isbam = True
                 else:
                     if not os.path.exists(fn):
-                        raise ValueError('File "%s" does not exist' % fn)
+                        msg = 'File "%s" does not exist' % fn
+                        if six.PY2:
+                            raise ValueError(msg)
+                        raise FileNotFoundError(msg)
                     self._isbam = isBAM(fn)
 
                 # TODO: we dont' really need this, but it's added here for
@@ -1464,7 +1467,10 @@ class BedTool(object):
             kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
 
         if not os.path.exists(kwargs['g']):
-            raise ValueError('Genome file "%s" does not exist' % (kwargs['g']))
+            msg = 'Genome file "%s" does not exist' % (kwargs['g'])
+            if six.PY2:
+                raise ValueError(msg)
+            raise FileNotFoundError(msg)
 
         return kwargs
 
@@ -3612,7 +3618,10 @@ def example_bedtool(fn):
     """
     fn = os.path.join(filenames.data_dir(), fn)
     if not os.path.exists(fn):
-        raise ValueError("%s does not exist" % fn)
+        msg = "%s does not exist" % fn
+        if six.PY2:
+            raise ValueError(msg)
+        raise FileNotFoundError(msg)
     return BedTool(fn)
 
 if __name__ == "__main__":

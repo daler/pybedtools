@@ -1,4 +1,5 @@
 import pybedtools
+import six
 import sys
 import os, difflib
 from .tfuncs import setup_module, teardown_module, testdir, test_tempdir, unwriteable
@@ -153,11 +154,12 @@ def test_getting_example_beds():
     assert a.fn == os.path.join(testdir, 'data', 'a.bed')
 
     # complain appropriately if nonexistent paths are asked for
-    with pytest.raises(ValueError):
+    e = FileNotFoundError if six.PY3 else ValueError
+    with pytest.raises(e):
         pybedtools.example_filename('nonexistent')
-    with pytest.raises(ValueError):
+    with pytest.raises(e):
         pybedtools.example_bedtool('nonexistent')
-    with pytest.raises(ValueError):
+    with pytest.raises(e):
         pybedtools.set_tempdir('nonexistent')
 
 

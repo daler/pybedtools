@@ -246,7 +246,9 @@ def set_tempdir(tempdir):
     """
     if not os.path.exists(tempdir):
         errstr = 'The tempdir you specified, %s, does not exist' % tempdir
-        raise ValueError(errstr)
+        if six.PY2:
+            raise ValueError(errstr)
+        raise FileNotFoundError(errstr)
     tempfile.tempdir = tempdir
 
 
