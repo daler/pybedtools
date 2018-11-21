@@ -99,7 +99,7 @@ class CleanCommand(Command):
         self._clean_trees = []
 
         # Add files to be protected here
-        self._clean_exclude = []
+        self._clean_exclude = ['bedFile.cpp', 'fileType.cpp', 'gzstream.cpp']
 
         for root, dirs, files in list(os.walk('pybedtools')):
             for f in files:
