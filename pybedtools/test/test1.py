@@ -2176,6 +2176,23 @@ def test_issue_233():
     print(x)
 
 
+def test_issue_257():
+    try:
+        import pandas
+    except ImportError:
+        pytest.mark.skip('Pandas not installed; skipping')
+    df = pybedtools.example_bedtool('a.bed').to_dataframe()
+    df.iloc[-1, -3:] = pandas.np.nan
+    b = pybedtools.BedTool.from_dataframe(df)
+    assert str(b) == fix(
+        """
+        chr1        1       100     feature1        0.0     +
+        chr1        100     200     feature2        0.0     +
+        chr1        150     500     feature3        0.0     -
+        chr1        900     950     .               .       .
+        """)
+
+
 def test_issue_258():
     """
     Non-BED format BedTool objects can still use to_dataframe and use their own
@@ -2198,5 +2215,3 @@ def test_issue_258():
                                 '4_pct_at', '5_pct_gc', '6_num_A', '7_num_C',
                                 '8_num_G', '9_num_T', '10_num_N', '11_num_oth',
                                 '12_seq_len']
-
-

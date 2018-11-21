@@ -525,14 +525,15 @@ class BedTool(object):
         self.history = History()
 
     @classmethod
-    def from_dataframe(self, df, outfile=None, **kwargs):
+    def from_dataframe(self, df, outfile=None,
+                       sep='\t', header=False, na_rep='.', index=False,
+                       **kwargs):
         """
         Creates a BedTool from a pandas.DataFrame.
 
         If `outfile` is None, a temporary file will be used. Otherwise it can
         be a specific filename or an open file handle. Additional kwargs will
-        be passed to `pandas.DataFrame.to_csv` and can be used to override the
-        default `sep="\\t", header=False, index=False)`.
+        be passed to `pandas.DataFrame.to_csv`.
 
         The fields of the resulting BedTool will match the order of columns in
         the dataframe.
@@ -543,7 +544,8 @@ class BedTool(object):
             raise ImportError("pandas must be installed to use dataframes")
         if outfile is None:
             outfile = self._tmp()
-        default_kwargs = dict(sep='\t', header=False, index=False)
+        default_kwargs = dict(sep=sep, header=header, na_rep=na_rep,
+                              index=index)
         default_kwargs.update(kwargs)
         df.to_csv(outfile, **default_kwargs)
 
