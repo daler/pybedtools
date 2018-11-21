@@ -811,7 +811,15 @@ def chromsizes(genome):
     except AttributeError:
         return get_chromsizes_from_ucsc(genome)
 
-
+def get_includes():
+    """
+    Returns a list of include directories with BEDTools headers
+    """
+    dirname = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+    return [
+        dirname,
+        os.path.join(dirname, 'include')
+    ]
 
 
 atexit.register(cleanup)
