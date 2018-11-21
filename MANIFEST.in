@@ -2,10 +2,6 @@ include src/*
 include README.rst
 include LICENSE.txt
 include ez_setup.py
-recursive-include docs/source *.rst
-recursive-include docs/source *.py
-recursive-include docs/source/images *
-recursive-include docs/source/_templates *
 recursive-include pybedtools/test/data *
 recursive-include pybedtools/test *
 include docs/Makefile
