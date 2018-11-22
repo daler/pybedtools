@@ -604,6 +604,10 @@ cpdef Interval create_interval_from_list(list fields):
         >>> feature = create_interval_from_list(['chr1', '1', '100'])
 
     """
+
+    # TODO: this function is used a lot, and is doing a bit of work. We should
+    # have an optimized version that is directly provided the filetype.
+
     cdef Interval pyb = Interval.__new__(Interval)
     orig_fields = fields[:]
     # BED -- though a VCF will be detected as BED if its 2nd field, id, is a
@@ -614,6 +618,7 @@ cpdef Interval create_interval_from_list(list fields):
         (len(fields) >= 11)
         and isdigit(fields[1])
         and isdigit(fields[3])
+        #and isdigit(fields[4])
         and (fields[5] not in ['.', '+', '-'])
     ):
         # TODO: what should the stop position be?  Here, it's just the start

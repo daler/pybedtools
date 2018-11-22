@@ -2158,6 +2158,8 @@ def test_issue_218():
         z = constructor('x.bed')
         z.sort()
 
+
+
 def test_issue_233():
     """
     Make sure hitting a blank line while iterating does not raise IndexError.
@@ -2176,6 +2178,22 @@ def test_issue_233():
     # Previously raised IndexError:
     print(x)
 
+
+def test_issue_246():
+    a = pybedtools.BedTool(
+        """
+        chr1    14831331        14831332        0       name1   A       25      16      0       9       0       0
+        chr1    14831623        14831624        0       name2   A       23      16      0       7       0       0
+        chr2    7730095 7730096 0       name3   A       20      18      0       2       0       0
+        chr2    7735877 7735878 0       name4   A       25      16      0       9       0       0
+        """, from_string=True)
+    b = pybedtools.BedTool(
+        """
+        chr1    14805135        14882224        geneA   100     +
+        """, from_string=True)
+    ab = a.intersect(b, loj=True)
+    assert ab.file_type == 'bed'
+    print(ab)
 
 def test_issue_257():
     try:
