@@ -618,7 +618,7 @@ cpdef Interval create_interval_from_list(list fields):
         (len(fields) >= 11)
         and isdigit(fields[1])
         and isdigit(fields[3])
-        #and isdigit(fields[4])
+        and isdigit(fields[4])
         and (fields[5] not in ['.', '+', '-'])
     ):
         # TODO: what should the stop position be?  Here, it's just the start
