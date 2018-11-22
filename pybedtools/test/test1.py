@@ -2195,6 +2195,19 @@ def test_issue_246():
     assert ab.file_type == 'bed'
     print(ab)
 
+
+def test_issue_251():
+    g = pybedtools.example_bedtool('a.bed')
+    i = g[0]
+    i
+    i.fields
+    i.attrs
+
+    # previously, this would raise
+    # "ValueError: Interval.attrs was not None, but this was a non-GFF Interval
+    #
+    i.fields
+
 def test_issue_257():
     try:
         import pandas

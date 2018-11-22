@@ -363,7 +363,7 @@ cdef class Interval:
 
     cpdef deparse_attrs(self):
 
-        if self._attrs is None: return
+        if not self._attrs: return
 
         if self.file_type != "gff":
             raise ValueError('Interval.attrs was not None, but this was a non-GFF Interval')
