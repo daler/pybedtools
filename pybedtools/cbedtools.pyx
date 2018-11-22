@@ -558,9 +558,6 @@ cdef class Interval:
     def __nonzero__(self):
         return True
 
-    def __nonzero__(self):
-        return True
-
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
@@ -762,7 +759,8 @@ cdef class IntervalIterator:
             # while-loop and tries to get the next line again.  This in turn
             # raises a ValueError, which we catch again . . . and again raise
             # another StopIteration.  Not sure why it works, but it does.
-            except (StopIteration, ValueError):
+            # except (StopIteration, ValueError):
+            except StopIteration:
                 try:
                     self.stream.close()
                 except AttributeError:
