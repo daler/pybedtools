@@ -2216,3 +2216,25 @@ def test_issue_258():
                                 '4_pct_at', '5_pct_gc', '6_num_A', '7_num_C',
                                 '8_num_G', '9_num_T', '10_num_N', '11_num_oth',
                                 '12_seq_len']
+
+
+def test_new_head():
+    """
+    The new BedTool.head no longer iterates using IntervalIterator but instead
+    just prints the lines of the file directly.
+    """
+    tmp = pybedtools.BedTool._tmp()
+    with open(tmp, 'w') as fout:
+        fout.write(
+            'chr1\t5\t10\n'
+            'chr1\t-1\t15\n')
+    a = pybedtools.BedTool(tmp)
+
+    # previously would crash with OverflowError, can't convert negative value
+    # to CHRPOS
+    a.head()
+
+    # however, printing should still complain:
+    with pytest.raises(pybedtools.cbedtools.MalformedBedLineError):
+        print(a)
+

@@ -1174,6 +1174,9 @@ class BedTool(object):
         """
         Prints the first *n* lines or returns them if as_string is True
 
+        Note that this only opens the underlying file (gzipped or not), so it
+        does not check to see if the file is a valid BED file.
+
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> a.head(2) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	100	feature1	0	+
@@ -1186,11 +1189,21 @@ class BedTool(object):
                 'head() not supported for non file-based BedTools')
         if as_string:
             return ''.join(str(line) for line in self[:n])
+        if self._isbam:
+            raise NotImplementedError(
+                'head() not supported for BAM')
         else:
-            for i, line in enumerate(iter(self)):
-                if i == (n):
-                    break
-                print(line, end=' ')
+            if isGZIP(self.fn):
+                openfunc = gzip.open
+                openmode = 'rt'
+            else:
+                openfunc = open
+                openmode = 'r'
+            with openfunc(self.fn, openmode) as fin:
+                for i, line in enumerate(fin):
+                    if i == (n):
+                        break
+                    print(line, end=' ')
 
     def set_chromsizes(self, chromsizes):
         """
