@@ -116,10 +116,16 @@ def tag_bedpe(bedpe, queries, verbose=False):
     chr1  3  4  peak1  50  .
     <BLANKLINE>
 
-    Then we can get the following iterator, n, and extra:
+    Then we can get the following iterator, n, and extra. Note that the
+    OrderedDict is only for testing to ensure output is always consistend; in
+    practice a regular dictionary is fine:
 
     >>> from pybedtools.contrib.long_range_interaction import tag_bedpe
-    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
+    >>> from collections import OrderedDict
+    >>> queries = OrderedDict()
+    >>> queries['tss'] = tsses
+    >>> queries['pk'] = peaks
+    >>> iterator, n, extra = tag_bedpe(bedpe, queries)
     >>> print(n)
     2
     >>> print(extra)
@@ -130,16 +136,16 @@ def tag_bedpe(bedpe, queries, verbose=False):
     Note that the sorting is necessary only for the doctests to be output in
     consistent format; this not typically needed:
 
-    for (label, end1_hits, end2_hits) in iterator:
-       end1_hits = sorted(end1_hits, key=lambda x: str(x))
-       end2_hits = sorted(end2_hits, key=lambda x: str(x))
-       print('PAIR = {}'.format(label))
-       print('end1_hits:')
-       for i in end1_hits:
-           print(i, end='')
-       print('end2_hits:')
-       for i in end2_hits:
-           print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
+    >>> for (label, end1_hits, end2_hits) in iterator:
+    ...    end1_hits = sorted(end1_hits, key=lambda x: str(x))
+    ...    end2_hits = sorted(end2_hits, key=lambda x: str(x))
+    ...    print('PAIR = {}'.format(label))
+    ...    print('end1_hits:')
+    ...    for i in end1_hits:
+    ...        print(i, end='')
+    ...    print('end2_hits:')
+    ...    for i in end2_hits:
+    ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
     PAIR = pair1
     end1_hits:
     chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1
@@ -278,7 +284,11 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
        peaks   1
 
 
-    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
+    >>> from collections import OrderedDict
+    >>> queries = OrderedDict()
+    >>> queries['tss'] = tsses
+    >>> queries['pk'] = peaks
+    >>> iterator, n, extra = tag_bedpe(bedpe, queries)
     >>> for (label, group1, group2) in iterator:
     ...    group1 = sorted(group1, key=lambda x: str(x))
     ...    group2 = sorted(group2, key=lambda x: str(x))
