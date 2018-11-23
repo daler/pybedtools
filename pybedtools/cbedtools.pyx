@@ -745,6 +745,10 @@ cdef class IntervalIterator:
     def __next__(self):
         while True:
             try:
+                # See historical note below.
+                if hasattr(self.stream, 'closed'):
+                    if self.stream.closed:
+                        raise StopIteration
                 line = next(self.stream)
                 if self._itemtype < 0:
                     if isinstance(line, Interval):
@@ -757,16 +761,18 @@ cdef class IntervalIterator:
             # If you only trap StopIteration, for some reason even after
             # raising a new StopIteration it goes back to the top of the
             # while-loop and tries to get the next line again.  This in turn
-            # raises a ValueError, which we catch again . . . and again raise
-            # another StopIteration.  Not sure why it works, but it does.
-            # except (StopIteration, ValueError):
+            # raises a ValueError because the stream is closed.
+            #
+            # Historical note: previously, we let it do so and caught the
+            # ValueError exception again here, and raised another
+            # StopIteration. Now, we check to see if the stream is closed, and
+            # raise StopIteration up there.
             except StopIteration:
                 try:
                     self.stream.close()
                 except AttributeError:
                     pass
                 raise StopIteration
-                break
 
             if self._itemtype == 1:
                 if line.startswith(('@', '#', 'track', 'browser')) or len(line.strip()) == 0:
