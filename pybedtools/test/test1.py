@@ -2158,7 +2158,17 @@ def test_issue_218():
         z = constructor('x.bed')
         z.sort()
 
+def test_issue_231():
+    def filt(f):
+        raise ValueError('failed')
 
+    a = pybedtools.example_bedtool('a.bed')
+
+    # Previously, ValueErrors in filter/each functions were silently ignored
+    with pytest.raises(ValueError):
+        assert list(a.filter(filt)) == []
+    with pytest.raises(ValueError):
+        assert [i for i in a if filt(i)] == []
 
 def test_issue_233():
     """
