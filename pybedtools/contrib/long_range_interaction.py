@@ -278,14 +278,14 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
        peaks   1
 
 
-    iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
-    for (label, group1, group2) in iterator:
-       group1 = sorted(group1, key=lambda x: str(x))
-       group2 = sorted(group2, key=lambda x: str(x))
-       for i in group1:
-           print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
-       for i in group2:
-           print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
+    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
+    >>> for (label, group1, group2) in iterator:
+    ...    group1 = sorted(group1, key=lambda x: str(x))
+    ...    group2 = sorted(group2, key=lambda x: str(x))
+    ...    for i in group1:
+    ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
+    ...    for i in group2:
+    ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
     chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1
     chr1       1       10      pair1   5       +       x1      tss     chr1    5       6       gene1   1
     chr1       50      90      pair1   5       -       x1      tss     chr1    60      61      gene2   1
