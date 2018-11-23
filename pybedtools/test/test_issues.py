@@ -226,10 +226,9 @@ def test_issue_154():
 
     # ensure longs are OK as start/stop. In Python3 everything is long, so only
     # try the following on PY2
-    if six.PY3:
-        long = int
-    regions = [('chr2', long(1), long(2), 'tag')]
-    pybedtools.BedTool(regions)
+    if six.PY2:
+        regions = [('chr2', long(1), long(2), 'tag')]
+        pybedtools.BedTool(regions)
 
 
 def test_issue_151():
