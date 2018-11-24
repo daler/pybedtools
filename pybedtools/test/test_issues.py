@@ -429,6 +429,14 @@ def test_issue_178():
         pass
 
 
+def test_issue_181():
+    a = pybedtools.example_bedtool('a.bed')
+    a = a.tabix(force=True)
+    a.tabix_intervals('none:1-5')
+    with pytest.raises(ValueError):
+        a.tabix_intervals('none:1-5', check_coordinates=True)
+
+
 def test_issue_203():
     x = pybedtools.example_bedtool('x.bed')
     x.truncate_to_chrom(genome='hg19')

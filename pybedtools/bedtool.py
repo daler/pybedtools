@@ -614,13 +614,16 @@ class BedTool(object):
         fout.close()
         return self.intersect(tmp)
 
-    def tabix_intervals(self, interval_or_string):
+    def tabix_intervals(self, interval_or_string, check_coordinates=False):
         """
         Retrieve all intervals within coordinates from a "tabixed" BedTool.
 
         Given either a string in "chrom:start-stop" format, or an interval-like
         object with chrom, start, stop attributes, return a *streaming* BedTool
         of the features in this BedTool that overlap the provided interval.
+
+        If the coordinates are invalid, an empty generator is returned unless
+        `check_coordinates=True` in which case a ValueError will be raised.
         """
         if not self._tabixed():
             raise ValueError(
@@ -650,7 +653,13 @@ class BedTool(object):
                 start, end = int(start), int(end)
 
         # Fetch results.
-        results = tbx.fetch(str(chrom), start, end)
+        try:
+            results = tbx.fetch(str(chrom), start, end)
+        except ValueError:
+            if check_coordinates:
+                raise
+            else:
+                results = []
 
         # pysam.ctabix.TabixIterator does not include newlines when yielding so
         # we need to add them.
