@@ -10,7 +10,7 @@ Cython source code.
 
     Install in development mode. Will cythonize .pyx files first if needed.
 
-        python setup.py develop
+        python setup.py cythonize develop
 
     Rebuild .cpp files from .pyx, and then stop:
 
@@ -36,7 +36,7 @@ if '--usage' in sys.argv:
     print(usage)
     sys.exit(0)
 
-elif 'cythonize' in sys.argv or 'develop' in sys.argv:
+elif 'cythonize' in sys.argv:
     USE_CYTHON = True
 
 else:
