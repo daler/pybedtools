@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pybedtools.cbedtools.create_interval_from_list &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>pybedtools.cbedtools.create_interval_from_list &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,15 +20,17 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="pybedtools-cbedtools-create-interval-from-list">
@@ -49,12 +40,12 @@
 <code class="descclassname">pybedtools.cbedtools.</code><code class="descname">create_interval_from_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pybedtools.cbedtools.create_interval_from_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an Interval object from a list of strings.</p>
 <p>Constructor:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">create_interval_from_list</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Given the list of strings, <code class="docutils literal"><span class="pre">fields</span></code>, automatically detects the format (BED,
+<p>Given the list of strings, <code class="file docutils literal notranslate"><span class="pre">fields</span></code>, automatically detects the format (BED,
 GFF, VCF, SAM) and creates a new Interval object.</p>
-<p><code class="docutils literal"><span class="pre">fields</span></code> is a list with an arbitrary number of items (it can be quite long,
+<p><code class="file docutils literal notranslate"><span class="pre">fields</span></code> is a list with an arbitrary number of items (it can be quite long,
 say after a -wao intersection of a BED12 and a GFF), however, the first
 fields must conform to one of the supported formats.  For example, if you
 want the resulting Interval to be considered a GFF feature, then the first
@@ -62,7 +53,7 @@ want the resulting Interval to be considered a GFF feature, then the first
 resulting Interval to be considered a BED feature, then the first three
 fields must be chrom, start, stop.</p>
 <p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Creates a BED3 feature</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Creates a BED3 feature</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">feature</span> <span class="o">=</span> <span class="n">create_interval_from_list</span><span class="p">([</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;100&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -72,37 +63,72 @@ fields must be chrom, start, stop.</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.cbedtools.Interval.html" title="previous chapter">pybedtools.cbedtools.Interval</a></li>
       <li>Next: <a href="pybedtools.helpers.set_bedtools_path.html" title="next chapter">pybedtools.helpers.set_bedtools_path</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/autodocs/pybedtools.cbedtools.create_interval_from_list.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -123,8 +149,8 @@ fields must be chrom, start, stop.</p>
         <li class="right" >
           <a href="pybedtools.cbedtools.Interval.html" title="pybedtools.cbedtools.Interval"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
       </ul>
     </div>
 
@@ -133,8 +159,8 @@ fields must be chrom, start, stop.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.cbedtools.create_interval_from_list.rst.txt"

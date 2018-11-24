@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.coverage
-======================================
+pybedtools.bedtool.BedTool.coverage
+===================================
 
 .. currentmodule:: pybedtools.bedtool
 

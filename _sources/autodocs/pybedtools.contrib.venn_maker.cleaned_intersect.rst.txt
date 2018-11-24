@@ -1,5 +1,5 @@
-pybedtools\.contrib\.venn\_maker\.cleaned\_intersect
-====================================================
+pybedtools.contrib.venn\_maker.cleaned\_intersect
+=================================================
 
 .. currentmodule:: pybedtools.contrib.venn_maker
 

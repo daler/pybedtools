@@ -1,45 +1,36 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pybedtools.contrib.IntersectionMatrix &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>pybedtools.contrib.IntersectionMatrix &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.contrib.venn_maker" href="pybedtools.contrib.venn_maker.html" />
-    <link rel="prev" title="pybedtools.contrib.MultiClassifier.print_table" href="pybedtools.contrib.MultiClassifier.print_table.html" />
+    <link rel="prev" title="pybedtools.contrib.bigbed.bigbed_to_bed" href="pybedtools.contrib.bigbed.bigbed_to_bed.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="pybedtools-contrib-intersectionmatrix">
@@ -58,24 +49,24 @@ files.</p>
 re-calculating a matrix using the same interval files will only
 re-calculate values for those files whose modification times are newer
 than the timestamp in the database.</p>
-<p><code class="docutils literal"><span class="pre">beds</span></code> is a list of bed files.</p>
-<p><code class="docutils literal"><span class="pre">genome</span></code> is the string assembly name, e.g., &quot;hg19&quot; or &quot;dm3&quot;.</p>
-<p><code class="docutils literal"><span class="pre">dbfn</span></code> is the filename of the database you'd like to use to track
-what's been completed.</p>
+<p><code class="file docutils literal notranslate"><span class="pre">beds</span></code> is a list of bed files.</p>
+<p><code class="file docutils literal notranslate"><span class="pre">genome</span></code> is the string assembly name, e.g., “hg19” or “dm3”.</p>
+<p><code class="file docutils literal notranslate"><span class="pre">dbfn</span></code> is the filename of the database you’d like to use to track
+what’s been completed.</p>
 <p>Example usage:</p>
 <p>First, get a list of bed files to use:
 #&gt;&gt;&gt; beds = [
-#... pybedtools.example_filename(i) for i in  [
-#... 'Cp190_Kc_Bushey_2009.bed',
-#... 'CTCF_Kc_Bushey_2009.bed',
-#... 'SuHw_Kc_Bushey_2009.bed',
-#... 'BEAF_Kc_Bushey_2009.bed'
-#... ]]</p>
-<p>Set some parameters.  &quot;dm3&quot; is the genome to use; info will be stored
-in &quot;ex.db&quot;.  <code class="docutils literal"><span class="pre">force=True</span></code> means to overwrite what's in the database
-#&gt;&gt;&gt; # In practice, you'll want many more iterations...
-#&gt;&gt;&gt; im = IntersectionMatrix(beds, 'dm3',
-#...            dbfn='ex.db', iterations=3, force=True)
+#… pybedtools.example_filename(i) for i in  [
+#… ‘Cp190_Kc_Bushey_2009.bed’,
+#… ‘CTCF_Kc_Bushey_2009.bed’,
+#… ‘SuHw_Kc_Bushey_2009.bed’,
+#… ‘BEAF_Kc_Bushey_2009.bed’
+#… ]]</p>
+<p>Set some parameters.  “dm3” is the genome to use; info will be stored
+in “ex.db”.  <code class="file docutils literal notranslate"><span class="pre">force=True</span></code> means to overwrite what’s in the database
+#&gt;&gt;&gt; # In practice, you’ll want many more iterations…
+#&gt;&gt;&gt; im = IntersectionMatrix(beds, ‘dm3’,
+#…            dbfn=’ex.db’, iterations=3, force=True)
 #&gt;&gt;&gt; # Use 4 CPUs for randomization
 #&gt;&gt;&gt; matrix = im.create_matrix(verbose=True, processes=4)</p>
 </dd></dl>
@@ -87,25 +78,25 @@ in &quot;ex.db&quot;.  <code class="docutils literal"><span class="pre">force=Tr
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.IntersectionMatrix.__init__" title="pybedtools.contrib.IntersectionMatrix.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(beds,&nbsp;genome,&nbsp;iterations[,&nbsp;dbfn,&nbsp;force])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.IntersectionMatrix.__init__" title="pybedtools.contrib.IntersectionMatrix.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(beds,&nbsp;genome,&nbsp;iterations[,&nbsp;dbfn,&nbsp;force])</td>
 <td>Class to handle and keep track of many pairwise comparisons of interval files.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">add_row</span></code>(results)</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_row</span></code>(results)</td>
 <td>Inserts data into db.</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">create_matrix</span></code>([verbose])</td>
-<td>Matrix (implemented as a dictionary), where the final values are</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_matrix</span></code>([verbose])</td>
+<td>Matrix (implemented as a dictionary), where the final values are sqlite3.ROW objects from the database.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">done</span></code>(fa,&nbsp;fb,&nbsp;iterations)</td>
-<td>Retrieves row from db and only returns True if there's something in there and the timestamp is newer than the input files.</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">done</span></code>(fa,&nbsp;fb,&nbsp;iterations)</td>
+<td>Retrieves row from db and only returns True if there’s something in there and the timestamp is newer than the input files.</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_row</span></code>(fa,&nbsp;fb,&nbsp;iterations)</td>
-<td>Return the sqlite3.Row from the database corresponding to files <code class="docutils literal"><span class="pre">fa</span></code> and <code class="docutils literal"><span class="pre">fb</span></code>; returns None if not found.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_row</span></code>(fa,&nbsp;fb,&nbsp;iterations)</td>
+<td>Return the sqlite3.Row from the database corresponding to files <code class="file docutils literal notranslate"><span class="pre">fa</span></code> and <code class="file docutils literal notranslate"><span class="pre">fb</span></code>; returns None if not found.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">print_matrix</span></code>(matrix,&nbsp;key)</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_matrix</span></code>(matrix,&nbsp;key)</td>
 <td>Prints a pairwise matrix of values.</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">run_and_insert</span></code>(fa,&nbsp;fb,&nbsp;**kwargs)</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_and_insert</span></code>(fa,&nbsp;fb,&nbsp;**kwargs)</td>
 <td></td>
 </tr>
 </tbody>
@@ -116,37 +107,72 @@ in &quot;ex.db&quot;.  <code class="docutils literal"><span class="pre">force=Tr
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
-      <li>Previous: <a href="pybedtools.contrib.MultiClassifier.print_table.html" title="previous chapter">pybedtools.contrib.MultiClassifier.print_table</a></li>
+  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+      <li>Previous: <a href="pybedtools.contrib.bigbed.bigbed_to_bed.html" title="previous chapter">pybedtools.contrib.bigbed.bigbed_to_bed</a></li>
       <li>Next: <a href="pybedtools.contrib.venn_maker.html" title="next chapter">pybedtools.contrib.venn_maker</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/autodocs/pybedtools.contrib.IntersectionMatrix.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -165,10 +191,10 @@ in &quot;ex.db&quot;.  <code class="docutils literal"><span class="pre">force=Tr
           <a href="pybedtools.contrib.venn_maker.html" title="pybedtools.contrib.venn_maker"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pybedtools.contrib.MultiClassifier.print_table.html" title="pybedtools.contrib.MultiClassifier.print_table"
+          <a href="pybedtools.contrib.bigbed.bigbed_to_bed.html" title="pybedtools.contrib.bigbed.bigbed_to_bed"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
       </ul>
     </div>
 
@@ -177,8 +203,8 @@ in &quot;ex.db&quot;.  <code class="docutils literal"><span class="pre">force=Tr
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.contrib.IntersectionMatrix.rst.txt"

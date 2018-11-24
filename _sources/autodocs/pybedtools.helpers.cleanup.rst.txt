@@ -1,5 +1,5 @@
-pybedtools\.helpers\.cleanup
-============================
+pybedtools.helpers.cleanup
+==========================
 
 .. currentmodule:: pybedtools.helpers
 

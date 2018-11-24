@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pybedtools.contrib.plotting.BedToolsDemo &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>pybedtools.contrib.plotting.BedToolsDemo &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,15 +20,17 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="pybedtools-contrib-plotting-bedtoolsdemo">
@@ -51,31 +42,31 @@
 <dt id="pybedtools.contrib.plotting.BedToolsDemo.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>config</em>, <em>method</em>, <em>data_path=None</em>, <em>result_kwargs=None</em>, <em>method_kwargs=None</em>, <em>title_kwargs=None</em>, <em>new_style=True</em>, <em>subplots_adjust=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#BedToolsDemo.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.BedToolsDemo.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to handle BEDTools demos in a way that maintains flexibility.</p>
-<p>If the <code class="docutils literal"><span class="pre">config</span></code> list contains only one item, assume the method is one
-of the &quot;-i&quot; tools that only operate on one file.</p>
-<p>If the <code class="docutils literal"><span class="pre">config</span></code> list contains two items, then use the first as &quot;-a&quot; and
-the second as &quot;-b&quot;.</p>
+<p>If the <code class="file docutils literal notranslate"><span class="pre">config</span></code> list contains only one item, assume the method is one
+of the “-i” tools that only operate on one file.</p>
+<p>If the <code class="file docutils literal notranslate"><span class="pre">config</span></code> list contains two items, then use the first as “-a” and
+the second as “-b”.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>config</strong> -- Either a list of (filename, options) tuples -- see docstring for
+<li><strong>config</strong> – Either a list of (filename, options) tuples – see docstring for
 TrackCollection for more info.</li>
-<li><strong>method</strong> -- Method of <code class="docutils literal"><span class="pre">BedTool</span></code> object to use, e.g., 'intersect'</li>
-<li><strong>data_path</strong> -- If not None, this path will be prepended to the files listed in
-<code class="docutils literal"><span class="pre">config</span></code></li>
-<li><strong>result_kwargs</strong> -- Configuration for the results track.  This isn't added to the
-config list because the results haven't been created yet...</li>
-<li><strong>method_kwargs</strong> -- Keyword argument that are passed to the method, e.g., <code class="docutils literal"><span class="pre">u=True</span></code></li>
-<li><strong>title_kwargs</strong> -- Keyword args for plot title (the text itself will come from the
+<li><strong>method</strong> – Method of <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object to use, e.g., ‘intersect’</li>
+<li><strong>data_path</strong> – If not None, this path will be prepended to the files listed in
+<code class="file docutils literal notranslate"><span class="pre">config</span></code></li>
+<li><strong>result_kwargs</strong> – Configuration for the results track.  This isn’t added to the
+config list because the results haven’t been created yet…</li>
+<li><strong>method_kwargs</strong> – Keyword argument that are passed to the method, e.g., <code class="file docutils literal notranslate"><span class="pre">u=True</span></code></li>
+<li><strong>title_kwargs</strong> – Keyword args for plot title (the text itself will come from the
 command that was run; this is for things like font size)</li>
-<li><strong>new_style</strong> -- Edit commands so that they use the &quot;new style&quot; BEDTools calls
-(&quot;bedtools intersect&quot; rather than &quot;intersectBed&quot;)</li>
-<li><strong>subplots_adjust</strong> -- Additional kwargs sent to the figure's subplots_adjust() method,
-e.g., <code class="docutils literal"><span class="pre">dict(top=0.7)</span></code></li>
-<li><strong>args</strong> -- Addtional arguments sent to TrackCollection</li>
-<li><strong>kwargs</strong> -- Additional keyword arguments sent to TrackCollection</li>
+<li><strong>new_style</strong> – Edit commands so that they use the “new style” BEDTools calls
+(“bedtools intersect” rather than “intersectBed”)</li>
+<li><strong>subplots_adjust</strong> – Additional kwargs sent to the figure’s subplots_adjust() method,
+e.g., <code class="file docutils literal notranslate"><span class="pre">dict(top=0.7)</span></code></li>
+<li><strong>args</strong> – Addtional arguments sent to TrackCollection</li>
+<li><strong>kwargs</strong> – Additional keyword arguments sent to TrackCollection</li>
 </ul>
 </td>
 </tr>
@@ -90,11 +81,11 @@ e.g., <code class="docutils literal"><span class="pre">dict(top=0.7)</span></cod
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.plotting.BedToolsDemo.__init__" title="pybedtools.contrib.plotting.BedToolsDemo.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(config,&nbsp;method[,&nbsp;data_path,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.plotting.BedToolsDemo.__init__" title="pybedtools.contrib.plotting.BedToolsDemo.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(config,&nbsp;method[,&nbsp;data_path,&nbsp;…])</td>
 <td>Class to handle BEDTools demos in a way that maintains flexibility.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">plot</span></code>([ax])</td>
-<td></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([ax])</td>
+<td>If <code class="file docutils literal notranslate"><span class="pre">ax</span></code> is None, create a new figure.</td>
 </tr>
 </tbody>
 </table>
@@ -104,37 +95,72 @@ e.g., <code class="docutils literal"><span class="pre">dict(top=0.7)</span></cod
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.contrib.plotting.binary_summary.html" title="previous chapter">pybedtools.contrib.plotting.binary_summary</a></li>
       <li>Next: <a href="pybedtools.contrib.plotting.ConfiguredBedToolsDemo.html" title="next chapter">pybedtools.contrib.plotting.ConfiguredBedToolsDemo</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/autodocs/pybedtools.contrib.plotting.BedToolsDemo.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -155,8 +181,8 @@ e.g., <code class="docutils literal"><span class="pre">dict(top=0.7)</span></cod
         <li class="right" >
           <a href="pybedtools.contrib.plotting.binary_summary.html" title="pybedtools.contrib.plotting.binary_summary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
       </ul>
     </div>
 
@@ -165,8 +191,8 @@ e.g., <code class="docutils literal"><span class="pre">dict(top=0.7)</span></cod
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.contrib.plotting.BedToolsDemo.rst.txt"

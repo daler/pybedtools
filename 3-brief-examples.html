@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Three brief examples &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Three brief examples &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,36 +20,38 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="three-brief-examples">
 <span id="examples"></span><h1>Three brief examples<a class="headerlink" href="#three-brief-examples" title="Permalink to this headline">¶</a></h1>
-<p>Here are three examples to show typical usage of <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>.  More
-info can be found in the docstrings of <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> methods and in the
+<p>Here are three examples to show typical usage of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>.  More
+info can be found in the docstrings of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> methods and in the
 <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a>.</p>
 <p>You can also check out <a class="reference internal" href="sh-comparison.html#shell-comparison"><span class="std std-ref">Shell script comparison</span></a> for a simple
-example of how <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> can improve readability of your code with no
+example of how <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> can improve readability of your code with no
 loss of speed compared to bash scripting.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Please take the time to read and understand the conventions
-<code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> uses to handle files with different coordinate systems
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> uses to handle files with different coordinate systems
 (e.g., 0-based BED files vs 1-based GFF files) which are described
 <a class="reference internal" href="intervals.html#zero-based-coords"><span class="std std-ref">here</span></a>.</p>
 <p>In summary,</p>
 <ul class="last simple">
 <li><strong>Integer</strong> values representing start/stop are <em>always in 0-based
 coordinates</em>, regardless of file format.  This means that all
-<code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects can be treated identically, and greatly
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects can be treated identically, and greatly
 simplifies underlying code.</li>
 <li><strong>String</strong> values representing start/stop will use coordinates appropriate
 for the format (1-based for GFF; 0-based for BED).</li>
@@ -68,9 +59,9 @@ for the format (1-based for GFF; 0-based for BED).</li>
 </div>
 <div class="section" id="example-1-save-a-bed-file-of-intersections-with-track-line">
 <h2>Example 1: Save a BED file of intersections, with track line<a class="headerlink" href="#example-1-save-a-bed-file-of-intersections-with-track-line" title="Permalink to this headline">¶</a></h2>
-<p>This example saves a new BED file of intersections between your files <code class="docutils literal"><span class="pre">mydata/snps.bed</span></code> and
-<code class="docutils literal"><span class="pre">mydata/exons.bed</span></code>, adding a track line to the output:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<p>This example saves a new BED file of intersections between your files <code class="file docutils literal notranslate"><span class="pre">mydata/snps.bed</span></code> and
+<code class="file docutils literal notranslate"><span class="pre">mydata/exons.bed</span></code>, adding a track line to the output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;mydata/snps.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="s1">&#39;mydata/exons.bed&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;snps-in-exons.bed&#39;</span><span class="p">,</span> <span class="n">trackline</span><span class="o">=</span><span class="s2">&quot;track name=&#39;SNPs in exons&#39; color=128,0,0&quot;</span><span class="p">)</span>
 </pre></div>
@@ -79,13 +70,13 @@ for the format (1-based for GFF; 0-based for BED).</li>
 <div class="section" id="example-2-intersections-for-a-3-way-venn-diagram">
 <h2>Example 2: Intersections for a 3-way Venn diagram<a class="headerlink" href="#example-2-intersections-for-a-3-way-venn-diagram" title="Permalink to this headline">¶</a></h2>
 <p>This example gets values for a 3-way Venn diagram of overlaps.  This
-demonstrates operator overloading of <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects.  It assumes that
-you have the files <code class="docutils literal"><span class="pre">a.bed</span></code>, <code class="docutils literal"><span class="pre">b.bed</span></code>, and <code class="docutils literal"><span class="pre">c.bed</span></code> in your current working
-directory.  If you'd like to use example files that come with
-<code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>, then replace strings like <code class="docutils literal"><span class="pre">'a.bed'</span></code> with
-<code class="docutils literal"><span class="pre">pybedtools.example_filename('a.bed')</span></code>, which will retrieve the absolute path
+demonstrates operator overloading of <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects.  It assumes that
+you have the files <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code>, <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>, and <code class="file docutils literal notranslate"><span class="pre">c.bed</span></code> in your current working
+directory.  If you’d like to use example files that come with
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>, then replace strings like <code class="file docutils literal notranslate"><span class="pre">'a.bed'</span></code> with
+<code class="file docutils literal notranslate"><span class="pre">pybedtools.example_filename('a.bed')</span></code>, which will retrieve the absolute path
 to the example data file.:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># set up 3 different bedtools</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -98,17 +89,17 @@ to the example data file.:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... and so on, for all the combinations.</span>
 </pre></div>
 </div>
-<p>For more, see the <a class="reference internal" href="autodocs/pybedtools.scripts.venn_mpl.html#module-pybedtools.scripts.venn_mpl" title="pybedtools.scripts.venn_mpl"><code class="xref py py-mod docutils literal"><span class="pre">pybedtools.scripts.venn_mpl</span></code></a> and
-<a class="reference internal" href="autodocs/pybedtools.scripts.venn_gchart.html#module-pybedtools.scripts.venn_gchart" title="pybedtools.scripts.venn_gchart"><code class="xref py py-mod docutils literal"><span class="pre">pybedtools.scripts.venn_gchart</span></code></a> scripts, which wrap this functionality in
+<p>For more, see the <a class="reference internal" href="autodocs/pybedtools.scripts.venn_mpl.html#module-pybedtools.scripts.venn_mpl" title="pybedtools.scripts.venn_mpl"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.scripts.venn_mpl</span></code></a> and
+<a class="reference internal" href="autodocs/pybedtools.scripts.venn_gchart.html#module-pybedtools.scripts.venn_gchart" title="pybedtools.scripts.venn_gchart"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.scripts.venn_gchart</span></code></a> scripts, which wrap this functionality in
 command-line scripts to create Venn diagrams using either matplotlib or Google
-Charts API respectively.  Also see the <a class="reference internal" href="autodocs/pybedtools.contrib.venn_maker.html#module-pybedtools.contrib.venn_maker" title="pybedtools.contrib.venn_maker"><code class="xref py py-mod docutils literal"><span class="pre">pybedtools.contrib.venn_maker</span></code></a>
-module for a flexible interface to the VennDiagram <code class="docutils literal"><span class="pre">R</span></code> package.</p>
+Charts API respectively.  Also see the <a class="reference internal" href="autodocs/pybedtools.contrib.venn_maker.html#module-pybedtools.contrib.venn_maker" title="pybedtools.contrib.venn_maker"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib.venn_maker</span></code></a>
+module for a flexible interface to the VennDiagram <code class="file docutils literal notranslate"><span class="pre">R</span></code> package.</p>
 </div>
 <div class="section" id="example-3-count-reads-in-introns-and-exons-in-parallel">
 <span id="third-example"></span><h2>Example 3: Count reads in introns and exons, in parallel<a class="headerlink" href="#example-3-count-reads-in-introns-and-exons-in-parallel" title="Permalink to this headline">¶</a></h2>
 <p>This example shows how to count the number of reads in introns and exons in
 parallel. It is somewhat more involved, but illustrates several additional
-features of <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> such as:</p>
+features of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> such as:</p>
 <ul class="simple">
 <li>BAM file support (for more, see <a class="reference internal" href="topical-bam.html#bam"><span class="std std-ref">Working with BAM files</span></a>)</li>
 <li>indexing into Interval objects (for more, see <a class="reference internal" href="intervals.html#intervals"><span class="std std-ref">Intervals</span></a>)</li>
@@ -116,157 +107,161 @@ features of <code class="xref py py-mod docutils literal"><span class="pre">pybe
 <li>streaming (for more, see <a class="reference internal" href="topical-iterators.html#bedtools-as-iterators"><span class="std std-ref">Using BedTool objects as iterators/generators</span></a>)</li>
 <li>ability to use parallel processing</li>
 </ul>
-<p>The first listing has many explanatory comments, and the second listing shows
-the same code with no comments to give more of a feel for <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Example from pybedtools documentation: find reads in introns and exons using</span>
+<span class="sd">multiple CPUs.</span>
+
+<span class="sd">Prints a tab-separated file containing class (exon, intron, both) and number of</span>
+<span class="sd">reads in each class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">pybedtools</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
 
-<span class="c1"># get example GFF and BAM filenames</span>
-<span class="n">gff</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
-<span class="n">bam</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
-<span class="c1"># Some GFF files have invalid entries -- like chromosomes with negative coords</span>
-<span class="c1"># or features of length = 0.  This line removes them and saves the result in a</span>
-<span class="c1"># tempfile</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+    <span class="n">ap</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                                 <span class="n">usage</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--gff&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;GFF or GTF file containing annotations&#39;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--bam&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;BAM file containing reads to be counted&#39;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--stranded&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Use strand-specific merging and overlap. &#39;</span>
+                         <span class="s1">&#39;Default is to ignore strand&#39;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--processes&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Number of processes to use in parallel.&#39;</span><span class="p">)</span>
+    <span class="n">ap</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span> <span class="s1">&#39;--verbose&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Verbose (goes to stderr)&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
+    <span class="n">gff</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">gff</span>
+    <span class="n">bam</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">bam</span>
+    <span class="n">stranded</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">stranded</span>
 
-<span class="c1"># Next, we create a function to pass only features for a particular</span>
-<span class="c1"># featuretype.  This is similar to a &quot;grep&quot; operation when applied to every</span>
-<span class="c1"># feature in a BedTool</span>
-<span class="k">def</span> <span class="nf">featuretype_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">featuretype</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">featuretype</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="k">return</span> <span class="bp">False</span>
-
-
-<span class="c1"># This function will eventually be run in parallel, applying the filter above</span>
-<span class="c1"># to several different BedTools simultaneously</span>
-<span class="k">def</span> <span class="nf">subset_featuretypes</span><span class="p">(</span><span class="n">featuretype</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">featuretype_filter</span><span class="p">,</span> <span class="n">featuretype</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
-
-
-<span class="c1"># This function performs the intersection of a BAM file with a GFF file and</span>
-<span class="c1"># returns the total number of hits.  It will eventually be run in parallel.</span>
-<span class="k">def</span> <span class="nf">count_reads_in_features</span><span class="p">(</span><span class="n">features_fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Callback function to count reads in features</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># BAM files are auto-detected; no need for an `abam` argument.  Here we</span>
-    <span class="c1"># construct a new BedTool out of the BAM file and intersect it with the</span>
-    <span class="c1"># features filename.</span>
-
-    <span class="c1"># We use stream=True so that no intermediate tempfile is</span>
-    <span class="c1"># created, and bed=True so that the .count() method can iterate through the</span>
-    <span class="c1"># resulting streamed BedTool.</span>
-    <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">bam</span><span class="p">)</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span>
-                             <span class="n">b</span><span class="o">=</span><span class="n">features_fn</span><span class="p">,</span>
-                             <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">processes</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span>
+            <span class="s2">&quot;Only need 3 processes (one each for exon, intron, both), so &quot;</span>
+            <span class="s2">&quot;resetting processes from {0} to 3&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">processes</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">processes</span> <span class="o">=</span> <span class="mi">3</span>
 
 
-<span class="c1"># Set up a pool of workers for parallel processing</span>
-<span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">featuretype_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">featuretype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Only passes features with the specified *featuretype*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">featuretype</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
 
-<span class="c1"># Create separate files for introns and exons, using the function we defined</span>
-<span class="c1"># above</span>
-<span class="n">featuretypes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;intron&#39;</span><span class="p">,</span> <span class="s1">&#39;exon&#39;</span><span class="p">)</span>
-<span class="n">introns</span><span class="p">,</span> <span class="n">exons</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">subset_featuretypes</span><span class="p">,</span> <span class="n">featuretypes</span><span class="p">)</span>
 
-<span class="c1"># Perform some genome algebra to get unique and shared intron/exon regions.</span>
-<span class="c1"># Here we keep only the filename of the results, which is safer than an entire</span>
-<span class="c1"># BedTool for passing around in parallel computations.</span>
-<span class="n">exon_only</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
-<span class="n">intron_only</span> <span class="o">=</span> <span class="n">introns</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">exons</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
-<span class="n">intron_and_exon</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
+    <span class="k">def</span> <span class="nf">subset_featuretypes</span><span class="p">(</span><span class="n">featuretype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the filename containing only `featuretype` features.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">featuretype_filter</span><span class="p">,</span> <span class="n">featuretype</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
 
-<span class="c1"># Do intersections with BAM file in parallel, using the other function we</span>
-<span class="c1"># defined above</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="n">exon_only</span><span class="p">,</span> <span class="n">intron_only</span><span class="p">,</span> <span class="n">intron_and_exon</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">count_reads_in_features</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
 
-<span class="c1"># Print the results</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;      exon only:&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;    intron only:&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;intron and exon:&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">count_reads_in_features</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Callback function to count reads in features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">bam</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">intersect</span><span class="p">(</span>
+                <span class="n">features</span><span class="p">,</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">stranded</span><span class="p">,</span>
+                <span class="n">bed</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">reads</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">reads</span><span class="p">))</span>
+    <span class="c1"># Some GFF files have invalid entries -- like chromosomes with negative coords</span>
+    <span class="c1"># or features of length = 0.  This line removes them (the `remove_invalid`</span>
+    <span class="c1"># method) and saves the result in a tempfile</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
+
+    <span class="c1"># Set up pool of workers</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">processes</span><span class="p">)</span>
+
+    <span class="c1"># Get separate files for introns and exons in parallel</span>
+    <span class="n">featuretypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;intron&#39;</span><span class="p">,</span> <span class="s1">&#39;exon&#39;</span><span class="p">]</span>
+    <span class="n">introns</span><span class="p">,</span> <span class="n">exons</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">subset_featuretypes</span><span class="p">,</span> <span class="n">featuretypes</span><span class="p">)</span>
+
+    <span class="c1"># Since `subset_featuretypes` returns filenames, we convert to BedTool objects</span>
+    <span class="c1"># to do intersections below.</span>
+    <span class="n">introns</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span>
+    <span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">exons</span><span class="p">)</span>
+
+    <span class="c1"># Identify unique and shared regions using bedtools commands subtract, merge,</span>
+    <span class="c1"># and intersect.</span>
+    <span class="n">exon_only</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+    <span class="n">intron_only</span> <span class="o">=</span> <span class="n">introns</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">exons</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+    <span class="n">intron_and_exon</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">exons</span>
+        <span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Do intersections with BAM file in parallel. Note that we&#39;re passing filenames</span>
+    <span class="c1"># to multiprocessing.Pool rather than BedTool objects.</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="n">exon_only</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">intron_only</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">intron_and_exon</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
+
+    <span class="c1"># Run count_reads_in_features in parallel over features</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">count_reads_in_features</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;exon_only&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;intron_only&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;intron_and_exon&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">reads</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;{0}</span><span class="se">\t</span><span class="s1">{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">reads</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Here's the same code but with no comments:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">import</span> <span class="nn">pybedtools</span>
-
-<span class="n">gff</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
-<span class="n">bam</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
-
-<span class="n">g</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">gff</span><span class="p">)</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">featuretype_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">featuretype</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">feature</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">featuretype</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">True</span>
-    <span class="k">return</span> <span class="bp">False</span>
-
-
-<span class="k">def</span> <span class="nf">subset_featuretypes</span><span class="p">(</span><span class="n">featuretype</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">featuretype_filter</span><span class="p">,</span> <span class="n">featuretype</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">count_reads_in_features</span><span class="p">(</span><span class="n">features_fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Callback function to count reads in features</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">bam</span><span class="p">)</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span>
-                             <span class="n">b</span><span class="o">=</span><span class="n">features_fn</span><span class="p">,</span>
-                             <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-
-
-<span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span>
-
-<span class="n">featuretypes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;intron&#39;</span><span class="p">,</span> <span class="s1">&#39;exon&#39;</span><span class="p">)</span>
-<span class="n">introns</span><span class="p">,</span> <span class="n">exons</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">subset_featuretypes</span><span class="p">,</span> <span class="n">featuretypes</span><span class="p">)</span>
-
-<span class="n">exon_only</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
-<span class="n">intron_only</span> <span class="o">=</span> <span class="n">introns</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">exons</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
-<span class="n">intron_and_exon</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">introns</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">remove_invalid</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span><span class="o">.</span><span class="n">fn</span>
-
-<span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="n">exon_only</span><span class="p">,</span> <span class="n">intron_only</span><span class="p">,</span> <span class="n">intron_and_exon</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">count_reads_in_features</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
-
-<span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;      exon only:&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;    intron only:&#39;</span><span class="p">,</span>
-          <span class="s1">&#39;intron and exon:&#39;</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">reads</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">reads</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>For more on using <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>, continue on to the <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a> . .
-.</p>
+<p>For more on using <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>, continue on to the <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a> . .  .</p>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Three brief examples</a><ul>
-<li><a class="reference internal" href="#example-1-save-a-bed-file-of-intersections-with-track-line">Example 1: Save a BED file of intersections, with track line</a></li>
-<li><a class="reference internal" href="#example-2-intersections-for-a-3-way-venn-diagram">Example 2: Intersections for a 3-way Venn diagram</a></li>
-<li><a class="reference internal" href="#example-3-count-reads-in-introns-and-exons-in-parallel">Example 3: Count reads in introns and exons, in parallel</a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Three brief examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-1-save-a-bed-file-of-intersections-with-track-line">Example 1: Save a BED file of intersections, with track line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-2-intersections-for-a-3-way-venn-diagram">Example 2: Intersections for a 3-way Venn diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-3-count-reads-in-introns-and-exons-in-parallel">Example 3: Count reads in introns and exons, in parallel</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -276,23 +271,26 @@ the same code with no comments to give more of a feel for <code class="xref py p
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/3-brief-examples.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -313,7 +311,7 @@ the same code with no comments to give more of a feel for <code class="xref py p
         <li class="right" >
           <a href="main.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li> 
       </ul>
     </div>
 
@@ -322,8 +320,8 @@ the same code with no comments to give more of a feel for <code class="xref py p
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/3-brief-examples.rst.txt"

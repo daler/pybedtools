@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.tabix
-===================================
+pybedtools.bedtool.BedTool.tabix
+================================
 
 .. currentmodule:: pybedtools.bedtool
 

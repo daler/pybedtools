@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.window
-====================================
+pybedtools.bedtool.BedTool.window
+=================================
 
 .. currentmodule:: pybedtools.bedtool
 

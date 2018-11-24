@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pybedtools.cbedtools.Interval &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>pybedtools.cbedtools.Interval &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,15 +20,17 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="pybedtools-cbedtools-interval">
@@ -49,29 +40,29 @@
 <em class="property">class </em><code class="descclassname">pybedtools.cbedtools.</code><code class="descname">Interval</code><a class="headerlink" href="#pybedtools.cbedtools.Interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to represent a genomic interval.</p>
 <p>Constructor:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Interval</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">otherfields</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Interval</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">otherfields</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Class to represent a genomic interval of any format.  Requires at least 3
 args: chrom (string), start (int), end (int).</p>
-<p><code class="docutils literal"><span class="pre">start</span></code> is <em>always</em> the 0-based start coordinate.  If this Interval is to
+<p><code class="file docutils literal notranslate"><span class="pre">start</span></code> is <em>always</em> the 0-based start coordinate.  If this Interval is to
 represent a GFF object (which uses a 1-based coordinate system), then
 subtract 1 from the 4th item in the line to get the start position in
 0-based coords for this Interval.  The 1-based GFF coord will still be
 available, albeit as a string, in fields[3].</p>
-<p><code class="docutils literal"><span class="pre">otherfields</span></code> is a list of fields that don't fit into the other kwargs, and
-will be stored in the <code class="docutils literal"><span class="pre">fields</span></code> attribute of the Interval.</p>
-<p>All the items in <code class="docutils literal"><span class="pre">otherfields</span></code> must be strings for proper conversion to
+<p><code class="file docutils literal notranslate"><span class="pre">otherfields</span></code> is a list of fields that don’t fit into the other kwargs, and
+will be stored in the <code class="file docutils literal notranslate"><span class="pre">fields</span></code> attribute of the Interval.</p>
+<p>All the items in <code class="file docutils literal notranslate"><span class="pre">otherfields</span></code> must be strings for proper conversion to
 C++.</p>
-<p>By convention, for BED files, <code class="docutils literal"><span class="pre">otherfields</span></code> is everything past the first 6
+<p>By convention, for BED files, <code class="file docutils literal notranslate"><span class="pre">otherfields</span></code> is everything past the first 6
 items in the line.  This allows an Interval to represent composite features
 (e.g., a GFF line concatenated to the end of a BED line)</p>
 <p>But for other formats (VCF, GFF, SAM), the entire line should be passed in
-as a list for <code class="docutils literal"><span class="pre">otherfields</span></code> so that we can always check the
-Interval.file_type and extract the fields we want, knowing that they'll be
-in the right order as passed in with <code class="docutils literal"><span class="pre">otherfields</span></code>.</p>
+as a list for <code class="file docutils literal notranslate"><span class="pre">otherfields</span></code> so that we can always check the
+Interval.file_type and extract the fields we want, knowing that they’ll be
+in the right order as passed in with <code class="file docutils literal notranslate"><span class="pre">otherfields</span></code>.</p>
 <p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">Interval</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="k">import</span> <span class="n">Interval</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">i</span> <span class="o">=</span> <span class="n">Interval</span><span class="p">(</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">i</span>
 <span class="go">Interval(chr1:22-44)</span>
@@ -79,7 +70,7 @@ in the right order as passed in with <code class="docutils literal"><span class=
 </div>
 <dl class="method">
 <dt id="pybedtools.cbedtools.Interval.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pybedtools.cbedtools.Interval.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>$self</em>, <em>/</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pybedtools.cbedtools.Interval.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -90,10 +81,10 @@ in the right order as passed in with <code class="docutils literal"><span class=
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">append</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">deparse_attrs</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">deparse_attrs</span></code></td>
 <td></td>
 </tr>
 </tbody>
@@ -105,52 +96,52 @@ in the right order as passed in with <code class="docutils literal"><span class=
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">attrs</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">attrs</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">chrom</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">chrom</span></code></td>
 <td>the chromosome of the feature</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">count</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">end</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">end</span></code></td>
 <td>The end of the feature</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">fields</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">fields</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">file_type</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">file_type</span></code></td>
 <td>bed/vcf/gff</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">length</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></td>
 <td>the length of the feature</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">name</span></code></td>
-<td><div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></td>
+<td><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">o_amt</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">o_amt</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">o_end</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">o_end</span></code></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">o_start</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">o_start</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">score</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">start</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">start</span></code></td>
 <td>The 0-based start of the feature.</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">stop</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></td>
 <td>the end of the feature</td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">strand</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">strand</span></code></td>
 <td>the strand of the feature</td>
 </tr>
 </tbody>
@@ -161,37 +152,72 @@ in the right order as passed in with <code class="docutils literal"><span class=
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.filenames.example_filename.html" title="previous chapter">pybedtools.filenames.example_filename</a></li>
       <li>Next: <a href="pybedtools.cbedtools.create_interval_from_list.html" title="next chapter">pybedtools.cbedtools.create_interval_from_list</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/autodocs/pybedtools.cbedtools.Interval.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -212,8 +238,8 @@ in the right order as passed in with <code class="docutils literal"><span class=
         <li class="right" >
           <a href="pybedtools.filenames.example_filename.html" title="pybedtools.filenames.example_filename"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
       </ul>
     </div>
 
@@ -222,8 +248,8 @@ in the right order as passed in with <code class="docutils literal"><span class=
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.cbedtools.Interval.rst.txt"

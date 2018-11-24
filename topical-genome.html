@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Specifying genomes &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Specifying genomes &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,15 +20,17 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="specifying-genomes">
@@ -47,11 +38,11 @@
 <p>This section illustrates the use of genome files for use with BEDTools
 programs that need to know chromosome limits to prevent out-of-range
 coordinates.</p>
-<p>Using BEDTools programs like <code class="docutils literal"><span class="pre">slopBed</span></code> or <code class="docutils literal"><span class="pre">shuffleBed</span></code>  from the command
-line requires &quot;genome&quot; or &quot;chromsizes&quot; files.  <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> comes with
+<p>Using BEDTools programs like <code class="file docutils literal notranslate"><span class="pre">slopBed</span></code> or <code class="file docutils literal notranslate"><span class="pre">shuffleBed</span></code>  from the command
+line requires “genome” or “chromsizes” files.  <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> comes with
 common genome assemblies already set up as a dictionary with chromosomes as
 keys and zero-based (start, stop) tuples as values:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">genome_registry</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">genome_registry</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">genome_registry</span><span class="o">.</span><span class="n">dm3</span><span class="p">[</span><span class="s1">&#39;chr2L&#39;</span><span class="p">]</span>
 <span class="go">(0, 23011544)</span>
 </pre></div>
@@ -59,15 +50,15 @@ keys and zero-based (start, stop) tuples as values:</p>
 <p>The rules for specifying a genome for methods that require a genome are as
 follows (use whatever is most convenient):</p>
 <ul class="simple">
-<li>Use <code class="docutils literal"><span class="pre">g</span></code> to specify either a filename or a dictionary</li>
-<li>Use <code class="docutils literal"><span class="pre">genome</span></code> to specify either an assembly name or a dictionary</li>
+<li>Use <code class="file docutils literal notranslate"><span class="pre">g</span></code> to specify either a filename or a dictionary</li>
+<li>Use <code class="file docutils literal notranslate"><span class="pre">genome</span></code> to specify either an assembly name or a dictionary</li>
 </ul>
 <p>Below are examples of each.</p>
 <div class="section" id="as-a-file">
 <h2>As a file<a class="headerlink" href="#as-a-file" title="Permalink to this headline">¶</a></h2>
 <p>This is the typical way of using BEDTools programs, by specifying an existing genome
-file with <code class="docutils literal"><span class="pre">g</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+file with <code class="file docutils literal notranslate"><span class="pre">g</span></code>:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="s1">&#39;hg19.genome&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -76,22 +67,22 @@ file with <code class="docutils literal"><span class="pre">g</span></code>:</p>
 <h2>As a string<a class="headerlink" href="#as-a-string" title="Permalink to this headline">¶</a></h2>
 <p>This is probably the most convenient way of specifying a genome.  If the
 genome exists in the genome registry it will be used directly; otherwise it
-will automatically be downloaded from UCSC.  You must use the <code class="docutils literal"><span class="pre">genome</span></code>
-kwarg for this; if you use <code class="docutils literal"><span class="pre">g</span></code> a string will be interpreted as a filename:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
+will automatically be downloaded from UCSC.  You must use the <code class="file docutils literal notranslate"><span class="pre">genome</span></code>
+kwarg for this; if you use <code class="file docutils literal notranslate"><span class="pre">g</span></code> a string will be interpreted as a filename:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="as-a-dictionary">
 <h2>As a dictionary<a class="headerlink" href="#as-a-dictionary" title="Permalink to this headline">¶</a></h2>
-<p>This is a good way of providing custom coordinates; either <code class="docutils literal"><span class="pre">g</span></code> or <code class="docutils literal"><span class="pre">genome</span></code>
+<p>This is a good way of providing custom coordinates; either <code class="file docutils literal notranslate"><span class="pre">g</span></code> or <code class="file docutils literal notranslate"><span class="pre">genome</span></code>
 will accept a dictionary:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chr1&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)})</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chr1&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chr1&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000</span><span class="p">)})</span>
 </pre></div>
 </div>
 <p>Make sure that all these different methods return the same results</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">==</span> <span class="n">c</span> <span class="o">==</span> <span class="n">d</span> <span class="o">==</span> <span class="n">e</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">==</span> <span class="n">c</span> <span class="o">==</span> <span class="n">d</span> <span class="o">==</span> <span class="n">e</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -100,10 +91,10 @@ will accept a dictionary:</p>
 <h2>Converting to a file<a class="headerlink" href="#converting-to-a-file" title="Permalink to this headline">¶</a></h2>
 <p>Since BEDTools programs operate on files, the fastest choice will be to
 use an existing file.  While the time to convert a dictionary to a file is
-extremely small, over 1000's of files (e.g., for Monte Carlo simulations),
-the time may add up.  The function <code class="xref py py-func docutils literal"><span class="pre">pybedtools.chromsizes_to_file()</span></code>
+extremely small, over 1000’s of files (e.g., for Monte Carlo simulations),
+the time may add up.  The function <code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.chromsizes_to_file()</span></code>
 will create a file from a dictionary or string:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># with no filename specified, a tempfile will be created</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># with no filename specified, a tempfile will be created</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="s1">&#39;dm3&#39;</span><span class="p">),</span> <span class="s1">&#39;dm3.genome&#39;</span><span class="p">)</span>
 <span class="go">&#39;dm3.genome&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;dm3.genome&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
@@ -129,20 +120,49 @@ will create a file from a dictionary or string:</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Specifying genomes</a><ul>
-<li><a class="reference internal" href="#as-a-file">As a file</a></li>
-<li><a class="reference internal" href="#as-a-string">As a string</a></li>
-<li><a class="reference internal" href="#as-a-dictionary">As a dictionary</a></li>
-<li><a class="reference internal" href="#converting-to-a-file">Converting to a file</a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam-semantics.html">Notes on BAM file semantics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Specifying genomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html">Randomization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -154,23 +174,26 @@ will create a file from a dictionary or string:</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/topical-genome.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -191,7 +214,7 @@ will create a file from a dictionary or string:</p>
         <li class="right" >
           <a href="topical-bam-semantics.html" title="Notes on BAM file semantics"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
       </ul>
     </div>
@@ -201,8 +224,8 @@ will create a file from a dictionary or string:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/topical-genome.rst.txt"

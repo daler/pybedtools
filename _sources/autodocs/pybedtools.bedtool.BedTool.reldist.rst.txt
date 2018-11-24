@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.reldist
-=====================================
+pybedtools.bedtool.BedTool.reldist
+==================================
 
 .. currentmodule:: pybedtools.bedtool
 

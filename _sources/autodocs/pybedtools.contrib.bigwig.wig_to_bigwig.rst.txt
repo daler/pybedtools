@@ -1,5 +1,5 @@
-pybedtools\.contrib\.bigwig\.wig\_to\_bigwig
-============================================
+pybedtools.contrib.bigwig.wig\_to\_bigwig
+=========================================
 
 .. currentmodule:: pybedtools.contrib.bigwig
 

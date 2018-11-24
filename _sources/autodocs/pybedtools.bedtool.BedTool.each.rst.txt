@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.each
-==================================
+pybedtools.bedtool.BedTool.each
+===============================
 
 .. currentmodule:: pybedtools.bedtool
 

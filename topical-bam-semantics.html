@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Notes on BAM file semantics &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Notes on BAM file semantics &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,82 +20,124 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="notes-on-bam-file-semantics">
 <h1>Notes on BAM file semantics<a class="headerlink" href="#notes-on-bam-file-semantics" title="Permalink to this headline">¶</a></h1>
 <p>These are some implementation notes about how BAM files are handled by
-mod:<code class="docutils literal"><span class="pre">pybedtools</span></code> for those interested in the implementation.</p>
-<p>The initial creation of a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> that points to a file will
-trigger a check on the first 15 bytes of a file to see if it's a BAM file.
-If so, then the BedTool's <code class="docutils literal"><span class="pre">_isbam</span></code> attribute is set to <code class="docutils literal"><span class="pre">True</span></code>.  If the
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> is a stream, then the check will not be made, and it is up
-to the creator (whether it's the user on the command line or a method or
-function) to set the BAM-streaming BedTool's <code class="docutils literal"><span class="pre">._isbam</span></code> attribute to <code class="docutils literal"><span class="pre">True</span></code>.
+mod:<code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> for those interested in the implementation.</p>
+<p>The initial creation of a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> that points to a file will
+trigger a check on the first 15 bytes of a file to see if it’s a BAM file.
+If so, then the BedTool’s <code class="file docutils literal notranslate"><span class="pre">_isbam</span></code> attribute is set to <code class="file docutils literal notranslate"><span class="pre">True</span></code>.  If the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> is a stream, then the check will not be made, and it is up
+to the creator (whether it’s the user on the command line or a method or
+function) to set the BAM-streaming BedTool’s <code class="file docutils literal notranslate"><span class="pre">._isbam</span></code> attribute to <code class="file docutils literal notranslate"><span class="pre">True</span></code>.
 This is handled automatically for wrapped BEDTools programs (described
 below).</p>
-<p>Some BEDTools programs natively handle BAM files.  The <code class="docutils literal"><span class="pre">&#64;_wraps</span></code> decorator
-that is used to wrap each method has a <code class="docutils literal"><span class="pre">bam</span></code> kwarg that specifies what
+<p>Some BEDTools programs natively handle BAM files.  The <code class="file docutils literal notranslate"><span class="pre">&#64;_wraps</span></code> decorator
+that is used to wrap each method has a <code class="file docutils literal notranslate"><span class="pre">bam</span></code> kwarg that specifies what
 input argument the wrapped tool will accept as BAM (for example, the
-wrapper for <code class="docutils literal"><span class="pre">intersectBed</span></code> has the kwarg <code class="docutils literal"><span class="pre">bam=&quot;abam&quot;</span></code>).</p>
-<p>If <code class="docutils literal"><span class="pre">self._isbam</span> <span class="pre">==</span> <span class="pre">True</span></code>, then <code class="docutils literal"><span class="pre">self.fn</span></code> is passed to the <code class="docutils literal"><span class="pre">bam</span></code> input arg
-instead of the default implicit input arg (so <code class="docutils literal"><span class="pre">intersectBed</span></code>, <code class="docutils literal"><span class="pre">self.fn</span></code> is
-passed as <code class="docutils literal"><span class="pre">abam</span></code> instead of <code class="docutils literal"><span class="pre">-a</span></code>).</p>
-<p>Trying to call a method that does not have a <code class="docutils literal"><span class="pre">bam</span></code> kwarg registered will
+wrapper for <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> has the kwarg <code class="file docutils literal notranslate"><span class="pre">bam=&quot;abam&quot;</span></code>).</p>
+<p>If <code class="file docutils literal notranslate"><span class="pre">self._isbam</span> <span class="pre">==</span> <span class="pre">True</span></code>, then <code class="file docutils literal notranslate"><span class="pre">self.fn</span></code> is passed to the <code class="file docutils literal notranslate"><span class="pre">bam</span></code> input arg
+instead of the default implicit input arg (so <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code>, <code class="file docutils literal notranslate"><span class="pre">self.fn</span></code> is
+passed as <code class="file docutils literal notranslate"><span class="pre">abam</span></code> instead of <code class="file docutils literal notranslate"><span class="pre">-a</span></code>).</p>
+<p>Trying to call a method that does not have a <code class="file docutils literal notranslate"><span class="pre">bam</span></code> kwarg registered will
 result in a ValueError, along with a message that says to use
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.bam_to_bed()</span></code> first.  For example, <code class="docutils literal"><span class="pre">subtractBed</span></code> currently
-doesn't accept BAM files as input, so this doesn't work:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.bam_to_bed()</span></code> first.  For example, <code class="file docutils literal notranslate"><span class="pre">subtractBed</span></code> currently
+doesn’t accept BAM files as input, so this doesn’t work:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># doesn&#39;t work:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>However, converting to <code class="docutils literal"><span class="pre">a</span></code> to BED format first (and setting <code class="docutils literal"><span class="pre">stream=True</span></code>
+<p>However, converting to <code class="file docutils literal notranslate"><span class="pre">a</span></code> to BED format first (and setting <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code>
 to save on disk I/O) works fine:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># works:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># works:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">bam_to_bed</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Iterating over a file-based BedTool that points to a BAM will call
-<code class="docutils literal"><span class="pre">samtools</span> <span class="pre">view</span></code> and yields lines which sent to <code class="docutils literal"><span class="pre">IntervalIterator</span></code>, which
-splits the lines and passes them to <code class="docutils literal"><span class="pre">create_interval_from_list</span></code> which in
-turn decides on the fly whether it's gff, bed, or sam.</p>
-<p>However, we can't easily check the first 15 bytes of a streaming BedTool,
-because that would consume those bytes. The <code class="docutils literal"><span class="pre">&#64;_wraps</span></code> decorator needs to
+<code class="file docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">view</span></code> and yields lines which sent to <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>, which
+splits the lines and passes them to <code class="file docutils literal notranslate"><span class="pre">create_interval_from_list</span></code> which in
+turn decides on the fly whether it’s gff, bed, or sam.</p>
+<p>However, we can’t easily check the first 15 bytes of a streaming BedTool,
+because that would consume those bytes. The <code class="file docutils literal notranslate"><span class="pre">&#64;_wraps</span></code> decorator needs to
 know some information about which arguments to a wrapped program result in
 BAM output and which result in non-BAM output.</p>
-<p>Given <code class="docutils literal"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">BedTool('x.bam')</span></code>:</p>
+<p>Given <code class="file docutils literal notranslate"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">BedTool('x.bam')</span></code>:</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">c</span> <span class="pre">=</span> <span class="pre">a.intersect(b)</span></code> creates BAM output, so it returns a new BedTool with
-<code class="docutils literal"><span class="pre">c._isbam</span> <span class="pre">=</span> <span class="pre">True</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">a.intersect(b,</span> <span class="pre">bed=True)</span></code> returns BED output.  <code class="docutils literal"><span class="pre">&#64;_wraps</span></code> needs to know, if the
-input was BAM, which kwarg[s] disable BAM output. For example, if <code class="docutils literal"><span class="pre">-bed</span></code>
-is passed to <code class="docutils literal"><span class="pre">intersectBed</span></code>, the output will NOT be BAM.  This is
-implemented with the <code class="docutils literal"><span class="pre">nonbam</span></code> kwarg for <code class="xref py py-func docutils literal"><span class="pre">_wraps()</span></code>.  In this case,
+<li><code class="file docutils literal notranslate"><span class="pre">c</span> <span class="pre">=</span> <span class="pre">a.intersect(b)</span></code> creates BAM output, so it returns a new BedTool with
+<code class="file docutils literal notranslate"><span class="pre">c._isbam</span> <span class="pre">=</span> <span class="pre">True</span></code>.</li>
+<li><code class="file docutils literal notranslate"><span class="pre">a.intersect(b,</span> <span class="pre">bed=True)</span></code> returns BED output.  <code class="file docutils literal notranslate"><span class="pre">&#64;_wraps</span></code> needs to know, if the
+input was BAM, which kwarg[s] disable BAM output. For example, if <code class="file docutils literal notranslate"><span class="pre">-bed</span></code>
+is passed to <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code>, the output will NOT be BAM.  This is
+implemented with the <code class="file docutils literal notranslate"><span class="pre">nonbam</span></code> kwarg for <code class="xref py py-func docutils literal notranslate"><span class="pre">_wraps()</span></code>.  In this case,
 the resulting BED file is treated like any other BED file.</li>
-<li><code class="docutils literal"><span class="pre">c</span> <span class="pre">=</span> <span class="pre">a.intersect(b,</span> <span class="pre">stream=True)</span></code> returns streaming BAM output.  In this
-case, iterating over <code class="docutils literal"><span class="pre">c</span></code> will send the BAM stream to stdin of a samtools
+<li><code class="file docutils literal notranslate"><span class="pre">c</span> <span class="pre">=</span> <span class="pre">a.intersect(b,</span> <span class="pre">stream=True)</span></code> returns streaming BAM output.  In this
+case, iterating over <code class="file docutils literal notranslate"><span class="pre">c</span></code> will send the BAM stream to stdin of a samtools
 call</li>
 </ul>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Notes on BAM file semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html">Specifying genomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html">Randomization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
@@ -117,23 +148,26 @@ call</li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/topical-bam-semantics.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -154,7 +188,7 @@ call</li>
         <li class="right" >
           <a href="topical-bam.html" title="Working with BAM files"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
       </ul>
     </div>
@@ -164,8 +198,8 @@ call</li>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/topical-bam-semantics.rst.txt"

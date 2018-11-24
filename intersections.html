@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Intersections &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Intersections &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,38 +20,40 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="intersections">
 <span id="id1"></span><h1>Intersections<a class="headerlink" href="#intersections" title="Permalink to this headline">¶</a></h1>
-<p>One common use of <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> and <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> is to perform
+<p>One common use of <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> is to perform
 intersections.</p>
-<p>First, let's create some example <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instances:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<p>First, let’s create some example <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instances:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Then do the intersection with the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code> method:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a_and_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<p>Then do the intersection with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.intersect()</span></code> method:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a_and_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal"><span class="pre">a_and_b</span></code> is a new <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instance.  It now points to a temp file
-on disk, which is stored in the attribute <code class="docutils literal"><span class="pre">a_and_b.fn</span></code>; this temp file contains
-the intersection of <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">b</span></code>.</p>
-<p>We can either print the new <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> (which will show ALL features
--- use with caution if you have huge files!) or use the
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.head()</span></code> method to show up to the first N lines (10 by
-default).  Here's what <code class="docutils literal"><span class="pre">a</span></code>, <code class="docutils literal"><span class="pre">b</span></code>, and <code class="docutils literal"><span class="pre">a_and_b</span></code> look like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<p><code class="file docutils literal notranslate"><span class="pre">a_and_b</span></code> is a new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instance.  It now points to a temp file
+on disk, which is stored in the attribute <code class="file docutils literal notranslate"><span class="pre">a_and_b.fn</span></code>; this temp file contains
+the intersection of <code class="file docutils literal notranslate"><span class="pre">a</span></code> and <code class="file docutils literal notranslate"><span class="pre">b</span></code>.</p>
+<p>We can either print the new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> (which will show ALL features
+– use with caution if you have huge files!) or use the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.head()</span></code> method to show up to the first N lines (10 by
+default).  Here’s what <code class="file docutils literal notranslate"><span class="pre">a</span></code>, <code class="file docutils literal notranslate"><span class="pre">b</span></code>, and <code class="file docutils literal notranslate"><span class="pre">a_and_b</span></code> look like:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">chr1    1   100 feature1    0   +</span>
 <span class="go">chr1    100 200 feature2    0   +</span>
 <span class="go">chr1    150 500 feature3    0   -</span>
@@ -78,14 +69,14 @@ default).  Here's what <code class="docutils literal"><span class="pre">a</span>
 <span class="go">chr1    900 901 feature4    0   +</span>
 </pre></div>
 </div>
-<p>The <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code> method simply wraps the <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> program
-<code class="docutils literal"><span class="pre">intersectBed</span></code>.  This means that we can pass <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code> any
-arguments that <code class="docutils literal"><span class="pre">intersectBed</span></code> accepts.  For example, if we want to use the
-<code class="docutils literal"><span class="pre">intersectBed</span></code> switch <code class="docutils literal"><span class="pre">-u</span></code> (which, according to the BEDTools documentation,
-acts as a True/False switch to indicate that we want to see the features in <code class="docutils literal"><span class="pre">a</span></code>
-that overlapped something in <code class="docutils literal"><span class="pre">b</span></code>), then we can use the keyword argument
-<code class="docutils literal"><span class="pre">u=True</span></code>, like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Intersection using the -u switch</span>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.intersect()</span></code> method simply wraps the <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> program
+<code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code>.  This means that we can pass <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.intersect()</span></code> any
+arguments that <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> accepts.  For example, if we want to use the
+<code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> switch <code class="file docutils literal notranslate"><span class="pre">-u</span></code> (which, according to the BEDTools documentation,
+acts as a True/False switch to indicate that we want to see the features in <code class="file docutils literal notranslate"><span class="pre">a</span></code>
+that overlapped something in <code class="file docutils literal notranslate"><span class="pre">b</span></code>), then we can use the keyword argument
+<code class="file docutils literal notranslate"><span class="pre">u=True</span></code>, like this:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Intersection using the -u switch</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a_with_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a_with_b</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="go">chr1    100 200 feature2    0   +</span>
@@ -93,46 +84,87 @@ that overlapped something in <code class="docutils literal"><span class="pre">b<
 <span class="go">chr1    900 950 feature4    0   +</span>
 </pre></div>
 </div>
-<p>This time, <code class="docutils literal"><span class="pre">a_with_b</span></code> is another <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object that points to a
-different temp file whose name is stored in <code class="docutils literal"><span class="pre">a_with_b.fn</span></code>.  You can read
+<p>This time, <code class="file docutils literal notranslate"><span class="pre">a_with_b</span></code> is another <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object that points to a
+different temp file whose name is stored in <code class="file docutils literal notranslate"><span class="pre">a_with_b.fn</span></code>.  You can read
 more about the use of temp files in <a class="reference internal" href="topical-design-principles.html#temp-principle"><span class="std std-ref">Principle 1: Temporary files are created (and deleted) automatically</span></a>.  More on
-arguments that you can pass to <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects in a moment, but
+arguments that you can pass to <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects in a moment, but
 first, some info about saving files.</p>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Intersections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default-arguments.html">Default arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html">Chaining methods together (pipe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html#operator-overloading">Operator overloading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intervals.html">Intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filtering.html">Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html">Using the history and tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="tutorial-contents.html">Tutorial Contents</a><ul>
-      <li>Previous: <a href="create-a-bedtool-tutorial.html" title="previous chapter">Create a <code class="docutils literal"><span class="pre">BedTool</span></code></a></li>
+      <li>Previous: <a href="create-a-bedtool-tutorial.html" title="previous chapter">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
       <li>Next: <a href="save-results.html" title="next chapter">Saving the results</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/intersections.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -153,7 +185,7 @@ first, some info about saving files.</p>
         <li class="right" >
           <a href="create-a-bedtool-tutorial.html" title="Create a BedTool"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li> 
       </ul>
     </div>
@@ -163,8 +195,8 @@ first, some info about saving files.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/intersections.rst.txt"

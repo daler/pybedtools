@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.colormap\_normalize
-=================================================
+pybedtools.bedtool.BedTool.colormap\_normalize
+==============================================
 
 .. currentmodule:: pybedtools.bedtool
 

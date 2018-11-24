@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pybedtools.contrib.plotting &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>pybedtools.contrib.plotting &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
@@ -29,15 +18,17 @@
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for pybedtools.contrib.plotting</h1><div class="highlight"><pre>
@@ -52,7 +43,7 @@
 
 
 <div class="viewcode-block" id="Track"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track">[docs]</a><span class="k">class</span> <span class="nc">Track</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">PolyCollection</span><span class="p">):</span>
-<div class="viewcode-block" id="Track.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ybase</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="Track.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ybase</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">visibility</span><span class="o">=</span><span class="s1">&#39;dense&#39;</span><span class="p">,</span> <span class="n">stranded</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subclass of matplotlib&#39;s PolyCollection that can be added to an Axes.</span>
@@ -131,7 +122,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_stranded_dict</span><span class="p">()</span>
         <span class="n">facecolors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">()</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolors</span><span class="o">=</span><span class="n">facecolors</span><span class="p">))</span>
-        <span class="n">collections</span><span class="o">.</span><span class="n">PolyCollection</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+        <span class="n">collections</span><span class="o">.</span><span class="n">PolyCollection</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="n">verts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_verts</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">ybase</span><span class="p">,</span> <span class="n">yheight</span><span class="p">):</span>
@@ -234,7 +225,7 @@
 <span class="sd">    Class-based version of the `binary_heatmap` function for more flexibility.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bts</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bts</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bts</span> <span class="o">=</span> <span class="n">bts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">names</span>
 
@@ -266,10 +257,10 @@
         <span class="n">_classified_intervals</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
-            <span class="n">cls</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">class_counts</span><span class="p">[</span><span class="n">cls</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_counts</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
-            <span class="n">_classified_intervals</span><span class="p">[</span><span class="n">cls</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="n">_classified_intervals</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">classified_intervals</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_classified_intervals</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -345,7 +336,7 @@
 
 
 <div class="viewcode-block" id="TrackCollection"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection">[docs]</a><span class="k">class</span> <span class="nc">TrackCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="TrackCollection.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<div class="viewcode-block" id="TrackCollection.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles multiple tracks on the same figure.</span>
 
@@ -385,11 +376,11 @@
             <span class="k">if</span> <span class="s1">&#39;ybase&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please do not specify &quot;ybase&quot;; this &#39;</span>
                 <span class="s1">&#39;is handled automatically by the </span><span class="si">%s</span><span class="s1"> class&#39;</span> \
-                        <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+                        <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="k">if</span> <span class="s1">&#39;yheight&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please do not specify &quot;yheight&quot;, &#39;</span>
                         <span class="s1">&#39;this should be a separate arg to the </span><span class="si">%s</span><span class="s1"> &#39;</span>
-                        <span class="s1">&#39;constructor&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span></div>
+                        <span class="s1">&#39;constructor&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -427,7 +418,7 @@
 
 
 <div class="viewcode-block" id="BedToolsDemo"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo">[docs]</a><span class="k">class</span> <span class="nc">BedToolsDemo</span><span class="p">(</span><span class="n">TrackCollection</span><span class="p">):</span>
-<div class="viewcode-block" id="BedToolsDemo.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">data_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="BedToolsDemo.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">data_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
             <span class="n">result_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
             <span class="n">new_style</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">subplots_adjust</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -507,7 +498,7 @@
 
         <span class="n">config</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">result</span><span class="p">,</span> <span class="n">result_kwargs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">BedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">BedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -525,7 +516,7 @@
 
 
 <div class="viewcode-block" id="ConfiguredBedToolsDemo"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.ConfiguredBedToolsDemo.html#pybedtools.contrib.plotting.ConfiguredBedToolsDemo">[docs]</a><span class="k">class</span> <span class="nc">ConfiguredBedToolsDemo</span><span class="p">(</span><span class="n">BedToolsDemo</span><span class="p">):</span>
-<div class="viewcode-block" id="ConfiguredBedToolsDemo.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.ConfiguredBedToolsDemo.html#pybedtools.contrib.plotting.ConfiguredBedToolsDemo.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_config</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ConfiguredBedToolsDemo.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.ConfiguredBedToolsDemo.html#pybedtools.contrib.plotting.ConfiguredBedToolsDemo.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_config</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrapper around BedToolsDemo class that reads in a YAML config file.</span>
 <span class="sd">        Useful for using the same &quot;style&quot; configuration many times.</span>
@@ -545,10 +536,10 @@
         <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
         <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;method_kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method_kwargs</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ConfiguredBedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">conf</span><span class="p">)</span></div></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConfiguredBedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">conf</span><span class="p">)</span></div></div>
 
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    bts = [</span>
 <span class="sd">            pybedtools.example_bedtool(&#39;BEAF_Kc_Bushey_2009.bed&#39;),</span>
@@ -575,10 +566,34 @@
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
@@ -591,14 +606,24 @@
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -613,7 +638,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li> 
       </ul>
@@ -624,8 +649,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

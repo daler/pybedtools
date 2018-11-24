@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Chaining methods together (pipe) &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Chaining methods together (pipe) &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,25 +20,27 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="chaining-methods-together-pipe">
 <h1>Chaining methods together (pipe)<a class="headerlink" href="#chaining-methods-together-pipe" title="Permalink to this headline">¶</a></h1>
-<p>One useful thing about <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> methods is that they often return a
-new <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>.  In practice, this means that we can chain together
+<p>One useful thing about <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods is that they often return a
+new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>.  In practice, this means that we can chain together
 multiple method calls all in one line, similar to piping on the command
 line.</p>
 <p>For example, this intersect and merge can be combined into one command:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># These two lines...</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># These two lines...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 
@@ -61,22 +52,22 @@ line.</p>
 </pre></div>
 </div>
 <p>A rule of thumb is that all methods that wrap <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> programs return
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects, so you can chain these together. Many
-<code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>-unique methods return <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects too, just
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects, so you can chain these together. Many
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>-unique methods return <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects too, just
 check the docs (according to <a class="reference internal" href="topical-design-principles.html#good-docs-principle"><span class="std std-ref">Principle 7: Check the help</span></a>). For example, as
-we saw in one of the examples above, the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.saveas()</span></code> method
-returns a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object.  That means we can sprinkle those
+we saw in one of the examples above, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code> method
+returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object.  That means we can sprinkle those
 commands within the example above to save the intermediate steps as
 meaningful filenames for later use. For example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x4</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;a-with-b.bed&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;a-with-b-merged.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x4</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;a-with-b.bed&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;a-with-b-merged.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now we have new files in the current directory called <code class="file docutils literal"><span class="pre">a-with-b.bed</span></code>
-and <code class="file docutils literal"><span class="pre">a-with-b-merged.bed</span></code>.  Since <code class="xref py py-meth docutils literal"><span class="pre">BedTool.saveas()</span></code> returns a
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object, <code class="docutils literal"><span class="pre">x4</span></code> points to the <code class="file docutils literal"><span class="pre">a-with-b-merged.bed</span></code>
+<p>Now we have new files in the current directory called <code class="file docutils literal notranslate"><span class="pre">a-with-b.bed</span></code>
+and <code class="file docutils literal notranslate"><span class="pre">a-with-b-merged.bed</span></code>.  Since <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code> returns a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object, <code class="file docutils literal notranslate"><span class="pre">x4</span></code> points to the <code class="file docutils literal notranslate"><span class="pre">a-with-b-merged.bed</span></code>
 file.</p>
 <p>Sometimes it can be cleaner to separate consecutive calls on each line:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x4</span> <span class="o">=</span> <span class="n">a</span>\
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x4</span> <span class="o">=</span> <span class="n">a</span>\
 <span class="gp">... </span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>\
 <span class="gp">... </span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;a-with-b.bed&#39;</span><span class="p">)</span>\
 <span class="gp">... </span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>\
@@ -86,35 +77,35 @@ file.</p>
 </div>
 <div class="section" id="operator-overloading">
 <h1>Operator overloading<a class="headerlink" href="#operator-overloading" title="Permalink to this headline">¶</a></h1>
-<p>There's an even easier way to chain together commands.</p>
+<p>There’s an even easier way to chain together commands.</p>
 <p>I found myself doing intersections so much that I thought it would be
-useful to overload the <code class="docutils literal"><span class="pre">+</span></code> and <code class="docutils literal"><span class="pre">-</span></code> operators to do intersections.
+useful to overload the <code class="docutils literal notranslate"><span class="pre">+</span></code> and <code class="docutils literal notranslate"><span class="pre">-</span></code> operators to do intersections.
 To illustrate, these two example commands do the same thing:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x5</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x5</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x6</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x5</span> <span class="o">==</span> <span class="n">x6</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<p>Just as the <code class="docutils literal"><span class="pre">+</span></code> operator assumes <code class="docutils literal"><span class="pre">intersectBed</span></code> with the <code class="docutils literal"><span class="pre">-u</span></code> arg, the <code class="docutils literal"><span class="pre">-</span></code>
-operator assumes <code class="docutils literal"><span class="pre">intersectBed</span></code> with the <code class="docutils literal"><span class="pre">-v</span></code> arg:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x7</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<p>Just as the <code class="file docutils literal notranslate"><span class="pre">+</span></code> operator assumes <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> with the <code class="file docutils literal notranslate"><span class="pre">-u</span></code> arg, the <code class="file docutils literal notranslate"><span class="pre">-</span></code>
+operator assumes <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> with the <code class="file docutils literal notranslate"><span class="pre">-v</span></code> arg:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x7</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x8</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x7</span> <span class="o">==</span> <span class="n">x8</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<p>If you want to operating on the resulting <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> that is
-returned by an addition or subtraction, you'll need to wrap the operation
+<p>If you want to operating on the resulting <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> that is
+returned by an addition or subtraction, you’ll need to wrap the operation
 in parentheses.  This is another way to do the chaining together of the
 intersection and merge example from above:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x9</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x9</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>And to double-check that all these methods return the same thing:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">==</span> <span class="n">x3</span> <span class="o">==</span> <span class="n">x4</span> <span class="o">==</span> <span class="n">x9</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">==</span> <span class="n">x3</span> <span class="o">==</span> <span class="n">x4</span> <span class="o">==</span> <span class="n">x9</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -123,15 +114,47 @@ intersection and merge example from above:</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Chaining methods together (pipe)</a></li>
-<li><a class="reference internal" href="#operator-overloading">Operator overloading</a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="intersections.html">Intersections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default-arguments.html">Default arguments</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Chaining methods together (pipe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operator-overloading">Operator overloading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intervals.html">Intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filtering.html">Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html">Using the history and tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -143,23 +166,26 @@ intersection and merge example from above:</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/piping.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -180,7 +206,7 @@ intersection and merge example from above:</p>
         <li class="right" >
           <a href="default-arguments.html" title="Default arguments"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li> 
       </ul>
     </div>
@@ -190,8 +216,8 @@ intersection and merge example from above:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/piping.rst.txt"

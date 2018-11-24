@@ -9,17 +9,17 @@ installed.
 
 .. _condainstall:
 
-Quick install via `conda`
-~~~~~~~~~~~~~~~~~~~~~~~~~
-If you're usng the `Anaconda Python distribution
-<http://continuum.io/downloads>`_ on Linux, then the following will install
-:mod:`pybedtools`::
+Install via `conda`
+~~~~~~~~~~~~~~~~~~~
+This is by far the easiest option.  If you're usng the `Anaconda Python
+distribution <http://continuum.io/downloads>`_ on Linux, then the following
+will install :mod:`pybedtools`::
 
-    conda install -c bioconda pybedtools
+    conda install --channel conda-forge --channel bioconda pybedtools
 
 You can also install Tabix and BEDTools via conda::
 
-    conda install -c bioconda bedtools htslib
+    conda install --channel conda-forge --channel bioconda bedtools htslib
 
 Otherwise, read on for installation on other platforms and in other
 environments.
@@ -39,13 +39,11 @@ Required
 
 
 :A C/C++ compiler:
-    * **Windows:** Use Cygwin, http://www.cygwin.com.  It is probably easiest to select
-      all of the 'Devel" group items to be installed.  In addition, ensure the
-      `zlib` items are selected for installation as well (using the search
-      funciton in the Cygwin install program).
     * **OSX:** Install Xcode from http://developer.apple.com/xcode/
     * **Linux:** `gcc`, usually already installed; on Ubuntu, install with `sudo apt-get install
       build-essentials`
+    * **Windows:** may work with conda compliers or Cygwin but this is
+      untested. Windows is not supported.
 
 Optional
 ++++++++
@@ -62,14 +60,7 @@ Installing :mod:`pybedtools`
 Install latest release via `conda` (recommended)
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
-Use the Anaconda channel `daler`::
-
-    conda install -c daler pybedtools
-
-This example installs :mod:`pybedtools` and BEDTools into an isolated
-environment called `myenv` running Python 3::
-
-    conda create -n myenv -c daler pybedtools bedtools python=3
+See :ref:`condainstall` section above.
 
 
 Install latest release using `pip`
@@ -90,13 +81,36 @@ Assumptions:
 1. `git` is installed
 2. Cython is installed (`conda install cython` or `pip install cython`)
 
+
+The following commands will clone the repository
 .. code-block:: bash
 
     git clone https://github.com/daler/pybedtools.git
     cd pybedtools
-    git pull
+
+The only time the C++ files will be rebuilt from Cython .pyx source is if the
+`cythonize` subcommand is used. To rebuild the C++ files using Cython, run:
+
+.. code-block:: bash
+
+    python setup.py cythonize
+
+To install in develop mode, where changes to Python files will be picked up
+without having to re-install, use:
+
+.. code-block:: bash
+
     python setup.py develop
 
+The above will not update when the .pyx files are updated, so if the Cython
+source files have been changed, run:
+
+.. code-block:: bash
+
+    python setup.py cythonize develop
+
+
+See `python setup.py --usage` for more information.
 
 
 Quick test
@@ -131,17 +145,19 @@ e.g., by running::
 
 Test current installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-Testing the "current installation" means testing the installation into the
-current environment, whether this is the system-wide Python, a virtualenv, or
-a conda environment.  It requires some additional packages to be installed::
+To test within the existing installation, install the additional packages for
+testing::
 
-    pip install -r dev-requirements.txt
+    conda install --channel conda-forge --channel bioconda \
+      --file requirements.txt \
+      --file test-requirements.txt \
+      --file optional-requirements.txt
 
-Run unit tests::
+Then run unit tests along with module doctests::
 
-    nosetests -v
+    pytest --doctest-modules
 
-Run doctests::
+Finally, run sphinx doctests::
 
     (cd docs && make doctest)
 
@@ -158,20 +174,6 @@ To run tests under Python 2::
 To run tests under Python 3::
 
     ./condatest.sh 3
-
-Test within isolated Docker containers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This assumes that `Docker <https://www.docker.com/>`_ is installed.
-
-The following command will build Docker two containers -- one for Python 2 and
-one for Python 3 -- starting with the base Ubuntu 14.04 container. The first
-time the containers are built it will take some time, but they are cached so
-subsequent tests will run quickly. Within each of these containers, unit tests
-and doctests are run::
-
-    (cd docker && ./full-test.sh)
-
 
 Compile docs
 ~~~~~~~~~~~~

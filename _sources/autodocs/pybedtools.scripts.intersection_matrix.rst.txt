@@ -1,5 +1,5 @@
-pybedtools\.scripts\.intersection\_matrix
-=========================================
+pybedtools.scripts.intersection\_matrix
+=======================================
 
 .. automodule:: pybedtools.scripts.intersection_matrix
 
@@ -12,7 +12,6 @@ pybedtools\.scripts\.intersection\_matrix
       actual_intersection
       create_matrix
       enrichment_score
-      example_filename
       frac_of_a
       get_name
       main
@@ -20,12 +19,6 @@ pybedtools\.scripts\.intersection\_matrix
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      BedTool
    
    
 

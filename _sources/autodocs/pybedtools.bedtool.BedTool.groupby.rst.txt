@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.groupby
-=====================================
+pybedtools.bedtool.BedTool.groupby
+==================================
 
 .. currentmodule:: pybedtools.bedtool
 

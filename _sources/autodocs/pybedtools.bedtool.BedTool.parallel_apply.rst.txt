@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.parallel\_apply
-=============================================
+pybedtools.bedtool.BedTool.parallel\_apply
+==========================================
 
 .. currentmodule:: pybedtools.bedtool
 

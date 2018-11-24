@@ -1,5 +1,5 @@
-pybedtools\.helpers\.get\_chromsizes\_from\_ucsc
-================================================
+pybedtools.helpers.get\_chromsizes\_from\_ucsc
+==============================================
 
 .. currentmodule:: pybedtools.helpers
 

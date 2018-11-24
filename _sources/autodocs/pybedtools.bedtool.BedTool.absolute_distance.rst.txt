@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.absolute\_distance
-================================================
+pybedtools.bedtool.BedTool.absolute\_distance
+=============================================
 
 .. currentmodule:: pybedtools.bedtool
 

@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pybedtools.bedtool.BedTool.sequence &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>pybedtools.bedtool.BedTool.sequence &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,15 +20,17 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="pybedtools-bedtool-bedtool-sequence">
@@ -48,40 +39,44 @@
 <dt id="pybedtools.bedtool.BedTool.sequence">
 <code class="descclassname">BedTool.</code><code class="descname">sequence</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.sequence" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div><p>Wraps <code class="docutils literal"><span class="pre">bedtools</span> <span class="pre">getfasta</span></code>.</p>
+<div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">getfasta</span></code>.</p>
 <p><em>fi</em> is passed in by the user; <em>bed</em> is automatically passed in as the
 bedfile of this object; <em>fo</em> by default is a temp file.  Use
 save_seqs() to save as a file.</p>
 <p>The end result is that this BedTool will have an attribute, self.seqfn,
 that points to the new fasta file.</p>
 <p>Example usage:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="gp">... </span><span class="s2">chr1 1 10</span>
-<span class="gp">... </span><span class="s2">chr1 50 55&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">from_string</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">... </span><span class="s2">chr1 50 55&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">from_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fasta</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;test.fa&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">fi</span><span class="o">=</span><span class="n">fasta</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seqfn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seqfn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 <span class="go">&gt;chr1:1-10</span>
 <span class="go">GATGAGTCT</span>
 <span class="go">&gt;chr1:50-55</span>
 <span class="go">CCATC</span>
+<span class="go">&lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>For convenience, the file or stream this BedTool points to
-is implicitly passed as the <code class="docutils literal"><span class="pre">-bed</span></code> argument to <code class="docutils literal"><span class="pre">fastaFromBed</span></code></p>
+is implicitly passed as the <code class="file docutils literal notranslate"><span class="pre">-bed</span></code> argument to <code class="file docutils literal notranslate"><span class="pre">fastaFromBed</span></code></p>
 <p><strong>Original BEDTools help:</strong>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">getfasta</span> <span class="p">(</span><span class="n">aka</span> <span class="n">fastaFromBed</span><span class="p">)</span>
-<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">26.0</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">getfasta</span> <span class="p">(</span><span class="n">aka</span> <span class="n">fastaFromBed</span><span class="p">)</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">27.1</span>
 <span class="n">Summary</span><span class="p">:</span> <span class="n">Extract</span> <span class="n">DNA</span> <span class="n">sequences</span> <span class="kn">from</span> <span class="nn">a</span> <span class="nn">fasta</span> <span class="nn">file</span> <span class="nn">based</span> <span class="nn">on</span> <span class="nn">feature</span> <span class="nn">coordinates.</span>
 
 <span class="n">Usage</span><span class="p">:</span>   <span class="n">bedtools</span> <span class="n">getfasta</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">fi</span> <span class="o">&lt;</span><span class="n">fasta</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">bed</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span>
 
 <span class="n">Options</span><span class="p">:</span> 
         <span class="o">-</span><span class="n">fi</span>     <span class="n">Input</span> <span class="n">FASTA</span> <span class="nb">file</span>
+        <span class="o">-</span><span class="n">fo</span>     <span class="n">Output</span> <span class="nb">file</span> <span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="p">,</span> <span class="n">default</span> <span class="ow">is</span> <span class="n">STDOUT</span>
         <span class="o">-</span><span class="n">bed</span>    <span class="n">BED</span><span class="o">/</span><span class="n">GFF</span><span class="o">/</span><span class="n">VCF</span> <span class="nb">file</span> <span class="n">of</span> <span class="n">ranges</span> <span class="n">to</span> <span class="n">extract</span> <span class="kn">from</span> <span class="o">-</span><span class="n">fi</span>
         <span class="o">-</span><span class="n">name</span>   <span class="n">Use</span> <span class="n">the</span> <span class="n">name</span> <span class="n">field</span> <span class="k">for</span> <span class="n">the</span> <span class="n">FASTA</span> <span class="n">header</span>
-        <span class="o">-</span><span class="n">split</span>  <span class="n">given</span> <span class="n">BED12</span> <span class="n">fmt</span><span class="o">.</span><span class="p">,</span> <span class="n">extract</span> <span class="ow">and</span> <span class="n">concatenate</span> <span class="n">the</span> <span class="n">sequencesfrom</span> <span class="n">the</span> <span class="n">BED</span> <span class="s2">&quot;blocks&quot;</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">exons</span><span class="p">)</span>
+        <span class="o">-</span><span class="n">name</span><span class="o">+</span>  <span class="n">Use</span> <span class="n">the</span> <span class="n">name</span> <span class="n">field</span> <span class="ow">and</span> <span class="n">coordinates</span> <span class="k">for</span> <span class="n">the</span> <span class="n">FASTA</span> <span class="n">header</span>
+        <span class="o">-</span><span class="n">split</span>  <span class="n">given</span> <span class="n">BED12</span> <span class="n">fmt</span><span class="o">.</span><span class="p">,</span> <span class="n">extract</span> <span class="ow">and</span> <span class="n">concatenate</span> <span class="n">the</span> <span class="n">sequences</span>
+                <span class="kn">from</span> <span class="nn">the</span> <span class="nn">BED</span> <span class="s2">&quot;blocks&quot;</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">exons</span><span class="p">)</span>
         <span class="o">-</span><span class="n">tab</span>    <span class="n">Write</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">TAB</span> <span class="n">delimited</span> <span class="n">format</span><span class="o">.</span>
                 <span class="o">-</span> <span class="n">Default</span> <span class="ow">is</span> <span class="n">FASTA</span> <span class="n">format</span><span class="o">.</span>
 
@@ -90,7 +85,8 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-be
                 <span class="o">-</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">strand</span> <span class="n">information</span> <span class="ow">is</span> <span class="n">ignored</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">fullHeader</span>     <span class="n">Use</span> <span class="n">full</span> <span class="n">fasta</span> <span class="n">header</span><span class="o">.</span>
-                <span class="o">-</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">only</span> <span class="n">the</span> <span class="n">word</span> <span class="n">before</span> <span class="n">the</span> <span class="n">first</span> <span class="n">space</span> <span class="ow">or</span> <span class="n">tab</span> <span class="ow">is</span> <span class="n">used</span><span class="o">.</span>
+                <span class="o">-</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">only</span> <span class="n">the</span> <span class="n">word</span> <span class="n">before</span> <span class="n">the</span> <span class="n">first</span> <span class="n">space</span> <span class="ow">or</span> <span class="n">tab</span> 
+                <span class="ow">is</span> <span class="n">used</span><span class="o">.</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -99,37 +95,72 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-be
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.bedtool.BedTool.bam_to_fastq.html" title="previous chapter">pybedtools.bedtool.BedTool.bam_to_fastq</a></li>
       <li>Next: <a href="pybedtools.bedtool.BedTool.mask_fasta.html" title="next chapter">pybedtools.bedtool.BedTool.mask_fasta</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/autodocs/pybedtools.bedtool.BedTool.sequence.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -150,8 +181,8 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-be
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.bam_to_fastq.html" title="pybedtools.bedtool.BedTool.bam_to_fastq"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
       </ul>
     </div>
 
@@ -160,8 +191,8 @@ is implicitly passed as the <code class="docutils literal"><span class="pre">-be
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.sequence.rst.txt"

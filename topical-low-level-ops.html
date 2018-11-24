@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Low-level operations &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Low-level operations &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,26 +20,28 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="low-level-operations">
 <h1>Low-level operations<a class="headerlink" href="#low-level-operations" title="Permalink to this headline">¶</a></h1>
-<p>We can use the <code class="xref py py-meth docutils literal"><span class="pre">BedTool.as_intervalfile()</span></code> method to return an
-<code class="xref py py-class docutils literal"><span class="pre">IntervalFile</span></code> instance.  This class provides low-level support to
+<p>We can use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.as_intervalfile()</span></code> method to return an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">IntervalFile</span></code> instance.  This class provides low-level support to
 the BEDTools C++ API.</p>
-<p>The method <code class="xref py py-meth docutils literal"><span class="pre">IntervalFile.all_hits()</span></code> takes a single <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code>
+<p>The method <code class="xref py py-meth docutils literal notranslate"><span class="pre">IntervalFile.all_hits()</span></code> takes a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code>
 as the query and returns a list of all features in the
-<code class="xref py py-class docutils literal"><span class="pre">IntervalFile</span></code> that intersect:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">IntervalFile</span></code> that intersect:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivf</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">as_intervalfile</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivf</span><span class="o">.</span><span class="n">all_hits</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -59,32 +50,72 @@ as the query and returns a list of all features in the
 </div>
 <p>Similarly, we can just return if there were <em>any</em> hits, a much faster
 operation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivf</span><span class="o">.</span><span class="n">any_hits</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivf</span><span class="o">.</span><span class="n">any_hits</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 <span class="go">1</span>
 </pre></div>
 </div>
 <p>Or count how many hits:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivf</span><span class="o">.</span><span class="n">count_hits</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivf</span><span class="o">.</span><span class="n">count_hits</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 <span class="go">2</span>
 </pre></div>
 </div>
-<p>See the docstrings for <code class="xref py py-meth docutils literal"><span class="pre">IntervalFile.all_hits()</span></code>,
-<code class="xref py py-meth docutils literal"><span class="pre">IntervalFile.any_hits()</span></code>, and <code class="xref py py-meth docutils literal"><span class="pre">IntervalFile.count_hits()</span></code> for
+<p>See the docstrings for <code class="xref py py-meth docutils literal notranslate"><span class="pre">IntervalFile.all_hits()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">IntervalFile.any_hits()</span></code>, and <code class="xref py py-meth docutils literal notranslate"><span class="pre">IntervalFile.count_hits()</span></code> for
 more, including stranded hits and restricting hits to a specific overlap.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">These methods are now available as <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> methods,
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.all_hits()</span></code>, <code class="xref py py-meth docutils literal"><span class="pre">BedTool.any_hits()</span></code>, and
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.count_hits()</span></code></p>
+<p class="last">These methods are now available as <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.all_hits()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.any_hits()</span></code>, and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.count_hits()</span></code></p>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Low-level operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam-semantics.html">Notes on BAM file semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html">Specifying genomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html">Randomization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
@@ -95,23 +126,26 @@ more, including stranded hits and restricting hits to a specific overlap.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/topical-low-level-ops.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -132,7 +166,7 @@ more, including stranded hits and restricting hits to a specific overlap.</p>
         <li class="right" >
           <a href="topical-iterators.html" title="Using BedTool objects as iterators/generators"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
       </ul>
     </div>
@@ -142,8 +176,8 @@ more, including stranded hits and restricting hits to a specific overlap.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/topical-low-level-ops.rst.txt"

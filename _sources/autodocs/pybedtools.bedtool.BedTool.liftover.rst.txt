@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.liftover
-======================================
+pybedtools.bedtool.BedTool.liftover
+===================================
 
 .. currentmodule:: pybedtools.bedtool
 

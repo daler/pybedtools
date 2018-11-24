@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.truncate\_to\_chrom
-=================================================
+pybedtools.bedtool.BedTool.truncate\_to\_chrom
+==============================================
 
 .. currentmodule:: pybedtools.bedtool
 

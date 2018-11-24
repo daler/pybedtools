@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.random\_subset
-============================================
+pybedtools.bedtool.BedTool.random\_subset
+=========================================
 
 .. currentmodule:: pybedtools.bedtool
 

@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.cluster
-=====================================
+pybedtools.bedtool.BedTool.cluster
+==================================
 
 .. currentmodule:: pybedtools.bedtool
 

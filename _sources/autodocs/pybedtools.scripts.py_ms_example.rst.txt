@@ -1,5 +1,5 @@
-pybedtools\.scripts\.py\_ms\_example
-====================================
+pybedtools.scripts.py\_ms\_example
+==================================
 
 .. automodule:: pybedtools.scripts.py_ms_example
 
@@ -14,12 +14,6 @@ pybedtools\.scripts\.py\_ms\_example
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      BedTool
    
    
 

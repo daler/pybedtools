@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.tabix\_intervals
-==============================================
+pybedtools.bedtool.BedTool.tabix\_intervals
+===========================================
 
 .. currentmodule:: pybedtools.bedtool
 

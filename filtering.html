@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Filtering &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Filtering &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,41 +20,43 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="filtering">
 <span id="id1"></span><h1>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code> method lets you pass in a function that accepts an
-<code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> as its first argument and returns True for False.  This
-allows you to perform &quot;grep&quot;-like operations on <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects.  For
-example, here's how to get a new <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> containing features from <code class="docutils literal"><span class="pre">a</span></code>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> method lets you pass in a function that accepts an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> as its first argument and returns True for False.  This
+allows you to perform “grep”-like operations on <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects.  For
+example, here’s how to get a new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> containing features from <code class="file docutils literal notranslate"><span class="pre">a</span></code>
 that are more than 100 bp long:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 <span class="go">chr1        150     500     feature3        0       -</span>
 </pre></div>
 </div>
-<p>The <code class="xref py py-meth docutils literal"><span class="pre">filter()</span></code> method will pass its <code class="docutils literal"><span class="pre">*args</span></code> and <code class="docutils literal"><span class="pre">**kwargs</span></code> to the function
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">filter()</span></code> method will pass its <code class="file docutils literal notranslate"><span class="pre">*args</span></code> and <code class="file docutils literal notranslate"><span class="pre">**kwargs</span></code> to the function
 provided.  So here is a more generic case, where the function is defined once
 and different arguments are passed in for filtering on different lengths:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">len_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">len_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="s2">&quot;Returns True if feature is longer than L&quot;</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">L</span>
 </pre></div>
 </div>
 <p>Now we can pass different lengths without defining a new function for each
 length of interest, like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">len_filter</span><span class="p">,</span> <span class="n">L</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
 <span class="go">chr1        1       100     feature1        0       +</span>
@@ -84,22 +75,22 @@ length of interest, like this:</p>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="topical-iterators.html#bedtools-as-iterators"><span class="std std-ref">Using BedTool objects as iterators/generators</span></a> for more advanced and space-efficient usage
-of <code class="xref py py-meth docutils literal"><span class="pre">filter()</span></code> using iterators.</p>
-<p>Note that we could have used the built-in Python function, <code class="docutils literal"><span class="pre">filter()</span></code>, but that
+of <code class="xref py py-meth docutils literal notranslate"><span class="pre">filter()</span></code> using iterators.</p>
+<p>Note that we could have used the built-in Python function, <code class="file docutils literal notranslate"><span class="pre">filter()</span></code>, but that
 would have returned an iterator that we would have to construct a new
-<code class="xref py py-class docutils literal"><span class="pre">pybedtools.BedTool</span></code> out of.  The <code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code> method returns
-a ready-to-use <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object, which allows embedding of
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.filter()</span></code> calls in a chain of commands, e.g.:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.BedTool</span></code> out of.  The <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> method returns
+a ready-to-use <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object, which allows embedding of
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> calls in a chain of commands, e.g.:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="section" id="fast-filtering-functions-in-cython">
 <h2>Fast filtering functions in Cython<a class="headerlink" href="#fast-filtering-functions-in-cython" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="xref py py-mod docutils literal"><span class="pre">featurefuncs</span></code> module contains some ready-made functions written
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">featurefuncs</span></code> module contains some ready-made functions written
 in Cython that will be faster than pure Python equivalents.  For example,
-there are <code class="xref py py-func docutils literal"><span class="pre">greater_than()</span></code> and <code class="xref py py-func docutils literal"><span class="pre">less_than()</span></code> functions, which are
+there are <code class="xref py py-func docutils literal notranslate"><span class="pre">greater_than()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">less_than()</span></code> functions, which are
 about 70% faster.  In IPython:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools.featurefuncs</span> <span class="kn">import</span> <span class="n">greater_than</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools.featurefuncs</span> <span class="kn">import</span> <span class="n">greater_than</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">310456</span>
@@ -121,17 +112,47 @@ about 70% faster.  In IPython:</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Filtering</a><ul>
-<li><a class="reference internal" href="#fast-filtering-functions-in-cython">Fast filtering functions in Cython</a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="intersections.html">Intersections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default-arguments.html">Default arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html">Chaining methods together (pipe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html#operator-overloading">Operator overloading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intervals.html">Intervals</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html">Using the history and tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -143,23 +164,26 @@ about 70% faster.  In IPython:</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/filtering.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -180,7 +204,7 @@ about 70% faster.  In IPython:</p>
         <li class="right" >
           <a href="intervals.html" title="Intervals"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li> 
       </ul>
     </div>
@@ -190,8 +214,8 @@ about 70% faster.  In IPython:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/filtering.rst.txt"

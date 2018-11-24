@@ -1,5 +1,5 @@
-pybedtools\.debug\_mode
-=======================
+pybedtools.debug\_mode
+======================
 
 .. currentmodule:: pybedtools
 

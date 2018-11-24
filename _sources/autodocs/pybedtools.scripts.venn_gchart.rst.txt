@@ -1,5 +1,5 @@
-pybedtools\.scripts\.venn\_gchart
-=================================
+pybedtools.scripts.venn\_gchart
+===============================
 
 .. automodule:: pybedtools.scripts.venn_gchart
 

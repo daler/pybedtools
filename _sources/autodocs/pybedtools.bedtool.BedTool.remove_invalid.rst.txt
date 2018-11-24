@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.remove\_invalid
-=============================================
+pybedtools.bedtool.BedTool.remove\_invalid
+==========================================
 
 .. currentmodule:: pybedtools.bedtool
 

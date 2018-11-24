@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Using the history and tags &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Using the history and tags &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,64 +20,66 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="using-the-history-and-tags">
 <span id="working-with-history"></span><h1>Using the history and tags<a class="headerlink" href="#using-the-history-and-tags" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> makes it very easy to do rather complex genomic algebra.  Sometimes
-when you're doing some exploratory work, you'd like to rewind back to a
+when you’re doing some exploratory work, you’d like to rewind back to a
 previous step, or clean up temporary files that have been left on disk over the
 course of some experimentation.</p>
-<p>To assist this sort of workflow, <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instances keep track of
-their history in the <code class="xref py py-attr docutils literal"><span class="pre">BedTool.history</span></code> attribute.  Let's make an
-example <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>, <code class="docutils literal"><span class="pre">c</span></code>, that has some history:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<p>To assist this sort of workflow, <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instances keep track of
+their history in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">BedTool.history</span></code> attribute.  Let’s make an
+example <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>, <code class="file docutils literal notranslate"><span class="pre">c</span></code>, that has some history:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal"><span class="pre">c</span></code> now has a history which tells you all sorts of useful things (described
+<p><code class="file docutils literal notranslate"><span class="pre">c</span></code> now has a history which tells you all sorts of useful things (described
 in more detail below):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">c</span><span class="o">.</span><span class="n">history</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">c</span><span class="o">.</span><span class="n">history</span>
 <span class="go">[&lt;HistoryStep&gt; bedtool(&quot;/home/ryan/pybedtools/pybedtools/test/a.bed&quot;).intersect(&quot;/home/ryan/pybedtools/pybedtools/test/b.bed&quot;, u=True), parent tag: klkreuay, result tag: egzgnrvj]</span>
 </pre></div>
 </div>
 <p>There are several things to note here.  First, the history describes the full
 commands, including all the names of the temp files and all the arguments that
-you would need to run in order to re-create it.  Since <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects
+you would need to run in order to re-create it.  Since <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects
 are fundamentally file-based, the command refers to the underlying filenames
-(i.e., <code class="file docutils literal"><span class="pre">a.bed</span></code> and <code class="file docutils literal"><span class="pre">b.bed</span></code>) instead of the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>
-instances (i.e., <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">b</span></code>). A simple copy-paste of the command will be
+(i.e., <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code> and <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>) instead of the <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>
+instances (i.e., <code class="file docutils literal notranslate"><span class="pre">a</span></code> and <code class="file docutils literal notranslate"><span class="pre">b</span></code>). A simple copy-paste of the command will be
 enough re-run the command. While this may be useful in some situations, be
-aware that if you do run the command again you'll get <em>another</em> temp file that
-has the same contents as <code class="docutils literal"><span class="pre">c</span></code>'s temp file.</p>
+aware that if you do run the command again you’ll get <em>another</em> temp file that
+has the same contents as <code class="file docutils literal notranslate"><span class="pre">c</span></code>’s temp file.</p>
 <p>To avoid such cluttering of your temp dir, the history also reports
-<strong>tags</strong>. <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects, when created, get a random tag assigned
-to them.  You can get get the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> associated with tag with the
-<code class="xref py py-func docutils literal"><span class="pre">pybedtools.find_tagged()</span></code> function. These tags are used to keep track
+<strong>tags</strong>. <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects, when created, get a random tag assigned
+to them.  You can get get the <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> associated with tag with the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.find_tagged()</span></code> function. These tags are used to keep track
 of instances during this session.</p>
-<p>So in this case, we could get a reference to the <code class="docutils literal"><span class="pre">a</span></code> instance with:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">should_be_a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">find_tagged</span><span class="p">(</span><span class="s1">&#39;klkreuay&#39;</span><span class="p">)</span>
+<p>So in this case, we could get a reference to the <code class="file docutils literal notranslate"><span class="pre">a</span></code> instance with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">should_be_a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">find_tagged</span><span class="p">(</span><span class="s1">&#39;klkreuay&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here's confirmation that the parent of the first step of <code class="docutils literal"><span class="pre">c</span></code>'s history is
-<code class="docutils literal"><span class="pre">a</span></code> (note that <code class="xref py py-class docutils literal"><span class="pre">HistoryStep</span></code> objects have a
-<code class="xref py py-attr docutils literal"><span class="pre">HistoryStep.parent_tag</span></code> and <code class="xref py py-attr docutils literal"><span class="pre">HistoryStep.result_tag</span></code>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">find_tagged</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent_tag</span><span class="p">)</span> <span class="o">==</span> <span class="n">a</span>
+<p>Here’s confirmation that the parent of the first step of <code class="file docutils literal notranslate"><span class="pre">c</span></code>’s history is
+<code class="file docutils literal notranslate"><span class="pre">a</span></code> (note that <code class="xref py py-class docutils literal notranslate"><span class="pre">HistoryStep</span></code> objects have a
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">HistoryStep.parent_tag</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">HistoryStep.result_tag</span></code>):</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">find_tagged</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent_tag</span><span class="p">)</span> <span class="o">==</span> <span class="n">a</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-<p>Let's make something with a more complicated history:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<p>Let’s make something with a more complicated history:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="s1">&#39;hg19&#39;</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -98,10 +89,10 @@ of instances during this session.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Let's see what the history of <code class="docutils literal"><span class="pre">f</span></code> (the last <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> created) looks
-like . . . note that here I'm formatting the results to make it easier to
+<p>Let’s see what the history of <code class="file docutils literal notranslate"><span class="pre">f</span></code> (the last <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> created) looks
+like … note that here I’m formatting the results to make it easier to
 see:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">history</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">f</span><span class="o">.</span><span class="n">history</span>
 <span class="go">[</span>
 <span class="go">|   [</span>
 <span class="go">|   |   [</span>
@@ -133,26 +124,26 @@ see:</p>
 <span class="go">]</span>
 </pre></div>
 </div>
-<p>Those first three history steps correspond to <code class="docutils literal"><span class="pre">c</span></code>, <code class="docutils literal"><span class="pre">d</span></code>, and <code class="docutils literal"><span class="pre">e</span></code>
+<p>Those first three history steps correspond to <code class="file docutils literal notranslate"><span class="pre">c</span></code>, <code class="file docutils literal notranslate"><span class="pre">d</span></code>, and <code class="file docutils literal notranslate"><span class="pre">e</span></code>
 respectively, as we can see by comparing the code snippet above with the
-commands in each history step.  In other words, <code class="docutils literal"><span class="pre">e</span></code> can be described by the
+commands in each history step.  In other words, <code class="file docutils literal notranslate"><span class="pre">e</span></code> can be described by the
 sequence of 3 commands in the first three history steps.  In fact, if we
-checked <code class="docutils literal"><span class="pre">e.history</span></code>, we'd see exactly those same 3 steps.</p>
-<p>When <code class="docutils literal"><span class="pre">f</span></code> was created above, it operated both on <code class="docutils literal"><span class="pre">e</span></code>, which had its own
-history, as well as <code class="docutils literal"><span class="pre">b</span></code> -- note the nesting of the list. You can do
-arbitrarily complex &quot;genome algebra&quot; operations, and the history of the
-<code class="xref py py-class docutils literal"><span class="pre">BEDTools</span></code> will keep track of this.  It may not be useful in every
-situtation, but the ability to backtrack and have a record of what you've
+checked <code class="file docutils literal notranslate"><span class="pre">e.history</span></code>, we’d see exactly those same 3 steps.</p>
+<p>When <code class="file docutils literal notranslate"><span class="pre">f</span></code> was created above, it operated both on <code class="file docutils literal notranslate"><span class="pre">e</span></code>, which had its own
+history, as well as <code class="file docutils literal notranslate"><span class="pre">b</span></code> – note the nesting of the list. You can do
+arbitrarily complex “genome algebra” operations, and the history of the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BEDTools</span></code> will keep track of this.  It may not be useful in every
+situtation, but the ability to backtrack and have a record of what you’ve
 done can sometimes be helpful.</p>
 </div>
 <div class="section" id="deleting-temp-files-specific-to-a-single-bedtool">
-<h1>Deleting temp files specific to a single <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code><a class="headerlink" href="#deleting-temp-files-specific-to-a-single-bedtool" title="Permalink to this headline">¶</a></h1>
+<h1>Deleting temp files specific to a single <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#deleting-temp-files-specific-to-a-single-bedtool" title="Permalink to this headline">¶</a></h1>
 <p>You can delete temp files that have been created over the history of a
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> with <code class="xref py py-meth docutils literal"><span class="pre">BedTool.delete_temporary_history()</span></code>.  This method
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> with <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.delete_temporary_history()</span></code>.  This method
 will inspect the history, figure out which items point to files in the temp dir
-(which you can see with <code class="xref py py-func docutils literal"><span class="pre">get_tempdir()</span></code>), and prompt you for their
+(which you can see with <code class="xref py py-func docutils literal notranslate"><span class="pre">get_tempdir()</span></code>), and prompt you for their
 deletion:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">delete_temporary_history</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">delete_temporary_history</span><span class="p">()</span>
 <span class="go">Delete these files?</span>
 <span class="go">    /tmp/pybedtools..BgULVj.tmp</span>
 <span class="go">    /tmp/pybedtools.SFmbYc.tmp</span>
@@ -160,25 +151,57 @@ deletion:</p>
 <span class="go">(y/N) y</span>
 </pre></div>
 </div>
-<p>Note that the file that <code class="docutils literal"><span class="pre">f</span></code> points to is left alone.  To clarify, the
-<code class="xref py py-meth docutils literal"><span class="pre">BedTool.delete_temporary_history()</span></code> will only delete temp files that match
-the pattern <code class="docutils literal"><span class="pre">&lt;TEMP_DIR&gt;/pybedtools.*.tmp</span></code> from the history of <code class="docutils literal"><span class="pre">f</span></code>, up to but
-not including the file for <code class="docutils literal"><span class="pre">f</span></code> itself.  Any <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> instances that do
-not match the pattern are left alone.  Use the kwarg <code class="docutils literal"><span class="pre">ask=False</span></code> to disable
+<p>Note that the file that <code class="file docutils literal notranslate"><span class="pre">f</span></code> points to is left alone.  To clarify, the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.delete_temporary_history()</span></code> will only delete temp files that match
+the pattern <code class="docutils literal notranslate"><span class="pre">&lt;TEMP_DIR&gt;/pybedtools.*.tmp</span></code> from the history of <code class="file docutils literal notranslate"><span class="pre">f</span></code>, up to but
+not including the file for <code class="file docutils literal notranslate"><span class="pre">f</span></code> itself.  Any <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instances that do
+not match the pattern are left alone.  Use the kwarg <code class="file docutils literal notranslate"><span class="pre">ask=False</span></code> to disable
 the prompt.</p>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Using the history and tags</a></li>
-<li><a class="reference internal" href="#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal"><span class="pre">BedTool</span></code></a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="intersections.html">Intersections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default-arguments.html">Default arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html">Chaining methods together (pipe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html#operator-overloading">Operator overloading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intervals.html">Intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filtering.html">Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Using the history and tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 </ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -190,23 +213,26 @@ the prompt.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/history.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -227,7 +253,7 @@ the prompt.</p>
         <li class="right" >
           <a href="each.html" title="Each"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li> 
       </ul>
     </div>
@@ -237,8 +263,8 @@ the prompt.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/history.rst.txt"

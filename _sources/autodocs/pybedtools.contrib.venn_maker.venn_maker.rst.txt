@@ -1,5 +1,5 @@
-pybedtools\.contrib\.venn\_maker\.venn\_maker
-=============================================
+pybedtools.contrib.venn\_maker.venn\_maker
+==========================================
 
 .. currentmodule:: pybedtools.contrib.venn_maker
 

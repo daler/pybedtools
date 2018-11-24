@@ -1,5 +1,5 @@
-pybedtools\.cbedtools\.create\_interval\_from\_list
-===================================================
+pybedtools.cbedtools.create\_interval\_from\_list
+=================================================
 
 .. currentmodule:: pybedtools.cbedtools
 

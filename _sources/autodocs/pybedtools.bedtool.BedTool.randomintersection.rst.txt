@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.randomintersection
-================================================
+pybedtools.bedtool.BedTool.randomintersection
+=============================================
 
 .. currentmodule:: pybedtools.bedtool
 

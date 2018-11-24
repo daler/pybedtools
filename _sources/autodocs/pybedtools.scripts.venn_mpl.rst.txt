@@ -1,5 +1,5 @@
-pybedtools\.scripts\.venn\_mpl
-==============================
+pybedtools.scripts.venn\_mpl
+============================
 
 .. automodule:: pybedtools.scripts.venn_mpl
 

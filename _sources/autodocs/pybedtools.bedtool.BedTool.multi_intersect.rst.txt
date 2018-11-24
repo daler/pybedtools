@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.multi\_intersect
-==============================================
+pybedtools.bedtool.BedTool.multi\_intersect
+===========================================
 
 .. currentmodule:: pybedtools.bedtool
 

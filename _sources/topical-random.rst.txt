@@ -68,7 +68,7 @@ it to a list in order to look at it:
     100
 
     >>> print(results[:10])
-    [1, 1, 2, 2, 1, 2, 1, 0, 2, 3]
+    [0, 3, 1, 1, 2, 2, 2, 1, 4, 2]
 
 Running thousands of iterations on files with many features will of course
 result in more complex results.  We could then take these results and plot
@@ -149,7 +149,7 @@ For example:
     actual: 3
     median randomized: 2.0
     normalized: 1.5
-    percentile: 92.0
+    percentile: 93.5
 
 Contributions toward improving this code or implementing other methods of
 statistical testing are very welcome!

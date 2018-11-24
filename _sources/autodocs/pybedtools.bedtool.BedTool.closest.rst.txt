@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.closest
-=====================================
+pybedtools.bedtool.BedTool.closest
+==================================
 
 .. currentmodule:: pybedtools.bedtool
 

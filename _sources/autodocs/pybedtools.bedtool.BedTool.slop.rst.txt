@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.slop
-==================================
+pybedtools.bedtool.BedTool.slop
+===============================
 
 .. currentmodule:: pybedtools.bedtool
 

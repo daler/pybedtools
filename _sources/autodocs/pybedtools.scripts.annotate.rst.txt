@@ -1,5 +1,5 @@
-pybedtools\.scripts\.annotate
-=============================
+pybedtools.scripts.annotate
+===========================
 
 .. automodule:: pybedtools.scripts.annotate
 
@@ -18,13 +18,6 @@ pybedtools\.scripts\.annotate
    
 
    
-   
-   .. rubric:: Classes
-
-   .. autosummary::
-   
-      Attributes
-      BedTool
    
    
 

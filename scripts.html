@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Scripts &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Scripts &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,100 +20,124 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="scripts">
 <h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
-<p><code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> comes with several scripts that illustrate common use-cases.</p>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> comes with several scripts that illustrate common use-cases.</p>
 <p>In Python 2.7, you can use:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pybedtools</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
 <p>to get a list of scripts and their description.</p>
 <div class="section" id="venn-diagram-scripts">
 <h2>Venn diagram scripts<a class="headerlink" href="#venn-diagram-scripts" title="Permalink to this headline">¶</a></h2>
-<p>There are two scripts for making Venn diagrams, depending on how you'd like the
-diagrams to look.  Both simply take 3 BED files as input.  <code class="docutils literal"><span class="pre">venn_gchart.py</span></code>
-uses the Google Chart API, while <code class="docutils literal"><span class="pre">venn_mpl.py</span></code> uses matplotlib if you have it
+<p>There are two scripts for making Venn diagrams, depending on how you’d like the
+diagrams to look.  Both simply take 3 BED files as input.  <code class="docutils literal notranslate"><span class="pre">venn_gchart.py</span></code>
+uses the Google Chart API, while <code class="docutils literal notranslate"><span class="pre">venn_mpl.py</span></code> uses matplotlib if you have it
 installed.</p>
-<p>Upon installing <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>, these scripts should be available on your
-path.  Calling them with the <code class="docutils literal"><span class="pre">-h</span></code> option will print the help, and using the
-<code class="docutils literal"><span class="pre">--test</span></code> option will run a test, creating a new file <code class="docutils literal"><span class="pre">out.png</span></code> in the current
+<p>Upon installing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>, these scripts should be available on your
+path.  Calling them with the <code class="file docutils literal notranslate"><span class="pre">-h</span></code> option will print the help, and using the
+<code class="file docutils literal notranslate"><span class="pre">--test</span></code> option will run a test, creating a new file <code class="file docutils literal notranslate"><span class="pre">out.png</span></code> in the current
 working directory.</p>
 <div class="figure" id="id1">
 <a class="reference internal image-reference" href="_images/gchart.png"><img alt="_images/gchart.png" src="_images/gchart.png" style="width: 300px;" /></a>
-<p class="caption"><span class="caption-text">Above: using <code class="docutils literal"><span class="pre">--test</span></code> with <code class="docutils literal"><span class="pre">venn_gchart.py</span></code> results in this figure</span></p>
+<p class="caption"><span class="caption-text">Above: using <code class="file docutils literal notranslate"><span class="pre">--test</span></code> with <code class="file docutils literal notranslate"><span class="pre">venn_gchart.py</span></code> results in this figure</span></p>
 </div>
 <div class="figure" id="id2">
 <a class="reference internal image-reference" href="_images/mpl.png"><img alt="_images/mpl.png" src="_images/mpl.png" style="width: 500px;" /></a>
-<p class="caption"><span class="caption-text">Above: Result of using <code class="docutils literal"><span class="pre">--test</span></code> with <code class="docutils literal"><span class="pre">venn_mpl.py</span></code></span></p>
+<p class="caption"><span class="caption-text">Above: Result of using <code class="file docutils literal notranslate"><span class="pre">--test</span></code> with <code class="file docutils literal notranslate"><span class="pre">venn_mpl.py</span></code></span></p>
 </div>
 </div>
 <div class="section" id="intron-exon-classification">
 <h2>Intron/exon classification<a class="headerlink" href="#intron-exon-classification" title="Permalink to this headline">¶</a></h2>
-<p>The script <code class="docutils literal"><span class="pre">intron_exon_reads.py</span></code> accepts a GFF file (with introns and exons
+<p>The script <code class="file docutils literal notranslate"><span class="pre">intron_exon_reads.py</span></code> accepts a GFF file (with introns and exons
 annotated) and a BAM file.  When complete, it prints out the number of exonic,
 intronic, and both intronic and exonic (i.e., from overlapping genes or
-isoforms).  This script is also a good example of how to do use Python's
-<code class="xref py py-mod docutils literal"><span class="pre">multiprocessing</span></code> for parallel computation.</p>
+isoforms).  This script is also a good example of how to do use Python’s
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code> for parallel computation.</p>
 </div>
 <div class="section" id="annotate-py">
 <h2>Annotate.py<a class="headerlink" href="#annotate-py" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">annotate.py</span></code> script extends <code class="docutils literal"><span class="pre">closestBed</span></code> by classifying features (intron,
+<p>The <code class="file docutils literal notranslate"><span class="pre">annotate.py</span></code> script extends <code class="file docutils literal notranslate"><span class="pre">closestBed</span></code> by classifying features (intron,
 exon) that are a distance of 0 away from the query features.</p>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Scripts</a><ul>
-<li><a class="reference internal" href="#venn-diagram-scripts">Venn diagram scripts</a></li>
-<li><a class="reference internal" href="#intron-exon-classification">Intron/exon classification</a></li>
-<li><a class="reference internal" href="#annotate-py">Annotate.py</a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Scripts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#venn-diagram-scripts">Venn diagram scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#intron-exon-classification">Intron/exon classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#annotate-py">Annotate.py</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="FAQs.html" title="previous chapter">FAQs</a></li>
-      <li>Next: <a href="autodoc_source.html" title="next chapter"><code class="docutils literal"><span class="pre">pybedtools</span></code> Reference</a></li>
+      <li>Next: <a href="autodoc_source.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/scripts.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -145,7 +158,7 @@ exon) that are a distance of 0 away from the query features.</p>
         <li class="right" >
           <a href="FAQs.html" title="FAQs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li> 
       </ul>
     </div>
 
@@ -154,8 +167,8 @@ exon) that are a distance of 0 away from the query features.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/scripts.rst.txt"

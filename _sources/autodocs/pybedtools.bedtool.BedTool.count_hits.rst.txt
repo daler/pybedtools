@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.count\_hits
-=========================================
+pybedtools.bedtool.BedTool.count\_hits
+======================================
 
 .. currentmodule:: pybedtools.bedtool
 

@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.field\_count
-==========================================
+pybedtools.bedtool.BedTool.field\_count
+=======================================
 
 .. currentmodule:: pybedtools.bedtool
 

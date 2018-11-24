@@ -1,5 +1,5 @@
-pybedtools\.helpers\.get\_tempdir
-=================================
+pybedtools.helpers.get\_tempdir
+===============================
 
 .. currentmodule:: pybedtools.helpers
 

@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Under the hood &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Under the hood &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,22 +20,24 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="under-the-hood">
 <h1>Under the hood<a class="headerlink" href="#under-the-hood" title="Permalink to this headline">¶</a></h1>
-<p>This section documents some details about what happens when a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>
+<p>This section documents some details about what happens when a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>
 object is created and exactly what happens when a BEDTools command is called.
-It's mostly useful for developers or for debugging.</p>
+It’s mostly useful for developers or for debugging.</p>
 <p>There are three kinds of sources/sinks for BedTool objects:</p>
 <ul class="simple">
 <li>filename</li>
@@ -54,43 +45,43 @@ It's mostly useful for developers or for debugging.</p>
 <li>iterator of Interval objects</li>
 </ul>
 <div class="section" id="iterator-protocol">
-<h2>Iterator &quot;protocol&quot;<a class="headerlink" href="#iterator-protocol" title="Permalink to this headline">¶</a></h2>
-<p>BedTool objects yield an Interval object on each <code class="docutils literal"><span class="pre">next()</span></code> call.  Where this
+<h2>Iterator “protocol”<a class="headerlink" href="#iterator-protocol" title="Permalink to this headline">¶</a></h2>
+<p>BedTool objects yield an Interval object on each <code class="file docutils literal notranslate"><span class="pre">next()</span></code> call.  Where this
 Interval comes from depends on how the BedTool was created and what format the
 underlying data are in, as follows.</p>
 <div class="section" id="filename-based">
 <h3>Filename-based<a class="headerlink" href="#filename-based" title="Permalink to this headline">¶</a></h3>
-<p>If BED/GTF/GFF/VCF format, then use an <code class="docutils literal"><span class="pre">IntervalFile</span></code> object for Cython/C++
+<p>If BED/GTF/GFF/VCF format, then use an <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> object for Cython/C++
 speed.</p>
-<p>If SAM format, then use an <code class="docutils literal"><span class="pre">IntervalIterator</span></code>.  This is a Cython object that
-reads individual lines and passes them to <code class="docutils literal"><span class="pre">create_interval_from_list</span></code>, a Cython
-function.  <code class="docutils literal"><span class="pre">create_interval_from_list</span></code> does a lot of the work to figure out
+<p>If SAM format, then use an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>.  This is a Cython object that
+reads individual lines and passes them to <code class="file docutils literal notranslate"><span class="pre">create_interval_from_list</span></code>, a Cython
+function.  <code class="file docutils literal notranslate"><span class="pre">create_interval_from_list</span></code> does a lot of the work to figure out
 what format the line is, and this is how we are able to support SAM Interval
 objects.</p>
-<p>If BAM format, then first do a Popen call to <code class="docutils literal"><span class="pre">samtools</span> <span class="pre">view</span></code>, and create an
-<code class="docutils literal"><span class="pre">IntervalIterator</span></code> from subprocess.PIPE similar to SAM format.</p>
+<p>If BAM format, then first do a Popen call to <code class="file docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">view</span></code>, and create an
+<code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code> from subprocess.PIPE similar to SAM format.</p>
 </div>
 <div class="section" id="open-file-based">
 <h3>Open file-based<a class="headerlink" href="#open-file-based" title="Permalink to this headline">¶</a></h3>
-<p>All formats are passed to an <code class="docutils literal"><span class="pre">IntervalIterator</span></code>, which reads one line at
-a time and yields an <code class="docutils literal"><span class="pre">Interval</span></code> object.</p>
-<p>If it's a BAM file (specifically, a detected bgzip stream), then it's actually
-first sent to the stdin of a <code class="docutils literal"><span class="pre">samtools</span></code> Popen call, and then the
-subprocess.PIPE from that Popen's stdout is sent to an <code class="docutils literal"><span class="pre">IntervalIterator</span></code>.</p>
+<p>All formats are passed to an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>, which reads one line at
+a time and yields an <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> object.</p>
+<p>If it’s a BAM file (specifically, a detected bgzip stream), then it’s actually
+first sent to the stdin of a <code class="file docutils literal notranslate"><span class="pre">samtools</span></code> Popen call, and then the
+subprocess.PIPE from that Popen’s stdout is sent to an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>.</p>
 </div>
 <div class="section" id="iterator-or-generator-based">
 <h3>Iterator or generator-based<a class="headerlink" href="#iterator-or-generator-based" title="Permalink to this headline">¶</a></h3>
-<p>If it's neither of the above, then the assumption is that it's already an
-iterable of <code class="docutils literal"><span class="pre">Interval</span></code> objects.  This is the case if a <code class="docutils literal"><span class="pre">BedTool</span></code> is created
+<p>If it’s neither of the above, then the assumption is that it’s already an
+iterable of <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> objects.  This is the case if a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> is created
 with something like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">((</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>In this case, the <code class="docutils literal"><span class="pre">(i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">a)</span></code> creates a generator of intervals from an
-<code class="docutils literal"><span class="pre">IntervalFile</span></code> -- since <code class="docutils literal"><span class="pre">a</span></code> is a filename-based BedTool.  Since the first
+<p>In this case, the <code class="file docutils literal notranslate"><span class="pre">(i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">a)</span></code> creates a generator of intervals from an
+<code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> – since <code class="file docutils literal notranslate"><span class="pre">a</span></code> is a filename-based BedTool.  Since the first
 argument to the BedTool constructor is neither a filename nor an open file, the
-new BedTool <code class="docutils literal"><span class="pre">b</span></code>'s <code class="docutils literal"><span class="pre">.fn</span></code> attribute is directly set to this generator . . . so we
+new BedTool <code class="file docutils literal notranslate"><span class="pre">b</span></code>’s <code class="file docutils literal notranslate"><span class="pre">.fn</span></code> attribute is directly set to this generator … so we
 have a generator-based BedTool.</p>
 </div>
 </div>
@@ -98,52 +89,52 @@ have a generator-based BedTool.</p>
 <h2>Calling BEDTools programs<a class="headerlink" href="#calling-bedtools-programs" title="Permalink to this headline">¶</a></h2>
 <p>Depending on the type of BedTool (filename, open file, or iterator), the method
 of calling BEDTools programs differs.</p>
-<p>In all cases, BEDTools commands are called via a <code class="docutils literal"><span class="pre">subprocess.Popen</span></code> call
-(hereafter called &quot;the Popen&quot; for convenience).  Depending on the type of
+<p>In all cases, BEDTools commands are called via a <code class="file docutils literal notranslate"><span class="pre">subprocess.Popen</span></code> call
+(hereafter called “the Popen” for convenience).  Depending on the type of
 BedTool objects being operated on, the Popen will be passed different objects
 as stdin and/or stdout.</p>
-<p>In general, using a filename as input is the most straightforward -- nothing is
-passed to the Popen's stdin because the filenames are embedded in the BEDTools
+<p>In general, using a filename as input is the most straightforward – nothing is
+passed to the Popen’s stdin because the filenames are embedded in the BEDTools
 command.</p>
 <p>Using non-filename-based BedTools means that they are passed, one line at
 a time, to the stdin of the Popen.  The commands for the BEDTools call
-will specify &quot;stdin&quot; in these cases, as is standard for the BEDTools suite.</p>
+will specify “stdin” in these cases, as is standard for the BEDTools suite.</p>
 <p>The default is for the output to be file-based.  In this case, an open tempfile
-object is provided as the Popen's stdout.</p>
-<p>If the returned BedTool is requested to be a &quot;streaming&quot; BedTool, then the
-Popen's stdout will be subprocess.PIPE, and the new BedTool object will be
+object is provided as the Popen’s stdout.</p>
+<p>If the returned BedTool is requested to be a “streaming” BedTool, then the
+Popen’s stdout will be subprocess.PIPE, and the new BedTool object will be
 open-file based (which is what subprocess.PIPE acts like).</p>
 <p>Specifically, here is the information flow of stdin/stdout for various
-interconversions of BedTool types . . . .</p>
+interconversions of BedTool types … .</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">filename -&gt; filename:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="docutils literal"><span class="pre">stream=False</span></code>.</p>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=False</span></code>.</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">stdin</span></code>: <code class="docutils literal"><span class="pre">None</span></code> (the filenames are provided in the BEDTools command)</li>
-<li><code class="docutils literal"><span class="pre">stdout</span></code>: open tempfile object</li>
-<li>new BedTool: filename-based BedTool pointing to the tempfile's filename</li>
+<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: <code class="file docutils literal notranslate"><span class="pre">None</span></code> (the filenames are provided in the BEDTools command)</li>
+<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open tempfile object</li>
+<li>new BedTool: filename-based BedTool pointing to the tempfile’s filename</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name" colspan="2">filename -&gt; open file object:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="docutils literal"><span class="pre">stream=True</span></code> is requested.</p>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code> is requested.</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">stdin</span></code>: None (provided in the cmds)</li>
-<li><code class="docutils literal"><span class="pre">stdout</span></code>: open file object -- specifically, subprocess.PIPE</li>
-<li>new BedTool: iterator-based BedTool.  Each <code class="docutils literal"><span class="pre">next()</span></code> call retrieves the
+<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: None (provided in the cmds)</li>
+<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object – specifically, subprocess.PIPE</li>
+<li>new BedTool: iterator-based BedTool.  Each <code class="file docutils literal notranslate"><span class="pre">next()</span></code> call retrieves the
 next line in subprocess.PIPE</li>
 </ul>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name" colspan="2">open file object -&gt; filename:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is from, e.g., subprocess.PIPE and there's
-a saveas() call to &quot;render&quot; to file.</p>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is from, e.g., subprocess.PIPE and there’s
+a saveas() call to “render” to file.</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">stdin</span></code>: each line in the open file object is written to subprocess.PIPE</li>
-<li><code class="docutils literal"><span class="pre">stdout</span></code>: open file object -- either a tempfile or new file created from
+<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: each line in the open file object is written to subprocess.PIPE</li>
+<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object – either a tempfile or new file created from
 supplied filename</li>
 <li>new BedTool: filename-based BedTool</li>
 </ul>
@@ -153,8 +144,8 @@ supplied filename</li>
 <tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is usually based on subprocess.PIPE, and the output
 will <em>also</em> come from subprocess.PIPE.</p>
 <ul class="last simple">
-<li><code class="docutils literal"><span class="pre">stdin</span></code>: each line from the open file is written to subprocess.PIPE</li>
-<li><code class="docutils literal"><span class="pre">stdout</span></code>: open file object, subprocess.PIPE</li>
+<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: each line from the open file is written to subprocess.PIPE</li>
+<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object, subprocess.PIPE</li>
 <li>new BedTool: filename based on subprocess.PIPE</li>
 </ul>
 </td>
@@ -166,51 +157,80 @@ will <em>also</em> come from subprocess.PIPE.</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Under the hood</a><ul>
-<li><a class="reference internal" href="#iterator-protocol">Iterator &quot;protocol&quot;</a><ul>
-<li><a class="reference internal" href="#filename-based">Filename-based</a></li>
-<li><a class="reference internal" href="#open-file-based">Open file-based</a></li>
-<li><a class="reference internal" href="#iterator-or-generator-based">Iterator or generator-based</a></li>
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam-semantics.html">Notes on BAM file semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html">Specifying genomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html">Randomization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Under the hood</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#calling-bedtools-programs">Calling BEDTools programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
-</li>
-</ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="topical-documentation-contents.html">Topical Documentation</a><ul>
-      <li>Previous: <a href="pybedtools-dev-history.html" title="previous chapter"><code class="docutils literal"><span class="pre">pybedtools</span></code> development model</a></li>
+      <li>Previous: <a href="pybedtools-dev-history.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
       <li>Next: <a href="FAQs.html" title="next chapter">FAQs</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/flow-of-commands.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -231,7 +251,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
         <li class="right" >
           <a href="pybedtools-dev-history.html" title="pybedtools development model"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
       </ul>
     </div>
@@ -241,8 +261,8 @@ will <em>also</em> come from subprocess.PIPE.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/flow-of-commands.rst.txt"

@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.randomstats
-=========================================
+pybedtools.bedtool.BedTool.randomstats
+======================================
 
 .. currentmodule:: pybedtools.bedtool
 

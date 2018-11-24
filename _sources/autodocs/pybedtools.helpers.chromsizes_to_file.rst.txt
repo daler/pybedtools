@@ -1,5 +1,5 @@
-pybedtools\.helpers\.chromsizes\_to\_file
-=========================================
+pybedtools.helpers.chromsizes\_to\_file
+=======================================
 
 .. currentmodule:: pybedtools.helpers
 

@@ -1,5 +1,5 @@
-pybedtools\.contrib\.plotting\.BedToolsDemo
-===========================================
+pybedtools.contrib.plotting.BedToolsDemo
+========================================
 
 .. currentmodule:: pybedtools.contrib.plotting
 

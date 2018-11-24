@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Working with BAM files &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Working with BAM files &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,49 +20,51 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="working-with-bam-files">
 <span id="bam"></span><h1>Working with BAM files<a class="headerlink" href="#working-with-bam-files" title="Permalink to this headline">¶</a></h1>
-<p>Some BEDTools programs, like <code class="docutils literal"><span class="pre">intersecteBed</span></code>, support BAM files as input.
-From the command line, you would need to specify the <code class="docutils literal"><span class="pre">-abam</span></code>
-argument to do so.  However, <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> auto-detects BAM files and
-passes the <code class="docutils literal"><span class="pre">abam</span></code> argument automatically for you.  That means if you create
-a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> out of a BAM file, like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
+<p>Some BEDTools programs, like <code class="file docutils literal notranslate"><span class="pre">intersecteBed</span></code>, support BAM files as input.
+From the command line, you would need to specify the <code class="file docutils literal notranslate"><span class="pre">-abam</span></code>
+argument to do so.  However, <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> auto-detects BAM files and
+passes the <code class="file docutils literal notranslate"><span class="pre">abam</span></code> argument automatically for you.  That means if you create
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> out of a BAM file, like this:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">x = pybedtools.example_bedtool(&#39;gdc.bam&#39;)</span>
 </pre></div>
 </div>
 <p>you can intersect it with a BED file without doing anything special:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">b = pybedtools.example_bedtool(&#39;gdc.gff&#39;)</span>
+<span class="go">y = x.intersect(b)</span>
 </pre></div>
 </div>
 <p>The output of this operation follows the semantics of BEDTools.  That is,
-for programs like <code class="docutils literal"><span class="pre">intersectBed</span></code>, if <code class="docutils literal"><span class="pre">abam</span></code> is used then the output will be
-BAM format as well.  But if the <code class="docutils literal"><span class="pre">-bed</span></code> argument is passed, then the output
-will be BED format. Similarly, in <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>, if a BAM file is used
-to create the <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> then the results will also be in BAM
-format.  If the <code class="docutils literal"><span class="pre">bed=True</span></code> kwarg is passed, then the results be in BED
+for programs like <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code>, if <code class="file docutils literal notranslate"><span class="pre">abam</span></code> is used then the output will be
+BAM format as well.  But if the <code class="file docutils literal notranslate"><span class="pre">-bed</span></code> argument is passed, then the output
+will be BED format. Similarly, in <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>, if a BAM file is used
+to create the <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> then the results will also be in BAM
+format.  If the <code class="file docutils literal notranslate"><span class="pre">bed=True</span></code> kwarg is passed, then the results be in BED
 format.</p>
-<p>As an example, let's intersect a BAM file of reads with annotations using
-files that ship with <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>.  First, we create the
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bam&#39;</span><span class="p">)</span>
+<p>As an example, let’s intersect a BAM file of reads with annotations using
+files that ship with <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>.  First, we create the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bam&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;dm3-chr2L-5M.gff.gz&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The first call below will return BAM results, and the second will return
 BED results.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam_results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam_results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">bam_results</span><span class="o">.</span><span class="n">file_type</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;bam&#39;</span>
 <span class="go">True</span>
 
@@ -82,9 +73,9 @@ BED results.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
-<p>We can iterate over BAM files to get <code class="xref py py-class docutils literal"><span class="pre">Interval</span></code> objects just like
+<p>We can iterate over BAM files to get <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects just like
 iterating over BED or GFF files.  Indexing works, too:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bam_results</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bam_results</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 <span class="go">HWUSI-NAME:2:69:512:1017#0  16      chr2L   9330    3       36M     *       0       0       TACAAATCTTACGTAAACACTCCAAGCATGAATTCG    Y`V_a_TM[\_V`abb`^^Q]QZaaaaa_aaaaaaa    NM:i:0  NH:i:2  CC:Z:chrX       CP:i:19096815</span>
 
@@ -101,12 +92,12 @@ iterating over BED or GFF files.  Indexing works, too:</p>
 </pre></div>
 </div>
 <p>There are several things to watch out for here.</p>
-<p>First, note that <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> uses the convention that BAM features in
+<p>First, note that <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> uses the convention that BAM features in
 plain text format are considered SAM features, so these SAM features are
 <strong>one-based and include the stop coordinate</strong> as illustrated below. (Note that
 there is some additional complexity here due to supporting Python 2 and
 3 simultaneously in this tested documentation)</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span>
 <span class="go">9329</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">six</span>
@@ -119,15 +110,15 @@ there is some additional complexity here due to supporting Python 2 and
 </div>
 <p>Second, the stop coordinate is defined as the <em>start coord plus the
 length of the sequence</em>; eventually a more sophisticated, CIGAR-aware
-approach may be used.  Similarly, the length is defined to be <code class="docutils literal"><span class="pre">stop</span> <span class="pre">-</span>
-<span class="pre">start</span></code> -- again, not CIGAR-aware at the moment.  For more sophisticated
+approach may be used.  Similarly, the length is defined to be <code class="file docutils literal notranslate"><span class="pre">stop</span> <span class="pre">-</span>
+<span class="pre">start</span></code> – again, not CIGAR-aware at the moment.  For more sophisticated
 low-level manipulation of BAM features, you might want to consider using
 <a class="reference external" href="http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html">HTSeq</a>.</p>
 <p>Third, while we can iterate over a BAM file and manipulate the features as
 shown above, <em>calling BEDTools programs on a BAM-based generator is not
 well-supported</em>.</p>
 <p>Specifically:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bed</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bed</span><span class="p">(</span><span class="s1">&#39;gdc.bam&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bed</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># works, gets BAM results</span>
@@ -140,10 +131,10 @@ well-supported</em>.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a2</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>When we specified the <code class="docutils literal"><span class="pre">bed=True</span></code> kwarg above, the intersected BAM results
+<p>When we specified the <code class="file docutils literal notranslate"><span class="pre">bed=True</span></code> kwarg above, the intersected BAM results
 are converted to BED format.  We can use those like a normal BED file.
 Note that since we are viewing BED output, <em>the start and stops are 0-based</em>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">bed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="go">chr2L       9329    9365    HWUSI-NAME:2:69:512:1017#0      3       -       9329    9365    0,0,0   1       36,     0,</span>
 <span class="go">chr2L       9329    9365    HWUSI-NAME:2:69:512:1017#0      3       -       9329    9365    0,0,0   1       36,     0,</span>
@@ -151,25 +142,65 @@ Note that since we are viewing BED output, <em>the start and stops are 0-based</
 </pre></div>
 </div>
 <p>Consistent with BEDTools programs, BAM files are <strong>not</strong> supported as the
-second input argument.  In other words, <code class="docutils literal"><span class="pre">intersectBed</span></code> does not have both
-<code class="docutils literal"><span class="pre">-abam</span></code> and <code class="docutils literal"><span class="pre">-bbam</span></code> arguments, so <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> will not not allow this
+second input argument.  In other words, <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> does not have both
+<code class="file docutils literal notranslate"><span class="pre">-abam</span></code> and <code class="file docutils literal notranslate"><span class="pre">-bbam</span></code> arguments, so <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> will not not allow this
 either.</p>
-<p>However, <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> does allow streaming BAM files to be the input of
+<p>However, <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> does allow streaming BAM files to be the input of
 methods that allow BAM input as the first input. In this [trivial] example, we
 can stream the first intersection to save disk space, and then send that
-streaming BAM to the next <code class="xref py py-meth docutils literal"><span class="pre">BedTool.intersect()</span></code> call. Since it's not
+streaming BAM to the next <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.intersect()</span></code> call. Since it’s not
 streamed, the second intersection will be saved as a temp BAM file on disk:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Working with BAM files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-bam-semantics.html">Notes on BAM file semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-genome.html">Specifying genomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-random.html">Randomization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
@@ -180,23 +211,26 @@ streamed, the second intersection will be saved as a temp BAM file on disk:</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/topical-bam.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -217,7 +251,7 @@ streamed, the second intersection will be saved as a temp BAM file on disk:</p>
         <li class="right" >
           <a href="topical-low-level-ops.html" title="Low-level operations"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
       </ul>
     </div>
@@ -227,8 +261,8 @@ streamed, the second intersection will be saved as a temp BAM file on disk:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/topical-bam.rst.txt"

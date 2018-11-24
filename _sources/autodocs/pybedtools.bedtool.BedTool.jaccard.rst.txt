@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.BedTool\.jaccard
-=====================================
+pybedtools.bedtool.BedTool.jaccard
+==================================
 
 .. currentmodule:: pybedtools.bedtool
 

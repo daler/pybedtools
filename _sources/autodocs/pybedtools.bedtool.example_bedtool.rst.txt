@@ -1,5 +1,5 @@
-pybedtools\.bedtool\.example\_bedtool
-=====================================
+pybedtools.bedtool.example\_bedtool
+===================================
 
 .. currentmodule:: pybedtools.bedtool
 

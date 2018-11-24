@@ -1,26 +1,15 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Create a BedTool &#8212; pybedtools 0.7.10 documentation</title>
-    
+    <title>Create a BedTool &#8212; pybedtools 0.8.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.7.10',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -31,28 +20,30 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+  
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body role="document">
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="create-a-bedtool">
-<h1>Create a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code><a class="headerlink" href="#create-a-bedtool" title="Permalink to this headline">¶</a></h1>
-<p>First, follow the <a class="reference internal" href="main.html#installation"><span class="std std-ref">Installation</span></a> instructions if you haven't already
-done so to install both <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> and <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>.</p>
-<p>Then import the <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> module and make a new <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>.  A
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object encapsulates all of the available BEDTools programs and
+<h1>Create a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#create-a-bedtool" title="Permalink to this headline">¶</a></h1>
+<p>First, follow the <a class="reference internal" href="main.html#installation"><span class="std std-ref">Installation</span></a> instructions if you haven’t already
+done so to install both <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>.</p>
+<p>Then import the <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> module and make a new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>.  A
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object encapsulates all of the available BEDTools programs and
 makes them easier to use within Python.  Most of the time when working with
-<code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> you'll be using <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> objects.  In general, a
-single <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object points to an interval file (BED, GFF, GTF, VCF,
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> you’ll be using <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects.  In general, a
+single <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object points to an interval file (BED, GFF, GTF, VCF,
 SAM, or BAM format).</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># use a BED file that ships with pybedtools...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -61,27 +52,65 @@ SAM, or BAM format).</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;peaks.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This documentation uses example files that ship with <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code>.  To
+<p>This documentation uses example files that ship with <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>.  To
 access these files from their installation location, we use the
-<code class="xref py py-func docutils literal"><span class="pre">example_bedtool()</span></code> function.  This is convenient because if you copy-paste
-the examples, they will work. When using the <code class="xref py py-func docutils literal"><span class="pre">example_bedtool()</span></code> function,
-the resulting <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code> object will point to the corresponding file in
-the <code class="docutils literal"><span class="pre">test/data</span></code> directory of your <code class="xref py py-mod docutils literal"><span class="pre">pybedtools</span></code> installation.  If you would
+<code class="xref py py-func docutils literal notranslate"><span class="pre">example_bedtool()</span></code> function.  This is convenient because if you copy-paste
+the examples, they will work. When using the <code class="xref py py-func docutils literal notranslate"><span class="pre">example_bedtool()</span></code> function,
+the resulting <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object will point to the corresponding file in
+the <code class="file docutils literal notranslate"><span class="pre">test/data</span></code> directory of your <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> installation.  If you would
 rather learn using your own files, just pass the filename to a new
-<code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>, like the above example.</p>
-<p>You can use any file that <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> supports -- this includes BED, VCF,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>, like the above example.</p>
+<p>You can use any file that <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> supports – this includes BED, VCF,
 GFF, and gzipped versions of any of these. See <a class="reference internal" href="topical-create-a-bedtool.html#creating-a-bedtool"><span class="std std-ref">Creating a BedTool</span></a>
-for more on the different ways of creating a <code class="xref py py-class docutils literal"><span class="pre">BedTool</span></code>, including
+for more on the different ways of creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>, including
 from iterators and directly from a string.</p>
-<p>Now, let's see how to do a common task performed on BED files: intersections.</p>
+<p>Now, let’s see how to do a common task performed on BED files: intersections.</p>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pybedtools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html#running-tests-compiling-docs">Running tests, compiling docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="intersections.html">Intersections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default-arguments.html">Default arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html">Chaining methods together (pipe)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="piping.html#operator-overloading">Operator overloading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intervals.html">Intervals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filtering.html">Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html">Using the history and tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
+</ul>
+
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
@@ -92,23 +121,26 @@ from iterators and directly from a string.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/create-a-bedtool-tutorial.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -129,7 +161,7 @@ from iterators and directly from a string.</p>
         <li class="right" >
           <a href="intro.html" title="Intro"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.7.10 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li> 
       </ul>
     </div>
@@ -139,8 +171,8 @@ from iterators and directly from a string.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/create-a-bedtool-tutorial.rst.txt"
