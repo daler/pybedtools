@@ -9,11 +9,11 @@ installed.
 
 .. _condainstall:
 
-Quick install via `conda`
-~~~~~~~~~~~~~~~~~~~~~~~~~
-If you're usng the `Anaconda Python distribution
-<http://continuum.io/downloads>`_ on Linux, then the following will install
-:mod:`pybedtools`::
+Install via `conda`
+~~~~~~~~~~~~~~~~~~~
+This is by far the easiest option.  If you're usng the `Anaconda Python
+distribution <http://continuum.io/downloads>`_ on Linux, then the following
+will install :mod:`pybedtools`::
 
     conda install --channel conda-forge --channel bioconda pybedtools
 
@@ -82,16 +82,35 @@ Assumptions:
 2. Cython is installed (`conda install cython` or `pip install cython`)
 
 
-The following commands will
+The following commands will clone the repository
 .. code-block:: bash
 
     git clone https://github.com/daler/pybedtools.git
     cd pybedtools
-    git pull
+
+The only time the C++ files will be rebuilt from Cython .pyx source is if the
+`cythonize` subcommand is used. To rebuild the C++ files using Cython, run:
+
+.. code-block:: bash
+
+    python setup.py cythonize
+
+To install in develop mode, where changes to Python files will be picked up
+without having to re-install, use:
+
+.. code-block:: bash
+
     python setup.py develop
 
-There are other setup commands available, run `python setup.py --usage` for
-more information.
+The above will not update when the .pyx files are updated, so if the Cython
+source files have been changed, run:
+
+.. code-block:: bash
+
+    python setup.py cythonize develop
+
+
+See `python setup.py --usage` for more information.
 
 
 Quick test
