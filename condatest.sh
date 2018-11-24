@@ -14,6 +14,8 @@ log () {
     echo
 }
 
+
+
 # ----------------------------------------------------------------------------
 # sdist and pip install tests
 # ----------------------------------------------------------------------------
@@ -54,10 +56,22 @@ source deactivate
 no_cy="pbtpy${PY_VERSION}_conda_no_cython"
 if ! conda env list | grep -q $no_cy; then
     log "creating environment"
+
+    # pysam not available from bioconda for py37 so remove it from
+    # requirements.
+    TMPREQS=$(tempfile)
+    grep -v pysam requirements.txt > $TMPREQS
+    if [[ "$PY_VERSION" == "3.7" ]]; then
+        REQS=$TMPREQS
+    else
+        REQS=requirements.txt
+    fi
+
     conda create -n $no_cy -y \
         --channel conda-forge \
-        --channel bioconda python=${PY_VERSION} \
-        --file requirements.txt \
+        --channel bioconda \
+        python=${PY_VERSION} \
+        --file $REQS \
         --file test-requirements.txt \
         --file optional-requirements.txt
 else
