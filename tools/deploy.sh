@@ -9,4 +9,4 @@ TMP=/tmp/pybedtools-deploy
 rm -rf $TMP
 git clone $HERE/.. $TMP
 cd $TMP
-python setup.py sdist upload
+python setup.py cythonize sdist upload
