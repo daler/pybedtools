@@ -2,10 +2,12 @@ from __future__ import print_function
 import pybedtools
 import gzip
 import os
+import subprocess
 import sys
 from textwrap import dedent
 import six
 import pytest
+import psutil
 
 
 testdir = os.path.dirname(__file__)
