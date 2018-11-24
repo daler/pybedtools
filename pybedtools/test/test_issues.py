@@ -429,6 +429,13 @@ def test_issue_178():
         pass
 
 
+
+def test_issue_180():
+    a = pybedtools.example_bedtool('a.bed')
+    a = a.tabix(force=True)
+    assert a.tabix_contigs() == ['chr1']
+
+
 def test_issue_181():
     a = pybedtools.example_bedtool('a.bed')
     a = a.tabix(force=True)

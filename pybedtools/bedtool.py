@@ -672,6 +672,18 @@ class BedTool(object):
         tbx.close()
         return x
 
+    def tabix_contigs(self):
+        """
+        Returns a list of contigs from the tabix index.
+        """
+        if not self._tabixed():
+            raise ValueError(
+                "This BedTool has not been indexed for tabix "
+                "-- please use the .tabix() method")
+
+        tbx = pysam.TabixFile(self.fn)
+        return tbx.contigs
+
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
         Prepare a BedTool for use with Tabix.
