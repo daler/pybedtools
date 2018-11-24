@@ -202,7 +202,7 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     if processes == 1:
         for it in range(iterations):
             yield _parallel_wrap(**add_seed(it, _parallel_wrap_kwargs))
-        raise StopIteration
+        return
 
     if _orig_pool:
         p = _orig_pool
