@@ -64,6 +64,17 @@ def test_issue_81():
         """), result
 
 
+def test_issue_118():
+    p = psutil.Process(os.getpid())
+    start_fds = p.num_fds()
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    for i in range(100):
+        c = a.intersect(b)
+        c.field_count()
+    stop_fds = p.num_fds()
+    assert start_fds == stop_fds
+
 def test_issue_131():
     """
     Regression test; in previous versions this would cause a segfault.
