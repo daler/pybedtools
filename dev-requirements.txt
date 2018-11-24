@@ -1,6 +1,5 @@
 cython
 matplotlib
-nose
 numpydoc
 pandas
 pyyaml

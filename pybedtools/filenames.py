@@ -3,6 +3,7 @@ Provides access to example files and keeps track of all temp files created
 during a Python session.
 """
 import os
+import six
 
 TEMPFILES = []
 
@@ -22,7 +23,10 @@ def example_filename(fn):
     """
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
-        raise ValueError("%s does not exist" % fn)
+        msg = "%s does not exist" % fn
+        if six.PY2:
+            raise ValueError(msg)
+        raise FileNotFoundError(msg)
     return fn
 
 
@@ -33,6 +37,7 @@ def list_example_files():
 
     Example usage:
 
+        >>> from pybedtools import BedTool
         >>> choices = list_example_files()
         >>> assert 'a.bed' in choices
         >>> bedfn = example_filename('a.bed')

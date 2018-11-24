@@ -6,7 +6,6 @@ happen again
 import pybedtools
 import pybedtools.featurefuncs
 import pybedtools.helpers
-from nose.tools import assert_raises
 
 def test_midpoint():
     """

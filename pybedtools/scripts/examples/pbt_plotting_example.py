@@ -3,7 +3,11 @@ import time
 import os
 import pybedtools
 from pybedtools.contrib import plotting
-from matplotlib import pyplot as plt
+
+try:
+    from matplotlib import pyplot as plt
+except ImportError:
+    raise ImportError("Matplotlib needs to be installed for example plotting")
 
 colors = ['r', 'b', 'g']
 

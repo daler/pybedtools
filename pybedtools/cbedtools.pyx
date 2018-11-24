@@ -245,14 +245,16 @@ cdef class Interval:
     def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
         if otherfields is None:
             otherfields = []
-        self._bed = new BED()
+        self._bed = new BED(
+            _cppstr(chrom), start, end, _cppstr(name), _cppstr(score),
+            _cppstr(strand), otherfields)
 
-        self._bed.chrom = _cppstr(chrom)
-        self._bed.start = start
-        self._bed.end = end
-        self._bed.name = _cppstr(name)
-        self._bed.score = _cppstr(score)
-        self._bed.strand = _cppstr(strand)
+        #self._bed.chrom = _cppstr(chrom)
+        #self._bed.start = start
+        #self._bed.end = end
+        #self._bed.name = _cppstr(name)
+        #self._bed.score = _cppstr(score)
+        #self._bed.strand = _cppstr(strand)
         fields = [_cppstr(chrom), _cppstr(str(start)), _cppstr(str(end)), _cppstr(name), _cppstr(score), _cppstr(strand)]
         fields.extend([_cppstr(i) for i in otherfields])
         self._bed.fields = fields
@@ -363,7 +365,7 @@ cdef class Interval:
 
     cpdef deparse_attrs(self):
 
-        if self._attrs is None: return
+        if not self._attrs: return
 
         if self.file_type != "gff":
             raise ValueError('Interval.attrs was not None, but this was a non-GFF Interval')
@@ -558,9 +560,6 @@ cdef class Interval:
     def __nonzero__(self):
         return True
 
-    def __nonzero__(self):
-        return True
-
 
 cdef Interval create_interval(BED b):
     cdef Interval pyb = Interval.__new__(Interval)
@@ -604,6 +603,10 @@ cpdef Interval create_interval_from_list(list fields):
         >>> feature = create_interval_from_list(['chr1', '1', '100'])
 
     """
+
+    # TODO: this function is used a lot, and is doing a bit of work. We should
+    # have an optimized version that is directly provided the filetype.
+
     cdef Interval pyb = Interval.__new__(Interval)
     orig_fields = fields[:]
     # BED -- though a VCF will be detected as BED if its 2nd field, id, is a
@@ -614,6 +617,7 @@ cpdef Interval create_interval_from_list(list fields):
         (len(fields) >= 11)
         and isdigit(fields[1])
         and isdigit(fields[3])
+        and isdigit(fields[4])
         and (fields[5] not in ['.', '+', '-'])
     ):
         # TODO: what should the stop position be?  Here, it's just the start
@@ -743,6 +747,10 @@ cdef class IntervalIterator:
     def __next__(self):
         while True:
             try:
+                # See historical note below.
+                if hasattr(self.stream, 'closed'):
+                    if self.stream.closed:
+                        raise StopIteration
                 line = next(self.stream)
                 if self._itemtype < 0:
                     if isinstance(line, Interval):
@@ -755,15 +763,18 @@ cdef class IntervalIterator:
             # If you only trap StopIteration, for some reason even after
             # raising a new StopIteration it goes back to the top of the
             # while-loop and tries to get the next line again.  This in turn
-            # raises a ValueError, which we catch again . . . and again raise
-            # another StopIteration.  Not sure why it works, but it does.
-            except (StopIteration, ValueError):
+            # raises a ValueError because the stream is closed.
+            #
+            # Historical note: previously, we let it do so and caught the
+            # ValueError exception again here, and raised another
+            # StopIteration. Now, we check to see if the stream is closed, and
+            # raise StopIteration up there.
+            except StopIteration:
                 try:
                     self.stream.close()
                 except AttributeError:
                     pass
                 raise StopIteration
-                break
 
             if self._itemtype == 1:
                 if line.startswith(('@', '#', 'track', 'browser')) or len(line.strip()) == 0:

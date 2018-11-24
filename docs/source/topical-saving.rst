@@ -81,21 +81,18 @@ https://github.com/arq5x/bedtools2/issues/436 for details).
 
     >>> # bedtools v2.26.0
     >>> print(open(d.fn).read())
-    30
-
-    >>> # bedtools != v2.26.0
-    >>> # UTR	0
-    >>> # CDS	2
-    >>> # intron	4
-    >>> # CDS	0
-    >>> # UTR	1
-    >>> # exon	3
-    >>> # mRNA	7
-    >>> # CDS	2
-    >>> # exon	2
-    >>> # tRNA	2
-    >>> # gene	7
-    >>> # <BLANKLINE>
+    UTR	0
+    CDS	2
+    intron	4
+    CDS	0
+    UTR	1
+    exon	3
+    mRNA	7
+    CDS	2
+    exon	2
+    tRNA	2
+    gene	7
+    <BLANKLINE>
 
 
 Trying to iterate over `d` (`[i for i in d]`) or save it (`d.saveas()`) raises

@@ -18,7 +18,7 @@ from warnings import warn
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
-    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect)
+    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect, SplitOutput)
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list, BedToolsFileError
 from . import filenames
@@ -149,8 +149,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
     *does_not_return_bedtool*, if not None, should be a function that handles
     the returned output.  Its signature should be ``func(output, kwargs)``,
     where `output` is the output from the [possibly streaming] call to BEDTools
-    and `kwargs` are passed verbatim from the wrapped method call. This is used
-    for jaccard and reldist methods.
+    and `kwargs` are passed verbatim from the wrapped method call. Some
+    examples of methods that use this are jaccard, reldist, fisher, and split
+    methods.
     """
 
     # NOTE: We are calling each BEDTools program to get its help and adding
@@ -417,7 +418,7 @@ class BedTool(object):
             ... chrX  1  100
             ... chrX 25  800
             ... '''
-            >>> a = BedTool(s,from_string=True)
+            >>> a = BedTool(s, from_string=True)
 
         Or use examples that come with pybedtools::
 
@@ -455,7 +456,10 @@ class BedTool(object):
                     self._isbam = True
                 else:
                     if not os.path.exists(fn):
-                        raise ValueError('File "%s" does not exist' % fn)
+                        msg = 'File "%s" does not exist' % fn
+                        if six.PY2:
+                            raise ValueError(msg)
+                        raise FileNotFoundError(msg)
                     self._isbam = isBAM(fn)
 
                 # TODO: we dont' really need this, but it's added here for
@@ -524,14 +528,15 @@ class BedTool(object):
         self.history = History()
 
     @classmethod
-    def from_dataframe(self, df, outfile=None, **kwargs):
+    def from_dataframe(self, df, outfile=None,
+                       sep='\t', header=False, na_rep='.', index=False,
+                       **kwargs):
         """
         Creates a BedTool from a pandas.DataFrame.
 
         If `outfile` is None, a temporary file will be used. Otherwise it can
         be a specific filename or an open file handle. Additional kwargs will
-        be passed to `pandas.DataFrame.to_csv` and can be used to override the
-        default `sep="\\t", header=False, index=False)`.
+        be passed to `pandas.DataFrame.to_csv`.
 
         The fields of the resulting BedTool will match the order of columns in
         the dataframe.
@@ -542,7 +547,8 @@ class BedTool(object):
             raise ImportError("pandas must be installed to use dataframes")
         if outfile is None:
             outfile = self._tmp()
-        default_kwargs = dict(sep='\t', header=False, index=False)
+        default_kwargs = dict(sep=sep, header=header, na_rep=na_rep,
+                              index=index)
         default_kwargs.update(kwargs)
         df.to_csv(outfile, **default_kwargs)
 
@@ -608,13 +614,16 @@ class BedTool(object):
         fout.close()
         return self.intersect(tmp)
 
-    def tabix_intervals(self, interval_or_string):
+    def tabix_intervals(self, interval_or_string, check_coordinates=False):
         """
         Retrieve all intervals within coordinates from a "tabixed" BedTool.
 
         Given either a string in "chrom:start-stop" format, or an interval-like
         object with chrom, start, stop attributes, return a *streaming* BedTool
         of the features in this BedTool that overlap the provided interval.
+
+        If the coordinates are invalid, an empty generator is returned unless
+        `check_coordinates=True` in which case a ValueError will be raised.
         """
         if not self._tabixed():
             raise ValueError(
@@ -644,7 +653,13 @@ class BedTool(object):
                 start, end = int(start), int(end)
 
         # Fetch results.
-        results = tbx.fetch(str(chrom), start, end)
+        try:
+            results = tbx.fetch(str(chrom), start, end)
+        except ValueError:
+            if check_coordinates:
+                raise
+            else:
+                results = []
 
         # pysam.ctabix.TabixIterator does not include newlines when yielding so
         # we need to add them.
@@ -656,6 +671,18 @@ class BedTool(object):
         x = BedTool(gen()).saveas()
         tbx.close()
         return x
+
+    def tabix_contigs(self):
+        """
+        Returns a list of contigs from the tabix index.
+        """
+        if not self._tabixed():
+            raise ValueError(
+                "This BedTool has not been indexed for tabix "
+                "-- please use the .tabix() method")
+
+        tbx = pysam.TabixFile(self.fn)
+        return tbx.contigs
 
     def tabix(self, in_place=True, force=False, is_sorted=False):
         """
@@ -1168,6 +1195,9 @@ class BedTool(object):
         """
         Prints the first *n* lines or returns them if as_string is True
 
+        Note that this only opens the underlying file (gzipped or not), so it
+        does not check to see if the file is a valid BED file.
+
         >>> a = pybedtools.example_bedtool('a.bed')
         >>> a.head(2) #doctest: +NORMALIZE_WHITESPACE
         chr1	1	100	feature1	0	+
@@ -1180,11 +1210,21 @@ class BedTool(object):
                 'head() not supported for non file-based BedTools')
         if as_string:
             return ''.join(str(line) for line in self[:n])
+        if self._isbam:
+            raise NotImplementedError(
+                'head() not supported for BAM')
         else:
-            for i, line in enumerate(iter(self)):
-                if i == (n):
-                    break
-                print(line, end=' ')
+            if isGZIP(self.fn):
+                openfunc = gzip.open
+                openmode = 'rt'
+            else:
+                openfunc = open
+                openmode = 'r'
+            with openfunc(self.fn, openmode) as fin:
+                for i, line in enumerate(fin):
+                    if i == (n):
+                        break
+                    print(line, end=' ')
 
     def set_chromsizes(self, chromsizes):
         """
@@ -1461,7 +1501,10 @@ class BedTool(object):
             kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
 
         if not os.path.exists(kwargs['g']):
-            raise ValueError('Genome file "%s" does not exist' % (kwargs['g']))
+            msg = 'Genome file "%s" does not exist' % (kwargs['g'])
+            if six.PY2:
+                raise ValueError(msg)
+            raise FileNotFoundError(msg)
 
         return kwargs
 
@@ -1598,12 +1641,17 @@ class BedTool(object):
         """
         pass
 
+    # Alias for backward compatibility
+    bed12tobed6 = bed6
+
     @_log_to_history
     @_wraps(prog='bamToBed', implicit='i', other=None, nonbam='ALL', bam='i')
     def bam_to_bed(self, **kwargs):
         """
         Wraps `bedtools bamtobed`.
         """
+    # Alias for backward compatibility
+    bamtobed = bam_to_bed
 
     @_wraps(prog='bedToBam', implicit='i', uses_genome=True, force_bam=True)
     def _bed_to_bam(self):
@@ -1677,6 +1725,8 @@ class BedTool(object):
             new_bedtool = BedTool(bam_tmp)
             new_bedtool._isbam = True
             return new_bedtool
+    # Alias for backward compatibility
+    bedtobam = to_bam
 
     @_log_to_history
     @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam',
@@ -1716,6 +1766,8 @@ class BedTool(object):
         <BLANKLINE>
 
         '''
+    # Alias for backwards compatibility
+    getfasta = sequence
 
     @staticmethod
     def seq(loc, fasta):
@@ -1741,7 +1793,8 @@ class BedTool(object):
              if l[0] != ">"])
 
     @_log_to_history
-    @_wraps(prog='nucBed', implicit='bed', other='fi')
+    @_wraps(prog='nucBed', implicit='bed', other='fi',
+            check_stderr=_check_sequence_stderr)
     def nucleotide_content(self):
         """
         Wraps `bedtools nuc`.
@@ -1749,6 +1802,8 @@ class BedTool(object):
         Profiles nucleotide content.  The returned BED file contains extra
         information about the nucleotide content
         """
+    # Alias for backwards compatibility
+    nuc = nucleotide_content
 
     @_log_to_history
     @_wraps(prog='multiBamCov', implicit='bed')
@@ -1758,6 +1813,8 @@ class BedTool(object):
 
         Pass a list of sorted and indexed BAM files as `bams`
         """
+    # Alias for backwards compatibility
+    multicov = multi_bam_coverage
 
     @_log_to_history
     @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
@@ -1919,10 +1976,10 @@ class BedTool(object):
         >>> seed = 1 # so this test always returns the same results
         >>> b = a.shuffle(genome='hg19', chrom=True, seed=seed)
         >>> print(b) #doctest: +NORMALIZE_WHITESPACE
-        chr1	59535036	59535135	feature1	0	+
-        chr1	99179023	99179123	feature2	0	+
-        chr1	186189051	186189401	feature3	0	-
-        chr1	219133189	219133239	feature4	0	+
+        chr1	46341498	46341597	feature1	0	+
+        chr1	45615582	45615682	feature2	0	+
+        chr1	102762672	102763022	feature3	0	-
+        chr1	17293432	17293482	feature4	0	+
         <BLANKLINE>
         """
 
@@ -2042,9 +2099,9 @@ class BedTool(object):
         >>> a = pybedtools.example_bedtool('x.bed')
         >>> b = a.genome_coverage(genome='dm3')
         >>> df = b.to_dataframe(names=['chrom', 'depth', 'n', 'chromsize', 'fraction'])
-
-
         """
+    # Alias for backwards compatibility
+    genomecov = genome_coverage
 
     @_log_to_history
     @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam',
@@ -2090,6 +2147,8 @@ class BedTool(object):
         >>> if os.path.exists('masked.fa.example.fai'):
         ...     os.unlink('masked.fa.example.fai')
         """
+    # Alias for backwards compatibility
+    maskfasta = mask_fasta
 
     @_log_to_history
     @_wraps(prog='complementBed', implicit='i', uses_genome=True)
@@ -2133,6 +2192,8 @@ class BedTool(object):
         """
         Wraps `bedtools pairtobed`.
         """
+    # Alias for backwards compatibility
+    pairtobed = pair_to_bed
 
     @_log_to_history
     @_wraps(prog='pairToPair', implicit='a', other='b')
@@ -2140,6 +2201,8 @@ class BedTool(object):
         """
         Wraps `bedtools pairtopair`.
         """
+    # Alias for backwards compatibility
+    pairtopair = pair_to_pair
 
     @_log_to_history
     @_wraps(prog='groupBy', implicit='i')
@@ -2177,6 +2240,8 @@ class BedTool(object):
         `files` and `labels` should lists of equal length.
 
         """
+    # Alias for backwards compatibility
+    tag = tag_bam
 
     @_log_to_history
     @_wraps(prog='mapBed', implicit='a', other='b')
@@ -2209,6 +2274,9 @@ class BedTool(object):
 
         """
 
+    # Alias for backwards compatibility
+    multiinter = multi_intersect
+
     @_log_to_history
     @_wraps(prog='randomBed', uses_genome=True)
     def random(self):
@@ -2228,6 +2296,8 @@ class BedTool(object):
         """
         Wraps `bedtools bedpetobam`.
         """
+    # Alias for backwards compatibility
+    bedpetobam = bedpe_to_bam
 
     @_log_to_history
     @_wraps(prog='clusterBed', implicit='i')
@@ -2245,6 +2315,8 @@ class BedTool(object):
         Warning: using the `header=True` kwarg will result in a file that is
         not in true BED format, which may break downstream analysis.
         """
+    # Alias for backwards compatibility
+    unionbedg = union_bedgraphs
 
     @_log_to_history
     @_wraps(prog='windowMaker', uses_genome=True, genome_none_if=['b'],
@@ -2253,6 +2325,8 @@ class BedTool(object):
         """
         Wraps `bedtools makewindows`.
         """
+    # Alias for backwards compatibility
+    makewindows = window_maker
 
     @_log_to_history
     @_wraps(prog='expandCols', implicit='i')
@@ -2294,6 +2368,8 @@ class BedTool(object):
 
         The resulting BedTool will have a new attribute, `fastq`.
         """
+    # Alias for backwards compatibility
+    bamtofastq = bam_to_fastq
 
     @_wraps(prog='jaccard', implicit='a', other='b',
             does_not_return_bedtool=_jaccard_output_to_dict)
@@ -2361,6 +2437,54 @@ class BedTool(object):
         >>> f.two_tail
         8.8247e-21
         """
+
+    @_wraps(prog='split', implicit='i',
+            does_not_return_bedtool=helpers.SplitOutput)
+    def splitbed(self):
+        """
+        Wraps 'bedtools split'.
+
+        BedTool objects have long had a `split` method which splits intervals
+        according to a custom function. Now that BEDTools has a `split` tool,
+        the method name conflicts. To maintain backwards compatibility, the
+        method wrapping the BEDTools command is called `splitbed`.
+
+        Since this tool does not return a single BED file, the method parses
+        the output and returns a SplitOutput object, which includes an
+        attribute, `bedtools`, that is a list of BedTool objects created from
+        the split files.
+
+        To keep the working directory clean, you may want to consider using
+        `prefix=BedTool._tmp()` to get a temp file that will be deleted when
+        Python exits cleanly.
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> s = a.splitbed(n=2, p="split")
+        >>> assert len(a) == 4, len(a)
+        >>> assert len(s.bedtools) == 2
+        >>> print(s.bedtools[0]) # doctest: +NORMALIZE_WHITESPACE
+        chr1	150	500	feature3	0	-
+        <BLANKLINE>
+        >>> print(s.bedtools[1]) # doctest: +NORMALIZE_WHITESPACE
+        chr1	100	200	feature2	0	+
+        chr1	1	100	feature1	0	+
+        chr1	900	950	feature4	0	+
+        <BLANKLINE>
+        """
+
+    @_wraps(prog='spacing', implicit='i')
+    def spacing(self):
+        """
+        Wraps `bedtools spacing`
+
+        >>> a = pybedtools.example_bedtool('a.bed')
+        >>> print(a.spacing())  # doctest: +NORMALIZE_WHITESPACE
+        chr1	1	100	feature1	0	+	.
+        chr1	100	200	feature2	0	+	0
+        chr1	150	500	feature3	0	-	-1
+        chr1	900	950	feature4	0	+	400
+        """
+
 
     def count(self):
         """
@@ -2775,7 +2899,7 @@ class BedTool(object):
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> results = a.randomintersection(b, 10, debug=True)
             >>> print(list(results))
-            [2, 2, 3, 0, 3, 3, 0, 0, 2, 4]
+            [2, 1, 2, 1, 1, 1, 1, 1, 1, 2]
 
         """
         if processes is not None:
@@ -3272,9 +3396,17 @@ class BedTool(object):
                         break
         return BedTool(_gen()).saveas()
 
-    def to_dataframe(self, *args, **kwargs):
+    def to_dataframe(self, disable_auto_names=False, *args, **kwargs):
         """
         create a pandas.DataFrame, passing args and kwargs to pandas.read_table
+
+        Parameters
+        ----------
+        disable_auto_names : bool
+            By default, the created dataframe fills in column names
+            automatically according to the detected filetype (e.g., "chrom",
+            "start", "end" for a BED3 file). Set this argument to True to
+            disable this behavior.
         """
         # Complain if BAM or if not a file
         if self._isbam:
@@ -3288,8 +3420,8 @@ class BedTool(object):
             raise ImportError(
                 "pandas must be installed to convert to pandas.DataFrame")
         # Otherwise we're good:
-        _names = kwargs.pop('names', None)
-        if _names is None:
+        names = kwargs.get('names', None)
+        if names is None and not disable_auto_names:
             try:
                 _names = \
                     settings._column_names[self.file_type][:self.field_count()]
@@ -3302,8 +3434,9 @@ class BedTool(object):
                     _names = None
             except KeyError:
                 _names = None
+            kwargs['names'] = _names
 
-        return pandas.read_table(self.fn, names=_names, header=None, *args, **kwargs)
+        return pandas.read_table(self.fn, *args, **kwargs)
 
     def tail(self, lines=10, as_string=False):
         """
@@ -3519,7 +3652,10 @@ def example_bedtool(fn):
     """
     fn = os.path.join(filenames.data_dir(), fn)
     if not os.path.exists(fn):
-        raise ValueError("%s does not exist" % fn)
+        msg = "%s does not exist" % fn
+        if six.PY2:
+            raise ValueError(msg)
+        raise FileNotFoundError(msg)
     return BedTool(fn)
 
 if __name__ == "__main__":

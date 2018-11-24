@@ -2,6 +2,75 @@
 
 Changelog
 =========
+
+Changes in v0.8.0
+-----------------
+This version further improves testing, improves the way C++ files are included
+in the package, and fixes many long-standing bugs.
+
+* Using pytest framework rather than nose for testing
+* Updated `setup.py` to be more robust and to more clearly separate
+  "cythonization" into .cpp files
+* Updated test harness for testing in independent conda environments
+* All issue tests go in their own test module
+* Included Python 3.7 tests (note that at the time of this writing, pysam is
+  not yet available on bioconda so that dependency is pip-installed in the
+  test) (`#254 <https://github.com/daler/pybedtools/issues/254>`_)
+* Updated tests to reflect BEDTool 2.27.1 output (`#260
+  <https://github.com/daler/pybedtools/issues/260>`_`#261
+  <https://github.com/daler/pybedtools/issues/261>`_)
+* Removed the `contrib.classifier` module, which has been unsupported for
+  a while.
+* More informative error messages for UCSC tools if they're missing (`#227
+  <https://github.com/daler/pybedtools/issues/227>`_)
+* BedTool objects that are the result of operations that create files that are
+  not BED/GTF/GFF/BAM can be more easily converted to pandas.DataFrame with
+  `disable_auto_names=True` arg to `BedTool.to_dataframe()` (`#258
+  <https://github.com/daler/pybedtools/issues/258>`_)
+* Added aliases to existing methods to match current BEDTools commands, e.g.
+  the `BedTool.nucleotide_content` method can now also be called using
+  `BedTool.nuc` which is consistent with the `bedtools nuc` command line name.
+* New wrapper for `bedtools split`. The wrapper method is called `splitbed` to
+  maintain backwards compatibility because `pybedtools.BedTool` objects have
+  long had a `split` method that splits intervals based on a custom function.
+* New wrapper for `bedtools spacing`.
+* `BedTool.from_dataframe` handles NaN in dataframes by replacing with `"."`,
+  and is more explicit about kwargs that are passed to `pandas.DataFrame`
+  (`#257 <https://github.com/daler/pybedtools/issues/257>`_)
+* Raise FileNotFoundError when on Python 3 (thanks Gosuke Shibahara, (`#255
+  <https://github.com/daler/pybedtools/issues/255>`_)
+* Relocated BEDTools header and .cpp files to the `pybedtools/include`
+  directory, so they can more easily be linked to from external packages
+  (`#253 <https://github.com/daler/pybedtools/issues/253>`_)
+* Add test for (`#118 <https://github.com/daler/pybedtools/issues/118>`_)
+* `BedTool.tabix_contigs` will list the sequence names indexed by tabix
+  (`#180 <https://github.com/daler/pybedtools/issues/180>`_)
+* `BedTool.tabix_intervals` will return an empty generator if the coordinates
+  provided are not indexed, unless `check_coordinates=True` in which case the
+  previous behavior of raising a ValueError is triggered (`#181
+  <https://github.com/daler/pybedtools/issues/181>`_)
+* Bugfix: Avoid "ResourceWarning: unclosed file" in `helpers.isBGZIP` (thanks
+  Stephen Bush)
+* Bugfix: Interval objects created directly no longer have their filetype set
+  to None (`#217 <https://github.com/daler/pybedtools/issues/217>`_)
+* Bugfix: Fixed the ability to set paths and reload module afterwards (`#218
+  <https://github.com/daler/pybedtools/issues/218>`_, `#220
+  <https://github.com/daler/pybedtools/issues/220>`_, `#222
+  <https://github.com/daler/pybedtools/issues/222>`_)
+* Bugfix: `BedTool.head()` no longer uses an IntervalIterator (which would
+  check to make sure lines are valid BED/GTF/GFF/BAM/SAM). Instead, it simply
+  prints the first lines of the underlying file.
+* Bugfix: functions passed to `BedTool.filter` and `BedTool.each` no longer
+  silently pass ValueErrors (`#231
+  <https://github.com/daler/pybedtools/issues/231>`_)
+* Bugfix: Fixed IndexError in IntervalIterator if there was an empty line (`#233
+  <https://github.com/daler/pybedtools/issues/233>`_)
+* Bugfix: Add additional constraint to SAM file detection to avoid incorrectly
+  detecting a BED file as SAM (`#246
+  <https://github.com/daler/pybedtools/issues/246>`_)
+* Bugfix: accessing Interval.fields after accessing Interval.attrs no longer
+  raises ValueError (`#246 <https://github.com/daler/pybedtools/issues/246>`_)
+
 Changes in v0.7.10
 ------------------
 Various bug fixes and some minor feature additions:

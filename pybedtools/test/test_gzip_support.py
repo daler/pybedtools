@@ -3,15 +3,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 import os
-from nose.tools import assert_equal, assert_list_equal
 import tempfile
 import pybedtools.test.tfuncs as tfuncs
 
 import pybedtools
 import gzip
 
-setup = tfuncs.setup
-teardown = tfuncs.teardown
+setup = tfuncs.setup_module
+teardown = tfuncs.teardown_module
 
 def _make_temporary_gzip(bed_filename):
     """
@@ -32,7 +31,7 @@ def test_gzipped_file_types_are_bed():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
 
     agz = pybedtools.BedTool(agz)
-    assert_equal('bed', agz.file_type)
+    assert 'bed' == agz.file_type
 
 def test_gzipped_files_can_be_intersected():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
@@ -51,19 +50,19 @@ def test_gzipped_files_are_iterable_as_normal():
     a = pybedtools.example_bedtool('a.bed')
     for i in agz:
         print(i)
-    assert_list_equal(list(a), list(agz))
+    assert list(a) == list(agz)
 
 def test_str_representation_of_gzipped_files_is_the_same_as_normal():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
     agz = pybedtools.BedTool(agz)
     a = pybedtools.example_bedtool('a.bed')
-    assert_equal(str(a), str(agz))
+    assert str(a) == str(agz)
 
 def test_head_of_gzipped_files_is_the_same_as_normal():
     agz = _make_temporary_gzip(pybedtools.example_filename('a.bed'))
     agz = pybedtools.BedTool(agz)
     a = pybedtools.example_bedtool('a.bed')
-    assert_equal(agz.head(), a.head())
+    assert agz.head() == a.head()
 
 def test_gzipped_output():
     _filename = pybedtools.example_filename('a.bed')
@@ -76,7 +75,7 @@ def test_gzipped_output():
     with open(_filename) as f:
         original_content = f.read()
 
-    assert_equal(original_content, uncompressed_content)
+    assert original_content == uncompressed_content
 
 def test_gzipping_is_default_when_extension_is_dot_gz():
     _filename = pybedtools.example_filename('a.bed')
@@ -92,7 +91,7 @@ def test_gzipping_is_default_when_extension_is_dot_gz():
             # gzip will fail next line if file is not gzipped
             actual_content = gf.read()
 
-        assert_equal(expected_content, actual_content)
+        assert expected_content == actual_content
     finally:
         if os.path.isfile(temp_filename):
             os.unlink(temp_filename)
@@ -111,7 +110,7 @@ def test_gzipping_can_be_turned_off_even_for_dot_gz():
             # actual content will be jumbled if non_gz_f is unset
             actual_content = non_gz_f.read()
 
-        assert_equal(expected_content, actual_content)
+        assert expected_content == actual_content
     finally:
         if os.path.isfile(temp_filename):
             os.unlink(temp_filename)

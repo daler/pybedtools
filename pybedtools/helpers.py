@@ -246,7 +246,9 @@ def set_tempdir(tempdir):
     """
     if not os.path.exists(tempdir):
         errstr = 'The tempdir you specified, %s, does not exist' % tempdir
-        raise ValueError(errstr)
+        if six.PY2:
+            raise ValueError(errstr)
+        raise FileNotFoundError(errstr)
     tempfile.tempdir = tempdir
 
 
@@ -608,6 +610,45 @@ class FisherOutput(object):
         return '<%s at %s>\n%s' % (self.__class__.__name__, id(self), self.text)
 
 
+class SplitOutput(object):
+    def __init__(self, output, **kwargs):
+        """
+        Handles output from bedtools split, which sends a report of files to
+        stdout. This class parses that list into something more convenient to
+        use within pybedtools.
+
+        Most useful is probably the .bedtools attribute, which is a list of
+        BedTool objects.
+        """
+        from .bedtool import BedTool
+
+        if isinstance(output, str):
+            output = open(output).read()
+        if hasattr(output, 'next'):
+            output = ''.join(i for i in output)
+
+        #: store a copy of the output
+        self.text = output
+
+        #: BedTool objects created from output
+        self.bedtools = []
+
+        #: Filenames that were created from the split
+        self.files = []
+
+        #: number of bases in each file
+        self.nbases = []
+
+        #: number of features in each file
+        self.counts = []
+
+        for line in output.splitlines():
+            toks = line.split()
+            self.files.append(toks[0])
+            self.nbases.append(int(toks[1]))
+            self.counts.append(int(toks[2]))
+            self.bedtools.append(BedTool(toks[0]))
+
 
 def internet_on(timeout=1):
     try:
@@ -618,38 +659,25 @@ def internet_on(timeout=1):
     return False
 
 
-def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
+def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
+                             fetchchromsizes='fetchChromSizes', timeout=None):
     """
     Download chrom size info for *genome* from UCSC and returns the dictionary.
 
-    If you need the file, then specify a filename with *saveas* (the dictionary
-    will still be returned as well).
+    Parameters
+    ----------
 
-    If ``mysql`` is not on your path, specify where to find it with
-    *mysql=<path to mysql executable>*.
+    genome : str
+        Name of the genome assembly (e.g., "hg38")
 
-    *timeout* is how long to wait for a response; mostly used for testing.
+    saveas : str
+        Filename to save output to. Dictionary will still be returned.
 
-    Example usage:
+    mysql, fetchchromsizes : str
+        Paths to MySQL and fetchChromSizes.
 
-        >>> dm3_chromsizes = get_chromsizes_from_ucsc('dm3')
-        >>> for i in sorted(dm3_chromsizes.items()):
-        ...     print('{0}: {1}'.format(*i))
-        chr2L: (0, 23011544)
-        chr2LHet: (0, 368872)
-        chr2R: (0, 21146708)
-        chr2RHet: (0, 3288761)
-        chr3L: (0, 24543557)
-        chr3LHet: (0, 2555491)
-        chr3R: (0, 27905053)
-        chr3RHet: (0, 2517507)
-        chr4: (0, 1351857)
-        chrM: (0, 19517)
-        chrU: (0, 10049037)
-        chrUextra: (0, 29004656)
-        chrX: (0, 22422827)
-        chrXHet: (0, 204112)
-        chrYHet: (0, 347038)
+    timeout : float
+        How long to wait for a response; mostly used for testing.
 
     """
     if not internet_on(timeout=timeout):
@@ -661,6 +689,8 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
             '-A',
             '-e',
             'select chrom, size from %s.chromInfo' % genome]
+    failures = []
+    d = {}
     try:
         p = subprocess.Popen(cmds,
                              stdout=subprocess.PIPE,
@@ -673,7 +703,6 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
             print((subprocess.list2cmdline(cmds)))
 
         lines = stdout.splitlines()[1:]
-        d = {}
         for line in lines:
             if isinstance(line, bytes):
                 line = line.decode('UTF-8')
@@ -683,16 +712,42 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql', timeout=None):
         if saveas is not None:
             chromsizes_to_file(d, saveas)
 
-        return d
 
     except OSError as err:
         if err.errno == 2:
-            raise OSError("Can't find mysql -- if you don't have it "
-                          "installed, you'll have to get chromsizes "
-                          " manually, or "
-                          "specify the path with the 'mysql' kwarg.")
+            failures.append("Can't find mysql at path {0}".format(mysql))
         else:
             raise
+    try:
+        cmds = [fetchchromsizes, genome]
+        p = subprocess.Popen(cmds,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             bufsize=1)
+        stdout, stderr = p.communicate()
+        if stderr:
+            if 'INFO: trying WGET' not in str(stderr):
+                print(stderr)
+                print('Commands were:\n')
+                print((subprocess.list2cmdline(cmds)))
+
+        lines = stdout.splitlines()
+        for line in lines:
+            if isinstance(line, bytes):
+                line = line.decode('UTF-8')
+            chrom, size = line.split()
+            d[chrom] = (0, int(size))
+
+        if saveas is not None:
+            chromsizes_to_file(d, saveas)
+
+    except OSError as err:
+        if err.errno == 2:
+            failures.append("Can't find path to fetchChromsizes")
+
+    if not d:
+        raise OSError(failures)
+    return d
 
 
 def chromsizes_to_file(chrom_sizes, fn=None):
@@ -756,7 +811,15 @@ def chromsizes(genome):
     except AttributeError:
         return get_chromsizes_from_ucsc(genome)
 
-
+def get_includes():
+    """
+    Returns a list of include directories with BEDTools headers
+    """
+    dirname = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+    return [
+        dirname,
+        os.path.join(dirname, 'include')
+    ]
 
 
 atexit.register(cleanup)

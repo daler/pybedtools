@@ -116,19 +116,29 @@ def tag_bedpe(bedpe, queries, verbose=False):
     chr1  3  4  peak1  50  .
     <BLANKLINE>
 
-    Then we can get the following iterator, n, and extra:
+    Then we can get the following iterator, n, and extra. Note that the
+    OrderedDict is only for testing to ensure output is always consistend; in
+    practice a regular dictionary is fine:
 
     >>> from pybedtools.contrib.long_range_interaction import tag_bedpe
-    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
+    >>> from collections import OrderedDict
+    >>> queries = OrderedDict()
+    >>> queries['tss'] = tsses
+    >>> queries['pk'] = peaks
+    >>> iterator, n, extra = tag_bedpe(bedpe, queries)
     >>> print(n)
     2
     >>> print(extra)
     1
 
     The following illustrates that each item in the iterator represents one
-    pair, and each item in each group represents an intersection with one end:
+    pair, and each item in each group represents an intersection with one end.
+    Note that the sorting is necessary only for the doctests to be output in
+    consistent format; this not typically needed:
 
     >>> for (label, end1_hits, end2_hits) in iterator:
+    ...    end1_hits = sorted(end1_hits, key=lambda x: str(x))
+    ...    end2_hits = sorted(end2_hits, key=lambda x: str(x))
     ...    print('PAIR = {}'.format(label))
     ...    print('end1_hits:')
     ...    for i in end1_hits:
@@ -138,17 +148,17 @@ def tag_bedpe(bedpe, queries, verbose=False):
     ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
     PAIR = pair1
     end1_hits:
-    chr1  1    10   pair1  5  +  x1  pk   chr1  3   4   peak1  50  .  1
-    chr1  1    10   pair1  5  +  x1  tss  chr1  5   6   gene1  1
+    chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1
+    chr1       1       10      pair1   5       +       x1      tss     chr1    5       6       gene1   1
     end2_hits:
-    chr1  50   90   pair1  5  -  x1  tss  chr1  60  61  gene2  1
-    chr1  50   90   pair1  5  -  x1  tss  chr1  88  89  gene3  1
+    chr1       50      90      pair1   5       -       x1      tss     chr1    60      61      gene2   1
+    chr1       50      90      pair1   5       -       x1      tss     chr1    88      89      gene3   1
     PAIR = pair2
     end1_hits:
-    chr1  2    15   pair2  1  +  y1  pk   chr1  3   4   peak1  50  .  1
-    chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1
+    chr1       2       15      pair2   1       +       y1      pk      chr1    3       4       peak1   50      .       1
+    chr1       2       15      pair2   1       +       y1      tss     chr1    5       6       gene1   1
     end2_hits:
-    chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0
+    chr1       200     210     pair2   1       +       y1      .       .       -1      -1      .       0
 
     See the `cis_trans_interactions()` function for one way of summarizing
     these data.
@@ -274,22 +284,25 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
        peaks   1
 
 
-    >>> from pybedtools.contrib.long_range_interaction import tag_bedpe
-    >>> from pybedtools.contrib.long_range_interaction import cis_tran_interactions
-    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
-
+    >>> from collections import OrderedDict
+    >>> queries = OrderedDict()
+    >>> queries['tss'] = tsses
+    >>> queries['pk'] = peaks
+    >>> iterator, n, extra = tag_bedpe(bedpe, queries)
     >>> for (label, group1, group2) in iterator:
+    ...    group1 = sorted(group1, key=lambda x: str(x))
+    ...    group2 = sorted(group2, key=lambda x: str(x))
     ...    for i in group1:
-    ...        print(i, end='')
+    ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
     ...    for i in group2:
     ...        print(i, end='')  # doctest: +NORMALIZE_WHITESPACE
-    chr1  1    10   pair1  5  +  x1  pk   chr1  3   4   peak1  50  .  1
-    chr1  1    10   pair1  5  +  x1  tss  chr1  5   6   gene1  1
-    chr1  50   90   pair1  5  -  x1  tss  chr1  60  61  gene2  1
-    chr1  50   90   pair1  5  -  x1  tss  chr1  88  89  gene3  1
-    chr1  2    15   pair2  1  +  y1  pk   chr1  3   4   peak1  50  .  1
-    chr1  2    15   pair2  1  +  y1  tss  chr1  5   6   gene1  1
-    chr1  200  210  pair2  1  +  y1  .    -1    -1  .   -1     .  0
+    chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1
+    chr1       1       10      pair1   5       +       x1      tss     chr1    5       6       gene1   1
+    chr1       50      90      pair1   5       -       x1      tss     chr1    60      61      gene2   1
+    chr1       50      90      pair1   5       -       x1      tss     chr1    88      89      gene3   1
+    chr1       2       15      pair2   1       +       y1      pk      chr1    3       4       peak1   50      .       1
+    chr1       2       15      pair2   1       +       y1      tss     chr1    5       6       gene1   1
+    chr1       200     210     pair2   1       +       y1      .       .       -1      -1      .       0
 
     Now we run the same thing, but now aggregate it. Note that each piece of
     interaction evidence has its own line. The first line shows that pair1 has
@@ -297,40 +310,41 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     The second line shows again that gene1 and peak1 are in the same fragmet
     and that they are also connected to gene3:
 
+    >>> import pandas; pandas.set_option('display.max_columns', 10)
     >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
     >>> df =  cis_trans_interactions(iterator, n, extra)
-    >>> print(df)
+    >>> print(df.sort_values(list(df.columns)).reset_index(drop=True))
       target_label target_name cis_label cis_name distal_label distal_name  label
-    0          tss       gene1        pk    peak1          tss       gene2  pair1
-    1          tss       gene1        pk    peak1          tss       gene3  pair1
-    2           pk       peak1       tss    gene1          tss       gene2  pair1
-    3           pk       peak1       tss    gene1          tss       gene3  pair1
-    4          tss       gene2       tss    gene3          tss       gene1  pair1
-    5          tss       gene2       tss    gene3           pk       peak1  pair1
-    6          tss       gene3       tss    gene2          tss       gene1  pair1
-    7          tss       gene3       tss    gene2           pk       peak1  pair1
-    8          tss       gene1        pk    peak1            .           .  pair2
-    9           pk       peak1       tss    gene1            .           .  pair2
+    0           pk       peak1       tss    gene1            .           .  pair2
+    1           pk       peak1       tss    gene1          tss       gene2  pair1
+    2           pk       peak1       tss    gene1          tss       gene3  pair1
+    3          tss       gene1        pk    peak1            .           .  pair2
+    4          tss       gene1        pk    peak1          tss       gene2  pair1
+    5          tss       gene1        pk    peak1          tss       gene3  pair1
+    6          tss       gene2       tss    gene3           pk       peak1  pair1
+    7          tss       gene2       tss    gene3          tss       gene1  pair1
+    8          tss       gene3       tss    gene2           pk       peak1  pair1
+    9          tss       gene3       tss    gene2          tss       gene1  pair1
 
     If we only care about genes:
 
-    >>> print(df[df.target_label == 'tss'])
+    >>> print((df[df.target_label == 'tss']).sort_values(list(df.columns)).reset_index(drop=True))
       target_label target_name cis_label cis_name distal_label distal_name  label
-    0          tss       gene1        pk    peak1          tss       gene2  pair1
-    1          tss       gene1        pk    peak1          tss       gene3  pair1
+    0          tss       gene1        pk    peak1            .           .  pair2
+    1          tss       gene1        pk    peak1          tss       gene2  pair1
+    2          tss       gene1        pk    peak1          tss       gene3  pair1
+    3          tss       gene2       tss    gene3           pk       peak1  pair1
     4          tss       gene2       tss    gene3          tss       gene1  pair1
-    5          tss       gene2       tss    gene3           pk       peak1  pair1
+    5          tss       gene3       tss    gene2           pk       peak1  pair1
     6          tss       gene3       tss    gene2          tss       gene1  pair1
-    7          tss       gene3       tss    gene2           pk       peak1  pair1
-    8          tss       gene1        pk    peak1            .           .  pair2
+
 
     Note that in pair2, there is no evidence of interaction between gene1 and
     gene2.
 
     What interacts distally with gene2's TSS?
 
-    >>> print(set(df.ix[df.target_name == 'gene2', 'distal_name']).difference('.'))
-    set([u'gene1', u'peak1'])
+    >>> assert set(df.loc[df.target_name == 'gene2', 'distal_name']).difference('.') == set([u'gene1', u'peak1'])
 
     """
     try:

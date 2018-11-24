@@ -5,11 +5,7 @@ import yaml
 import os
 import gzip
 import pybedtools
-
-# The functools.partial trick to get descriptions to be valid is from:
-#
-#   http://code.google.com/p/python-nose/issues/detail?id=244#c1
-from functools import partial
+from .tfuncs import setup_module, teardown_module
 
 yamltestdesc = ['test_cases.yaml']
 
@@ -24,17 +20,18 @@ elif pybedtools.settings._v_2_15_plus and not pybedtools.settings._v_2_27_plus:
 this_dir = os.path.dirname(__file__)
 yamltestdesc = [os.path.join(this_dir, i) for i in yamltestdesc]
 
+
 def gz(x):
     """
     Gzips a file to a tempfile, and returns a new BedTool using the gzipped
     version.
     """
-    fin = open(x.fn)
     gzfn = pybedtools.BedTool._tmp()
     with gzip.open(gzfn, 'wb') as out_:
         with open(x.fn, 'rb') as in_:
             out_.writelines(in_)
     return pybedtools.BedTool(gzfn)
+
 
 def fix(x):
     """
@@ -61,16 +58,37 @@ def fix(x):
     return s
 
 
-def parse_yaml(infile):
-    x = yaml.load(open(infile).read())
-    for test_case in x:
-        method = test_case['method']
-        send_kwargs = test_case['kwargs']
-        expected = test_case['expected']
-        yield method, send_kwargs, expected
+# List of methods that *only* take BAM as input
+bam_methods = ('bam_to_bed',)
+
+# List of supported BedTool construction from BAM files.  Currently only
+# file-based.
+supported_bam = ('filename', )
+
+converters = {
+    'filename': lambda x: pybedtools.BedTool(x.fn),
+    'generator': lambda x: pybedtools.BedTool(i for i in x),
+    'stream': lambda x: pybedtools.BedTool(open(x.fn)),
+    'gzip': gz,
+}
 
 
-def run(method, bedtool, expected, **kwargs):
+def run(d):
+    method = d['method']
+    bedtool = d['bedtool']
+    convert = d['convert']
+    kwargs = d['kw'].copy()
+    expected = d['test_case']['expected']
+
+    bedtool_converter = convert.pop('bedtool')
+    bedtool = (
+        converters[bedtool_converter](pybedtools.example_bedtool(bedtool))
+    )
+
+    for k, converter_name in convert.items():
+        kwargs[k] = (
+            converters[converter_name](pybedtools.example_bedtool(kwargs[k]))
+        )
     result = getattr(bedtool, method)(**kwargs)
     res = str(result)
     expected = fix(expected)
@@ -91,7 +109,9 @@ def run(method, bedtool, expected, **kwargs):
         print('Expected:')
         print(expected)
         print('Diff:')
-        for i in difflib.unified_diff(res.splitlines(1), expected.splitlines(1)):
+        for i in (
+            difflib.unified_diff(res.splitlines(1), expected.splitlines(1))
+        ):
             print(i, end=' ')
 
         # Make tabs and newlines visible
@@ -104,159 +124,118 @@ def run(method, bedtool, expected, **kwargs):
         print('Expected:')
         print(spec_expected)
         print('Diff:')
-        for i in difflib.unified_diff(spec_res.splitlines(1), spec_expected.splitlines(1)):
+        for i in (
+            difflib.unified_diff(spec_res.splitlines(1),
+                                 spec_expected.splitlines(1))
+        ):
             print(i, end=' ')
         raise
 
 
-# List of methods that *only* take BAM as input
-bam_methods = ('bam_to_bed',)
-
-# List of supported BedTool construction from BAM files.  Currently only
-# file-based.
-supported_bam = ('filename', )
-
-converter = {'filename': lambda x: pybedtools.BedTool(x.fn),
-             'generator': lambda x: pybedtools.BedTool(i for i in x),
-             'stream': lambda x: pybedtools.BedTool(open(x.fn)),
-             'gzip': gz,
-            }
-
-def test_a_b_methods():
-    """
-    Generator that yields tests, inserting different versions of `a` and `b` as
-    needed
-    """
+def pytest_generate_tests(metafunc):
+    tests = []
+    labels = []
     for config_fn in yamltestdesc:
-        _test_a_b_methods(config_fn)
+        for test_case in yaml.load(open(config_fn).read()):
+            kw = test_case['kwargs']
+            method = test_case['method']
 
-def _test_a_b_methods(config_fn):
-    for method, send_kwargs, expected in parse_yaml(config_fn):
-        a_isbam = False
-        b_isbam = False
+            a_isbam = False
+            b_isbam = False
+            i_isbam = False
 
-        if 'abam' in send_kwargs:
-            send_kwargs['abam'] = pybedtools.example_filename(send_kwargs['abam'])
-            send_kwargs['a'] = send_kwargs['abam']
-            a_isbam = True
+            # Figure out if this is a test involving a method that operates on
+            # two files (ab), one file (i) or the "bed" tests (bed)
+            flavor = None
+            if (('a' in kw) and ('b' in kw)):
+                flavor = 'ab'
+            if (('i' in kw) or ('ibam' in kw)):
+                flavor = 'i'
+            if 'bed' in kw:
+                flavor = 'bed'
 
-        if not (('a' in send_kwargs) and ('b' in send_kwargs)):
-            continue
+            # If bams were specified in the test block we need to keep track of
+            # that. Then we set the 'a' or 'i' kws, which control the nature of
+            # the constructed BedTool, to that filename.
+            if 'abam' in kw:
+                kw['abam'] = pybedtools.example_filename(kw['abam'])
+                kw['a'] = kw['abam']
+                a_isbam = True
 
-        # If abam, makes a BedTool out of it anyway.
-        orig_a = pybedtools.example_bedtool(send_kwargs['a'])
-        orig_b = pybedtools.example_bedtool(send_kwargs['b'])
+            if 'ibam' in kw:
+                kw['ibam'] = pybedtools.example_filename(kw['ibam'])
+                kw['i'] = kw['ibam']
+                i_isbam = True
 
-        del send_kwargs['a']
-        del send_kwargs['b']
+            kinds = ['filename', 'generator', 'stream', 'gzip']
 
-        if orig_a._isbam:
-            a_isbam = True
-        if orig_b._isbam:
-            b_isbam = True
+            if 'files' in kw:
+                kw['files'] = [
+                    pybedtools.example_filename(i) for i in kw['files']
+                ]
 
-        for kind_a, kind_b in itertools.permutations(('filename', 'generator', 'stream', 'gzip'), 2):
+            if 'bams' in kw:
+                kw['bams'] = [
+                    pybedtools.example_filename(i) for i in kw['bams']
+                ]
 
-            if a_isbam and (kind_a not in supported_bam):
-                continue
+            if 'fi' in kw:
+                kw['fi'] = pybedtools.example_filename(kw['fi'])
 
-            if b_isbam and (kind_b not in supported_bam):
-                continue
+            if flavor == 'i':
+                orig_i = pybedtools.example_bedtool(kw['i'])
+                if orig_i._isbam:
+                    i_isbam = True
+                bedtool = kw.pop('i')
+                for kind in kinds:
+                    if i_isbam and (kind not in supported_bam):
+                        continue
+                    label = '{method}: {kw} {kind}'.format(**locals())
+                    labels.append(label)
+                    tests.append(
+                        dict(
+                            method=method,
+                            bedtool=bedtool,
+                            test_case=test_case,
+                            kw=kw,
+                            convert={'bedtool': kind},
+                        )
+                    )
 
-            # Convert to file/generator/stream
-            bedtool = converter[kind_a](orig_a)
-            b = converter[kind_b](orig_b)
+            if flavor == 'ab':
+                orig_a = pybedtools.example_bedtool(kw['a'])
+                orig_b = pybedtools.example_bedtool(kw['b'])
+                if orig_a._isbam:
+                    a_isbam = True
+                if orig_b._isbam:
+                    b_isbam = True
 
-            kind = 'a=%(kind_a)s, b=%(kind_b)s abam=%(a_isbam)s bbam=%(b_isbam)s' % locals()
+                bedtool = kw.pop('a')
 
-            send_kwargs['b'] = b
+                for kind_a, kind_b in itertools.permutations(kinds, 2):
+                    if a_isbam and (kind_a not in supported_bam):
+                        continue
+                    if b_isbam and (kind_b not in supported_bam):
+                        continue
 
-            f = partial(run, method, bedtool, expected, **send_kwargs)
+                    label = (
+                        '{method}: {kw} a={kind_a} b={kind_b}'
+                        .format(**locals())
+                    )
 
-            # Meaningful description
-            f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
-            yield (f, )
+                    labels.append(label)
+                    tests.append(
+                        dict(
+                            method=method,
+                            bedtool=bedtool,
+                            test_case=test_case,
+                            kw=kw,
+                            convert={'bedtool': kind_a, 'b': kind_b},
+                        )
+                    )
 
-def test_i_methods():
-    """
-    Generator that yields tests, inserting different versions of `i` as needed
-    """
-    for config_fn in yamltestdesc:
-        _test_i_methods(config_fn)
+    metafunc.parametrize('tests', tests, ids=labels)
 
-def _test_i_methods(config_fn):
-    for method, send_kwargs, expected in parse_yaml(config_fn):
-        i_isbam = False
-        if 'ibam' in send_kwargs:
-            i_isbam = True
-            send_kwargs['ibam'] = pybedtools.example_filename(send_kwargs['ibam'])
-            send_kwargs['i'] = send_kwargs['ibam']
 
-        if ('a' in send_kwargs) and ('b' in send_kwargs):
-            continue
-
-        if ('i' not in send_kwargs) and ('ibam' not in send_kwargs):
-            continue
-
-        if 'files' in send_kwargs:
-            send_kwargs['files'] = [pybedtools.example_filename(i) for i in send_kwargs['files']]
-
-        orig_i = pybedtools.example_bedtool(send_kwargs['i'])
-        if orig_i._isbam:
-            i_isbam = True
-
-        del send_kwargs['i']
-
-        done = []
-        for kind_i in ('filename', 'generator', 'stream', 'gzip'):
-            if i_isbam:
-                if (kind_i not in supported_bam):
-                    continue
-            i = converter[kind_i](orig_i)
-            kind = 'i=%(kind_i)s ibam=%(i_isbam)s' % locals()
-            f = partial(run, method, i, expected, **send_kwargs)
-            f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
-            yield (f, )
-
-def test_bed_methods():
-    """
-    Generator that yields tests, inserting different versions of `bed` as needed
-    """
-    for config_fn in yamltestdesc:
-        _test_bed_methods(config_fn)
-
-def _test_bed_methods(config_fn):
-    for method, send_kwargs, expected in parse_yaml(config_fn):
-        ignore = ['a', 'b','abam','i']
-        skip_test = False
-        for i in ignore:
-            if i in send_kwargs:
-                skip_test = True
-        if skip_test:
-            continue
-        if 'bed' not in send_kwargs:
-            continue
-
-        if 'files' in send_kwargs:
-            send_kwargs['files'] = [pybedtools.example_filename(i) for i in send_kwargs['files']]
-
-        if 'bams' in send_kwargs:
-            send_kwargs['bams'] = [pybedtools.example_filename(i) for i in send_kwargs['bams']]
-
-        if 'fi' in send_kwargs:
-            send_kwargs['fi'] = pybedtools.example_filename(send_kwargs['fi'])
-
-        orig_bed = pybedtools.example_bedtool(send_kwargs['bed'])
-
-        del send_kwargs['bed']
-
-        done = []
-        for kind_bed in ('filename', 'generator', 'stream', 'gzip'):
-            bed = converter[kind_bed](orig_bed)
-            kind = 'i=%(kind_bed)s' % locals()
-            f = partial(run, method, bed, expected, **send_kwargs)
-            f.description = '%(method)s, %(kind)s, %(send_kwargs)s' % locals()
-            yield (f, )
-
-def teardown():
-    pybedtools.cleanup(remove_all=True)
+def test_all(tests):
+    run(tests)
