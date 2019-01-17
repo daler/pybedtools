@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 annotate a file with the neearest features in another.
 
