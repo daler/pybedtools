@@ -3398,7 +3398,8 @@ class BedTool(object):
 
     def to_dataframe(self, disable_auto_names=False, *args, **kwargs):
         """
-        create a pandas.DataFrame, passing args and kwargs to pandas.read_table
+        Create a pandas.DataFrame, passing args and kwargs to pandas.read_csv
+        The separator kwarg `sep` is given a tab `\\t` as value by default.
 
         Parameters
         ----------
@@ -3436,7 +3437,7 @@ class BedTool(object):
                 _names = None
             kwargs['names'] = _names
 
-        return pandas.read_table(self.fn, *args, **kwargs)
+        return pandas.read_csv(self.fn, *args, sep="\t", **kwargs)
 
     def tail(self, lines=10, as_string=False):
         """
