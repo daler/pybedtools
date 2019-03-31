@@ -3436,6 +3436,8 @@ class BedTool(object):
             except KeyError:
                 _names = None
             kwargs['names'] = _names
+        if disable_auto_names:
+            kwargs['header'] = None
 
         return pandas.read_csv(self.fn, *args, sep="\t", **kwargs)
 

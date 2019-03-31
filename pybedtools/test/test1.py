@@ -1591,11 +1591,14 @@ def test_to_dataframe():
     x = x.intersect(x, c=True)
     with warnings.catch_warnings(record=True) as w:
         #trigger the warning
-        x.to_dataframe()
+        df = x.to_dataframe()
         #assert a few things
         assert len(w) == 1
         assert issubclass(w[-1].category, UserWarning)
         assert str(w[-1].message).startswith('Default names for filetype')
+
+    df = x.to_dataframe(disable_auto_names=True)
+    assert list(df.columns) == list(range(10)), df.columns
 
     names = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand',
              'frame', 'attributes', 'count']
