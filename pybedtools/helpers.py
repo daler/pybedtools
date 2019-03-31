@@ -86,6 +86,11 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
             #
             vv = v.decode().split('v')[1]
 
+            # Handle cases where the name of the executable corresponds to the
+            # git "dirty" version ID, e.g., bedtools v2.25.0-96-g5ee3285-dirty.
+            # See https://github.com/daler/pybedtools/issues/275 for details.
+            #
+            vv = vv.split('-')[0]
             settings.bedtools_version = [int(i) for i in vv.split(".")]
 
             settings._v_2_27_plus = (
