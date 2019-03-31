@@ -140,6 +140,7 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     #                           "Please check that what is installed in '%s' is indeed from "
     #                           "https://github.com/arq5x/bedtools." % settings._bedtools_path)
 
+
 def _check_for_R():
     try:
         p = subprocess.Popen(
@@ -208,7 +209,6 @@ def isBAM(fn):
     # right way with magic number.
     if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4).decode() == 'BAM\x01'):
         return True
-
 
 
 def find_tagged(tag):
@@ -302,7 +302,9 @@ def _version_2_15_plus_names(prog_name):
     return [os.path.join(settings._bedtools_path, 'bedtools'), prog_name]
 
 
-def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output=True, encode_input=True):
+def call_bedtools(
+        cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output=True,
+        encode_input=True):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
 
@@ -438,8 +440,6 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
             else:
                 raise BEDToolsError(subprocess.list2cmdline(cmds), stderr)
 
-
-
     except (OSError, IOError) as err:
         print('%s: %s' % (type(err), os.strerror(err.errno)))
         print('The command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds))
@@ -455,7 +455,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
                  'that was created using a generator function, '
                  'please try saving it to disk first using the '
                  '.saveas() method before calling this bedtools '
-                 'command. See issue #49 for more.' ,),
+                 'command. See issue #49 for more.',),
 
         }
 
@@ -559,6 +559,7 @@ def string_to_interval(s):
             ])
     return s
 
+
 class FisherOutput(object):
     def __init__(self, s, **kwargs):
         """
@@ -593,7 +594,7 @@ class FisherOutput(object):
         lines = s.splitlines()
         for i in lines:
             if 'not in -a' in i:
-                _, in_b, not_in_b, _= i.strip().split('|')
+                _, in_b, not_in_b, _ = i.strip().split('|')
                 table['not in -a']['not in -b'] = int(not_in_b)
                 table['not in -a']['in -b'] = int(in_b)
 
@@ -612,7 +613,9 @@ class FisherOutput(object):
         return self.text
 
     def __repr__(self):
-        return '<%s at %s>\n%s' % (self.__class__.__name__, id(self), self.text)
+        return '<%s at %s>\n%s' % (
+            self.__class__.__name__, id(self),
+            self.text)
 
 
 class SplitOutput(object):
@@ -657,7 +660,8 @@ class SplitOutput(object):
 
 def internet_on(timeout=1):
     try:
-        response = urllib.request.urlopen('http://genome.ucsc.edu', timeout=timeout)
+        response = urllib.request.urlopen(
+            'http://genome.ucsc.edu', timeout=timeout)
         return True
     except urllib.error.URLError as err:
         pass
@@ -716,7 +720,6 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
 
         if saveas is not None:
             chromsizes_to_file(d, saveas)
-
 
     except OSError as err:
         if err.errno == 2:
@@ -816,6 +819,7 @@ def chromsizes(genome):
     except AttributeError:
         return get_chromsizes_from_ucsc(genome)
 
+
 def get_includes():
     """
     Returns a list of include directories with BEDTools headers
@@ -828,4 +832,3 @@ def get_includes():
 
 
 atexit.register(cleanup)
-
