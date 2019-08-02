@@ -11,6 +11,7 @@ import struct
 import atexit
 import six
 import pysam
+import re
 from six.moves import urllib
 from . import cbedtools
 from . import settings
@@ -72,25 +73,23 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
         # let us quickly determine the program version by calling without
         # specifying application
         try:
-            v = subprocess.check_output(
+             v = subprocess.check_output(
                 [
                     os.path.join(
                         settings._bedtools_path, 'bedtools'),
-                    '--version'])
+                    '--version']).decode('utf-8').rstrip()
+
+            if verbose:
+              print("I: Found bedtools version '%s'" % v)
 
             settings._bedtools_installed = True
 
-            # e.g.,
-            #
+            # To allow more complicated versions as found in Linux distributions, e.g.:
             #  bedtools v2.26.0
-            #
-            vv = v.decode().split('v')[1]
+            #  bedtools debian/2.28.0+dfsg-2-dirty
+            m = re.search('^bedtools [^0-9]*([0-9][0-9.]*)', v)
+            vv = m.group(1)
 
-            # Handle cases where the name of the executable corresponds to the
-            # git "dirty" version ID, e.g., bedtools v2.25.0-96-g5ee3285-dirty.
-            # See https://github.com/daler/pybedtools/issues/275 for details.
-            #
-            vv = vv.split('-')[0]
             settings.bedtools_version = [int(i) for i in vv.split(".")]
 
             settings._v_2_27_plus = (
