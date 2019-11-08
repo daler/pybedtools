@@ -665,7 +665,8 @@ def internet_on(timeout=1):
 
 
 def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
-                             fetchchromsizes='fetchChromSizes', timeout=None):
+                             fetchchromsizes='fetchChromSizes', timeout=None,
+                             host_url='genome-mysql.cse.ucsc.edu'):
     """
     Download chrom size info for *genome* from UCSC and returns the dictionary.
 
@@ -684,13 +685,15 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
     timeout : float
         How long to wait for a response; mostly used for testing.
 
+    host_url : str
+        URL of UCSC mirror MySQL server.
     """
     if not internet_on(timeout=timeout):
         raise ValueError('It appears you don\'t have an internet connection '
                          '-- unable to get chromsizes from UCSC')
     cmds = [mysql,
             '--user=genome',
-            '--host=genome-mysql.cse.ucsc.edu',
+            '--host=' + host_url,
             '-A',
             '-e',
             'select chrom, size from %s.chromInfo' % genome]
