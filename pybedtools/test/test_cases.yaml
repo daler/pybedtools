@@ -574,16 +574,17 @@
 
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
+# Disabling for now, see https://github.com/arq5x/bedtools2/issues/806
 # bedpeToBam
--   method: bedpe_to_bam
-    kwargs:
-            i: bedpe.bed
-            genome: hg19
-    expected: |
-        bedpe_example1	97	chr1	101	255	100M	chr5	5001	0	*	*
-        bedpe_example1	145	chr5	5001	255	100M	chr1	101	0	*	*
-        bedpe_example2	113	chr9	1001	255	4000M	=	3001	2000	*	*
-        bedpe_example2	177	chr9	3001	255	800M	=	1001	2000	*	*
+#-   method: bedpe_to_bam
+#    kwargs:
+#            i: bedpe.bed
+#            genome: hg19
+#    expected: |
+#        bedpe_example1	97	chr1	101	255	100M	chr5	5001	0	*	*
+#        bedpe_example1	145	chr5	5001	255	100M	chr1	101	0	*	*
+#        bedpe_example2	113	chr9	1001	255	4000M	=	3001	2000	*	*
+#        bedpe_example2	177	chr9	3001	255	800M	=	1001	2000	*	*
 
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
