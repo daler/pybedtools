@@ -1891,15 +1891,16 @@ class BedTool(object):
             chr1	899	949	feature4	0	+
             <BLANKLINE>
 
+            # Disabling, see https://github.com/arq5x/bedtools2/issues/807
             Shift features by a fraction of their length (0.50):
 
-            >>> b = a.shift(genome='hg19', pct=True, s=0.50)
-            >>> print(b) #doctest: +NORMALIZE_WHITESPACE
-            chr1	50	149	feature1	0	+
-            chr1	150	250	feature2	0	+
-            chr1	325	675	feature3	0	-
-            chr1	925	975	feature4	0	+
-            <BLANKLINE>
+            #>>> b = a.shift(genome='hg19', pct=True, s=0.50)
+            #>>> print(b) #doctest: +NORMALIZE_WHITESPACE
+            #chr1	50	149	feature1	0	+
+            #chr1	150	250	feature2	0	+
+            #chr1	325	675	feature3	0	-
+            #chr1	925	975	feature4	0	+
+            #<BLANKLINE>
 
         """
 
