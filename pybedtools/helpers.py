@@ -11,6 +11,7 @@ import struct
 import atexit
 import six
 import pysam
+import re
 from six.moves import urllib
 from . import cbedtools
 from . import settings
@@ -60,7 +61,7 @@ def set_R_path(path=""):
     paths._set_R_path(path)
 
 
-def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
+def _check_for_bedtools(force_check=False, verbose=False, override=None):
     """
     Checks installation as well as version (based on whether or not "bedtools
     intersect" works, or just "intersectBed")
@@ -68,29 +69,32 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     if settings._bedtools_installed and not force_check:
         return True
 
-    if len(settings.bedtools_version) == 0:
-        # let us quickly determine the program version by calling without
-        # specifying application
+    if (len(settings.bedtools_version) == 0) or force_check:
         try:
             v = subprocess.check_output(
                 [
                     os.path.join(
                         settings._bedtools_path, 'bedtools'),
-                    '--version'])
+                    '--version']
+            ).decode('utf-8').rstrip()
+
+            if verbose:
+                print("Found bedtools version '%s'" % v)
 
             settings._bedtools_installed = True
 
-            # e.g.,
-            #
-            #  bedtools v2.26.0
-            #
-            vv = v.decode().split('v')[1]
+            # Override, used for testing
+            if override is not None:
+                v = override
 
-            # Handle cases where the name of the executable corresponds to the
-            # git "dirty" version ID, e.g., bedtools v2.25.0-96-g5ee3285-dirty.
-            # See https://github.com/daler/pybedtools/issues/275 for details.
-            #
-            vv = vv.split('-')[0]
+            # To allow more complicated versions as found in Linux distributions, e.g.:
+            #  bedtools v2.26.0
+            #  bedtools debian/2.28.0+dfsg-2-dirty
+            m = re.search('^bedtools [^0-9]*([0-9][0-9.]*)', v)
+            if not m:
+                raise ValueError('Cannot identify version number from "{}"'.format(v))
+            vv = m.group(1)
+
             settings.bedtools_version = [int(i) for i in vv.split(".")]
 
             settings._v_2_27_plus = (
@@ -112,33 +116,6 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
                           "(https://github.com/arq5x/bedtools) and that "
                           "it's on the path. %s" % add_msg)
 
-    # Disabling the additional pre-2.15 check since the above code is now
-    # handling it based on what --version reports.
-    #
-    # TODO: fully deprecate this, and eventually remove v2.15 support.
-    #
-    # try:
-    #     p = subprocess.Popen(
-    #         [os.path.join(settings._bedtools_path, 'bedtools'),
-    #          settings._prog_names[program_to_check]],
-    #         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #     settings._bedtools_installed = True
-    #     settings._v_2_15_plus = True
-    #     settings._v_2_27_plus = False
-
-    # except (OSError, KeyError) as err:
-    #     try:
-    #         p = subprocess.Popen(
-    #             [os.path.join(settings._bedtools_path, program_to_check)],
-    #             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #         settings._bedtools_installed = True
-    #         settings._v_2_15_plus = False
-
-    #     except OSError as err:
-    #         if err.errno == 2:
-    #             raise OSError("BEDTools exists as a binary but seems otherwise incompatible. "
-    #                           "Please check that what is installed in '%s' is indeed from "
-    #                           "https://github.com/arq5x/bedtools." % settings._bedtools_path)
 
 def _check_for_R():
     try:
