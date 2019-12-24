@@ -6,6 +6,8 @@ import six
 import pybedtools
 import pytest
 
+if six.PY2:
+    FileNotFoundError = IOError
 
 def test_pathlib_base():
     file = 'a.bed'
