@@ -61,7 +61,7 @@ def set_R_path(path=""):
     paths._set_R_path(path)
 
 
-def _check_for_bedtools(program_to_check='intersectBed', force_check=False, verbose=False, override=None):
+def _check_for_bedtools(force_check=False, verbose=False, override=None):
     """
     Checks installation as well as version (based on whether or not "bedtools
     intersect" works, or just "intersectBed")
