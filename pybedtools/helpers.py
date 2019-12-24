@@ -69,51 +69,52 @@ def _check_for_bedtools(force_check=False, verbose=False, override=None):
     if settings._bedtools_installed and not force_check:
         return True
 
-    try:
-        v = subprocess.check_output(
-            [
-                os.path.join(
-                    settings._bedtools_path, 'bedtools'),
-                '--version']
-        ).decode('utf-8').rstrip()
+    if (len(settings.bedtools_version) == 0) or force_check:
+        try:
+            v = subprocess.check_output(
+                [
+                    os.path.join(
+                        settings._bedtools_path, 'bedtools'),
+                    '--version']
+            ).decode('utf-8').rstrip()
 
-        if verbose:
-            print("Found bedtools version '%s'" % v)
+            if verbose:
+                print("Found bedtools version '%s'" % v)
 
-        settings._bedtools_installed = True
+            settings._bedtools_installed = True
 
-        # Override, used for testing
-        if override is not None:
-            v = override
+            # Override, used for testing
+            if override is not None:
+                v = override
 
-        # To allow more complicated versions as found in Linux distributions, e.g.:
-        #  bedtools v2.26.0
-        #  bedtools debian/2.28.0+dfsg-2-dirty
-        m = re.search('^bedtools [^0-9]*([0-9][0-9.]*)', v)
-        if not m:
-            raise ValueError('Cannot identify version number from "{}"'.format(v))
-        vv = m.group(1)
+            # To allow more complicated versions as found in Linux distributions, e.g.:
+            #  bedtools v2.26.0
+            #  bedtools debian/2.28.0+dfsg-2-dirty
+            m = re.search('^bedtools [^0-9]*([0-9][0-9.]*)', v)
+            if not m:
+                raise ValueError('Cannot identify version number from "{}"'.format(v))
+            vv = m.group(1)
 
-        settings.bedtools_version = [int(i) for i in vv.split(".")]
+            settings.bedtools_version = [int(i) for i in vv.split(".")]
 
-        settings._v_2_27_plus = (
-            settings.bedtools_version[0] >= 2 and
-            settings.bedtools_version[1] >= 27
-        )
+            settings._v_2_27_plus = (
+                settings.bedtools_version[0] >= 2 and
+                settings.bedtools_version[1] >= 27
+            )
 
-        settings._v_2_15_plus = (
-            settings.bedtools_version[0] >= 2 and
-            settings.bedtools_version[1] >= 15
-        )
+            settings._v_2_15_plus = (
+                settings.bedtools_version[0] >= 2 and
+                settings.bedtools_version[1] >= 15
+            )
 
-    except subprocess.CalledProcessError:
-        if settings._bedtools_path:
-            add_msg = "(tried path '%s')" % settings._bedtools_path
-        else:
-            add_msg = ""
-        raise OSError("Please make sure you have installed BEDTools"
-                      "(https://github.com/arq5x/bedtools) and that "
-                      "it's on the path. %s" % add_msg)
+        except subprocess.CalledProcessError:
+            if settings._bedtools_path:
+                add_msg = "(tried path '%s')" % settings._bedtools_path
+            else:
+                add_msg = ""
+            raise OSError("Please make sure you have installed BEDTools"
+                          "(https://github.com/arq5x/bedtools) and that "
+                          "it's on the path. %s" % add_msg)
 
 
 def _check_for_R():
