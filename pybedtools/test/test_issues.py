@@ -663,3 +663,24 @@ def test_issue_258():
                                 '4_pct_at', '5_pct_gc', '6_num_A', '7_num_C',
                                 '8_num_G', '9_num_T', '10_num_N', '11_num_oth',
                                 '12_seq_len']
+
+def test_issue_303():
+    # issue 303 describes hitting a cap of 253 -b files. Locally I hit a limit
+    # at 512.
+    b = []
+    for i in range(1000):
+        b.append(pybedtools.BedTool('chr1\t{0}\t{1}\tb{0}'.format(i, i + 1), from_string=True))
+    a = pybedtools.example_bedtool('a.bed')
+
+    # This seems to work no matter how many we use:
+    x = a.intersect(b, wao=True, filenames=True)
+
+    for n in [64, 256, 510]:
+        b2 = [i.fn for i in b[:n]]
+        try:
+            y = a.intersect(b2)
+        except pybedtools.helpers.BEDToolsError:
+            raise ValueError('Hit a limit at {0} files'.format(n))
+
+    with pytest.raises(pybedtools.helpers.pybedtoolsError):
+        y = a.intersect([i.fn for i in b])
