@@ -459,6 +459,10 @@ class BedTool(object):
             fout.close()
 
         else:
+            # if fn is a Path object, we have to use its string representation
+            if 'pathlib.PurePath' in str(type(fn).__mro__):
+                fn = str(fn)
+
             # our work is already done
             if isinstance(fn, BedTool):
                 fn = fn.fn
