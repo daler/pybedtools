@@ -18,7 +18,7 @@ from warnings import warn
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
-    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect, SplitOutput)
+    isBAM, isBGZIP, isGZIP, BEDToolsError, pybedtoolsError, _call_randomintersect, SplitOutput)
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list, BedToolsFileError
 from . import filenames
@@ -267,7 +267,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     # Otherwise, BEDTools can't currently handle it, so raise
                     # an exception.
                     else:
-                        raise BEDToolsError(
+                        raise pybedtoolsError(
                             '"%s" currently can\'t handle BAM '
                             'input, please use bam_to_bed() first.' % prog)
 
@@ -294,6 +294,19 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                             check_for_genome = True
             if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
+
+            # TODO: should this be implemented as a generic function that can
+            # be passed in for a each tool to check kwargs? Currently this is
+            # the only check I can think of.
+            if prog in ('intersect', 'intersectBed'):
+                if (
+                    isinstance(kwargs['b'], list) and
+                        len(kwargs['b']) > 510 and
+                        all([isinstance(i, str) for i in kwargs['b']])
+                ):
+                    raise pybedtoolsError(
+                        'BEDTools intersect does not support > 510 filenames for -b '
+                        'argument. Consider passing these as BedTool objects instead')
 
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
