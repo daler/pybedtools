@@ -1431,7 +1431,7 @@ def test_jaccard():
     x = pybedtools.example_bedtool('a.bed')
 
     results = x.jaccard(pybedtools.example_bedtool('b.bed'))
-    assert results == {'intersection': 46, 'union-intersection': 649, 'jaccard': 0.0708783, 'n_intersections': 2}, results
+    assert results == {'intersection': 46, 'union': 649, 'jaccard': 0.0708783, 'n_intersections': 2}, results
 
     results2 = x.jaccard(pybedtools.example_bedtool('b.bed'), stream=True)
     assert results == results2, results2
@@ -1747,21 +1747,3 @@ def test_new_head():
     # however, printing should still complain:
     with pytest.raises(pybedtools.cbedtools.MalformedBedLineError):
         print(a)
-
-def test_issue_303():
-    # issue 303 describes hitting a cap of 253 -b files. Locally I hit a limit
-    # at 512.
-    b = []
-    for i in range(1000):
-        b.append(pybedtools.BedTool('chr1\t{0}\t{1}\tb{0}'.format(i, i + 1), from_string=True))
-    a = pybedtools.example_bedtool('a.bed')
-
-    # This seems to work no matter how many we use:
-    x = a.intersect(b, wao=True, filenames=True)
-
-    for n in [64, 256, 512]:
-        b2 = [i.fn for i in b[:n]]
-        try:
-            y = a.intersect(b2)
-        except pybedtools.BedToolError:
-            raise ValueError('Hit a limit at {0} files'.format(n))
