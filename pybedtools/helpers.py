@@ -137,6 +137,9 @@ class Error(Exception):
     pass
 
 
+class pybedtoolsError(Error):
+    pass
+
 class BEDToolsError(Error):
     def __init__(self, cmd, msg):
         self.cmd = str(cmd)
