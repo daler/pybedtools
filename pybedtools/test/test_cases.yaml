@@ -70,6 +70,14 @@
     expected: |
         chr2L	10	15	None	255	+	10	15	0,0,0	1	5,	0,
 
+-   method: intersect
+    kwargs:
+        abam: gdc.cram
+        b: gdc.gff
+        bed: True
+        v: True
+    expected: |
+        chr2L	10	15	None	255	+	10	15	0,0,0	1	5,	0,
 
 -   method: intersect
     kwargs:
@@ -86,10 +94,41 @@
         chr2L	140	145	None	255	+	140	145	0,0,0	1	5,	0,
         chr2L	160	165	None	255	+	160	165	0,0,0	1	5,	0,
 
+-   method: intersect
+    kwargs:
+        abam: gdc.cram
+        b: gdc.gff
+        bed: True
+        u: True
+    expected: |
+        chr2L	70	75	None	255	-	70	75	0,0,0	1	5,	0,
+        chr2L	140	145	None	255	-	140	145	0,0,0	1	5,	0,
+        chr2L	150	155	None	255	-	150	155	0,0,0	1	5,	0,
+        chr2L	210	215	None	255	+	210	215	0,0,0	1	5,	0,
+        chr2L	70	75	None	255	+	70	75	0,0,0	1	5,	0,
+        chr2L	140	145	None	255	+	140	145	0,0,0	1	5,	0,
+        chr2L	160	165	None	255	+	160	165	0,0,0	1	5,	0,
+
 # same thing, but no explicit -abam, just -a
 -   method: intersect
     kwargs:
         a: gdc.bam
+        b: gdc.gff
+        bed: True
+        u: True
+    expected: |
+        chr2L	70	75	None	255	-	70	75	0,0,0	1	5,	0,
+        chr2L	140	145	None	255	-	140	145	0,0,0	1	5,	0,
+        chr2L	150	155	None	255	-	150	155	0,0,0	1	5,	0,
+        chr2L	210	215	None	255	+	210	215	0,0,0	1	5,	0,
+        chr2L	70	75	None	255	+	70	75	0,0,0	1	5,	0,
+        chr2L	140	145	None	255	+	140	145	0,0,0	1	5,	0,
+        chr2L	160	165	None	255	+	160	165	0,0,0	1	5,	0,
+
+# same thing, but no explicit -abam, just -a...and use CRAM
+-   method: intersect
+    kwargs:
+        a: gdc.cram
         b: gdc.gff
         bed: True
         u: True
@@ -331,6 +370,19 @@
         chr2L	160	165	1
         chr2L	210	215	1
 
+-   method: genome_coverage
+    kwargs:
+        ibam: gdc.cram
+        #genome: dm3
+        bg: True
+    expected: |
+        chr2L	10	15	1
+        chr2L	70	75	2
+        chr2L	140	145	2
+        chr2L	150	155	1
+        chr2L	160	165	1
+        chr2L	210	215	1
+
 # same thing, but auto-detect BAM
 -   method: genome_coverage
     kwargs:
@@ -448,6 +500,21 @@
         None	0	chr2L	141	255	5M	*	0	0	TGGTG	IIIII	NM:i:0	NH:i:1	YB:Z:1
         None	0	chr2L	161	255	5M	*	0	0	GATAA	IIIII	NM:i:0	NH:i:1
 
+-   method: tag_bam
+    kwargs:
+        i: gdc.cram
+        files: ['tag_test1.bed', 'tag_test2.bed']
+        labels: ['1', '2']
+        s: True
+    expected: |
+        None	0	chr2L	11	255	5M	*	0	0	*	*	NH:i:1	YB:Z:1
+        None	16	chr2L	71	255	5M	*	0	0	*	*	NH:i:1	YB:Z:2
+        None	16	chr2L	141	255	5M	*	0	0	*	*	NH:i:1	YB:Z:2
+        None	16	chr2L	151	255	5M	*	0	0	*	*	NH:i:1	YB:Z:2
+        None	0	chr2L	211	255	5M	*	0	0	*	*	NH:i:1
+        None	0	chr2L	71	255	5M	*	0	0	*	*	NH:i:1	YB:Z:1
+        None	0	chr2L	141	255	5M	*	0	0	*	*	NH:i:1	YB:Z:1
+        None	0	chr2L	161	255	5M	*	0	0	*	*	NH:i:1
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
 # nucBed
@@ -574,16 +641,17 @@
 
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
+# Disabling for now, see https://github.com/arq5x/bedtools2/issues/806
 # bedpeToBam
--   method: bedpe_to_bam
-    kwargs:
-            i: bedpe.bed
-            genome: hg19
-    expected: |
-        bedpe_example1	97	chr1	101	255	100M	chr5	5001	0	*	*
-        bedpe_example1	145	chr5	5001	255	100M	chr1	101	0	*	*
-        bedpe_example2	113	chr9	1001	255	4000M	=	3001	2000	*	*
-        bedpe_example2	177	chr9	3001	255	800M	=	1001	2000	*	*
+#-   method: bedpe_to_bam
+#    kwargs:
+#            i: bedpe.bed
+#            genome: hg19
+#    expected: |
+#        bedpe_example1	97	chr1	101	255	100M	chr5	5001	0	*	*
+#        bedpe_example1	145	chr5	5001	255	100M	chr1	101	0	*	*
+#        bedpe_example2	113	chr9	1001	255	4000M	=	3001	2000	*	*
+#        bedpe_example2	177	chr9	3001	255	800M	=	1001	2000	*	*
 
 
 #88888888888888888888888888888888888888888888888888888888888888888888888888888
