@@ -752,35 +752,23 @@ cdef class IntervalIterator:
 
     def __next__(self):
         while True:
+            if hasattr(self.stream, 'closed'):
+                if self.stream.closed:
+                    raise StopIteration
             try:
-                # See historical note below.
-                if hasattr(self.stream, 'closed'):
-                    if self.stream.closed:
-                        raise StopIteration
                 line = next(self.stream)
-                if self._itemtype < 0:
-                    if isinstance(line, Interval):
-                        self._itemtype = 2
-                    elif isinstance(line, basestring):
-                        self._itemtype = 1
-                    else:
-                        self._itemtype = 0
-
-            # If you only trap StopIteration, for some reason even after
-            # raising a new StopIteration it goes back to the top of the
-            # while-loop and tries to get the next line again.  This in turn
-            # raises a ValueError because the stream is closed.
-            #
-            # Historical note: previously, we let it do so and caught the
-            # ValueError exception again here, and raised another
-            # StopIteration. Now, we check to see if the stream is closed, and
-            # raise StopIteration up there.
             except StopIteration:
-                try:
+                if hasattr(self.stream, 'close'):
                     self.stream.close()
-                except AttributeError:
-                    pass
                 raise StopIteration
+
+            if self._itemtype < 0:
+                if isinstance(line, Interval):
+                    self._itemtype = 2
+                elif isinstance(line, basestring):
+                    self._itemtype = 1
+                else:
+                    self._itemtype = 0
 
             if self._itemtype == 1:
                 if line.startswith(('@', '#', 'track', 'browser')) or len(line.strip()) == 0:
@@ -842,6 +830,7 @@ cdef class IntervalFile:
             self.intervalFile_ptr.Close()
             raise StopIteration
         elif b.status == BED_MALFORMED:
+            self.intervalFile_ptr.Close()
             raise MalformedBedLineError("malformed line: %s" % string_vec2list(b.fields))
         else:
             return next(self)
