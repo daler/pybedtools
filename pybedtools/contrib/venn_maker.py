@@ -17,13 +17,15 @@ from collections import OrderedDict
 #
 # Note that the closing parentheses is missing -- that's so the user can add
 # kwargs from the calling function
-template = string.Template("""
+template = string.Template(
+    """
 library(VennDiagram)
 venn.diagram(
     x=$x,
     filename=$filename,
     category.names = $names
-""")
+"""
+)
 
 
 def _list_to_R_syntax(x):
@@ -35,9 +37,9 @@ def _list_to_R_syntax(x):
     items = []
     for i in x:
         if isinstance(i, pybedtools.Interval):
-            i = str(i).replace('\t', '|')
+            i = str(i).replace("\t", "|")
         items.append('"%s"' % i)
-    return 'c(%s)' % ','.join(items)
+    return "c(%s)" % ",".join(items)
 
 
 def _dict_to_R_named_list(d):
@@ -47,7 +49,7 @@ def _dict_to_R_named_list(d):
     items = []
     for key, val in list(d.items()):
         items.append('"%s" = %s' % (key, _list_to_R_syntax(val)))
-    return 'list(%s)' % ', '.join(items)
+    return "list(%s)" % ", ".join(items)
 
 
 def truncator(feature):
@@ -55,7 +57,8 @@ def truncator(feature):
     Convert a feature of any format into a BED3 format.
     """
     return pybedtools.create_interval_from_list(
-            [feature.chrom, str(feature.start), str(feature.stop)])
+        [feature.chrom, str(feature.start), str(feature.stop)]
+    )
 
 
 def cleaned_intersect(items):
@@ -152,16 +155,19 @@ def cleaned_intersect(items):
         #  shared-with-any-x
         #  shared-with-unique-to-y
         #  shared-with-unique-to-z
-        new_q = (q - z - y - x)\
-                .cat(x + q)\
-                .cat((y - x) + q)\
-                .cat((z - y - x) + q)
+        new_q = (q - z - y - x).cat(x + q).cat((y - x) + q).cat((z - y - x) + q)
 
         return x, new_y, new_z, new_q
 
 
-def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
-        additional_args=None, run=False):
+def venn_maker(
+    beds,
+    names=None,
+    figure_filename=None,
+    script_filename=None,
+    additional_args=None,
+    run=False,
+):
     """
     Given a list of interval files, write an R script to create a Venn \
     diagram of overlaps (and optionally run it).
@@ -193,12 +199,12 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
     """
 
     if figure_filename is None:
-        figure_filename = 'NULL'
+        figure_filename = "NULL"
     else:
         figure_filename = '"%s"' % figure_filename
 
     if names is None:
-        names = "abcd"[:len(beds)]
+        names = "abcd"[: len(beds)]
 
     _beds = []
     for bed in beds:
@@ -210,11 +216,12 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
     results = OrderedDict(list(zip(names, cleaned)))
 
     s = template.substitute(
-            x=_dict_to_R_named_list(results),
-            filename=figure_filename,
-            names=_list_to_R_syntax(names))
+        x=_dict_to_R_named_list(results),
+        filename=figure_filename,
+        names=_list_to_R_syntax(names),
+    )
     if additional_args:
-        s += ',' + ', '.join(additional_args)
+        s += "," + ", ".join(additional_args)
 
     s += ")"
 
@@ -223,20 +230,18 @@ def venn_maker(beds, names=None, figure_filename=None, script_filename=None,
     else:
         fn = script_filename
 
-    fout = open(fn, 'w')
+    fout = open(fn, "w")
     fout.write(s)
     fout.close()
 
-    out = fn + '.Rout'
+    out = fn + ".Rout"
     if run:
 
         if not pybedtools.settings._R_installed:
             helpers._check_for_R()
 
-        cmds = [os.path.join(pybedtools.settings._R_path, 'R'), 'CMD', 'BATCH',
-                fn, out]
-        p = subprocess.Popen(
-                cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmds = [os.path.join(pybedtools.settings._R_path, "R"), "CMD", "BATCH", fn, out]
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         stdout, stderr = p.communicate()
         if stdout or stderr:

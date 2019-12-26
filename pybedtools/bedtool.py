@@ -17,10 +17,27 @@ import pysam
 from warnings import warn
 
 from .helpers import (
-    get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
-    isBAM, isBGZIP, isGZIP, BEDToolsError, pybedtoolsError, _call_randomintersect, SplitOutput)
+    get_tempdir,
+    _tags,
+    call_bedtools,
+    _flatten_list,
+    _check_sequence_stderr,
+    isBAM,
+    isBGZIP,
+    isGZIP,
+    BEDToolsError,
+    pybedtoolsError,
+    _call_randomintersect,
+    SplitOutput,
+)
 from . import helpers
-from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list, BedToolsFileError
+from .cbedtools import (
+    IntervalFile,
+    IntervalIterator,
+    Interval,
+    create_interval_from_list,
+    BedToolsFileError,
+)
 from . import filenames
 import pybedtools
 from . import settings
@@ -39,8 +56,8 @@ def _jaccard_output_to_dict(s, **kwargs):
     """
     if isinstance(s, six.string_types):
         _s = open(s).read()
-    elif hasattr(s, 'next') or hasattr(s, '__next__'):
-        _s = ''.join([i for i in s])
+    elif hasattr(s, "next") or hasattr(s, "__next__"):
+        _s = "".join([i for i in s])
     else:
         raise ValueError("Unexpected object %r" % s)
     header, data = _s.splitlines()
@@ -60,11 +77,11 @@ def _reldist_output_handler(s, **kwargs):
     If not -detail, then the results are a table, in which case here we parse
     into a dict for convenience.
     """
-    if 'detail' in kwargs:
+    if "detail" in kwargs:
         return BedTool(s)
     if isinstance(s, six.string_types):
         iterable = open(s)
-    if hasattr(s, 'next'):
+    if hasattr(s, "next"):
         iterable = s
     header = six.advance_iterator(iterable).split()
     results = {}
@@ -72,21 +89,28 @@ def _reldist_output_handler(s, **kwargs):
         results[h] = []
     for i in iterable:
         reldist, count, total, fraction = i.split()
-        data = [
-            float(reldist),
-            int(count),
-            int(total),
-            float(fraction)
-        ]
+        data = [float(reldist), int(count), int(total), float(fraction)]
         for h, d in zip(header, data):
             results[h].append(d)
     return results
 
 
-def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
-           make_tempfile_for=None, check_stderr=None, add_to_bedtool=None,
-           nonbam=None, force_bam=False, genome_none_if=None, genome_if=None,
-           genome_ok_if=None, does_not_return_bedtool=None):
+def _wraps(
+    prog=None,
+    implicit=None,
+    bam=None,
+    other=None,
+    uses_genome=False,
+    make_tempfile_for=None,
+    check_stderr=None,
+    add_to_bedtool=None,
+    nonbam=None,
+    force_bam=False,
+    genome_none_if=None,
+    genome_if=None,
+    genome_ok_if=None,
+    does_not_return_bedtool=None,
+):
     """
     Do-it-all wrapper, to be used as a decorator.
 
@@ -164,30 +188,33 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
     # Call the program with -h to get help, which prints to stderr.
     try:
-        p = subprocess.Popen(helpers._version_2_15_plus_names(prog) + ['-h'],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            helpers._version_2_15_plus_names(prog) + ["-h"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
         help_str = p.communicate()[1].decode()
 
         # underscores throw off ReStructuredText syntax of docstrings, so
         # replace 'em
-        help_str = help_str.replace('_', '**')
+        help_str = help_str.replace("_", "**")
 
         # indent
-        help_str = help_str.split('\n')
-        help_str = ['\n\n**Original BEDTools help:**::'] \
-            + ['\t' + i for i in help_str]
-        help_str = '\n'.join(help_str) + '\n'
+        help_str = help_str.split("\n")
+        help_str = ["\n\n**Original BEDTools help:**::"] + ["\t" + i for i in help_str]
+        help_str = "\n".join(help_str) + "\n"
 
     # If the program can't be found, then we'll eventually replace the method
     # with a version that does nothing but raise a NotImplementedError (plus
     # a helpful message).
     except OSError:
-        help_str = '"%s" does not appear to be installed '\
-            'or on the path, so this method is '\
-            'disabled.  Please install a more recent '\
-            'version of BEDTools and re-import to '\
-            'use this method.' % prog
+        help_str = (
+            '"%s" does not appear to be installed '
+            "or on the path, so this method is "
+            "disabled.  Please install a more recent "
+            "version of BEDTools and re-import to "
+            "use this method." % prog
+        )
         not_implemented = True
 
     def decorator(func):
@@ -208,22 +235,28 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         # Here's where we replace an unable-to-be-found program's method with
         # one that only returns a NotImplementedError
         if not_implemented:
+
             def not_implemented_func(*args, **kwargs):
                 raise NotImplementedError(help_str)
+
             return not_implemented_func
 
         _add_doc = []
         if implicit:
-            _add_doc.append(dedent(
-                """
+            _add_doc.append(
+                dedent(
+                    """
                     For convenience, the file or stream this BedTool points to
                     is implicitly passed as the `-%s` argument to `%s`
                 """
-                % (implicit, prog)))
+                    % (implicit, prog)
+                )
+            )
 
         if uses_genome:
-            _add_doc.append(dedent(
-                """
+            _add_doc.append(
+                dedent(
+                    """
                     There are two alternatives for supplying a genome.  Use
                     `g="genome.filename"` if you have a genome's chrom sizes
                     saved as a file. This is the what BEDTools expects when
@@ -233,7 +266,9 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     a separate file.  The `genome` argument triggers a call
                     `pybedtools.chromsizes`, so see that method for more
                     details.
-                """))
+                """
+                )
+            )
 
         def wrapped(self, *args, **kwargs):
             """
@@ -254,8 +289,11 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # auto-substitution.
             # Note: here, `implicit` is something like "a"; `bam` is something
             # like "abam"
-            if (implicit not in kwargs) \
-                    and (bam not in kwargs) and (implicit is not None):
+            if (
+                (implicit not in kwargs)
+                and (bam not in kwargs)
+                and (implicit is not None)
+            ):
                 if not self._isbam:
                     kwargs[implicit] = self.fn
                 else:
@@ -269,7 +307,8 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     else:
                         raise pybedtoolsError(
                             '"%s" currently can\'t handle BAM '
-                            'input, please use bam_to_bed() first.' % prog)
+                            "input, please use bam_to_bed() first." % prog
+                        )
 
             # Should this function handle genome files?
             check_for_genome = uses_genome
@@ -285,7 +324,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     if genome_ok_if:
                         for i in genome_ok_if:
                             if i in kwargs or i == implicit:
-                                if ('g' in kwargs) or ('genome' in kwargs):
+                                if ("g" in kwargs) or ("genome" in kwargs):
                                     check_for_genome = True
                 if genome_if:
                     check_for_genome = False
@@ -298,15 +337,16 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # TODO: should this be implemented as a generic function that can
             # be passed in for a each tool to check kwargs? Currently this is
             # the only check I can think of.
-            if prog in ('intersect', 'intersectBed'):
+            if prog in ("intersect", "intersectBed"):
                 if (
-                    isinstance(kwargs['b'], list) and
-                        len(kwargs['b']) > 510 and
-                        all([isinstance(i, str) for i in kwargs['b']])
+                    isinstance(kwargs["b"], list)
+                    and len(kwargs["b"]) > 510
+                    and all([isinstance(i, str) for i in kwargs["b"]])
                 ):
                     raise pybedtoolsError(
-                        'BEDTools intersect does not support > 510 filenames for -b '
-                        'argument. Consider passing these as BedTool objects instead')
+                        "BEDTools intersect does not support > 510 filenames for -b "
+                        "argument. Consider passing these as BedTool objects instead"
+                    )
 
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
@@ -330,14 +370,14 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
 
             # If nonbam is "ALL", then this method will never return BAM
             # output.
-            if nonbam == 'ALL':
+            if nonbam == "ALL":
                 result_is_bam = False
 
             # If any of the `nonbam` args are found in kwargs, then result is
             # not a BAM.  Side note: the _nonbam name mangling is necessary to
             # keep the nonbam arg passed into the original _wraps() decorator
             # in scope.
-            if nonbam is not None and nonbam != 'ALL':
+            if nonbam is not None and nonbam != "ALL":
                 if isinstance(nonbam, six.string_types):
                     _nonbam = [nonbam]
                 else:
@@ -353,10 +393,13 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             decode_output = not result_is_bam
 
             # Do the actual call
-            stream = call_bedtools(cmds, tmp, stdin=stdin,
-                                   check_stderr=check_stderr,
-                                   decode_output=decode_output,
-                                   )
+            stream = call_bedtools(
+                cmds,
+                tmp,
+                stdin=stdin,
+                check_stderr=check_stderr,
+                decode_output=decode_output,
+            )
 
             if does_not_return_bedtool:
                 return does_not_return_bedtool(stream, **kwargs)
@@ -366,7 +409,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
             # BedTool.
             if add_to_bedtool is not None:
                 for kw, attr in list(add_to_bedtool.items()):
-                    if kw == 'stdout':
+                    if kw == "stdout":
                         value = stream
                     else:
                         value = kwargs[kw]
@@ -383,7 +426,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
         # Now add the edited docstring (original Python doctring plus BEDTools
         # help) to the newly created method above
         if func.__doc__ is None:
-            orig = ''
+            orig = ""
         else:
             orig = func.__doc__
 
@@ -442,25 +485,25 @@ class BedTool(object):
         """
         if remote:
             raise ValueError(
-                "Remote BAM no longer supported (since BEDTools does not "
-                "support it)")
+                "Remote BAM no longer supported (since BEDTools does not " "support it)"
+            )
         self.remote = remote
         self._isbam = False
         self._bam_header = ""
         if from_string:
             bed_contents = fn
             fn = self._tmp()
-            fout = open(fn, 'w')
+            fout = open(fn, "w")
             for line in bed_contents.splitlines():
                 if len(line.strip()) == 0:
                     continue
-                line = '\t'.join(line.split()) + '\n'
+                line = "\t".join(line.split()) + "\n"
                 fout.write(line)
             fout.close()
 
         else:
             # if fn is a Path object, we have to use its string representation
-            if 'pathlib.PurePath' in str(type(fn).__mro__):
+            if "pathlib.PurePath" in str(type(fn).__mro__):
                 fn = str(fn)
 
             # our work is already done
@@ -503,27 +546,36 @@ class BedTool(object):
                     #     ]
                     # }
 
-
                     txt_header = []
                     for k, v in header.items():
                         if isinstance(v, list):
                             for i in v:
                                 if isinstance(i, dict):
                                     txt_header.append(
-                                        '\t'.join(
-                                            ['@' + k] +
-                                            [':'.join(map(str, j)) for j in sorted(i.items(), reverse=True)]))
+                                        "\t".join(
+                                            ["@" + k]
+                                            + [
+                                                ":".join(map(str, j))
+                                                for j in sorted(i.items(), reverse=True)
+                                            ]
+                                        )
+                                    )
                                 elif isinstance(i, str):
                                     txt_header.append(i)
 
                         elif isinstance(v, dict):
                             txt_header.append(
-                                '\t'.join(
-                                    ['@' + k] +
-                                    [':'.join(map(str, j)) for j in sorted(v.items(), reverse=True)]))
+                                "\t".join(
+                                    ["@" + k]
+                                    + [
+                                        ":".join(map(str, j))
+                                        for j in sorted(v.items(), reverse=True)
+                                    ]
+                                )
+                            )
                         else:
                             raise ValueError("unhandled type in BAM header")
-                    self._bam_header = '\n'.join(txt_header) + '\n'
+                    self._bam_header = "\n".join(txt_header) + "\n"
 
             # If tuple or list, then save as file first
             # (fixes #73)
@@ -536,8 +588,7 @@ class BedTool(object):
                 fn = fn
 
         self.fn = fn
-        tag = ''.join(
-            [random.choice(string.ascii_lowercase) for _ in range(8)])
+        tag = "".join([random.choice(string.ascii_lowercase) for _ in range(8)])
         self._tag = tag
         _tags[tag] = self
         self._hascounts = False
@@ -545,9 +596,16 @@ class BedTool(object):
         self.history = History()
 
     @classmethod
-    def from_dataframe(self, df, outfile=None,
-                       sep='\t', header=False, na_rep='.', index=False,
-                       **kwargs):
+    def from_dataframe(
+        self,
+        df,
+        outfile=None,
+        sep="\t",
+        header=False,
+        na_rep=".",
+        index=False,
+        **kwargs
+    ):
         """
         Creates a BedTool from a pandas.DataFrame.
 
@@ -564,8 +622,7 @@ class BedTool(object):
             raise ImportError("pandas must be installed to use dataframes")
         if outfile is None:
             outfile = self._tmp()
-        default_kwargs = dict(sep=sep, header=header, na_rep=na_rep,
-                              index=index)
+        default_kwargs = dict(sep=sep, header=header, na_rep=na_rep, index=index)
         default_kwargs.update(kwargs)
         df.to_csv(outfile, **default_kwargs)
 
@@ -577,7 +634,8 @@ class BedTool(object):
             except AttributeError:
                 raise ValueError(
                     "`outfile` is not a string and doesn't have a `name` attribute. "
-                    "Unable to determine filename.")
+                    "Unable to determine filename."
+                )
         return BedTool(fn)
 
     def split(self, func, *args, **kwargs):
@@ -592,10 +650,12 @@ class BedTool(object):
 
         Returns a new BedTool.
         """
+
         def generator():
             for orig_interval in self:
                 for interval in func(orig_interval, *args, **kwargs):
                     yield interval
+
         return BedTool(generator())
 
     def truncate_to_chrom(self, genome):
@@ -622,12 +682,12 @@ class BedTool(object):
             chromdict = helpers.chromsizes(genome)
 
         tmp = self._tmp()
-        fout = open(tmp, 'w')
+        fout = open(tmp, "w")
         for chrom, coords in list(chromdict.items()):
             start, stop = coords
             start = str(start)
             stop = str(stop)
-            fout.write('\t'.join([chrom, start, stop]) + '\n')
+            fout.write("\t".join([chrom, start, stop]) + "\n")
         fout.close()
         return self.intersect(tmp)
 
@@ -645,7 +705,8 @@ class BedTool(object):
         if not self._tabixed():
             raise ValueError(
                 "This BedTool has not been indexed for tabix "
-                "-- please use the .tabix() method")
+                "-- please use the .tabix() method"
+            )
 
         # tabix expects 1-based coords, but BEDTools works with
         # zero-based. pybedtools and pysam also work with zero-based. So we can
@@ -682,7 +743,7 @@ class BedTool(object):
         # we need to add them.
         def gen():
             for i in results:
-                yield i + '\n'
+                yield i + "\n"
 
         # xref #190
         x = BedTool(gen()).saveas()
@@ -696,7 +757,8 @@ class BedTool(object):
         if not self._tabixed():
             raise ValueError(
                 "This BedTool has not been indexed for tabix "
-                "-- please use the .tabix() method")
+                "-- please use the .tabix() method"
+            )
 
         tbx = pysam.TabixFile(self.fn)
         return tbx.contigs
@@ -739,9 +801,9 @@ class BedTool(object):
         pointing to a BGZIPed file with a .tbi file in the same dir.
         """
         if (
-            isinstance(self.fn, six.string_types) and
-            isBGZIP(self.fn) and
-            os.path.exists(self.fn + '.tbi')
+            isinstance(self.fn, six.string_types)
+            and isBGZIP(self.fn)
+            and os.path.exists(self.fn + ".tbi")
         ):
             return True
 
@@ -780,7 +842,7 @@ class BedTool(object):
                 fn = self._tmp()
 
             # Register for later deletion
-            outfn = fn + '.gz'
+            outfn = fn + ".gz"
             BedTool.TEMPFILES.append(outfn)
 
             # Creates tempfile.gz
@@ -794,7 +856,7 @@ class BedTool(object):
                 fn = self.sort(header=True).saveas().fn
             else:
                 fn = self.fn
-            outfn = self.fn + '.gz'
+            outfn = self.fn + ".gz"
             pysam.tabix_compress(fn, outfn, force=force)
             return outfn
 
@@ -823,21 +885,19 @@ class BedTool(object):
         tempdir = get_tempdir()
         for i in flattened_history:
             fn = i.fn
-            if fn.startswith(os.path.join(os.path.abspath(tempdir),
-                                          'pybedtools')):
-                if fn.endswith('.tmp'):
+            if fn.startswith(os.path.join(os.path.abspath(tempdir), "pybedtools")):
+                if fn.endswith(".tmp"):
                     to_delete.append(fn)
 
         if raw_input_func is None:
             raw_input_func = input
 
-        str_fns = '\n\t'.join(to_delete)
+        str_fns = "\n\t".join(to_delete)
         if ask:
-            answer = raw_input_func(
-                'Delete these files?\n\t%s\n(y/N) ' % str_fns)
+            answer = raw_input_func("Delete these files?\n\t%s\n(y/N) " % str_fns)
 
-            if not answer.lower()[0] == 'y':
-                print('OK, not deleting.')
+            if not answer.lower()[0] == "y":
+                print("OK, not deleting.")
                 return
         for fn in to_delete:
             os.unlink(fn)
@@ -850,6 +910,7 @@ class BedTool(object):
         Assumes that you only add this decorator to bedtool instances that
         return other bedtool instances
         """
+
         def decorated(self, *args, **kwargs):
 
             # this calls the actual method in the first place; *result* is
@@ -861,8 +922,9 @@ class BedTool(object):
             result_tag = result._tag
 
             # log the sucka
-            history_step = HistoryStep(method, args, kwargs, self, parent_tag,
-                                       result_tag)
+            history_step = HistoryStep(
+                method, args, kwargs, self, parent_tag, result_tag
+            )
 
             # only add the current history to the new bedtool if there's
             # something to add
@@ -911,7 +973,7 @@ class BedTool(object):
         >>> a.field_count()
         6
         """
-        if self.file_type == 'empty':
+        if self.file_type == "empty":
             return 0
         i = 0
         fields = set([])
@@ -953,6 +1015,7 @@ class BedTool(object):
         <BLANKLINE>
 
         """
+
         def _generator():
             for f in self:
                 result = func(f, *args, **kwargs)
@@ -984,12 +1047,12 @@ class BedTool(object):
                 # largest stop.
                 exon_iter = s
                 gene_iter = None
-                raise NotImplementedError('.introns() only supported for bed12'
-                                          'and GFF')
+                raise NotImplementedError(
+                    ".introns() only supported for bed12" "and GFF"
+                )
 
         else:
-            raise NotImplementedError(
-                '.introns() only supported for BED and GFF')
+            raise NotImplementedError(".introns() only supported for BED and GFF")
 
         fh = open(BedTool._tmp(), "w")
 
@@ -999,26 +1062,35 @@ class BedTool(object):
             # search finds all, but we just want the ones that completely
             # overlap this gene.
             exons = [
-                e for e in exon_intervals.search(g, same_strand=True)
-                if e.start >= g.start and e.end <= g.end]
+                e
+                for e in exon_intervals.search(g, same_strand=True)
+                if e.start >= g.start and e.end <= g.end
+            ]
 
             for i, exon in enumerate(exons):
                 # 5' utr between gene start and first intron
                 if i == 0 and exon.start > g.start:
                     utr = {"+": "utr5", "-": "utr3"}[g.strand]
-                    print("%s\t%i\t%i\t%s\t%s\t%s"
-                          % (g.chrom, g.start, exon.start, g.name, utr,
-                             g.strand), file=fh)
+                    print(
+                        "%s\t%i\t%i\t%s\t%s\t%s"
+                        % (g.chrom, g.start, exon.start, g.name, utr, g.strand),
+                        file=fh,
+                    )
                 elif i == len(exons) - 1 and exon.end < g.end:
                     utr = {"+": "utr3", "-": "utr5"}[g.strand]
-                    print("%s\t%i\t%i\t%s\t%s\t%s"
-                          % (g.chrom, exon.end, g.end, g.name, utr, g.strand),
-                          file=fh)
+                    print(
+                        "%s\t%i\t%i\t%s\t%s\t%s"
+                        % (g.chrom, exon.end, g.end, g.name, utr, g.strand),
+                        file=fh,
+                    )
                 elif i != len(exons) - 1:
                     istart = exon.end
                     iend = exons[i + 1].start
-                    print("%s\t%i\t%i\t%s\tintron\t%s"
-                          % (g.chrom, istart, iend, g.name, g.strand), file=fh)
+                    print(
+                        "%s\t%i\t%i\t%s\tintron\t%s"
+                        % (g.chrom, istart, iend, g.name, g.strand),
+                        file=fh,
+                    )
         fh.close()
         return BedTool(fh.name)
 
@@ -1026,7 +1098,7 @@ class BedTool(object):
         """
         Returns an iterable of features
         """
-        if hasattr(self, 'next') or hasattr(self, '__next__'):
+        if hasattr(self, "next") or hasattr(self, "__next__"):
             return self
         return iter(self)
 
@@ -1041,16 +1113,18 @@ class BedTool(object):
         bed
         """
         if not isinstance(self.fn, six.string_types):
-            raise ValueError('Checking file_type not supported for '
-                             'non-file BedTools. Use .saveas() to '
-                             'save as a temp file first.')
+            raise ValueError(
+                "Checking file_type not supported for "
+                "non-file BedTools. Use .saveas() to "
+                "save as a temp file first."
+            )
         if self._isbam:
-            self._file_type = 'bam'
+            self._file_type = "bam"
         else:
             try:
                 self._file_type = six.advance_iterator(iter(self)).file_type
             except StopIteration:
-                self._file_type = 'empty'
+                self._file_type = "empty"
 
         return self._file_type
 
@@ -1081,22 +1155,22 @@ class BedTool(object):
         else:
             fh = open(self._tmp(), "w")
             for f in self:
-                print(
-                    "\t".join(map(str, [f[attr] for attr in indexes])),
-                    file=fh)
+                print("\t".join(map(str, [f[attr] for attr in indexes])), file=fh)
             fh.close()
             return BedTool(fh.name)
 
     @classmethod
     def _tmp(self):
-        '''
+        """
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
         deletion if you forget to call pybedtools.cleanup().
-        '''
-        tmpfn = tempfile.NamedTemporaryFile(prefix=settings.tempfile_prefix,
-                                            suffix=settings.tempfile_suffix,
-                                            delete=False)
+        """
+        tmpfn = tempfile.NamedTemporaryFile(
+            prefix=settings.tempfile_prefix,
+            suffix=settings.tempfile_suffix,
+            delete=False,
+        )
         tmpfn = tmpfn.name
         BedTool.TEMPFILES.append(tmpfn)
         return tmpfn
@@ -1116,9 +1190,9 @@ class BedTool(object):
             if not os.path.exists(self.fn):
                 raise BedToolsFileError("{0} does not exist".format(self.fn))
             if isGZIP(self.fn):
-                return IntervalIterator(gzip.open(self.fn, 'rt'))
+                return IntervalIterator(gzip.open(self.fn, "rt"))
             else:
-                return IntervalIterator(open(self.fn, 'r'))
+                return IntervalIterator(open(self.fn, "r"))
         # Any other kind of input (streaming string from stdout; iterable of
         # Intervals, iterable of (chrom, start, stop) tuples, etc are handled
         # appropriately by IntervalIterator.
@@ -1135,13 +1209,13 @@ class BedTool(object):
     def __repr__(self):
         if isinstance(self.fn, six.string_types):
             if os.path.exists(self.fn) or self.remote:
-                return '<BedTool(%s)>' % self.fn
+                return "<BedTool(%s)>" % self.fn
             else:
-                return '<BedTool(MISSING FILE: %s)>' % self.fn
+                return "<BedTool(MISSING FILE: %s)>" % self.fn
         elif isinstance(self.fn, BedTool):
             return repr(self.fn)
         else:
-            return '<BedTool(%s)>' % repr(self.fn)
+            return "<BedTool(%s)>" % repr(self.fn)
 
     def __str__(self):
         """
@@ -1151,9 +1225,9 @@ class BedTool(object):
         for i in iter(self):
             i = str(i)
             if isinstance(i, bytes):
-                i = i.decode('UTF-8')
+                i = i.decode("UTF-8")
             items.append(i)
-        return ''.join(items)
+        return "".join(items)
 
     def __len__(self):
         return self.count()
@@ -1162,11 +1236,13 @@ class BedTool(object):
         if isinstance(other, six.string_types):
             other_str = other
         elif isinstance(other, BedTool):
-            if (not isinstance(self.fn, six.string_types) or
-                not isinstance(
-                    other.fn, six.string_types)):
-                raise NotImplementedError('Testing equality only supported for'
-                                          ' BedTools that point to files')
+            if not isinstance(self.fn, six.string_types) or not isinstance(
+                other.fn, six.string_types
+            ):
+                raise NotImplementedError(
+                    "Testing equality only supported for"
+                    " BedTools that point to files"
+                )
         if str(self) == str(other):
             return True
         return False
@@ -1180,15 +1256,16 @@ class BedTool(object):
         elif isinstance(key, int):
             return list(islice(self, key, key + 1))[0]
         else:
-            raise ValueError('Only slices or integers allowed for indexing '
-                             'into a BedTool')
+            raise ValueError(
+                "Only slices or integers allowed for indexing " "into a BedTool"
+            )
 
     def __add__(self, other):
         try:
             result = self.intersect(other, u=True)
         except BEDToolsError as e:
             # BEDTools versions <2.20 would raise BEDToolsError
-            if (self.file_type == 'empty') or (other.file_type == 'empty'):
+            if (self.file_type == "empty") or (other.file_type == "empty"):
                 result = pybedtools.BedTool("", from_string=True)
             else:
                 raise e
@@ -1200,11 +1277,11 @@ class BedTool(object):
         except BEDToolsError:
             # BEDTools versions <2.20 would raise BEDToolsError
 
-            if (self.file_type == 'empty') and (other.file_type == 'empty'):
+            if (self.file_type == "empty") and (other.file_type == "empty"):
                 result = pybedtools.BedTool("", from_string=True)
-            elif other.file_type == 'empty':
+            elif other.file_type == "empty":
                 result = self.saveas()
-            elif self.file_type == 'empty':
+            elif self.file_type == "empty":
                 result = pybedtools.BedTool("", from_string=True)
         return result
 
@@ -1224,24 +1301,24 @@ class BedTool(object):
         """
         if not isinstance(self.fn, six.string_types):
             raise NotImplementedError(
-                'head() not supported for non file-based BedTools')
+                "head() not supported for non file-based BedTools"
+            )
         if as_string:
-            return ''.join(str(line) for line in self[:n])
+            return "".join(str(line) for line in self[:n])
         if self._isbam:
-            raise NotImplementedError(
-                'head() not supported for BAM')
+            raise NotImplementedError("head() not supported for BAM")
         else:
             if isGZIP(self.fn):
                 openfunc = gzip.open
-                openmode = 'rt'
+                openmode = "rt"
             else:
                 openfunc = open
-                openmode = 'r'
+                openmode = "r"
             with openfunc(self.fn, openmode) as fin:
                 for i, line in enumerate(fin):
                     if i == (n):
                         break
-                    print(line, end=' ')
+                    print(line, end=" ")
 
     def set_chromsizes(self, chromsizes):
         """
@@ -1266,12 +1343,20 @@ class BedTool(object):
         elif isinstance(chromsizes, dict):
             self.chromsizes = chromsizes
         else:
-            raise ValueError("Need to specify chromsizes either as a string"
-                             " (assembly name) or a dictionary")
+            raise ValueError(
+                "Need to specify chromsizes either as a string"
+                " (assembly name) or a dictionary"
+            )
         return self
 
-    def _collapse(self, iterable, fn=None, trackline=None, in_compressed=False,
-                  out_compressed=False):
+    def _collapse(
+        self,
+        iterable,
+        fn=None,
+        trackline=None,
+        in_compressed=False,
+        out_compressed=False,
+    ):
         """
         Collapses an iterable into file *fn* (or a new tempfile if *fn* is
         None).
@@ -1307,22 +1392,24 @@ class BedTool(object):
         # be supplied, and don't iterate -- copy the file wholesale
         if isinstance(iterable, BedTool) and iterable._isbam:
             if trackline:
-                raise ValueError("trackline provided, but input is a BAM "
-                                 "file, which takes no track line")
-            with open(fn, 'wb') as out_:
-                out_.write(open(self.fn, 'rb').read())
+                raise ValueError(
+                    "trackline provided, but input is a BAM "
+                    "file, which takes no track line"
+                )
+            with open(fn, "wb") as out_:
+                out_.write(open(self.fn, "rb").read())
             return fn
 
         # If we're just working with filename-based BedTool objects, just copy
         # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
-            with out_open_func(fn, 'wt') as out_:
-                with in_open_func(iterable.fn, 'rt') as in_:
+            with out_open_func(fn, "wt") as out_:
+                with in_open_func(iterable.fn, "rt") as in_:
                     if trackline:
-                        out_.write(trackline.strip() + '\n')
+                        out_.write(trackline.strip() + "\n")
                     out_.writelines(in_)
         else:
-            with out_open_func(fn, 'wt') as out_:
+            with out_open_func(fn, "wt") as out_:
                 for i in iterable:
                     if isinstance(i, (list, tuple)):
                         i = create_interval_from_list(list(i))
@@ -1344,19 +1431,19 @@ class BedTool(object):
         the `-` argument, or a filename with the `-a` argument.
         """
         pybedtools.logger.debug(
-            'BedTool.handle_kwargs() got these kwargs:\n%s',
-            pprint.pformat(kwargs))
+            "BedTool.handle_kwargs() got these kwargs:\n%s", pprint.pformat(kwargs)
+        )
 
         # If you pass in a list, how should it be converted to a BedTools arg?
-        default_list_delimiter = ' '
+        default_list_delimiter = " "
         list_delimiters = {
-            'annotateBed': ' ',
-            'getOverlap': ',',
-            'groupBy': ',',
-            'multiIntersectBed': ' ',
-            'mergeBed': ',',
-            'intersectBed': ' ',
-            'mapBed': ',',
+            "annotateBed": " ",
+            "getOverlap": ",",
+            "groupBy": ",",
+            "multiIntersectBed": " ",
+            "mergeBed": ",",
+            "intersectBed": " ",
+            "mapBed": ",",
         }
         stdin = None
 
@@ -1390,7 +1477,7 @@ class BedTool(object):
 
             # A generator or iterator: pipe it as a generator of lines
             else:
-                kwargs[inarg1] = 'stdin'
+                kwargs[inarg1] = "stdin"
                 stdin = (str(i) for i in instream1)
         except KeyError:
             pass
@@ -1425,9 +1512,11 @@ class BedTool(object):
             # tabs; deciding whether or not such filenames are a good idea is
             # left to the user.
             #
-            elif isinstance(instream2, (list, tuple)) and isinstance(instream2[0], six.string_types):
+            elif isinstance(instream2, (list, tuple)) and isinstance(
+                instream2[0], six.string_types
+            ):
                 try:
-                    _ = create_interval_from_list(instream2[0].split('\t'))
+                    _ = create_interval_from_list(instream2[0].split("\t"))
                     kwargs[inarg2] = self._collapse(instream2)
                 except IndexError:
                     kwargs[inarg2] = instream2
@@ -1441,16 +1530,16 @@ class BedTool(object):
             pass
 
         # If stream not specified, then a tempfile will be created
-        if kwargs.pop('stream', None):
-                tmp = None
+        if kwargs.pop("stream", None):
+            tmp = None
         else:
-            output = kwargs.pop('output', None)
+            output = kwargs.pop("output", None)
             if output:
                 tmp = output
             else:
                 tmp = self._tmp()
 
-        additional_args = kwargs.pop('additional_args', None)
+        additional_args = kwargs.pop("additional_args", None)
 
         # Parse the kwargs into BEDTools-ready args
         cmds = [prog]
@@ -1459,7 +1548,7 @@ class BedTool(object):
         for key, value in sorted(list(kwargs.items()), reverse=True):
             if isinstance(value, bool):
                 if value:
-                    cmds.append('-' + key)
+                    cmds.append("-" + key)
                 else:
                     continue
             elif isinstance(value, list) or isinstance(value, tuple):
@@ -1469,17 +1558,17 @@ class BedTool(object):
                 except KeyError:
                     delim = default_list_delimiter
 
-                if delim == ' ':
-                    cmds.append('-' + key)
+                if delim == " ":
+                    cmds.append("-" + key)
                     cmds.extend(value)
 
                 # make comma-separated list if that's what's needed
                 else:
-                    cmds.append('-' + key)
+                    cmds.append("-" + key)
                     cmds.append(delim.join(value))
 
             else:
-                cmds.append('-' + key)
+                cmds.append("-" + key)
                 cmds.append(str(value))
 
         if additional_args:
@@ -1497,37 +1586,39 @@ class BedTool(object):
         """
 
         # If both g and genome are missing, assume self.chromsizes
-        if ('g' not in kwargs) and ('genome' not in kwargs):
-            if hasattr(self, 'chromsizes'):
-                kwargs['g'] = self.chromsizes
+        if ("g" not in kwargs) and ("genome" not in kwargs):
+            if hasattr(self, "chromsizes"):
+                kwargs["g"] = self.chromsizes
             else:
-                raise ValueError('No genome specified. Use the "g" or '
-                                 '"genome" kwargs, or use the '
-                                 '.set_chromsizes() method')
+                raise ValueError(
+                    'No genome specified. Use the "g" or '
+                    '"genome" kwargs, or use the '
+                    ".set_chromsizes() method"
+                )
 
         # If both specified, rather than make an implicit decision, raise an
         # exception
-        if 'g' in kwargs and 'genome' in kwargs:
+        if "g" in kwargs and "genome" in kwargs:
             raise ValueError('Cannot specify both "g" and "genome"')
 
         # Something like genome='dm3' was specified
-        if 'g' not in kwargs and 'genome' in kwargs:
-            if isinstance(kwargs['genome'], dict):
-                genome_dict = kwargs['genome']
+        if "g" not in kwargs and "genome" in kwargs:
+            if isinstance(kwargs["genome"], dict):
+                genome_dict = kwargs["genome"]
             else:
-                genome_dict = pybedtools.chromsizes(kwargs['genome'])
+                genome_dict = pybedtools.chromsizes(kwargs["genome"])
             genome_file = pybedtools.chromsizes_to_file(genome_dict)
-            kwargs['g'] = genome_file
-            del kwargs['genome']
+            kwargs["g"] = genome_file
+            del kwargs["genome"]
 
         # By the time we get here, 'g' is specified.
 
         # If a dict was provided, convert to tempfile here
-        if isinstance(kwargs['g'], dict):
-            kwargs['g'] = pybedtools.chromsizes_to_file(kwargs['g'])
+        if isinstance(kwargs["g"], dict):
+            kwargs["g"] = pybedtools.chromsizes_to_file(kwargs["g"])
 
-        if not os.path.exists(kwargs['g']):
-            msg = 'Genome file "%s" does not exist' % (kwargs['g'])
+        if not os.path.exists(kwargs["g"]):
+            msg = 'Genome file "%s" does not exist' % (kwargs["g"])
             if six.PY2:
                 raise ValueError(msg)
             raise FileNotFoundError(msg)
@@ -1547,12 +1638,12 @@ class BedTool(object):
 
         """
         tmp = self._tmp()
-        fout = open(tmp, 'w')
+        fout = open(tmp, "w")
 
         # If it's a file-based BedTool -- which is likely, if we're trying to
         # remove invalid features -- then we need to parse it line by line.
         if isinstance(self.fn, six.string_types):
-            i = IntervalIterator(open(self.fn, 'r'))
+            i = IntervalIterator(open(self.fn, "r"))
         else:
             i = IntervalIterator(self.fn)
 
@@ -1573,6 +1664,7 @@ class BedTool(object):
                     continue
                 except StopIteration:
                     break
+
         return BedTool(_generator())
 
     def all_hits(self, interval, same_strand=False, overlap=0.0):
@@ -1660,7 +1752,7 @@ class BedTool(object):
         return interval_file.count_hits(interval, same_strand, overlap)
 
     @_log_to_history
-    @_wraps(prog='bed12ToBed6', implicit='i', bam=None, other=None)
+    @_wraps(prog="bed12ToBed6", implicit="i", bam=None, other=None)
     def bed6(self, **kwargs):
         """
         Wraps `bedtools bed12tobed6`.
@@ -1671,15 +1763,16 @@ class BedTool(object):
     bed12tobed6 = bed6
 
     @_log_to_history
-    @_wraps(prog='bamToBed', implicit='i', other=None, nonbam='ALL', bam='i')
+    @_wraps(prog="bamToBed", implicit="i", other=None, nonbam="ALL", bam="i")
     def bam_to_bed(self, **kwargs):
         """
         Wraps `bedtools bamtobed`.
         """
+
     # Alias for backward compatibility
     bamtobed = bam_to_bed
 
-    @_wraps(prog='bedToBam', implicit='i', uses_genome=True, force_bam=True)
+    @_wraps(prog="bedToBam", implicit="i", uses_genome=True, force_bam=True)
     def _bed_to_bam(self):
         """
         Wraps bedToBam and is called internally for BED/GFF/VCF files by
@@ -1695,14 +1788,14 @@ class BedTool(object):
         self.fn is in SAM format, then create a header out of the genome file
         and then convert using `samtools`.
         """
-        if self.file_type == 'bam':
+        if self.file_type == "bam":
             return self
-        if self.file_type in ('bed', 'gff', 'vcf'):
+        if self.file_type in ("bed", "gff", "vcf"):
             return self._bed_to_bam(**kwargs)
 
         # TODO: to maintain backwards compatibility we go from Interval to
         # AlignedSegment.
-        if self.file_type == 'sam':
+        if self.file_type == "sam":
 
             # Use pysam, but construct the header out of a provided genome
             # file.
@@ -1711,23 +1804,21 @@ class BedTool(object):
             kwargs = self.check_genome(**kwargs)
 
             # Build a header that we can use for the output BAM file.
-            genome = dict(i.split() for i in open(kwargs['g']))
+            genome = dict(i.split() for i in open(kwargs["g"]))
             SQ = []
             ref_ids = {}
-            text_header = ['@HD\tVN:1.0']
+            text_header = ["@HD\tVN:1.0"]
 
             for i, (k, v) in enumerate(genome.items()):
                 SQ.append(dict(SN=k, LN=int(v)))
                 ref_ids[k] = i
-                text_header.append('@SQ\tSN:{0}\tLN:{1}'.format(k, v))
-
+                text_header.append("@SQ\tSN:{0}\tLN:{1}".format(k, v))
 
             # Here's the pysam-formatted header
-            header = {'HD': {'VN': '1.0'},
-                      'SQ': SQ}
+            header = {"HD": {"VN": "1.0"}, "SQ": SQ}
 
             # And the text-format header
-            text_header = '\n'.join(text_header) + '\n'
+            text_header = "\n".join(text_header) + "\n"
 
             # The strategy is to write an actual SAM file to disk, along with
             # a header, and then read that back in.
@@ -1736,13 +1827,13 @@ class BedTool(object):
             # pass.
             sam_tmp = self._tmp()
             bam_tmp = self._tmp()
-            with open(sam_tmp, 'w') as fout:
+            with open(sam_tmp, "w") as fout:
                 fout.write(text_header)
                 for interval in self:
-                    fout.write('\t'.join(map(str, interval.fields)) + '\n')
+                    fout.write("\t".join(map(str, interval.fields)) + "\n")
 
-            samfile = pysam.AlignmentFile(sam_tmp, 'r')
-            bamfile = pysam.AlignmentFile(bam_tmp, 'wb', template=samfile)
+            samfile = pysam.AlignmentFile(sam_tmp, "r")
+            bamfile = pysam.AlignmentFile(bam_tmp, "wb", template=samfile)
             for alignment in samfile:
                 bamfile.write(alignment)
 
@@ -1751,21 +1842,27 @@ class BedTool(object):
             new_bedtool = BedTool(bam_tmp)
             new_bedtool._isbam = True
             return new_bedtool
+
     # Alias for backward compatibility
     bedtobam = to_bam
 
     @_log_to_history
-    @_wraps(prog='intersectBed', implicit='a', other='b', bam='abam',
-            nonbam='bed')
+    @_wraps(prog="intersectBed", implicit="a", other="b", bam="abam", nonbam="bed")
     def intersect(self):
         """
         Wraps `bedtools intersect`.
         """
 
     @_log_to_history
-    @_wraps(prog='fastaFromBed', implicit='bed', bam=None, other='fi',
-            make_tempfile_for='fo', check_stderr=_check_sequence_stderr,
-            add_to_bedtool={'fo': 'seqfn'})
+    @_wraps(
+        prog="fastaFromBed",
+        implicit="bed",
+        bam=None,
+        other="fi",
+        make_tempfile_for="fo",
+        check_stderr=_check_sequence_stderr,
+        add_to_bedtool={"fo": "seqfn"},
+    )
     def sequence(self):
         '''
         Wraps `bedtools getfasta`.
@@ -1792,6 +1889,7 @@ class BedTool(object):
         <BLANKLINE>
 
         '''
+
     # Alias for backwards compatibility
     getfasta = sequence
 
@@ -1814,13 +1912,12 @@ class BedTool(object):
 
         loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
         lseq = loc.sequence(fi=fasta)
-        return "".join(
-            [l.rstrip() for l in open(lseq.seqfn, 'r')
-             if l[0] != ">"])
+        return "".join([l.rstrip() for l in open(lseq.seqfn, "r") if l[0] != ">"])
 
     @_log_to_history
-    @_wraps(prog='nucBed', implicit='bed', other='fi',
-            check_stderr=_check_sequence_stderr)
+    @_wraps(
+        prog="nucBed", implicit="bed", other="fi", check_stderr=_check_sequence_stderr
+    )
     def nucleotide_content(self):
         """
         Wraps `bedtools nuc`.
@@ -1828,22 +1925,24 @@ class BedTool(object):
         Profiles nucleotide content.  The returned BED file contains extra
         information about the nucleotide content
         """
+
     # Alias for backwards compatibility
     nuc = nucleotide_content
 
     @_log_to_history
-    @_wraps(prog='multiBamCov', implicit='bed')
+    @_wraps(prog="multiBamCov", implicit="bed")
     def multi_bam_coverage(self):
         """
         Wraps `bedtools multicov`.
 
         Pass a list of sorted and indexed BAM files as `bams`
         """
+
     # Alias for backwards compatibility
     multicov = multi_bam_coverage
 
     @_log_to_history
-    @_wraps(prog='subtractBed', implicit='a', other='b', bam=None)
+    @_wraps(prog="subtractBed", implicit="a", other="b", bam=None)
     def subtract(self):
         """
         Wraps `bedtools subtract`.
@@ -1863,26 +1962,24 @@ class BedTool(object):
 
             >>> c = a.subtract(b, f=0.5)
         """
-        kwargs['b'] = b
+        kwargs["b"] = b
 
-        if 'a' not in kwargs:
-            kwargs['a'] = self.fn
+        if "a" not in kwargs:
+            kwargs["a"] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='subtractBed', **kwargs)
+        cmds, tmp, stdin = self.handle_kwargs(prog="subtractBed", **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
     @_log_to_history
-    @_wraps(prog='slopBed', implicit='i', other=None, bam=None,
-            uses_genome=True)
+    @_wraps(prog="slopBed", implicit="i", other=None, bam=None, uses_genome=True)
     def slop(self):
         """
         Wraps `bedtools slop`.
         """
 
     @_log_to_history
-    @_wraps(prog='shiftBed', implicit='i', other=None, bam=None,
-            uses_genome=True)
+    @_wraps(prog="shiftBed", implicit="i", other=None, bam=None, uses_genome=True)
     def shift(self):
         """
         Wraps `bedtools shift`.
@@ -1927,7 +2024,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='mergeBed', implicit='i', other=None, bam=None)
+    @_wraps(prog="mergeBed", implicit="i", other=None, bam=None)
     def merge(self):
         """
         Wraps `bedtools merge`.
@@ -1949,7 +2046,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='closestBed', implicit='a', other='b', bam=None)
+    @_wraps(prog="closestBed", implicit="a", other="b", bam=None)
     def closest(self):
         """
         Wraps `bedtools closest`.
@@ -1968,8 +2065,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='windowBed', implicit='a', other='b', bam='abam',
-            nonbam='bed')
+    @_wraps(prog="windowBed", implicit="a", other="b", bam="abam", nonbam="bed")
     def window(self):
         """
         Wraps `bedtools window`.
@@ -1991,8 +2087,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='shuffleBed', implicit='i', other=None, bam=None,
-            uses_genome=True)
+    @_wraps(prog="shuffleBed", implicit="i", other=None, bam=None, uses_genome=True)
     def shuffle(self):
         """
         Wraps `bedtools shuffle`.
@@ -2011,7 +2106,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='sortBed', implicit='i')
+    @_wraps(prog="sortBed", implicit="i")
     def sort(self):
         """
         Wraps `bedtools sort`.
@@ -2038,7 +2133,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='annotateBed', implicit='i')
+    @_wraps(prog="annotateBed", implicit="i")
     def annotate(self):
         """
         Wraps  `bedtools annotate`.
@@ -2057,7 +2152,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='flankBed', implicit='i', uses_genome=True)
+    @_wraps(prog="flankBed", implicit="i", uses_genome=True)
     def flank(self):
         """
         Wraps `bedtools flank`.
@@ -2079,17 +2174,23 @@ class BedTool(object):
         """
         kwargs = self.check_genome(**kwargs)
 
-        if 'i' not in kwargs:
-            kwargs['i'] = self.fn
+        if "i" not in kwargs:
+            kwargs["i"] = self.fn
 
-        cmds, tmp, stdin = self.handle_kwargs(prog='flankBed', **kwargs)
+        cmds, tmp, stdin = self.handle_kwargs(prog="flankBed", **kwargs)
         stream = call_bedtools(cmds, tmp, stdin=stdin)
         return BedTool(stream)
 
     @_log_to_history
-    @_wraps(prog='genomeCoverageBed', implicit='i', bam='ibam',
-            genome_none_if=['ibam'], genome_ok_if=['ibam'], uses_genome=True,
-            nonbam='ALL')
+    @_wraps(
+        prog="genomeCoverageBed",
+        implicit="i",
+        bam="ibam",
+        genome_none_if=["ibam"],
+        genome_ok_if=["ibam"],
+        uses_genome=True,
+        nonbam="ALL",
+    )
     def genome_coverage(self):
         """
         Wraps `bedtools genomecov`.
@@ -2127,12 +2228,12 @@ class BedTool(object):
         >>> b = a.genome_coverage(genome='dm3')
         >>> df = b.to_dataframe(names=['chrom', 'depth', 'n', 'chromsize', 'fraction'])
         """
+
     # Alias for backwards compatibility
     genomecov = genome_coverage
 
     @_log_to_history
-    @_wraps(prog='coverageBed', implicit='a', other='b', bam='abam',
-            nonbam='ALL')
+    @_wraps(prog="coverageBed", implicit="a", other="b", bam="abam", nonbam="ALL")
     def coverage(self):
         """
         Wraps `bedtools coverage`.
@@ -2151,9 +2252,14 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='maskFastaFromBed', implicit='bed', other='fi',
-            make_tempfile_for='fo', add_to_bedtool={'fo': 'seqfn'},
-            check_stderr=_check_sequence_stderr)
+    @_wraps(
+        prog="maskFastaFromBed",
+        implicit="bed",
+        other="fi",
+        make_tempfile_for="fo",
+        add_to_bedtool={"fo": "seqfn"},
+        check_stderr=_check_sequence_stderr,
+    )
     def mask_fasta(self):
         """
         Wraps `bedtools maskfasta`.
@@ -2174,11 +2280,12 @@ class BedTool(object):
         >>> if os.path.exists('masked.fa.example.fai'):
         ...     os.unlink('masked.fa.example.fai')
         """
+
     # Alias for backwards compatibility
     maskfasta = mask_fasta
 
     @_log_to_history
-    @_wraps(prog='complementBed', implicit='i', uses_genome=True)
+    @_wraps(prog="complementBed", implicit="i", uses_genome=True)
     def complement(self):
         """
         Wraps `bedtools complement`.
@@ -2194,7 +2301,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='getOverlap', implicit='i')
+    @_wraps(prog="getOverlap", implicit="i")
     def overlap(self):
         """
         Wraps `bedtools overlap`.
@@ -2213,26 +2320,27 @@ class BedTool(object):
 
     # TODO: needs test files and doctests written
     @_log_to_history
-    @_wraps(prog='pairToBed', implicit='a', other='b', bam='abam',
-            nonbam='bedpe')
+    @_wraps(prog="pairToBed", implicit="a", other="b", bam="abam", nonbam="bedpe")
     def pair_to_bed(self):
         """
         Wraps `bedtools pairtobed`.
         """
+
     # Alias for backwards compatibility
     pairtobed = pair_to_bed
 
     @_log_to_history
-    @_wraps(prog='pairToPair', implicit='a', other='b')
+    @_wraps(prog="pairToPair", implicit="a", other="b")
     def pair_to_pair(self):
         """
         Wraps `bedtools pairtopair`.
         """
+
     # Alias for backwards compatibility
     pairtopair = pair_to_pair
 
     @_log_to_history
-    @_wraps(prog='groupBy', implicit='i')
+    @_wraps(prog="groupBy", implicit="i")
     def groupby(self):
         """
         Wraps `bedtools groupby`.
@@ -2259,7 +2367,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='tagBam', implicit='i', bam='i')
+    @_wraps(prog="tagBam", implicit="i", bam="i")
     def tag_bam(self):
         """
         Wraps `bedtools tag`.
@@ -2267,18 +2375,19 @@ class BedTool(object):
         `files` and `labels` should lists of equal length.
 
         """
+
     # Alias for backwards compatibility
     tag = tag_bam
 
     @_log_to_history
-    @_wraps(prog='mapBed', implicit='a', other='b')
+    @_wraps(prog="mapBed", implicit="a", other="b")
     def map(self):
         """
         Wraps  `bedtools map`; See also :meth:`BedTool.each`.
         """
 
     @_log_to_history
-    @_wraps(prog='multiIntersectBed', uses_genome=True, genome_if=['empty'])
+    @_wraps(prog="multiIntersectBed", uses_genome=True, genome_if=["empty"])
     def multi_intersect(self):
         """
         Wraps `bedtools multiintersect`.
@@ -2305,7 +2414,7 @@ class BedTool(object):
     multiinter = multi_intersect
 
     @_log_to_history
-    @_wraps(prog='randomBed', uses_genome=True)
+    @_wraps(prog="randomBed", uses_genome=True)
     def random(self):
         """
         Wraps `bedtools random`.
@@ -2318,23 +2427,24 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps('bedpeToBam', implicit='i', uses_genome=True, force_bam=True)
+    @_wraps("bedpeToBam", implicit="i", uses_genome=True, force_bam=True)
     def bedpe_to_bam(self):
         """
         Wraps `bedtools bedpetobam`.
         """
+
     # Alias for backwards compatibility
     bedpetobam = bedpe_to_bam
 
     @_log_to_history
-    @_wraps(prog='clusterBed', implicit='i')
+    @_wraps(prog="clusterBed", implicit="i")
     def cluster(self):
         """
         Wraps  `bedtools cluster`.
         """
 
     @_log_to_history
-    @_wraps(prog='unionBedGraphs')
+    @_wraps(prog="unionBedGraphs")
     def union_bedgraphs(self):
         """
         Wraps `bedtools unionbedg`.
@@ -2342,29 +2452,29 @@ class BedTool(object):
         Warning: using the `header=True` kwarg will result in a file that is
         not in true BED format, which may break downstream analysis.
         """
+
     # Alias for backwards compatibility
     unionbedg = union_bedgraphs
 
     @_log_to_history
-    @_wraps(prog='windowMaker', uses_genome=True, genome_none_if=['b'],
-            other='b')
+    @_wraps(prog="windowMaker", uses_genome=True, genome_none_if=["b"], other="b")
     def window_maker(self):
         """
         Wraps `bedtools makewindows`.
         """
+
     # Alias for backwards compatibility
     makewindows = window_maker
 
     @_log_to_history
-    @_wraps(prog='expandCols', implicit='i')
+    @_wraps(prog="expandCols", implicit="i")
     def expand(self):
         """
         Wraps `bedtools expand`
         """
 
     @_log_to_history
-    @_wraps(prog='linksBed', implicit='i',
-            add_to_bedtool={'stdout': 'links_html'})
+    @_wraps(prog="linksBed", implicit="i", add_to_bedtool={"stdout": "links_html"})
     def links(self):
         """
         Wraps `linksBed`.
@@ -2374,8 +2484,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='bedToIgv', implicit='i',
-            add_to_bedtool={'stdout': 'igv_script'})
+    @_wraps(prog="bedToIgv", implicit="i", add_to_bedtool={"stdout": "igv_script"})
     def igv(self):
         """
         Wraps `bedtools igv`.
@@ -2385,8 +2494,13 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog='bamToFastq', implicit='i', bam='i', make_tempfile_for='fq',
-            add_to_bedtool={'fq': 'fastq'})
+    @_wraps(
+        prog="bamToFastq",
+        implicit="i",
+        bam="i",
+        make_tempfile_for="fq",
+        add_to_bedtool={"fq": "fastq"},
+    )
     def bam_to_fastq(self):
         """
         Wraps `bedtools bamtofastq`.
@@ -2395,18 +2509,27 @@ class BedTool(object):
 
         The resulting BedTool will have a new attribute, `fastq`.
         """
+
     # Alias for backwards compatibility
     bamtofastq = bam_to_fastq
 
-    @_wraps(prog='jaccard', implicit='a', other='b',
-            does_not_return_bedtool=_jaccard_output_to_dict)
+    @_wraps(
+        prog="jaccard",
+        implicit="a",
+        other="b",
+        does_not_return_bedtool=_jaccard_output_to_dict,
+    )
     def jaccard(self):
         """
         Returns a dictionary with keys (intersection, union, jaccard).
         """
 
-    @_wraps(prog='reldist', implicit='a', other='b',
-            does_not_return_bedtool=_reldist_output_handler)
+    @_wraps(
+        prog="reldist",
+        implicit="a",
+        other="b",
+        does_not_return_bedtool=_reldist_output_handler,
+    )
     def reldist(self):
         """
         If detail=False, then return a dictionary with keys (reldist, count,
@@ -2416,14 +2539,19 @@ class BedTool(object):
         interval in A in the last column.
         """
 
-    @_wraps(prog='sample', implicit='i', bam='i')
+    @_wraps(prog="sample", implicit="i", bam="i")
     def sample(self):
         """
         Wraps 'sample'.
         """
 
-    @_wraps(prog='fisher', implicit='a', other='b', uses_genome=True,
-            does_not_return_bedtool=helpers.FisherOutput)
+    @_wraps(
+        prog="fisher",
+        implicit="a",
+        other="b",
+        uses_genome=True,
+        does_not_return_bedtool=helpers.FisherOutput,
+    )
     def fisher(self):
         """
         Wraps 'fisher'. Returns an object representing the output.
@@ -2465,8 +2593,7 @@ class BedTool(object):
         8.8247e-21
         """
 
-    @_wraps(prog='split', implicit='i',
-            does_not_return_bedtool=helpers.SplitOutput)
+    @_wraps(prog="split", implicit="i", does_not_return_bedtool=helpers.SplitOutput)
     def splitbed(self):
         """
         Wraps 'bedtools split'.
@@ -2499,7 +2626,7 @@ class BedTool(object):
         <BLANKLINE>
         """
 
-    @_wraps(prog='spacing', implicit='i')
+    @_wraps(prog="spacing", implicit="i")
     def spacing(self):
         """
         Wraps `bedtools spacing`
@@ -2511,7 +2638,6 @@ class BedTool(object):
         chr1	150	500	feature3	0	-	-1
         chr1	900	950	feature4	0	+	400
         """
-
 
     def count(self):
         """
@@ -2529,7 +2655,7 @@ class BedTool(object):
         >>> a.count()
         4
         """
-        if hasattr(self, 'next') or hasattr(self, '__next__'):
+        if hasattr(self, "next") or hasattr(self, "__next__"):
             return sum(1 for _ in self)
         return sum(1 for _ in iter(self))
 
@@ -2539,8 +2665,8 @@ class BedTool(object):
 
         See usage example in :meth:`BedTool.sequence`.
         """
-        if not hasattr(self, 'seqfn'):
-            raise ValueError('Use .sequence(fasta) to get the sequence first')
+        if not hasattr(self, "seqfn"):
+            raise ValueError("Use .sequence(fasta) to get the sequence first")
         f = open(self.seqfn)
         s = f.read()
         f.close()
@@ -2574,17 +2700,24 @@ class BedTool(object):
         ...     os.unlink('example.fa')
         """
 
-        if not hasattr(self, 'seqfn'):
-            raise ValueError('Use .sequence(fasta) to get the sequence first')
-        fout = open(fn, 'w')
+        if not hasattr(self, "seqfn"):
+            raise ValueError("Use .sequence(fasta) to get the sequence first")
+        fout = open(fn, "w")
         fout.write(open(self.seqfn).read())
         fout.close()
         new_bedtool = BedTool(self.fn)
         new_bedtool.seqfn = fn
         return new_bedtool
 
-    def randomstats(self, other, iterations, new=False, genome_fn=None,
-                    include_distribution=False, **kwargs):
+    def randomstats(
+        self,
+        other,
+        iterations,
+        new=False,
+        genome_fn=None,
+        include_distribution=False,
+        **kwargs
+    ):
         """
         Dictionary of results from many randomly shuffled intersections.
 
@@ -2636,9 +2769,8 @@ class BedTool(object):
             print(results['percentile'])
             90.0
         """
-        if ('intersect_kwargs' not in kwargs) or \
-                (kwargs['intersect_kwargs'] is None):
-            kwargs['intersect_kwargs'] = {'u': True}
+        if ("intersect_kwargs" not in kwargs) or (kwargs["intersect_kwargs"] is None):
+            kwargs["intersect_kwargs"] = {"u": True}
         try:
             import numpy as np
         except ImportError:
@@ -2652,7 +2784,7 @@ class BedTool(object):
             a = np.array(a)
             n = len(a)
 
-            if not(np.any(a == score)):
+            if not (np.any(a == score)):
                 a = np.append(a, score)
                 a_len = np.array(list(range(len(a))))
             else:
@@ -2666,11 +2798,12 @@ class BedTool(object):
         if isinstance(other, six.string_types):
             other = BedTool(other)
         else:
-            assert isinstance(other, BedTool),\
-                'Either filename or another BedTool instance required'
+            assert isinstance(
+                other, BedTool
+            ), "Either filename or another BedTool instance required"
 
         # Actual (unshuffled) counts.
-        i_kwargs = kwargs['intersect_kwargs']
+        i_kwargs = kwargs["intersect_kwargs"]
         actual = len(self.intersect(other, **i_kwargs))
 
         # List of counts from randomly shuffled versions.
@@ -2678,15 +2811,18 @@ class BedTool(object):
 
         if not new:
             distribution = self.randomintersection(
-                other, iterations=iterations, **kwargs)
+                other, iterations=iterations, **kwargs
+            )
         else:
             # use new mechanism
             if genome_fn is None:
                 raise ValueError(
-                    '`genome_fn` must be provided if using the '
-                    'new _randomintersection mechanism')
+                    "`genome_fn` must be provided if using the "
+                    "new _randomintersection mechanism"
+                )
             distribution = self._randomintersection(
-                other, iterations=iterations, genome_fn=genome_fn, **kwargs)
+                other, iterations=iterations, genome_fn=genome_fn, **kwargs
+            )
 
         distribution = np.array(list(distribution))
 
@@ -2702,29 +2838,28 @@ class BedTool(object):
 
         lower_thresh = 2.5
         upper_thresh = 97.5
-        lower, upper = np.percentile(
-            distribution, [lower_thresh, upper_thresh])
+        lower, upper = np.percentile(distribution, [lower_thresh, upper_thresh])
 
         actual_percentile = percentileofscore(distribution, actual)
         d = {
-            'iterations': iterations,
-            'actual': actual,
-            'file_a': self.fn,
-            'file_b': other.fn,
+            "iterations": iterations,
+            "actual": actual,
+            "file_a": self.fn,
+            "file_b": other.fn,
             self.fn: len(self),
             other.fn: len(other),
-            'self': len(self),
-            'other': len(other),
-            'frac randomized above actual': frac_above,
-            'frac randomized below actual': frac_below,
-            'median randomized': med_count,
-            'normalized': normalized,
-            'percentile': actual_percentile,
-            'lower_%sth' % lower_thresh: lower,
-            'upper_%sth' % upper_thresh: upper,
+            "self": len(self),
+            "other": len(other),
+            "frac randomized above actual": frac_above,
+            "frac randomized below actual": frac_below,
+            "median randomized": med_count,
+            "normalized": normalized,
+            "percentile": actual_percentile,
+            "lower_%sth" % lower_thresh: lower,
+            "upper_%sth" % upper_thresh: upper,
         }
         if include_distribution:
-            d['distribution'] = distribution
+            d["distribution"] = distribution
         else:
             del distribution
         return d
@@ -2735,8 +2870,9 @@ class BedTool(object):
         """
         return self.parallel_apply(*args, **kwargs)
 
-    def parallel_apply(self, iterations, func, func_args, func_kwargs,
-                       processes=1, _orig_pool=None):
+    def parallel_apply(
+        self, iterations, func, func_args, func_kwargs, processes=1, _orig_pool=None
+    ):
         """
         Generalized method for applying a function in parallel.
 
@@ -2787,15 +2923,22 @@ class BedTool(object):
         # Here, we don't care about the order, and don't want the subprocesses
         # to block.
         results = [
-            p.apply_async(func, func_args, func_kwargs)
-            for it in range(iterations)]
+            p.apply_async(func, func_args, func_kwargs) for it in range(iterations)
+        ]
         for r in results:
             yield r.get()
         raise StopIteration
 
-    def random_jaccard(self, other, genome_fn=None, iterations=None,
-                       processes=1, _orig_pool=None, shuffle_kwargs=None,
-                       jaccard_kwargs=None):
+    def random_jaccard(
+        self,
+        other,
+        genome_fn=None,
+        iterations=None,
+        processes=1,
+        _orig_pool=None,
+        shuffle_kwargs=None,
+        jaccard_kwargs=None,
+    ):
         """
         Computes the naive Jaccard statistic (intersection divided by union).
 
@@ -2823,8 +2966,7 @@ class BedTool(object):
         if jaccard_kwargs is None:
             jaccard_kwargs = {}
         if not genome_fn:
-            raise ValueError(
-                "Need a genome filename in order to perform randomization")
+            raise ValueError("Need a genome filename in order to perform randomization")
         return list(
             self.parallel_apply(
                 iterations=iterations,
@@ -2833,15 +2975,23 @@ class BedTool(object):
                 func_kwargs=dict(
                     genome_fn=genome_fn,
                     shuffle_kwargs=shuffle_kwargs,
-                    jaccard_kwargs=jaccard_kwargs),
+                    jaccard_kwargs=jaccard_kwargs,
+                ),
                 processes=processes,
                 _orig_pool=_orig_pool,
             )
         )
 
-    def _randomintersection(self, other, iterations, genome_fn,
-                            intersect_kwargs=None, _orig_pool=None,
-                            shuffle_kwargs=None, processes=1):
+    def _randomintersection(
+        self,
+        other,
+        iterations,
+        genome_fn,
+        intersect_kwargs=None,
+        _orig_pool=None,
+        shuffle_kwargs=None,
+        processes=1,
+    ):
         """
         Re-implementation of BedTool.randomintersection using the new
         `random_op` method
@@ -2851,8 +3001,7 @@ class BedTool(object):
         if intersect_kwargs is None:
             intersect_kwargs = dict(u=True)
         if not genome_fn:
-            raise ValueError(
-                "Need a genome filename in order to perform randomization")
+            raise ValueError("Need a genome filename in order to perform randomization")
         return list(
             self.parallel_apply(
                 iterations=iterations,
@@ -2861,15 +3010,23 @@ class BedTool(object):
                 func_kwargs=dict(
                     genome_fn=genome_fn,
                     shuffle_kwargs=shuffle_kwargs,
-                    intersect_kwargs=intersect_kwargs),
+                    intersect_kwargs=intersect_kwargs,
+                ),
                 processes=processes,
                 _orig_pool=_orig_pool,
             )
         )
 
-    def randomintersection_bp(self, other, iterations, genome_fn,
-                              intersect_kwargs=None, shuffle_kwargs=None,
-                              processes=1, _orig_pool=None):
+    def randomintersection_bp(
+        self,
+        other,
+        iterations,
+        genome_fn,
+        intersect_kwargs=None,
+        shuffle_kwargs=None,
+        processes=1,
+        _orig_pool=None,
+    ):
         """
         Like randomintersection, but return the bp overlap instead of the
         number of intersecting intervals.
@@ -2879,8 +3036,7 @@ class BedTool(object):
         if intersect_kwargs is None:
             intersect_kwargs = {}
         if not genome_fn:
-            raise ValueError(
-                "Need a genome filename in order to perform randomization")
+            raise ValueError("Need a genome filename in order to perform randomization")
         return list(
             self.parallel_apply(
                 iterations=iterations,
@@ -2889,16 +3045,24 @@ class BedTool(object):
                 func_kwargs=dict(
                     genome_fn=genome_fn,
                     shuffle_kwargs=shuffle_kwargs,
-                    intersect_kwargs=intersect_kwargs),
+                    intersect_kwargs=intersect_kwargs,
+                ),
                 processes=processes,
                 _orig_pool=_orig_pool,
             )
         )
 
-    def randomintersection(self, other, iterations, intersect_kwargs=None,
-                           shuffle_kwargs=None, debug=False,
-                           report_iterations=False, processes=None,
-                           _orig_processes=None):
+    def randomintersection(
+        self,
+        other,
+        iterations,
+        intersect_kwargs=None,
+        shuffle_kwargs=None,
+        debug=False,
+        report_iterations=False,
+        processes=None,
+        _orig_processes=None,
+    ):
         """
         Perform `iterations` shufflings, each time intersecting with `other`.
 
@@ -2935,15 +3099,18 @@ class BedTool(object):
             iterations_each[-1] += iterations % processes
             results = [
                 p.apply_async(
-                    _call_randomintersect, (self, other, it),
-                    dict(intersect_kwargs=intersect_kwargs,
-                         shuffle_kwargs=shuffle_kwargs,
-                         debug=debug,
-                         report_iterations=report_iterations,
-                         _orig_processes=processes
-                         )
+                    _call_randomintersect,
+                    (self, other, it),
+                    dict(
+                        intersect_kwargs=intersect_kwargs,
+                        shuffle_kwargs=shuffle_kwargs,
+                        debug=debug,
+                        report_iterations=report_iterations,
+                        _orig_processes=processes,
+                    ),
                 )
-                for it in iterations_each]
+                for it in iterations_each
+            ]
             for r in results:
                 for value in r.get():
                     yield value
@@ -2952,22 +3119,24 @@ class BedTool(object):
         if shuffle_kwargs is None:
             shuffle_kwargs = {}
         if intersect_kwargs is None:
-            intersect_kwargs = {'u': True}
+            intersect_kwargs = {"u": True}
 
-        if 'u' not in intersect_kwargs:
-            intersect_kwargs['u'] = True
+        if "u" not in intersect_kwargs:
+            intersect_kwargs["u"] = True
 
-        resort = intersect_kwargs.get('sorted', False)
+        resort = intersect_kwargs.get("sorted", False)
 
         for i in range(iterations):
             if debug:
-                shuffle_kwargs['seed'] = i
+                shuffle_kwargs["seed"] = i
             if report_iterations:
                 if _orig_processes > 1:
-                    msg = '\rapprox (total across %s processes): %s' \
-                        % (_orig_processes, i * _orig_processes)
+                    msg = "\rapprox (total across %s processes): %s" % (
+                        _orig_processes,
+                        i * _orig_processes,
+                    )
                 else:
-                    msg = '\r%s' % i
+                    msg = "\r%s" % i
                 sys.stderr.write(msg)
                 sys.stderr.flush()
 
@@ -2989,8 +3158,8 @@ class BedTool(object):
             #     tmp0.fn.close()
             # tmp.fn.close()
             tmp2.fn.close()
-            del(tmp)
-            del(tmp2)
+            del tmp
+            del tmp2
 
     @_log_to_history
     def cat(self, *others, **kwargs):
@@ -3034,28 +3203,30 @@ class BedTool(object):
         chr1	800	901	feature6	0	+
         <BLANKLINE>
         """
-        assert len(others) > 0, 'You must specify at least one other bedfile!'
+        assert len(others) > 0, "You must specify at least one other bedfile!"
         other_beds = []
         for other in others:
             if isinstance(other, six.string_types):
                 other = BedTool(other)
             else:
-                assert isinstance(other, BedTool),\
-                    'Either filename or another BedTool instance required'
+                assert isinstance(
+                    other, BedTool
+                ), "Either filename or another BedTool instance required"
             other_beds.append(other)
         tmp = self._tmp()
-        TMP = open(tmp, 'w')
+        TMP = open(tmp, "w")
 
         # postmerge and force_trucate don't get passed on to merge
-        postmerge = kwargs.pop('postmerge', True)
-        force_truncate = kwargs.pop('force_truncate', False)
-        stream_merge = kwargs.get('stream', False)
+        postmerge = kwargs.pop("postmerge", True)
+        force_truncate = kwargs.pop("force_truncate", False)
+        stream_merge = kwargs.get("stream", False)
         if stream_merge and postmerge:
             raise ValueError(
                 "The post-merge step in the `cat()` method "
                 "perfoms a sort, which uses stream=True.  Using "
                 "stream=True for the merge as well will result in a "
-                "deadlock!")
+                "deadlock!"
+            )
 
         # if filetypes and field counts are the same, don't truncate
         if not force_truncate:
@@ -3064,18 +3235,21 @@ class BedTool(object):
 
                 files = [self] + other_beds
                 filetypes = set(
-                    [self.file_type]
-                    + [i.file_type for i in other_beds]).difference(['empty'])
-                field_nums = set(
-                    [self.field_count()]
-                    + [i.field_count() for i in other_beds]).difference([None]).difference([0])
+                    [self.file_type] + [i.file_type for i in other_beds]
+                ).difference(["empty"])
+                field_nums = (
+                    set([self.field_count()] + [i.field_count() for i in other_beds])
+                    .difference([None])
+                    .difference([0])
+                )
                 same_field_num = len(field_nums) == 1
                 same_type = len(set(filetypes)) == 1
             except ValueError:
                 raise ValueError(
                     "Can't check filetype or field count -- "
                     "is one of the files you're merging a 'streaming' "
-                    "BedTool?  If so, use .saveas() to save to file first")
+                    "BedTool?  If so, use .saveas() to save to file first"
+                )
 
         if not force_truncate and same_type and same_field_num:
             for f in self:
@@ -3089,19 +3263,19 @@ class BedTool(object):
         elif not force_truncate and same_type:
             minfields = min(field_nums)
             for f in self:
-                TMP.write('\t'.join(f.fields[:minfields]) + '\n')
+                TMP.write("\t".join(f.fields[:minfields]) + "\n")
             for other in other_beds:
                 for f in other:
-                    TMP.write('\t'.join(f.fields[:minfields]) + '\n')
+                    TMP.write("\t".join(f.fields[:minfields]) + "\n")
 
         # Otherwise, use the zero-based chrom/start/stop to create a BED3,
         # which will work when catting a GFF and a BED together.
         else:
             for f in self:
-                TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+                TMP.write("%s\t%i\t%i\n" % (f.chrom, f.start, f.end))
             for other in other_beds:
                 for f in other:
-                    TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+                    TMP.write("%s\t%i\t%i\n" % (f.chrom, f.start, f.end))
 
         TMP.close()
         c = BedTool(tmp)
@@ -3152,16 +3326,20 @@ class BedTool(object):
         # Default to compressed if extension is .gz
         if compressed is None:
             __, extension = os.path.splitext(fn)
-            if extension == '.gz':
+            if extension == ".gz":
                 compressed = True
             else:
                 compressed = False
 
         in_compressed = isinstance(self.fn, six.string_types) and isGZIP(self.fn)
 
-        fn = self._collapse(self, fn=fn, trackline=trackline,
-                            in_compressed=in_compressed,
-                            out_compressed=compressed)
+        fn = self._collapse(
+            self,
+            fn=fn,
+            trackline=trackline,
+            in_compressed=in_compressed,
+            out_compressed=compressed,
+        )
         return BedTool(fn)
 
     @_log_to_history
@@ -3192,7 +3370,7 @@ class BedTool(object):
 
     @_log_to_history
     def random_subset(self, n, seed=None):
-        '''
+        """
         Return a BedTool containing a random subset.
 
         Example usage:
@@ -3201,7 +3379,7 @@ class BedTool(object):
         >>> b = a.random_subset(2)
         >>> len(b)
         2
-        '''
+        """
         idxs = list(range(len(self)))
         if seed is not None:
             random.seed(seed)
@@ -3209,7 +3387,7 @@ class BedTool(object):
         idxs = idxs[:n]
 
         tmpfn = self._tmp()
-        tmp = open(tmpfn, 'w')
+        tmp = open(tmpfn, "w")
         for i, f in enumerate(self):
             if i in idxs:
                 tmp.write(str(f))
@@ -3294,13 +3472,11 @@ class BedTool(object):
         result = BedTool._tmp()
         if unmapped is None:
             unmapped = BedTool._tmp()
-        cmds = ['liftOver', liftover_args, self.fn, chainfile, result,
-                unmapped]
-        os.system(' '.join(cmds))
+        cmds = ["liftOver", liftover_args, self.fn, chainfile, result, unmapped]
+        os.system(" ".join(cmds))
         return BedTool(result)
 
-    def absolute_distance(self, other, closest_kwargs=None,
-                          use_midpoints=False):
+    def absolute_distance(self, other, closest_kwargs=None, use_midpoints=False):
         """
         Returns an iterator of the *absolute* distances between features in
         self and other.
@@ -3316,9 +3492,9 @@ class BedTool(object):
         from .featurefuncs import midpoint
 
         if closest_kwargs is None:
-            closest_kwargs = {'d': True}
+            closest_kwargs = {"d": True}
 
-        if 'D' not in closest_kwargs:
+        if "D" not in closest_kwargs:
             closest_kwargs.update(dict(d=True))
 
         if use_midpoints:
@@ -3343,10 +3519,9 @@ class BedTool(object):
         `g` (filename of chromsizes file).
         """
         if (genome is None) and (g is None):
-            raise ValueError(
-                'Need either `genome` or `g` arg for relative distance')
+            raise ValueError("Need either `genome` or `g` arg for relative distance")
         if genome and g:
-            raise ValueError('Please specify only one of `genome` or `g`')
+            raise ValueError("Please specify only one of `genome` or `g`")
 
         if genome:
             g_dict = dict(genome=genome)
@@ -3364,8 +3539,7 @@ class BedTool(object):
         for i in hits:
             yield float(i[-1]) / len(i)
 
-    def colormap_normalize(self, vmin=None, vmax=None, percentile=False,
-                           log=False):
+    def colormap_normalize(self, vmin=None, vmax=None, percentile=False, log=False):
         """
         Returns a normalization instance for use by featurefuncs.add_color().
 
@@ -3384,9 +3558,8 @@ class BedTool(object):
             [0,100] rather than absolute values.
         """
         field_count = self.field_count()
-        if (self.file_type != 'bed') or (field_count < 5):
-            raise ValueError('colorizing only works for BED files with score '
-                             'fields')
+        if (self.file_type != "bed") or (field_count < 5):
+            raise ValueError("colorizing only works for BED files with score " "fields")
         import matplotlib
         import numpy as np
 
@@ -3424,6 +3597,7 @@ class BedTool(object):
                     k += 1
                     if k == length:
                         break
+
         return BedTool(_gen()).saveas()
 
     def to_dataframe(self, disable_auto_names=False, *args, **kwargs):
@@ -3448,24 +3622,22 @@ class BedTool(object):
         try:
             import pandas
         except ImportError:
-            raise ImportError(
-                "pandas must be installed to convert to pandas.DataFrame")
+            raise ImportError("pandas must be installed to convert to pandas.DataFrame")
         # Otherwise we're good:
-        names = kwargs.get('names', None)
+        names = kwargs.get("names", None)
         if names is None and not disable_auto_names:
             try:
-                _names = \
-                    settings._column_names[self.file_type][:self.field_count()]
+                _names = settings._column_names[self.file_type][: self.field_count()]
                 if len(_names) < self.field_count():
                     warn(
-                        'Default names for filetype %s are:\n%s\nbut file has '
-                        '%s fields; you can supply custom names with the '
-                        '`names` kwarg'
-                        % (self.file_type, _names, self.field_count()))
+                        "Default names for filetype %s are:\n%s\nbut file has "
+                        "%s fields; you can supply custom names with the "
+                        "`names` kwarg" % (self.file_type, _names, self.field_count())
+                    )
                     _names = None
             except KeyError:
                 _names = None
-            kwargs['names'] = _names
+            kwargs["names"] = _names
 
         return pandas.read_csv(self.fn, *args, sep="\t", **kwargs)
 
@@ -3479,13 +3651,15 @@ class BedTool(object):
         Use `as_string=True` to return a string.
         """
         if self._isbam:
-            raise ValueError('tail() not yet implemented for BAM files')
+            raise ValueError("tail() not yet implemented for BAM files")
         if not isinstance(self.fn, six.string_types):
-            raise ValueError('tail() not implemented for non-file-based '
-                             'BedTool objects.  Please use saveas() first.')
+            raise ValueError(
+                "tail() not implemented for non-file-based "
+                "BedTool objects.  Please use saveas() first."
+            )
         bufsize = 8192
         offset = bufsize
-        f = open(self.fn, 'rb')
+        f = open(self.fn, "rb")
 
         # whence=2 arg means relative to end (i.e., go to the end)
         f.seek(0, 2)
@@ -3501,7 +3675,7 @@ class BedTool(object):
                 break
             offset += bufsize
 
-        result = ''.join([i.decode() for i in data[-lines:]])
+        result = "".join([i.decode() for i in data[-lines:]])
         if as_string:
             return result
         else:
@@ -3554,14 +3728,14 @@ class BAM(object):
         tags = []
         for k, v in r.tags:
             if isinstance(v, int):
-                t = 'i'
+                t = "i"
             elif isinstance(v, float):
-                t = 'f'
+                t = "f"
             else:
-                t = 'Z'
-            tags.append('{0}:{1}:{2}'.format(k, t, v))
+                t = "Z"
+            tags.append("{0}:{1}:{2}".format(k, t, v))
 
-        tags = '\t'.join(tags)
+        tags = "\t".join(tags)
 
         if r.seq:
             seq = r.seq
@@ -3577,7 +3751,6 @@ class BAM(object):
             r.qname,
             str(r.flag),
             rname,
-
             # +1 here because cbedtools.pyx expects SAM -- which is 1-based --
             # but pysam uses 0-based.
             str(r.pos + 1),
@@ -3619,8 +3792,7 @@ class History(list):
 
 
 class HistoryStep(object):
-    def __init__(self, method, args, kwargs, bedtool_instance,
-                 parent_tag, result_tag):
+    def __init__(self, method, args, kwargs, bedtool_instance, parent_tag, result_tag):
         """
         Class to represent one step in the history.
 
@@ -3637,7 +3809,7 @@ class HistoryStep(object):
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
-        tag = ''.join(random.choice(string.ascii_lowercase) for _ in range(8))
+        tag = "".join(random.choice(string.ascii_lowercase) for _ in range(8))
         self.parent_tag = parent_tag
         self.result_tag = result_tag
 
@@ -3653,26 +3825,26 @@ class HistoryStep(object):
 
     def __repr__(self):
         # Still not sure whether to use pybedtools.bedtool() or bedtool()
-        s = ''
-        s += '<HistoryStep> '
+        s = ""
+        s += "<HistoryStep> "
         if os.path.exists(self.fn):
             s += 'BedTool("%(fn)s").%(method)s(%%s%%s)' % self.__dict__
         else:
             s += 'BedTool("MISSING FILE: %(fn)s")' % self.__dict__
-            s += '.%(method)s(%%s%%s)' % self.__dict__
+            s += ".%(method)s(%%s%%s)" % self.__dict__
 
         # Format args and kwargs
-        args_string = ','.join(map(self._clean_arg, self.args))
-        kwargs_string = ','.join(
-            ['%s=%s' % (i[0], self._clean_arg(i[1]))
-             for i in list(self.kwargs.items())])
+        args_string = ",".join(map(self._clean_arg, self.args))
+        kwargs_string = ",".join(
+            ["%s=%s" % (i[0], self._clean_arg(i[1])) for i in list(self.kwargs.items())]
+        )
         # stick a comma on the end if there's something here
         if len(args_string) > 0:
-            args_string += ', '
+            args_string += ", "
 
         s = s % (args_string, kwargs_string)
-        s += ', parent tag: %s' % self.parent_tag
-        s += ', result tag: %s' % self.result_tag
+        s += ", parent tag: %s" % self.parent_tag
+        s += ", result tag: %s" % self.result_tag
         return s
 
 
@@ -3689,7 +3861,8 @@ def example_bedtool(fn):
         raise FileNotFoundError(msg)
     return BedTool(fn)
 
+
 if __name__ == "__main__":
     import doctest
-    doctest.testmod(optionflags=doctest.ELLIPSIS |
-                    doctest.NORMALIZE_WHITESPACE)
+
+    doctest.testmod(optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)

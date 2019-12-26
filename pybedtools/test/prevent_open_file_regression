@@ -15,7 +15,7 @@ import os
 prog = sys.argv[0]
 
 usage = """
-    Tries to create the open file bug by performing 10k iterations.
+    Tries to create the open file bug by performing 100k iterations.
 
     To test BedTool.randomstats:
 

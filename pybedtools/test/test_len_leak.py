@@ -1,6 +1,6 @@
 import pybedtools
 
-fn = pybedtools.example_filename('a.bed')
+fn = pybedtools.example_filename("a.bed")
 
 
 def show_open_fds(func):
@@ -21,7 +21,7 @@ def func1(src):
 
 
 def func2(src):
-    'create bedtool in loop and check length'
+    "create bedtool in loop and check length"
     for i in range(10):
         x = pybedtools.BedTool(src)
         len(x)
@@ -29,7 +29,7 @@ def func2(src):
 
 
 def func3(src):
-    'create bedtool outside of loop; check length inside'
+    "create bedtool outside of loop; check length inside"
     x = pybedtools.BedTool(src)
     for i in range(10):
         len(x)
@@ -37,14 +37,14 @@ def func3(src):
 
 
 def func4(src):
-    'create and len in loop; don\'t assign to var'
+    "create and len in loop; don't assign to var"
     for i in range(10):
         len(pybedtools.BedTool(src))
         yield pybedtools.helpers.n_open_fds()
 
 
 def func0(src):
-    'check field count'
+    "check field count"
     x = pybedtools.BedTool(src)
     for i in range(10):
         # since the test file is only 4 lines, set `n` to make sure we're
@@ -56,5 +56,5 @@ def func0(src):
 
 if __name__ == "__main__":
     for k, v in sorted(locals().items()):
-        if k.startswith('func'):
+        if k.startswith("func"):
             show_open_fds(v)

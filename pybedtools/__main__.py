@@ -14,8 +14,7 @@ def import_module(name):
 
 
 def script_names(module):
-    return sorted(
-            [script for script in  module.__all__ if not script[:2] == "__"])
+    return sorted([script for script in module.__all__ if not script[:2] == "__"])
 
 
 def main():
@@ -23,13 +22,12 @@ def main():
     scripts = script_names(m)
     mods = [import_module("pybedtools.scripts.%s" % s) for s in scripts]
 
-    if (len(sys.argv) != 1 and not sys.argv[1] in scripts) \
-       or len(sys.argv) == 1:
+    if (len(sys.argv) != 1 and not sys.argv[1] in scripts) or len(sys.argv) == 1:
 
         print(__doc__.strip() + "\n")
         for name, mod in zip(scripts, mods):
             scriptname = " %-22s:" % name
-            padding = ' ' * (len(scriptname) + 1)
+            padding = " " * (len(scriptname) + 1)
             doclines = textwrap.wrap(textwrap.dedent(mod.main.__doc__), 50)
             print(scriptname, doclines[0])
             for line in doclines[1:]:
@@ -41,6 +39,7 @@ def main():
         i = scripts.index(mname)
         module = mods[i]
         module.main()
+
 
 if __name__ == "__main__":
     main()

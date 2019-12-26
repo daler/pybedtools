@@ -15,7 +15,7 @@ import pybedtools
 from six.moves import urllib
 
 
-def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
+def venn_gchart(a, b, c=None, colors=None, labels=None, size="300x300"):
     """
     a, b, and c are filenames to BED-like files.
 
@@ -35,13 +35,15 @@ def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
     # The order of values is meaningful to the API, see
     # http://code.google.com/apis/chart/docs/gallery/venn_charts.html
     if c:
-        vals = [len(a),
-                len(b),
-                len(c),
-                len(a + b),
-                len(a + c),
-                len(b + c),
-                len(a + b + c)]
+        vals = [
+            len(a),
+            len(b),
+            len(c),
+            len(a + b),
+            len(a + c),
+            len(b + c),
+            len(a + b + c),
+        ]
     else:
         # insert 0 for size of 3rd circle.
         vals = [len(a), len(b), 0, len(a + b)]
@@ -50,34 +52,32 @@ def venn_gchart(a, b, c=None, colors=None, labels=None, size='300x300'):
     # join make a comma-separated list of values.
     mx = float(max(vals))
     vals = [round(i / mx, 4) for i in vals]
-    valstr = ','.join(map(str, vals))
+    valstr = ",".join(map(str, vals))
 
-    data = {'cht': 'v',
-            'chs': size,
-            'chd': 't:' + valstr}
+    data = {"cht": "v", "chs": size, "chd": "t:" + valstr}
 
     # Add the optional data, if specified
     if labels:
-        data['chdl'] = '|'.join(labels)
+        data["chdl"] = "|".join(labels)
     if colors:
-        data['chco'] = ','.join(colors)
+        data["chco"] = ",".join(colors)
     return data
 
 
-def gchart(data, outfn='out.png'):
+def gchart(data, outfn="out.png"):
     """
     Sends data to Google Chart API
     """
     data = urllib.parse.urlencode(data)
-    binary_data = data.encode('UTF-8')
+    binary_data = data.encode("UTF-8")
 
-    url = 'https://chart.googleapis.com/chart?'
+    url = "https://chart.googleapis.com/chart?"
 
     # Request and get the PNG
     req = urllib.request.Request(url, binary_data)
     print(url + data)
     response = urllib.request.urlopen(req)
-    f = open(outfn, 'w')
+    f = open(outfn, "w")
     f.write(response.read())
     f.close()
 
@@ -87,25 +87,34 @@ def main():
     """
 
     op = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
-    op.add_argument('-a', help='File to use for the left-most circle')
-    op.add_argument('-b', help='File to use for the right-most circle')
-    op.add_argument('-c', help='File to use for the bottom circle')
-    op.add_argument('--colors', help='Optional comma-separated list of hex '
-                    'colors for circles a, b, and c.  E.g. %(default)s',
-                     default='00FF00,FF0000,0000FF')
-    op.add_argument('--labels',
-            help='Optional comma-separated list of labels for a, b, and c',
-                    default='a,b,c')
-    op.add_argument('--size', default='300x300',
-                  help='Optional size of PNG, in pixels.  Default is '
-                  '"%(default)s"')
-    op.add_argument('-o', default='out.png',
-                  help='Output file to save as, in PNG format')
-    op.add_argument('--test', action='store_true',
-            help='run test, overriding all other options.')
+    op.add_argument("-a", help="File to use for the left-most circle")
+    op.add_argument("-b", help="File to use for the right-most circle")
+    op.add_argument("-c", help="File to use for the bottom circle")
+    op.add_argument(
+        "--colors",
+        help="Optional comma-separated list of hex "
+        "colors for circles a, b, and c.  E.g. %(default)s",
+        default="00FF00,FF0000,0000FF",
+    )
+    op.add_argument(
+        "--labels",
+        help="Optional comma-separated list of labels for a, b, and c",
+        default="a,b,c",
+    )
+    op.add_argument(
+        "--size",
+        default="300x300",
+        help="Optional size of PNG, in pixels.  Default is " '"%(default)s"',
+    )
+    op.add_argument(
+        "-o", default="out.png", help="Output file to save as, in PNG format"
+    )
+    op.add_argument(
+        "--test", action="store_true", help="run test, overriding all other options."
+    )
     options = op.parse_args()
 
-    reqd_args = ['a', 'b']
+    reqd_args = ["a", "b"]
     if not options.test:
         for ra in reqd_args:
             if not getattr(options, ra):
@@ -116,23 +125,29 @@ def main():
     if options.test:
         # Example data
         pybedtools.bedtool.random.seed(1)
-        a = pybedtools.example_bedtool('rmsk.hg18.chr21.small.bed')
-        b = pybedtools.example_bedtool('venn.b.bed')
-        c = pybedtools.example_bedtool('venn.c.bed')
+        a = pybedtools.example_bedtool("rmsk.hg18.chr21.small.bed")
+        b = pybedtools.example_bedtool("venn.b.bed")
+        c = pybedtools.example_bedtool("venn.c.bed")
         options.a = a.fn
         options.b = b.fn
         options.c = c.fn
-        options.colors = '00FF00,FF0000,0000FF'
-        options.o = 'out.png'
-        options.labels = 'a,b,c'
+        options.colors = "00FF00,FF0000,0000FF"
+        options.o = "out.png"
+        options.labels = "a,b,c"
 
-    data = venn_gchart(a=options.a, b=options.b, c=options.c,
-                       colors=options.colors.split(','),
-                       labels=options.labels.split(','),
-                       size=options.size)
+    data = venn_gchart(
+        a=options.a,
+        b=options.b,
+        c=options.c,
+        colors=options.colors.split(","),
+        labels=options.labels.split(","),
+        size=options.size,
+    )
     gchart(data, outfn=options.o)
+
 
 if __name__ == "__main__":
     import doctest
+
     if doctest.testmod(optionflags=doctest.ELLIPSIS).failed == 0:
         main()
