@@ -181,14 +181,24 @@ def isBGZIP(fn):
 def isBAM(fn):
     """
     Returns True if the file is both BGZIPed and the compressed contents have
-    start with the magic number `BAM\\x01`.
+    start with the magic number `BAM\\x01`, or if the file is CRAM format (see
+    isCRAM()).
     """
     # Note: previously we were catching ValueError when trying to open
     # a non-BAM with pysam.Samfile. That started segfaulting, so now do it the
     # right way with magic number.
     if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4).decode() == 'BAM\x01'):
         return True
+    if isCRAM(fn):
+        return True
 
+
+def isCRAM(fn):
+    """
+    Returns True if the file starts with the bytes for the characters "CRAM".
+    """
+    if open(fn, 'rb').read(4).decode(errors='ignore') == 'CRAM':
+        return True
 
 
 def find_tagged(tag):

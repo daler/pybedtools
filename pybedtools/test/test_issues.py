@@ -665,22 +665,33 @@ def test_issue_258():
                                 '12_seq_len']
 
 def test_issue_303():
-    # issue 303 describes hitting a cap of 253 -b files. Locally I hit a limit
-    # at 512.
+    # Issue 303 describes hitting a cap of 253 -b files. Locally I hit a limit
+    # at 510, and observe the same on travis-ci.
+    #
+    # The fix was to check the args in bedtool._wraps, and raise an exception
+    # if there's more than 510 filenames provided. Note that it works find with
+    # many BedTool objects.
+
     b = []
     for i in range(1000):
         b.append(pybedtools.BedTool('chr1\t{0}\t{1}\tb{0}'.format(i, i + 1), from_string=True))
     a = pybedtools.example_bedtool('a.bed')
 
-    # This seems to work no matter how many we use:
+    # Use many BedTool objects; this works
     x = a.intersect(b, wao=True, filenames=True)
 
+    # Try different cutoffs, providing filenames rather than BedTool objects:
     for n in [64, 256, 510]:
         b2 = [i.fn for i in b[:n]]
         try:
             y = a.intersect(b2)
+
+        # If running on a system that supports <510 filenames, we'll get
+        # a BEDToolsError, so catch that and report here
         except pybedtools.helpers.BEDToolsError:
             raise ValueError('Hit a limit at {0} files'.format(n))
 
+    # Otherwise, too many filenames should raise a pybedtoolsError as detected
+    # by the _wraps() function.
     with pytest.raises(pybedtools.helpers.pybedtoolsError):
         y = a.intersect([i.fn for i in b])
