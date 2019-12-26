@@ -18,7 +18,7 @@ from warnings import warn
 
 from .helpers import (
     get_tempdir, _tags, call_bedtools, _flatten_list, _check_sequence_stderr,
-    isBAM, isBGZIP, isGZIP, BEDToolsError, _call_randomintersect, SplitOutput)
+    isBAM, isBGZIP, isGZIP, BEDToolsError, pybedtoolsError, _call_randomintersect, SplitOutput)
 from . import helpers
 from .cbedtools import IntervalFile, IntervalIterator, Interval, create_interval_from_list, BedToolsFileError
 from . import filenames
@@ -267,7 +267,7 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                     # Otherwise, BEDTools can't currently handle it, so raise
                     # an exception.
                     else:
-                        raise BEDToolsError(
+                        raise pybedtoolsError(
                             '"%s" currently can\'t handle BAM '
                             'input, please use bam_to_bed() first.' % prog)
 
@@ -294,6 +294,19 @@ def _wraps(prog=None, implicit=None, bam=None, other=None, uses_genome=False,
                             check_for_genome = True
             if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
+
+            # TODO: should this be implemented as a generic function that can
+            # be passed in for a each tool to check kwargs? Currently this is
+            # the only check I can think of.
+            if prog in ('intersect', 'intersectBed'):
+                if (
+                    isinstance(kwargs['b'], list) and
+                        len(kwargs['b']) > 510 and
+                        all([isinstance(i, str) for i in kwargs['b']])
+                ):
+                    raise pybedtoolsError(
+                        'BEDTools intersect does not support > 510 filenames for -b '
+                        'argument. Consider passing these as BedTool objects instead')
 
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
@@ -446,6 +459,10 @@ class BedTool(object):
             fout.close()
 
         else:
+            # if fn is a Path object, we have to use its string representation
+            if 'pathlib.PurePath' in str(type(fn).__mro__):
+                fn = str(fn)
+
             # our work is already done
             if isinstance(fn, BedTool):
                 fn = fn.fn
@@ -1253,15 +1270,38 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
-    def _collapse(self, iterable, fn=None, trackline=None, compressed=False):
+    def _collapse(self, iterable, fn=None, trackline=None, in_compressed=False,
+                  out_compressed=False):
         """
         Collapses an iterable into file *fn* (or a new tempfile if *fn* is
         None).
 
         Returns the newly created filename.
+
+        Parameters
+        ----------
+
+        iterable : iter
+            Any iterable object whose items can be converted to an Interval.
+
+        fn : str
+            Output filename, if None then creates a temp file for output
+
+        trackline : str
+            If not None, string to be added to the top of the output. Newline
+            will be added.
+
+        in_compressed : bool
+            Indicates whether the input is compressed
+
+        out_compressed : bool
+            Indicates whether the output should be compressed
         """
         if fn is None:
             fn = self._tmp()
+
+        in_open_func = gzip.open if in_compressed else open
+        out_open_func = gzip.open if out_compressed else open
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -1273,34 +1313,20 @@ class BedTool(object):
                 out_.write(open(self.fn, 'rb').read())
             return fn
 
-
+        # If we're just working with filename-based BedTool objects, just copy
+        # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
-            if compressed:
-                with gzip.open(fn, 'wt') as out_:
-                    with open(iterable.fn, 'rt') as in_:
-                        if trackline:
-                            out_.write(trackline.strip() + '\n')
-                        out_.writelines(in_)
-            else:
-                with open(fn, 'w') as out_:
-                    with open(iterable.fn) as in_:
-                        if trackline:
-                            out_.write(trackline.strip() + '\n')
-                        out_.writelines(in_)
-
+            with out_open_func(fn, 'wt') as out_:
+                with in_open_func(iterable.fn, 'rt') as in_:
+                    if trackline:
+                        out_.write(trackline.strip() + '\n')
+                    out_.writelines(in_)
         else:
-            if compressed:
-                with gzip.open(fn, 'wt') as out_:
-                    for i in iterable:
-                        if isinstance(i, (list, tuple)):
-                            i = create_interval_from_list(list(i))
-                        out_.write(str(i))
-            else:
-                with open(fn, 'w') as out_:
-                    for i in iterable:
-                        if isinstance(i, (list, tuple)):
-                            i = create_interval_from_list(list(i))
-                        out_.write(str(i))
+            with out_open_func(fn, 'wt') as out_:
+                for i in iterable:
+                    if isinstance(i, (list, tuple)):
+                        i = create_interval_from_list(list(i))
+                    out_.write(str(i))
         return fn
 
     def handle_kwargs(self, prog, **kwargs):
@@ -1887,15 +1913,16 @@ class BedTool(object):
             chr1	899	949	feature4	0	+
             <BLANKLINE>
 
+            # Disabling, see https://github.com/arq5x/bedtools2/issues/807
             Shift features by a fraction of their length (0.50):
 
-            >>> b = a.shift(genome='hg19', pct=True, s=0.50)
-            >>> print(b) #doctest: +NORMALIZE_WHITESPACE
-            chr1	50	149	feature1	0	+
-            chr1	150	250	feature2	0	+
-            chr1	325	675	feature3	0	-
-            chr1	925	975	feature4	0	+
-            <BLANKLINE>
+            #>>> b = a.shift(genome='hg19', pct=True, s=0.50)
+            #>>> print(b) #doctest: +NORMALIZE_WHITESPACE
+            #chr1	50	149	feature1	0	+
+            #chr1	150	250	feature2	0	+
+            #chr1	325	675	feature3	0	-
+            #chr1	925	975	feature4	0	+
+            #<BLANKLINE>
 
         """
 
@@ -3130,8 +3157,11 @@ class BedTool(object):
             else:
                 compressed = False
 
+        in_compressed = isinstance(self.fn, six.string_types) and isGZIP(self.fn)
+
         fn = self._collapse(self, fn=fn, trackline=trackline,
-                            compressed=compressed)
+                            in_compressed=in_compressed,
+                            out_compressed=compressed)
         return BedTool(fn)
 
     @_log_to_history
