@@ -187,8 +187,9 @@ def isBAM(fn):
     # Note: previously we were catching ValueError when trying to open
     # a non-BAM with pysam.Samfile. That started segfaulting, so now do it the
     # right way with magic number.
-    if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4).decode() == 'BAM\x01'):
-        return True
+    with gzip.open(fn, 'rb') as in_:
+        if isBGZIP(fn) and (in_.read(4).decode() == 'BAM\x01'):
+            return True
     if isCRAM(fn):
         return True
 
@@ -197,8 +198,9 @@ def isCRAM(fn):
     """
     Returns True if the file starts with the bytes for the characters "CRAM".
     """
-    if open(fn, 'rb').read(4).decode(errors='ignore') == 'CRAM':
-        return True
+    with open(fn, 'rb') as in_:
+        if in_.read(4).decode(errors='ignore') == 'CRAM':
+            return True
 
 
 def find_tagged(tag):
