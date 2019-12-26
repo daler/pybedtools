@@ -622,13 +622,12 @@ class BedTool(object):
             chromdict = helpers.chromsizes(genome)
 
         tmp = self._tmp()
-        fout = open(tmp, 'w')
-        for chrom, coords in list(chromdict.items()):
-            start, stop = coords
-            start = str(start)
-            stop = str(stop)
-            fout.write('\t'.join([chrom, start, stop]) + '\n')
-        fout.close()
+        with open(tmp, 'w') as fout:
+            for chrom, coords in list(chromdict.items()):
+                start, stop = coords
+                start = str(start)
+                stop = str(stop)
+                fout.write('\t'.join([chrom, start, stop]) + '\n')
         return self.intersect(tmp)
 
     def tabix_intervals(self, interval_or_string, check_coordinates=False):
@@ -991,35 +990,33 @@ class BedTool(object):
             raise NotImplementedError(
                 '.introns() only supported for BED and GFF')
 
-        fh = open(BedTool._tmp(), "w")
+        with open(BedTool._tmp(), 'w') as fh:
+            # group on the name.
+            exon_intervals = IntervalFile(exon_iter.fn)
+            for g in gene_iter:
+                # search finds all, but we just want the ones that completely
+                # overlap this gene.
+                exons = [
+                    e for e in exon_intervals.search(g, same_strand=True)
+                    if e.start >= g.start and e.end <= g.end]
 
-        # group on the name.
-        exon_intervals = IntervalFile(exon_iter.fn)
-        for g in gene_iter:
-            # search finds all, but we just want the ones that completely
-            # overlap this gene.
-            exons = [
-                e for e in exon_intervals.search(g, same_strand=True)
-                if e.start >= g.start and e.end <= g.end]
-
-            for i, exon in enumerate(exons):
-                # 5' utr between gene start and first intron
-                if i == 0 and exon.start > g.start:
-                    utr = {"+": "utr5", "-": "utr3"}[g.strand]
-                    print("%s\t%i\t%i\t%s\t%s\t%s"
-                          % (g.chrom, g.start, exon.start, g.name, utr,
-                             g.strand), file=fh)
-                elif i == len(exons) - 1 and exon.end < g.end:
-                    utr = {"+": "utr3", "-": "utr5"}[g.strand]
-                    print("%s\t%i\t%i\t%s\t%s\t%s"
-                          % (g.chrom, exon.end, g.end, g.name, utr, g.strand),
-                          file=fh)
-                elif i != len(exons) - 1:
-                    istart = exon.end
-                    iend = exons[i + 1].start
-                    print("%s\t%i\t%i\t%s\tintron\t%s"
-                          % (g.chrom, istart, iend, g.name, g.strand), file=fh)
-        fh.close()
+                for i, exon in enumerate(exons):
+                    # 5' utr between gene start and first intron
+                    if i == 0 and exon.start > g.start:
+                        utr = {"+": "utr5", "-": "utr3"}[g.strand]
+                        print("%s\t%i\t%i\t%s\t%s\t%s"
+                              % (g.chrom, g.start, exon.start, g.name, utr,
+                                 g.strand), file=fh)
+                    elif i == len(exons) - 1 and exon.end < g.end:
+                        utr = {"+": "utr3", "-": "utr5"}[g.strand]
+                        print("%s\t%i\t%i\t%s\t%s\t%s"
+                              % (g.chrom, exon.end, g.end, g.name, utr, g.strand),
+                              file=fh)
+                    elif i != len(exons) - 1:
+                        istart = exon.end
+                        iend = exons[i + 1].start
+                        print("%s\t%i\t%i\t%s\tintron\t%s"
+                              % (g.chrom, istart, iend, g.name, g.strand), file=fh)
         return BedTool(fh.name)
 
     def features(self):
@@ -1079,12 +1076,11 @@ class BedTool(object):
         if stream:
             return BedTool(([f[attr] for attr in indexes] for f in self))
         else:
-            fh = open(self._tmp(), "w")
-            for f in self:
-                print(
-                    "\t".join(map(str, [f[attr] for attr in indexes])),
-                    file=fh)
-            fh.close()
+            with open(self._tmp(), 'w') as fh:
+                for f in self:
+                    print(
+                        "\t".join(map(str, [f[attr] for attr in indexes])),
+                        file=fh)
             return BedTool(fh.name)
 
     @classmethod
@@ -3043,8 +3039,6 @@ class BedTool(object):
                 assert isinstance(other, BedTool),\
                     'Either filename or another BedTool instance required'
             other_beds.append(other)
-        tmp = self._tmp()
-        TMP = open(tmp, 'w')
 
         # postmerge and force_trucate don't get passed on to merge
         postmerge = kwargs.pop('postmerge', True)
@@ -3077,33 +3071,37 @@ class BedTool(object):
                     "is one of the files you're merging a 'streaming' "
                     "BedTool?  If so, use .saveas() to save to file first")
 
+        tmp = self._tmp()
+
         if not force_truncate and same_type and same_field_num:
-            for f in self:
-                TMP.write(str(f))
-            for other in other_beds:
-                for f in other:
+            with open(tmp, 'w') as TMP:
+                for f in self:
                     TMP.write(str(f))
+                for other in other_beds:
+                    for f in other:
+                        TMP.write(str(f))
 
         # Types match, so we can use the min number of fields observed across
         # all inputs
         elif not force_truncate and same_type:
             minfields = min(field_nums)
-            for f in self:
-                TMP.write('\t'.join(f.fields[:minfields]) + '\n')
-            for other in other_beds:
-                for f in other:
+            with open(tmp, 'w') as TMP:
+                for f in self:
                     TMP.write('\t'.join(f.fields[:minfields]) + '\n')
+                for other in other_beds:
+                    for f in other:
+                        TMP.write('\t'.join(f.fields[:minfields]) + '\n')
 
         # Otherwise, use the zero-based chrom/start/stop to create a BED3,
         # which will work when catting a GFF and a BED together.
         else:
-            for f in self:
-                TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
-            for other in other_beds:
-                for f in other:
+            with open(tmp, 'w') as TMP:
+                for f in self:
                     TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
+                for other in other_beds:
+                    for f in other:
+                        TMP.write('%s\t%i\t%i\n' % (f.chrom, f.start, f.end))
 
-        TMP.close()
         c = BedTool(tmp)
         if postmerge:
             d = c.sort(stream=True).merge(**kwargs)
