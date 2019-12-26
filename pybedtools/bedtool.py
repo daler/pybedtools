@@ -1283,18 +1283,16 @@ class BedTool(object):
 
         iterable : iter
             Any iterable object whose items can be converted to an Interval.
-            This could be a BedTool object (whose lines are Intervals) or
-            a generator of (chrom, start, stop) tuples.
 
         fn : str
-            If None, create a temp file, otherwise this is the output filename
+            Output filename, if None then creates a temp file for output
 
         trackline : str
-            If provided, this is added to the top of the output
+            If not None, string to be added to the top of the output. Newline
+            will be added.
 
         in_compressed : bool
-            Indicates whether the input is compressed (and should therefore be
-            read using gzip.open)
+            Indicates whether the input is compressed
 
         out_compressed : bool
             Indicates whether the output should be compressed
@@ -1302,19 +1300,8 @@ class BedTool(object):
         if fn is None:
             fn = self._tmp()
 
-
-        if in_compressed:
-            in_open_func = gzip.open
-            in_open_mode = 'rt'
-        else:
-            in_open_func = open
-            in_open_mode = 'rt'
-        if out_compressed:
-            out_open_func = gzip.open
-            out_open_mode = 'wt'
-        else:
-            out_open_func = open
-            out_open_mode = 'w'
+        in_open_func = gzip.open if in_compressed else open
+        out_open_func = gzip.open if out_compressed else open
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -1326,17 +1313,16 @@ class BedTool(object):
                 out_.write(open(self.fn, 'rb').read())
             return fn
 
-
         # If we're just working with filename-based BedTool objects, just copy
         # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
-            with out_open_func(fn, out_open_mode) as out_:
-                with in_open_func(iterable.fn, in_open_mode) as in_:
+            with out_open_func(fn, 'wt') as out_:
+                with in_open_func(iterable.fn, 'rt') as in_:
                     if trackline:
                         out_.write(trackline.strip() + '\n')
                     out_.writelines(in_)
         else:
-            with out_open_func(fn, out_open_mode) as out_:
+            with out_open_func(fn, 'wt') as out_:
                 for i in iterable:
                     if isinstance(i, (list, tuple)):
                         i = create_interval_from_list(list(i))
