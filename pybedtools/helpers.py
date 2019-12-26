@@ -11,7 +11,6 @@ import struct
 import atexit
 import six
 import pysam
-import re
 from six.moves import urllib
 from . import cbedtools
 from . import settings
@@ -61,7 +60,7 @@ def set_R_path(path=""):
     paths._set_R_path(path)
 
 
-def _check_for_bedtools(force_check=False, verbose=False, override=None):
+def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     """
     Checks installation as well as version (based on whether or not "bedtools
     intersect" works, or just "intersectBed")
@@ -69,32 +68,29 @@ def _check_for_bedtools(force_check=False, verbose=False, override=None):
     if settings._bedtools_installed and not force_check:
         return True
 
-    if (len(settings.bedtools_version) == 0) or force_check:
+    if len(settings.bedtools_version) == 0:
+        # let us quickly determine the program version by calling without
+        # specifying application
         try:
             v = subprocess.check_output(
                 [
                     os.path.join(
                         settings._bedtools_path, 'bedtools'),
-                    '--version']
-            ).decode('utf-8').rstrip()
-
-            if verbose:
-                print("Found bedtools version '%s'" % v)
+                    '--version'])
 
             settings._bedtools_installed = True
 
-            # Override, used for testing
-            if override is not None:
-                v = override
-
-            # To allow more complicated versions as found in Linux distributions, e.g.:
+            # e.g.,
+            #
             #  bedtools v2.26.0
-            #  bedtools debian/2.28.0+dfsg-2-dirty
-            m = re.search('^bedtools [^0-9]*([0-9][0-9.]*)', v)
-            if not m:
-                raise ValueError('Cannot identify version number from "{}"'.format(v))
-            vv = m.group(1)
+            #
+            vv = v.decode().split('v')[1]
 
+            # Handle cases where the name of the executable corresponds to the
+            # git "dirty" version ID, e.g., bedtools v2.25.0-96-g5ee3285-dirty.
+            # See https://github.com/daler/pybedtools/issues/275 for details.
+            #
+            vv = vv.split('-')[0]
             settings.bedtools_version = [int(i) for i in vv.split(".")]
 
             settings._v_2_27_plus = (
@@ -116,6 +112,33 @@ def _check_for_bedtools(force_check=False, verbose=False, override=None):
                           "(https://github.com/arq5x/bedtools) and that "
                           "it's on the path. %s" % add_msg)
 
+    # Disabling the additional pre-2.15 check since the above code is now
+    # handling it based on what --version reports.
+    #
+    # TODO: fully deprecate this, and eventually remove v2.15 support.
+    #
+    # try:
+    #     p = subprocess.Popen(
+    #         [os.path.join(settings._bedtools_path, 'bedtools'),
+    #          settings._prog_names[program_to_check]],
+    #         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #     settings._bedtools_installed = True
+    #     settings._v_2_15_plus = True
+    #     settings._v_2_27_plus = False
+
+    # except (OSError, KeyError) as err:
+    #     try:
+    #         p = subprocess.Popen(
+    #             [os.path.join(settings._bedtools_path, program_to_check)],
+    #             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #         settings._bedtools_installed = True
+    #         settings._v_2_15_plus = False
+
+    #     except OSError as err:
+    #         if err.errno == 2:
+    #             raise OSError("BEDTools exists as a binary but seems otherwise incompatible. "
+    #                           "Please check that what is installed in '%s' is indeed from "
+    #                           "https://github.com/arq5x/bedtools." % settings._bedtools_path)
 
 def _check_for_R():
     try:
@@ -136,9 +159,6 @@ class Error(Exception):
     """Base class for this module's exceptions"""
     pass
 
-
-class pybedtoolsError(Error):
-    pass
 
 class BEDToolsError(Error):
     def __init__(self, cmd, msg):
@@ -181,26 +201,14 @@ def isBGZIP(fn):
 def isBAM(fn):
     """
     Returns True if the file is both BGZIPed and the compressed contents have
-    start with the magic number `BAM\\x01`, or if the file is CRAM format (see
-    isCRAM()).
+    start with the magic number `BAM\\x01`.
     """
     # Note: previously we were catching ValueError when trying to open
     # a non-BAM with pysam.Samfile. That started segfaulting, so now do it the
     # right way with magic number.
-    with gzip.open(fn, 'rb') as in_:
-        if isBGZIP(fn) and (in_.read(4).decode() == 'BAM\x01'):
-            return True
-    if isCRAM(fn):
+    if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4).decode() == 'BAM\x01'):
         return True
 
-
-def isCRAM(fn):
-    """
-    Returns True if the file starts with the bytes for the characters "CRAM".
-    """
-    with open(fn, 'rb') as in_:
-        if in_.read(4).decode(errors='ignore') == 'CRAM':
-            return True
 
 
 def find_tagged(tag):
@@ -657,8 +665,7 @@ def internet_on(timeout=1):
 
 
 def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
-                             fetchchromsizes='fetchChromSizes', timeout=None,
-                             host_url='genome-mysql.cse.ucsc.edu'):
+                             fetchchromsizes='fetchChromSizes', timeout=None):
     """
     Download chrom size info for *genome* from UCSC and returns the dictionary.
 
@@ -677,15 +684,13 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
     timeout : float
         How long to wait for a response; mostly used for testing.
 
-    host_url : str
-        URL of UCSC mirror MySQL server.
     """
     if not internet_on(timeout=timeout):
         raise ValueError('It appears you don\'t have an internet connection '
                          '-- unable to get chromsizes from UCSC')
     cmds = [mysql,
             '--user=genome',
-            '--host=' + host_url,
+            '--host=genome-mysql.cse.ucsc.edu',
             '-A',
             '-e',
             'select chrom, size from %s.chromInfo' % genome]

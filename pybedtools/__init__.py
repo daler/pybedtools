@@ -56,11 +56,11 @@ def debug_mode(x):
         logger.info('Debug mode disabled')
 
 
-def check_for_bedtools(*args, **kwargs):
+def check_for_bedtools(program_to_check="intersectBed", force_check=False):
     """
     For backwards compatibility; please use helpers._check_for_bedtools()
     """
-    return helpers._check_for_bedtools(*args, **kwargs)
+    return helpers._check_for_bedtools(program_to_check, force_check)
 
 
 # Allow Interval objects to be pickled -- required if you want to pass them
