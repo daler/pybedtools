@@ -741,6 +741,12 @@ cdef class IntervalIterator:
         # type...this seems like a reasonable assumption.
         self._itemtype = -1
 
+    def __dealloc__(self):
+        try:
+            self.stream.close()
+        except AttributeError:
+            pass
+
     def __iter__(self):
         return self
 
