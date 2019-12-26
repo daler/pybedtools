@@ -1270,15 +1270,51 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
-    def _collapse(self, iterable, fn=None, trackline=None, compressed=False):
+    def _collapse(self, iterable, fn=None, trackline=None, in_compressed=False,
+                  out_compressed=False):
         """
         Collapses an iterable into file *fn* (or a new tempfile if *fn* is
         None).
 
         Returns the newly created filename.
+
+        Parameters
+        ----------
+
+        iterable : iter
+            Any iterable object whose items can be converted to an Interval.
+            This could be a BedTool object (whose lines are Intervals) or
+            a generator of (chrom, start, stop) tuples.
+
+        fn : str
+            If None, create a temp file, otherwise this is the output filename
+
+        trackline : str
+            If provided, this is added to the top of the output
+
+        in_compressed : bool
+            Indicates whether the input is compressed (and should therefore be
+            read using gzip.open)
+
+        out_compressed : bool
+            Indicates whether the output should be compressed
         """
         if fn is None:
             fn = self._tmp()
+
+
+        if in_compressed:
+            in_open_func = gzip.open
+            in_open_mode = 'rt'
+        else:
+            in_open_func = open
+            in_open_mode = 'rt'
+        if out_compressed:
+            out_open_func = gzip.open
+            out_open_mode = 'wt'
+        else:
+            out_open_func = open
+            out_open_mode = 'w'
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -1291,33 +1327,20 @@ class BedTool(object):
             return fn
 
 
+        # If we're just working with filename-based BedTool objects, just copy
+        # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
-            if compressed:
-                with gzip.open(fn, 'wt') as out_:
-                    with open(iterable.fn, 'rt') as in_:
-                        if trackline:
-                            out_.write(trackline.strip() + '\n')
-                        out_.writelines(in_)
-            else:
-                with open(fn, 'w') as out_:
-                    with open(iterable.fn) as in_:
-                        if trackline:
-                            out_.write(trackline.strip() + '\n')
-                        out_.writelines(in_)
-
+            with out_open_func(fn, out_open_mode) as out_:
+                with in_open_func(iterable.fn, in_open_mode) as in_:
+                    if trackline:
+                        out_.write(trackline.strip() + '\n')
+                    out_.writelines(in_)
         else:
-            if compressed:
-                with gzip.open(fn, 'wt') as out_:
-                    for i in iterable:
-                        if isinstance(i, (list, tuple)):
-                            i = create_interval_from_list(list(i))
-                        out_.write(str(i))
-            else:
-                with open(fn, 'w') as out_:
-                    for i in iterable:
-                        if isinstance(i, (list, tuple)):
-                            i = create_interval_from_list(list(i))
-                        out_.write(str(i))
+            with out_open_func(fn, out_open_mode) as out_:
+                for i in iterable:
+                    if isinstance(i, (list, tuple)):
+                        i = create_interval_from_list(list(i))
+                    out_.write(str(i))
         return fn
 
     def handle_kwargs(self, prog, **kwargs):
@@ -3148,8 +3171,11 @@ class BedTool(object):
             else:
                 compressed = False
 
+        in_compressed = isinstance(self.fn, six.string_types) and isGZIP(self.fn)
+
         fn = self._collapse(self, fn=fn, trackline=trackline,
-                            compressed=compressed)
+                            in_compressed=in_compressed,
+                            out_compressed=compressed)
         return BedTool(fn)
 
     @_log_to_history

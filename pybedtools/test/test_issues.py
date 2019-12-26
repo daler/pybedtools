@@ -695,3 +695,36 @@ def test_issue_303():
     # by the _wraps() function.
     with pytest.raises(pybedtools.helpers.pybedtoolsError):
         y = a.intersect([i.fn for i in b])
+
+
+def test_issue_291():
+    s = "chr1	10	100\n"
+    a = pybedtools.BedTool(s, from_string=True)
+
+    # Create a gzipped file identical to a, bypassing the .saveas() mechanism
+    tmpgz = pybedtools.BedTool._tmp() + '.gz'
+    with gzip.open(tmpgz, 'wt') as fout:
+        fout.write(s)
+    b = pybedtools.BedTool(tmpgz)
+
+    assert a == b
+
+    prefix = pybedtools.BedTool._tmp()
+
+    # save as uncompressed
+    c = a.saveas(prefix)
+
+    # extension triggers compressed output from uncompressed input
+    d = a.saveas(prefix + '.gz')
+
+    # compressed output from compressed input.
+    #
+    # Previously this would fail with:
+    # UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8b in position 1: invalid start byte
+    #
+    # The problem was that only the output compression state was being tracked,
+    # so compressed input was being opened as uncompressed. Solution was to
+    # track input and output compression states separately.
+    e = b.saveas(prefix + 'x.gz')
+
+    assert a == b == c == d == e
