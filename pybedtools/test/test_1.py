@@ -1068,7 +1068,7 @@ def test_bam_header():
     b = pybedtools.example_bedtool('gdc.gff')
     c = a.intersect(b)
     print(c._bam_header)
-    assert c._bam_header == "@SQ	SN:chr2L	LN:23011544\n"
+    assert c._bam_header == "@SQ	SN:chr2L	LN:1800\n"
 
 def test_output_kwarg():
     a = pybedtools.example_bedtool('a.bed')

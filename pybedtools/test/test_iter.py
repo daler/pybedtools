@@ -136,7 +136,7 @@ def pytest_generate_tests(metafunc):
     tests = []
     labels = []
     for config_fn in yamltestdesc:
-        for test_case in yaml.load(open(config_fn).read()):
+        for test_case in yaml.load(open(config_fn).read(), Loader=yaml.FullLoader):
             kw = test_case['kwargs']
             method = test_case['method']
 
