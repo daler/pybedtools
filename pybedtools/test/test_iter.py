@@ -1,6 +1,5 @@
 from __future__ import print_function
 import difflib
-import copy
 import itertools
 import yaml
 import os
@@ -64,7 +63,7 @@ bam_methods = ('bam_to_bed',)
 
 # List of supported BedTool construction from BAM files.  Currently only
 # file-based.
-supported_bam = ('filename',)
+supported_bam = ('filename', )
 
 converters = {
     'filename': lambda x: pybedtools.BedTool(x.fn),
@@ -137,15 +136,8 @@ def pytest_generate_tests(metafunc):
     tests = []
     labels = []
     for config_fn in yamltestdesc:
-        if hasattr(yaml, 'FullLoader'):
-            test_cases = yaml.load(open(config_fn).read(), Loader=yaml.FullLoader)
-        else:
-            test_cases = yaml.load(open(config_fn).read())
-        for test_case in test_cases:
+        for test_case in yaml.load(open(config_fn).read()):
             kw = test_case['kwargs']
-
-            kwc = copy.copy(kw)
-
             method = test_case['method']
 
             a_isbam = False
@@ -155,10 +147,12 @@ def pytest_generate_tests(metafunc):
             # Figure out if this is a test involving a method that operates on
             # two files (ab), one file (i) or the "bed" tests (bed)
             flavor = None
-            if (('a' in kw) and ('b' in kw)) or ('abam' in kw):
+            if (('a' in kw) and ('b' in kw)):
                 flavor = 'ab'
             if (('i' in kw) or ('ibam' in kw)):
                 flavor = 'i'
+            if 'bed' in kw:
+                flavor = 'bed'
 
             # If bams were specified in the test block we need to keep track of
             # that. Then we set the 'a' or 'i' kws, which control the nature of
@@ -196,7 +190,7 @@ def pytest_generate_tests(metafunc):
                 for kind in kinds:
                     if i_isbam and (kind not in supported_bam):
                         continue
-                    label = '{method}: {kwc} {kind}'.format(**locals())
+                    label = '{method}: {kw} {kind}'.format(**locals())
                     labels.append(label)
                     tests.append(
                         dict(
@@ -219,14 +213,15 @@ def pytest_generate_tests(metafunc):
                 bedtool = kw.pop('a')
 
                 for kind_a, kind_b in itertools.permutations(kinds, 2):
-                    label = (
-                        '{method}: {kwc} a={kind_a} b={kind_b}'
-                        .format(**locals())
-                    )
                     if a_isbam and (kind_a not in supported_bam):
                         continue
                     if b_isbam and (kind_b not in supported_bam):
                         continue
+
+                    label = (
+                        '{method}: {kw} a={kind_a} b={kind_b}'
+                        .format(**locals())
+                    )
 
                     labels.append(label)
                     tests.append(

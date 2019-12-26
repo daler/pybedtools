@@ -74,13 +74,6 @@ def test_cleanup():
 #
 #     assert_raises(OSError, pybedtools.check_for_bedtools, **dict(program_to_check='nonexistent', force_check=True))
 
-
-def test_version_check():
-    pybedtools.helpers._check_for_bedtools(force_check=True, override='bedtools v2.28', verbose=True)
-    assert pybedtools.settings.bedtools_version == [2, 28]
-    pybedtools.helpers._check_for_bedtools(force_check=True, override='bedtools debian/2.28.0+dfsg-2-dirty', verbose=True)
-    assert pybedtools.settings.bedtools_version == [2, 28, 0]
-
 def test_call():
     tmp = os.path.join(pybedtools.get_tempdir(), 'test.output')
     from pybedtools.helpers import call_bedtools, BEDToolsError
