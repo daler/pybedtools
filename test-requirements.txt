@@ -1,4 +1,5 @@
 numpydoc
+pathlib
 psutil
 pytest
 pyyaml
