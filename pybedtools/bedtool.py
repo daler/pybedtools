@@ -1270,15 +1270,38 @@ class BedTool(object):
                              " (assembly name) or a dictionary")
         return self
 
-    def _collapse(self, iterable, fn=None, trackline=None, compressed=False):
+    def _collapse(self, iterable, fn=None, trackline=None, in_compressed=False,
+                  out_compressed=False):
         """
         Collapses an iterable into file *fn* (or a new tempfile if *fn* is
         None).
 
         Returns the newly created filename.
+
+        Parameters
+        ----------
+
+        iterable : iter
+            Any iterable object whose items can be converted to an Interval.
+
+        fn : str
+            Output filename, if None then creates a temp file for output
+
+        trackline : str
+            If not None, string to be added to the top of the output. Newline
+            will be added.
+
+        in_compressed : bool
+            Indicates whether the input is compressed
+
+        out_compressed : bool
+            Indicates whether the output should be compressed
         """
         if fn is None:
             fn = self._tmp()
+
+        in_open_func = gzip.open if in_compressed else open
+        out_open_func = gzip.open if out_compressed else open
 
         # special case: if BAM-format BedTool is provided, no trackline should
         # be supplied, and don't iterate -- copy the file wholesale
@@ -1290,34 +1313,20 @@ class BedTool(object):
                 out_.write(open(self.fn, 'rb').read())
             return fn
 
-
+        # If we're just working with filename-based BedTool objects, just copy
+        # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
-            if compressed:
-                with gzip.open(fn, 'wt') as out_:
-                    with open(iterable.fn, 'rt') as in_:
-                        if trackline:
-                            out_.write(trackline.strip() + '\n')
-                        out_.writelines(in_)
-            else:
-                with open(fn, 'w') as out_:
-                    with open(iterable.fn) as in_:
-                        if trackline:
-                            out_.write(trackline.strip() + '\n')
-                        out_.writelines(in_)
-
+            with out_open_func(fn, 'wt') as out_:
+                with in_open_func(iterable.fn, 'rt') as in_:
+                    if trackline:
+                        out_.write(trackline.strip() + '\n')
+                    out_.writelines(in_)
         else:
-            if compressed:
-                with gzip.open(fn, 'wt') as out_:
-                    for i in iterable:
-                        if isinstance(i, (list, tuple)):
-                            i = create_interval_from_list(list(i))
-                        out_.write(str(i))
-            else:
-                with open(fn, 'w') as out_:
-                    for i in iterable:
-                        if isinstance(i, (list, tuple)):
-                            i = create_interval_from_list(list(i))
-                        out_.write(str(i))
+            with out_open_func(fn, 'wt') as out_:
+                for i in iterable:
+                    if isinstance(i, (list, tuple)):
+                        i = create_interval_from_list(list(i))
+                    out_.write(str(i))
         return fn
 
     def handle_kwargs(self, prog, **kwargs):
@@ -3148,8 +3157,11 @@ class BedTool(object):
             else:
                 compressed = False
 
+        in_compressed = isinstance(self.fn, six.string_types) and isGZIP(self.fn)
+
         fn = self._collapse(self, fn=fn, trackline=trackline,
-                            compressed=compressed)
+                            in_compressed=in_compressed,
+                            out_compressed=compressed)
         return BedTool(fn)
 
     @_log_to_history
