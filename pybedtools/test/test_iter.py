@@ -137,7 +137,11 @@ def pytest_generate_tests(metafunc):
     tests = []
     labels = []
     for config_fn in yamltestdesc:
-        for test_case in yaml.load(open(config_fn).read(), Loader=yaml.FullLoader):
+        if hasattr(yaml, 'FullLoader'):
+            test_cases = yaml.load(open(config_fn).read(), Loader=yaml.FullLoader)
+        else:
+            test_cases = yaml.load(open(config_fn).read())
+        for test_case in test_cases:
             kw = test_case['kwargs']
 
             kwc = copy.copy(kw)
