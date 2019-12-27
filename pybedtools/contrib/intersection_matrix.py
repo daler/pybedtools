@@ -18,6 +18,7 @@ class IntersectionMatrix(object):
     """
     Class to handle many pairwise comparisons of interval files
     """
+
     def __init__(self, beds, genome, iterations, dbfn=None, force=False):
         """
         Class to handle and keep track of many pairwise comparisons of interval
@@ -78,8 +79,9 @@ class IntersectionMatrix(object):
         conn = sqlite3.connect(self.dbfn)
         c = conn.cursor()
         if force:
-            c.execute('DROP TABLE IF EXISTS intersections;')
-        c.executescript("""
+            c.execute("DROP TABLE IF EXISTS intersections;")
+        c.executescript(
+            """
         CREATE TABLE intersections (
             filea TEXT,
             fileb TEXT,
@@ -93,7 +95,8 @@ class IntersectionMatrix(object):
             fractionbelow FLOAT,
             percentile FLOAT,
             PRIMARY KEY (filea, fileb, iterations));
-        """)
+        """
+        )
         conn.commit()
 
     def get_row(self, fa, fb, iterations):
@@ -104,12 +107,16 @@ class IntersectionMatrix(object):
         if self.dbfn is None:
             return
 
-        results = list(self.c.execute(
+        results = list(
+            self.c.execute(
                 """
                 SELECT * FROM intersections
                 WHERE
                 filea=:fa AND fileb=:fb AND iterations=:iterations
-                """, locals()))
+                """,
+                locals(),
+            )
+        )
         if len(results) == 0:
             return
         assert len(results) == 1
@@ -124,13 +131,13 @@ class IntersectionMatrix(object):
         if row:
             tfa = os.path.getmtime(fa)
             tfb = os.path.getmtime(fb)
-            if (row['timestamp'] > tfa) and (row['timestamp'] > tfb):
+            if (row["timestamp"] > tfa) and (row["timestamp"] > tfb):
                 return True
         return False
 
     def run_and_insert(self, fa, fb, **kwargs):
         a = pybedtools.BedTool(fa).set_chromsizes(self.genome)
-        kwargs['iterations'] = self.iterations
+        kwargs["iterations"] = self.iterations
         results = a.randomstats(fb, **kwargs)
         self.add_row(results)
 
@@ -157,16 +164,16 @@ class IntersectionMatrix(object):
         """
         # translate results keys into db-friendly versions
         translations = [
-                ('file_a', 'filea'),
-                ('file_b', 'fileb'),
-                ('median randomized', 'median'),
-                ('frac randomized above actual', 'fractionabove'),
-                ('frac randomized below actual', 'fractionbelow'),
-                ]
+            ("file_a", "filea"),
+            ("file_b", "fileb"),
+            ("median randomized", "median"),
+            ("frac randomized above actual", "fractionabove"),
+            ("frac randomized below actual", "fractionbelow"),
+        ]
         for orig, new in translations:
             results[new] = results[orig]
 
-        results['timestamp'] = now()
+        results["timestamp"] = now()
 
         sql = """
         INSERT OR REPLACE INTO intersections (
@@ -228,15 +235,15 @@ class IntersectionMatrix(object):
                 i += 1
 
                 if verbose:
-                    sys.stderr.write(
-                            '%(i)s of %(total)s: %(fa)s + %(fb)s\n' % locals())
+                    sys.stderr.write("%(i)s of %(total)s: %(fa)s + %(fb)s\n" % locals())
                     sys.stderr.flush()
 
                 if not self.done(fa, fb, self.iterations):
                     self.run_and_insert(fa, fb, **kwargs)
 
-                matrix[get_name(fa)][get_name(fb)] = \
-                        self.get_row(fa, fb, self.iterations)
+                matrix[get_name(fa)][get_name(fb)] = self.get_row(
+                    fa, fb, self.iterations
+                )
 
         return matrix
 
@@ -248,4 +255,3 @@ class IntersectionMatrix(object):
         ['filea', 'fileb', 'timestamp', 'actual', 'median', 'iterations',
         'self', 'other', 'fractionabove', 'fractionbelow', 'percentile']
         """
-

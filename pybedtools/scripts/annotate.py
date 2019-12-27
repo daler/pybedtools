@@ -44,8 +44,10 @@ def gen_get_name(b, afields):
     if btype == "bed":
         get_name = lambda fields: fields[afields + 3]
     elif btype == "gff":
+
         def get_name(fields):
             return get_gff_name(fields[afields + 7])
+
     else:
         raise Exception("not implemented")
     return get_name
@@ -80,7 +82,7 @@ def add_closest(aname, bname):
 def add_xstream(a, b, dist, updown, report_distance=False):
     # run a window up or downstream.
     dir = dict(up="l", down="r")[updown]
-    kwargs = {'sw': True, dir: dist}
+    kwargs = {"sw": True, dir: dist}
 
     # have to set the other to 0
     if "l" in kwargs:
@@ -123,15 +125,29 @@ def main():
     p = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
     p.add_argument("-a", dest="a", help="file to annotate")
     p.add_argument("-b", dest="b", help="file with annotations")
-    p.add_argument("--upstream", dest="upstream", type=int, default=None,
-                   help="distance upstream of [a] to look for [b]")
-    p.add_argument("--downstream", dest="downstream", type=int, default=None,
-                   help="distance downstream of [a] to look for [b]")
-    p.add_argument("--report-distance", dest="report_distance", default=False,
-                   help="report the distance, not just the genes",
-                   action="store_true")
+    p.add_argument(
+        "--upstream",
+        dest="upstream",
+        type=int,
+        default=None,
+        help="distance upstream of [a] to look for [b]",
+    )
+    p.add_argument(
+        "--downstream",
+        dest="downstream",
+        type=int,
+        default=None,
+        help="distance downstream of [a] to look for [b]",
+    )
+    p.add_argument(
+        "--report-distance",
+        dest="report_distance",
+        default=False,
+        help="report the distance, not just the genes",
+        action="store_true",
+    )
     args = p.parse_args()
-    if (args.a is None or args.b is None):
+    if args.a is None or args.b is None:
         sys.exit(not p.print_help())
 
     c = add_closest(args.a, args.b)
@@ -140,13 +156,14 @@ def main():
     if args.upstream:
         c = add_xstream(c, b, args.upstream, "up", args.report_distance)
     if args.downstream:
-        c = add_xstream(c, b, args.downstream, "down",
-                        args.report_distance)
+        c = add_xstream(c, b, args.downstream, "down", args.report_distance)
 
     for row in c.sort():
         print(row)
 
+
 if __name__ == "__main__":
     import doctest
+
     if doctest.testmod(optionflags=doctest.ELLIPSIS).failed == 0:
         main()

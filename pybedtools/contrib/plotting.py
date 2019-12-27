@@ -9,8 +9,16 @@ import six
 
 
 class Track(collections.PolyCollection):
-    def __init__(self, features, chrom=None, ybase=0, yheight=1,
-            visibility='dense', stranded=True, **kwargs):
+    def __init__(
+        self,
+        features,
+        chrom=None,
+        ybase=0,
+        yheight=1,
+        visibility="dense",
+        stranded=True,
+        **kwargs
+    ):
         """
         Subclass of matplotlib's PolyCollection that can be added to an Axes.
 
@@ -76,8 +84,9 @@ class Track(collections.PolyCollection):
         <pybedtools.contrib.plotting.Track object at 0x...>
         >>> limits = ax.axis('tight')
         """
-        if isinstance(features, pybedtools.BedTool)\
-                and isinstance(features.fn, six.string_types):
+        if isinstance(features, pybedtools.BedTool) and isinstance(
+            features.fn, six.string_types
+        ):
             self.features = features
         else:
             self.features = pybedtools.BedTool(features).saveas()
@@ -88,45 +97,44 @@ class Track(collections.PolyCollection):
         self._check_stranded_dict()
         facecolors = self._colors()
         kwargs.update(dict(facecolors=facecolors))
-        collections.PolyCollection.__init__(
-                self, verts=self._get_verts(), **kwargs)
+        collections.PolyCollection.__init__(self, verts=self._get_verts(), **kwargs)
 
     def _shape(self, feature, ybase, yheight):
         if self.stranded and not isinstance(self.stranded, dict):
             offset = len(feature) * 0.1
-            if feature.strand == '-':
+            if feature.strand == "-":
                 return [
-                        (feature.stop, ybase),
-                        (feature.stop, ybase + yheight),
-                        (feature.start + offset, ybase + yheight),
-                        (feature.start, ybase + yheight * 0.5),
-                        (feature.start + offset, ybase)
-                        ]
-
-            elif feature.strand == '+':
-                return [
-                        (feature.start, ybase),
-                        (feature.start, ybase + yheight),
-                        (feature.stop - offset, ybase + yheight),
-                        (feature.stop, ybase + yheight * 0.5),
-                        (feature.stop - offset, ybase)
-                        ]
-        return [
-                (feature.start, ybase),
-                (feature.start, ybase + yheight),
-                (feature.stop, ybase + yheight),
-                (feature.stop, ybase)
+                    (feature.stop, ybase),
+                    (feature.stop, ybase + yheight),
+                    (feature.start + offset, ybase + yheight),
+                    (feature.start, ybase + yheight * 0.5),
+                    (feature.start + offset, ybase),
                 ]
+
+            elif feature.strand == "+":
+                return [
+                    (feature.start, ybase),
+                    (feature.start, ybase + yheight),
+                    (feature.stop - offset, ybase + yheight),
+                    (feature.stop, ybase + yheight * 0.5),
+                    (feature.stop - offset, ybase),
+                ]
+        return [
+            (feature.start, ybase),
+            (feature.start, ybase + yheight),
+            (feature.stop, ybase + yheight),
+            (feature.stop, ybase),
+        ]
 
     def _get_verts(self):
         verts = []
 
-        if self._visibility == 'dense':
+        if self._visibility == "dense":
             for feature in self.features:
                 verts.append(self._shape(feature, self._ybase, self._yheight))
             self.ymax = self._ybase + self._yheight
 
-        if self._visibility == 'squish':
+        if self._visibility == "squish":
             # Using "squish" mode will create multiple "strata" of features.
             # The stack keeps track of the end coord of the longest feature in
             # each strata
@@ -154,12 +162,14 @@ class Track(collections.PolyCollection):
     def _check_stranded_dict(self):
         if not isinstance(self.stranded, dict):
             return True
-        if '+' not in self.stranded:
-            raise ValueError('stranded dict "%s" does not have required '
-                    'key "+"' % self.stranded)
-        if '-' not in self.stranded:
-            raise ValueError('stranded dict "%s" does not have required '
-                    'key "-"' % self.stranded)
+        if "+" not in self.stranded:
+            raise ValueError(
+                'stranded dict "%s" does not have required ' 'key "+"' % self.stranded
+            )
+        if "-" not in self.stranded:
+            raise ValueError(
+                'stranded dict "%s" does not have required ' 'key "-"' % self.stranded
+            )
         return True
 
     def _colors(self):
@@ -170,8 +180,10 @@ class Track(collections.PolyCollection):
             try:
                 colors.append(self.stranded[feature.strand])
             except KeyError:
-                raise KeyError('strand color dict "%s" does not have a key '
-                        'for strand "%s"' % (self.stranded, feature.strand))
+                raise KeyError(
+                    'strand color dict "%s" does not have a key '
+                    'for strand "%s"' % (self.stranded, feature.strand)
+                )
         return colors
 
     def get_xlims(self, ax):
@@ -207,9 +219,8 @@ class BinaryHeatmap(object):
 
         # Do the multi-intersection.
         self.results = pybedtools.BedTool().multi_intersect(
-                i=_bts,
-                names=names,
-                cluster=True)
+            i=_bts, names=names, cluster=True
+        )
 
         # If 4 files were provided with labels 'a', 'b', 'c', and 'd, each line
         # would look something like:
@@ -241,8 +252,13 @@ class BinaryHeatmap(object):
             ax = fig.add_subplot(111)
         # matplotlib.cm.binary: 1 = black, 0 = white; force origin='upper' so
         # that array's [0,0] is in the upper left corner.
-        mappable = ax.imshow(self.matrix[self.sort_ind], aspect='auto', interpolation='nearest',
-                cmap=matplotlib.cm.binary, origin='upper')
+        mappable = ax.imshow(
+            self.matrix[self.sort_ind],
+            aspect="auto",
+            interpolation="nearest",
+            cmap=matplotlib.cm.binary,
+            origin="upper",
+        )
         ax.set_xticks(list(range(len(self.names))))
         ax.set_xticklabels(self.names, rotation=90)
         if ax is None:
@@ -297,8 +313,8 @@ def binary_summary(d):
     """
     s = []
     for item in sorted(list(d.items()), key=lambda x: x[1], reverse=True):
-        s.append('%s : %s' % (item))
-    return '\n'.join(s)
+        s.append("%s : %s" % (item))
+    return "\n".join(s)
 
 
 class TrackCollection(object):
@@ -339,14 +355,17 @@ class TrackCollection(object):
         self.padding = padding
 
         for features, kwargs in self.config:
-            if 'ybase' in kwargs:
-                raise ValueError('Please do not specify "ybase"; this '
-                'is handled automatically by the %s class' \
-                        % self.__class__.__name__)
-            if 'yheight' in kwargs:
-                raise ValueError('Please do not specify "yheight", '
-                        'this should be a separate arg to the %s '
-                        'constructor' % self.__class__.__name__)
+            if "ybase" in kwargs:
+                raise ValueError(
+                    'Please do not specify "ybase"; this '
+                    "is handled automatically by the %s class" % self.__class__.__name__
+                )
+            if "yheight" in kwargs:
+                raise ValueError(
+                    'Please do not specify "yheight", '
+                    "this should be a separate arg to the %s "
+                    "constructor" % self.__class__.__name__
+                )
 
     def plot(self, ax=None):
         """
@@ -369,8 +388,8 @@ class TrackCollection(object):
             t = Track(features, yheight=self.yheight, ybase=ybase, **kwargs)
             ybase = t.ymax + padding
             ax.add_collection(t)
-            if 'label' in kwargs:
-                yticklabels.append(kwargs['label'])
+            if "label" in kwargs:
+                yticklabels.append(kwargs["label"])
             else:
                 yticklabels.append(str(i))
                 i += 1
@@ -379,14 +398,24 @@ class TrackCollection(object):
         ax.set_yticks(yticks)
         ax.set_yticklabels(yticklabels)
 
-        ax.axis('tight')
+        ax.axis("tight")
         return ax
 
 
 class BedToolsDemo(TrackCollection):
-    def __init__(self, config, method, data_path=None,
-            result_kwargs=None, method_kwargs=None, title_kwargs=None,
-            new_style=True, subplots_adjust=None, *args, **kwargs):
+    def __init__(
+        self,
+        config,
+        method,
+        data_path=None,
+        result_kwargs=None,
+        method_kwargs=None,
+        title_kwargs=None,
+        new_style=True,
+        subplots_adjust=None,
+        *args,
+        **kwargs
+    ):
         """
         Class to handle BEDTools demos in a way that maintains flexibility.
 
@@ -448,8 +477,10 @@ class BedToolsDemo(TrackCollection):
         if data_path:
             for conf in config:
                 if not isinstance(conf[0], six.string_types):
-                    raise ValueError("data_path was specified, so you need "
-                            "filenames in the config")
+                    raise ValueError(
+                        "data_path was specified, so you need "
+                        "filenames in the config"
+                    )
                 conf[0] = os.path.join(data_path, conf[0])
 
         bt1 = pybedtools.BedTool(config[0][0])
@@ -459,8 +490,10 @@ class BedToolsDemo(TrackCollection):
         elif len(config) == 1:
             result = method(**method_kwargs)
         else:
-            raise ValueError("`config` must have length 1 (for '-i' tools) or "
-                    "length 2 (for '-a -b' tools).")
+            raise ValueError(
+                "`config` must have length 1 (for '-i' tools) or "
+                "length 2 (for '-a -b' tools)."
+            )
 
         config.append((result, result_kwargs))
         self.result = result
@@ -470,12 +503,11 @@ class BedToolsDemo(TrackCollection):
         ax = super(BedToolsDemo, self).plot(ax)
         cmds = self.result._cmds[:]
         if self.new_style:
-            cmds[0] = "bedtools %s" \
-                    % pybedtools.settings._prog_names[
-                            os.path.basename(cmds[0])]
-        ax.set_title(
-                ' '.join([os.path.basename(i) for i in cmds]),
-                **self.title_kwargs)
+            cmds[0] = (
+                "bedtools %s"
+                % pybedtools.settings._prog_names[os.path.basename(cmds[0])]
+            )
+        ax.set_title(" ".join([os.path.basename(i) for i in cmds]), **self.title_kwargs)
         if self.subplots_adjust:
             ax.figure.subplots_adjust(**self.subplots_adjust)
         return ax
@@ -491,16 +523,16 @@ class ConfiguredBedToolsDemo(BedToolsDemo):
         and kwargs **except** `method` and `method_kwargs`.
         """
         import yaml
+
         conf = yaml.load(open(yaml_config))
 
-        disallowed = ['method', 'method_kwargs']
+        disallowed = ["method", "method_kwargs"]
         for dis in disallowed:
             if dis in conf:
-                raise ValueError(
-                        "'%s' cannot be provided in the YAML config" % dis)
+                raise ValueError("'%s' cannot be provided in the YAML config" % dis)
 
-        conf['method'] = method
-        conf['method_kwargs'] = method_kwargs
+        conf["method"] = method
+        conf["method_kwargs"] = method_kwargs
         conf.update(kwargs)
         super(ConfiguredBedToolsDemo, self).__init__(**conf)
 
@@ -522,10 +554,12 @@ if __name__ == "__main__":
     d, m = binary_heatmap(bts, names)
     print binary_summary(d)
     """
-    conf_file = pybedtools.example_filename('democonfig.yaml')
+    conf_file = pybedtools.example_filename("democonfig.yaml")
     data_path = pybedtools.example_filename("")  # dir name
-    ax1 = ConfiguredBedToolsDemo(conf_file, method='intersect', method_kwargs={},
-            data_path=data_path).plot()
-    ax2 = ConfiguredBedToolsDemo(conf_file, method='intersect', method_kwargs=dict(u=True),
-            data_path=data_path).plot()
+    ax1 = ConfiguredBedToolsDemo(
+        conf_file, method="intersect", method_kwargs={}, data_path=data_path
+    ).plot()
+    ax2 = ConfiguredBedToolsDemo(
+        conf_file, method="intersect", method_kwargs=dict(u=True), data_path=data_path
+    ).plot()
     plt.show()

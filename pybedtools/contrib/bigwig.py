@@ -11,43 +11,34 @@ def mapped_read_count(bam, force=False):
     Scale is cached in a bam.scale file containing the number of mapped reads.
     Use force=True to override caching.
     """
-    scale_fn = bam + '.scale'
+    scale_fn = bam + ".scale"
     if os.path.exists(scale_fn) and not force:
         for line in open(scale_fn):
-            if line.startswith('#'):
+            if line.startswith("#"):
                 continue
             readcount = float(line.strip())
             return readcount
 
-    cmds = ['samtools',
-            'view',
-            '-c',
-            '-F', '0x4',
-            bam]
-    p = subprocess.Popen(cmds, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+    cmds = ["samtools", "view", "-c", "-F", "0x4", bam]
+    p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
     if p.returncode:
-        raise ValueError('samtools says: %s' % stderr)
+        raise ValueError("samtools says: %s" % stderr)
 
     readcount = float(stdout)
 
     # write to file so the next time you need the lib size you can access
     # it quickly
     if not os.path.exists(scale_fn):
-        fout = open(scale_fn, 'w')
-        fout.write(str(readcount) + '\n')
+        fout = open(scale_fn, "w")
+        fout.write(str(readcount) + "\n")
         fout.close()
     return readcount
 
 
 def bedgraph_to_bigwig(bedgraph, genome, output):
     genome_file = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
-    cmds = [
-        'bedGraphToBigWig',
-        bedgraph.fn,
-        genome_file,
-        output]
+    cmds = ["bedGraphToBigWig", bedgraph.fn, genome_file, output]
     try:
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
@@ -60,23 +51,22 @@ def bedgraph_to_bigwig(bedgraph, genome, output):
         )
 
     if p.returncode:
-        raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
-                         % (" ".join(cmds), stderr, stdout))
+        raise ValueError(
+            "cmds: %s\nstderr:%s\nstdout:%s" % (" ".join(cmds), stderr, stdout)
+        )
     return output
 
 
 def bigwig_to_bedgraph(fn, chrom=None, start=None, end=None, udcDir=None):
-    cmds = [
-        'bigWigToBedGraph',
-        fn]
+    cmds = ["bigWigToBedGraph", fn]
     if chrom is not None:
-        cmds.extend(['-chrom', chrom])
+        cmds.extend(["-chrom", chrom])
     if start is not None:
-        cmds.extend(['-start', start])
+        cmds.extend(["-start", start])
     if end is not None:
-        cmds.extend(['-end', end])
+        cmds.extend(["-end", end])
     if udcDir is not None:
-        cmds.extend(['-udcDir', udcDir])
+        cmds.extend(["-udcDir", udcDir])
 
     outfn = pybedtools.BedTool._tmp()
     cmds.append(outfn)
@@ -92,18 +82,15 @@ def bigwig_to_bedgraph(fn, chrom=None, start=None, end=None, udcDir=None):
             "`conda install ucsc-bedgraphtobigwig`"
         )
     if p.returncode:
-        raise ValueError("cmds: %s\nstderr:%s\nstdout:%s"
-                         % (" ".join(cmds), stderr, stdout))
+        raise ValueError(
+            "cmds: %s\nstderr:%s\nstdout:%s" % (" ".join(cmds), stderr, stdout)
+        )
     return pybedtools.BedTool(outfn)
 
 
 def wig_to_bigwig(wig, genome, output):
     genome_file = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
-    cmds = [
-        'wigToBigWig',
-        wig.fn,
-        genome_file,
-        output]
+    cmds = ["wigToBigWig", wig.fn, genome_file, output]
 
     try:
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -116,8 +103,9 @@ def wig_to_bigwig(wig, genome, output):
             "`conda install ucsc-bedgraphtobigwig`"
         )
     if p.returncode:
-        raise ValueError('cmds: %s\nstderr:%s\nstdout:%s'
-                         % (' '.join(cmds), stderr, stdout))
+        raise ValueError(
+            "cmds: %s\nstderr:%s\nstdout:%s" % (" ".join(cmds), stderr, stdout)
+        )
     return output
 
 
@@ -139,15 +127,16 @@ def bam_to_bigwig(bam, genome, output, scale=False):
     if scale:
         readcount = mapped_read_count(bam)
         _scale = 1 / (readcount / 1e6)
-        kwargs['scale'] = _scale
+        kwargs["scale"] = _scale
     x = pybedtools.BedTool(bam).genome_coverage(**kwargs)
-    cmds = [
-        'bedGraphToBigWig',
-        x.fn,
-        genome_file,
-        output]
+    cmds = ["bedGraphToBigWig", x.fn, genome_file, output]
     try:
-        p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        p = subprocess.Popen(
+            cmds,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+        )
         stdout, stderr = p.communicate()
     except FileNotFoundError:
         raise FileNotFoundError(
@@ -157,12 +146,17 @@ def bam_to_bigwig(bam, genome, output, scale=False):
             "`conda install ucsc-bedgraphtobigwig`"
         )
 
-    if p.returncode and  'bedSort' in stderr:
-        print('BAM header was not sorted; sorting bedGraph')
+    if p.returncode and "bedSort" in stderr:
+        print("BAM header was not sorted; sorting bedGraph")
         y = x.sort()
         cmds[1] = y.fn
         try:
-            p = subprocess.Popen(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            p = subprocess.Popen(
+                cmds,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+            )
             stdout, stderr = p.communicate()
         except FileNotFoundError:
             raise FileNotFoundError(
@@ -173,5 +167,6 @@ def bam_to_bigwig(bam, genome, output, scale=False):
             )
 
     if p.returncode:
-        raise ValueError('cmds: %s\nstderr: %s\nstdout: %s'
-                         % (' '.join(cmds), stderr, stdout))
+        raise ValueError(
+            "cmds: %s\nstderr: %s\nstdout: %s" % (" ".join(cmds), stderr, stdout)
+        )

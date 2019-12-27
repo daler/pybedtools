@@ -4,9 +4,17 @@ from . import helpers
 import pybedtools
 
 
-def _parallel_wrap(orig_bedtool, shuffle_kwargs, genome_fn, method,
-                   method_args, method_kwargs, sort=False, shuffle=True,
-                   reduce_func=None):
+def _parallel_wrap(
+    orig_bedtool,
+    shuffle_kwargs,
+    genome_fn,
+    method,
+    method_args,
+    method_kwargs,
+    sort=False,
+    shuffle=True,
+    reduce_func=None,
+):
     """
     Given a BedTool object `orig_bedtool`, call its `method` with `args` and
     `kwargs` and then call `reduce_func` on the results.
@@ -40,11 +48,23 @@ def _parallel_wrap(orig_bedtool, shuffle_kwargs, genome_fn, method,
         return result
 
 
-def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
-                   method_args=None, method_kwargs=None, shuffle_kwargs=None,
-                   shuffle=True, reduce_func=None, processes=1, sort=False,
-                   _orig_pool=None, iterations=1000, debug=False,
-                   report_iterations=False):
+def parallel_apply(
+    orig_bedtool,
+    method,
+    genome=None,
+    genome_fn=None,
+    method_args=None,
+    method_kwargs=None,
+    shuffle_kwargs=None,
+    shuffle=True,
+    reduce_func=None,
+    processes=1,
+    sort=False,
+    _orig_pool=None,
+    iterations=1000,
+    debug=False,
+    report_iterations=False,
+):
     """
     Call an arbitrary BedTool method many times in parallel.
 
@@ -169,7 +189,8 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     method_args = method_args or ()
     if not isinstance(method_args, list) and not isinstance(method_args, tuple):
         raise ValueError(
-            "method_args must be a list or tuple, got %s" % type(method_args))
+            "method_args must be a list or tuple, got %s" % type(method_args)
+        )
     method_kwargs = method_kwargs or {}
 
     if genome_fn and genome:
@@ -178,8 +199,9 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
     if shuffle:
         if not genome_fn:
             if not genome:
-                raise ValueError("shuffle=True, so either genome_fn"
-                                 " or genome must be provided")
+                raise ValueError(
+                    "shuffle=True, so either genome_fn" " or genome must be provided"
+                )
             genome_fn = pybedtools.chromsizes_to_file(genome)
 
     _parallel_wrap_kwargs = dict(
@@ -196,7 +218,7 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
 
     def add_seed(i, kwargs):
         if debug and shuffle:
-            kwargs['shuffle_kwargs']['seed'] = i
+            kwargs["shuffle_kwargs"]["seed"] = i
         return kwargs
 
     if processes == 1:
@@ -211,9 +233,10 @@ def parallel_apply(orig_bedtool, method, genome=None, genome_fn=None,
 
     results = [
         p.apply_async(_parallel_wrap, (), add_seed(it, _parallel_wrap_kwargs))
-        for it in range(iterations)]
+        for it in range(iterations)
+    ]
     for i, r in enumerate(results):
         yield r.get()
         if report_iterations:
-            sys.stderr.write('%s\r' % i)
+            sys.stderr.write("%s\r" % i)
             sys.stderr.flush()
