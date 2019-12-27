@@ -6,23 +6,28 @@ Changelog
 Changes in v0.8.1
 -----------------
 
-This version has some minor updates and bugfixes:
+2019-12-27: This version has minor updates and bugfixes:
 
-* BedTool objects support either strings or Path objects (`#287
+* Bugfix: Fixes to `pbt_plotting_example.py` (thanks Steffen Möllera @smoe)
+* Bugfix: Using `BedTool.saveas()` when a BedTool already points to a compressed file
+  correctly saves (`#308 <https://github.com/daler/pybedtools/pull/308>`_)
+* Improvement: Deprecate `pandas.read_table` (thanks André F. Rendeiro
+  @afrendeiro)
+* Improvement: overhaul testing on travis-ci
+* Improvement: BedTool objects support either strings or Path objects (`#287
   <https://github.com/daler/pybedtools/pull/287>`_, thanks @drchsl)
-* MySQL host can be configured (`#301
+* Improvement: MySQL host can be configured (`#301
   <https://github.com/daler/pybedtools/pull/301>`_, thanks André F. Rendeiro
   @afrendeiro)
-* Better version string parsing (`#289
+* Improvement: Better version string parsing (`#289
   <https://github.com/daler/pybedtools/pull/289>`_, thanks Steffen Möllera
-  @smoe)
-* Proper CRAM support: `#307 <https://github.com/daler/pybedtools/pull/307>`_
-* Using `BedTool.saveas()` when a BedTool already points to a compressed file
-  correctly saves (`#308 <https://github.com/daler/pybedtools/pull/308>`_)
-* Raise an exception when the `-b` argument to `BedTool.intersect` has more
+  @smoe), fixes `#275 <https://github.com/daler/pybedtools/issues/275>`_ and others.
+* Improvement: Proper CRAM support: `#307 <https://github.com/daler/pybedtools/pull/307>`_
+* Improvement: Raise an exception when the `-b` argument to `BedTool.intersect` has more
   than 510 files (`#303 <https://github.com/daler/pybedtools/pull/306>`_)
-* Update tests to work with bedtools v2.29.2
-* Improvements to testing
+* `*.h` files now included in the distribution (thanks @blaiseli)
+* Improvement: Update tests to work with bedtools v2.29.2
+
 
 Changes in v0.8.0
 -----------------
