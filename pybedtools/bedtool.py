@@ -1027,6 +1027,9 @@ class BedTool(object):
         """
         Create intron features (requires specific input format).
 
+        NOTE: this method assumes a simple file with non-overlapping exons. For
+        more sophisticated features, consider the gffutils package instead.
+
         Given a BED12 or a GFF with exons, create a new `BedTool` with just
         introns.  The output is a bed6 file with the score column (5) being one
         of 'intron'/'utr5'/'utr3'
