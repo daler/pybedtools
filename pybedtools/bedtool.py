@@ -3370,29 +3370,74 @@ class BedTool(object):
         return BedTool(fn)
 
     @_log_to_history
-    def random_subset(self, n, seed=None):
+    def random_subset(self, n=None, f=None, seed=None):
         """
         Return a BedTool containing a random subset.
 
-        Example usage:
+        NOTE: using `n` will be slower and use more memory than using `f`.
+
+        Parameters
+        ----------
+
+        n : int
+            Number of features to return. Only one of `n` or `f` can be provided. 
+
+        f : float, 0 <= f <= 1
+            Fraction of features to return. Cannot be provided with `n`.
+
+        seed : float or int
+            Set random.seed
+
+        Example
+        -------
+
+        >>> seed = 0  # only for test, otherwise use None
+
+        `n` will always give the same number of returned features, but will be
+        slower since it is creating an index and then shuffling it.
 
         >>> a = pybedtools.example_bedtool('a.bed')
-        >>> b = a.random_subset(2)
+        >>> b = a.random_subset(n=2)
         >>> len(b)
         2
+
+        Using a fraction `f` will be faster but depending on seed will result
+        in slightly different total numbers.
+
+        >>> a = pybedtools.example_bedtool('x.bam')
+        >>> len(a)
+        45593
+        >>> b = a.random_subset(f=0.4, seed=seed)
+        >>> len(b)
+        18316
+
+        Check that we have approximately the right fraction
+        >>> print('{0:.2f}'.format(len(b) / len(a)))
+        0.40
+
         """
-        idxs = list(range(len(self)))
-        if seed is not None:
-            random.seed(seed)
-        random.shuffle(idxs)
-        idxs = idxs[:n]
+        if ((n is None) and (f is None)) or ((n is not None) and (f is not None)):
+            raise ValueError("Exactly one of `n` or `f` must be provided")
 
         tmpfn = self._tmp()
-        tmp = open(tmpfn, "w")
-        for i, f in enumerate(self):
-            if i in idxs:
-                tmp.write(str(f))
-        tmp.close()
+        if seed is not None:
+            random.seed(seed)
+
+        if n:
+            idxs = list(range(len(self)))
+            random.shuffle(idxs)
+            idxs = idxs[:n]
+            with open(tmpfn, "w") as tmp:
+                for i, feature in enumerate(self):
+                    if i in idxs:
+                        tmp.write(str(feature))
+
+        elif f:
+            with open(tmpfn, "w") as tmp:
+                for i in self:
+                    if random.random() <= f:
+                        tmp.write(str(i))
+
         return BedTool(tmpfn)
 
     def total_coverage(self):
