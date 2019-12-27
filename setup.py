@@ -76,7 +76,7 @@ from distutils.command.sdist import sdist  # noqa: E402
 
 MAJ = 0
 MIN = 8
-REV = 0
+REV = 1
 VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
 
 
