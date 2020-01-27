@@ -72,6 +72,7 @@ from distutils.extension import Extension  # noqa: E402
 from distutils.command.build import build  # noqa: E402
 from distutils.command.build_ext import build_ext  # noqa: E402
 from distutils.command.sdist import sdist  # noqa: E402
+import distutils.log
 
 
 MAJ = 0
@@ -162,21 +163,67 @@ class Cythonize(Command):
         cythonize(extensions)
 
 
+def find_missing_src(ext):
+    """
+    Check whether sources needed to build extension *ext* are present.
+
+    Will return a list of missing source files that might be obtained by running cythonize.
+
+    Will raise a FileNotFoundError if some missing .cpp source files do not have a corresponding .pyx.
+    """
+    missing_src = []
+    for src in ext.sources:
+        if not os.path.exists(src):
+            # raise Exception(
+            #     """
+            #     Cython-generated file '%s' not found.
+
+            #     Please install Cython and run
+
+            #         python setup.py cythonize
+
+            #     """ % src)
+            (root, extn) = os.path.splitext(src)
+            if extn == ".cpp":
+                alt_src = root + ".pyx"
+                if not os.path.exists(alt_src):
+                    raise FileNotFoundError(
+                        "Files %s and %s not found." % (src, alt_src))
+                missing_src.append(src)
+            else:
+                raise FileNotFoundError(
+                    "File %s not found." % src)
+    return missing_src
+
+
 class InformativeBuildExt(build_ext):
     def build_extensions(self):
         for ext in self.extensions:
-            for src in ext.sources:
-                if not os.path.exists(src):
-                    raise Exception(
-                        """
-                        Cython-generated file '%s' not found.
+            missing_src = find_missing_src(ext)
+            if missing_src:
+                if not HAVE_CYTHON:
+                    raise ValueError(
+                        '''
+                        Cython could not be found.
+                        Please install Cython and try again.
+                        ''')
+                self.announce(
+                    "Trying to generate the following missing files:\n%s" % "\n".join(missing_src),
+                    level=distutils.log.INFO)
+                for src in missing_src:
+                    assert src in ext.sources
+                    (root, extn) = os.path.splitext(src)
+                    assert extn == ".cpp"
+                    cythonize(root + ".pyx")
+                still_missing = find_missing_src(ext)
+                if still_missing:
+                    raise ValueError(
+                        '''
+                        Some source files are missing to build an extension.
 
-                        Please install Cython and run
-
-                            python setup.py cythonize
-
-                        """ % src)
+                        %s''' % "\n".join(still_missing))
         build_ext.build_extensions(self)
+
 
 class SDist(sdist):
 
@@ -275,7 +322,8 @@ if __name__ == "__main__":
                                      "*.pxd",
                                      "*.cxx",
                                      "*.c",
-                                     "*.cpp"],
+                                     "*.cpp",
+                                     "*.h"],
                       'src': ['src/*'],
                       },
         include_package_data=True,
