@@ -1403,7 +1403,7 @@ class BedTool(object):
         # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
             with out_open_func(fn, "wt") as out_:
-                with in_open_func(iterable.fn, "rt") as in_:
+                with in_open_func(iterable.fn, "rt", errors="ignore") as in_:
                     if trackline:
                         out_.write(trackline.strip() + "\n")
                     out_.writelines(in_)
