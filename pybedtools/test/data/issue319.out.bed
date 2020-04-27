@@ -38,7 +38,6 @@
 ##INFO=<ID=RAW_MQ,Number=1,Type=Float,Description="Raw data for RMS Mapping Quality">
 ##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
 ##INFO=<ID=SOR,Number=1,Type=Float,Description="Symmetric Odds Ratio of 2x2 contingency table to detect strand bias">
-##SnpEffCmd="SnpEff  -i vcf -o vcf -csvStats /n/scratch2/hsph_bioinformatic_core/sn240/atanasova2020/atanasova/work/joint/gatk-haplotype-joint/b1/b1-joint-effects-stats.csv -s /n/scratch2/hsph_bioinformatic_core/sn240/atanasova2020/atanasova/work/joint/gatk-haplotype-joint/b1/b1-joint-effects-stats.html GRCh38.86 /n/scratch2/hsph_bioinformatic_core/sn240/atanasova2020/atanasova/work/joint/gatk-haplotype-joint/b1/b1-joint.vcf.gz "
 ##SnpEffVersion="4.3t (build 2017-11-24 10:18), by Pablo Cingolani"
 ##contig=<ID=chr1,length=248956422>
 ##contig=<ID=chr2,length=242193529>
@@ -3406,7 +3405,6 @@
 ##contig=<ID=HLA-DRB1*15:03:01:01,length=11567>
 ##contig=<ID=HLA-DRB1*15:03:01:02,length=11569>
 ##contig=<ID=HLA-DRB1*16:02:01,length=11005>
-##reference=file:///n/app/bcbio/dev/genomes/Hsapiens/hg38/seq/hg38.fa
 ##source=VariantFiltration
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	S1	S10	S11	S12	S13	S14	S15	S16	S17	S18	S19	S2	S20	S21	S22	S23	S24	S25	S26	S27	S28	S29	S3	S30	S31	S32	S33	S34	S35	S36	S37	S38	S39	S4	S40	S41	S42	S43	S44	S45	S46	S47	S48	S49	S5	S50	S51	S52	S53	S54	S56	S57	S58	S59	S6	S60	S61	S62	S63	S64	S65	S66	S67	S68	S69	S7	S70	S71	S72	S73	S74	S8	S9
 chr1	235755570	rs61738992	T	G	1942.30	PASS	AC=31;ANN=G|synonymous_variant|LOW|LYST|ENSG00000143669|transcript|ENST00000389793.6|protein_coding|25/53|c.7137A>C|p.Leu2379Leu|7312/13480|7137/11406|2379/3801||,G|3_prime_UTR_variant|MODIFIER|LYST|ENSG00000143669|transcript|ENST00000389794.7|protein_coding|24/53|c.*2561A>C|||||33243|,G|upstream_gene_variant|MODIFIER|LYST|ENSG00000143669|transcript|ENST00000487530.2|protein_coding||c.-3400A>C|||||3399|WARNING_TRANSCRIPT_INCOMPLETE,G|downstream_gene_variant|MODIFIER|LYST|ENSG00000143669|transcript|ENST00000489585.5|processed_transcript||n.*3605A>C|||||3605|;BaseQRankSum=0.489;ClippingRankSum=0.00;DB;DP=176;ExcessHet=0.7733;FS=0.000;InbreedingCoeff=0.0604;MLEAC=36;MLEAF=0.563;MQ=59.71;MQ0=0;MQRankSum=0.00;QD=18.68;ReadPosRankSum=0.473;SOR=0.900;ac_adj_exac_afr=64;ac_adj_exac_amr=924;ac_adj_exac_eas=0;ac_adj_exac_fin=218;ac_adj_exac_nfe=2215;ac_adj_exac_oth=37;ac_adj_exac_sas=431;ac_exac_all=3889;af_adj_exac_afr=0.0061527;af_adj_exac_amr=0.0798;af_adj_exac_eas=0;af_adj_exac_fin=0.033;af_adj_exac_nfe=0.0332;af_adj_exac_oth=0.0407;af_adj_exac_sas=0.0261;af_esp_aa=0.007035860;af_esp_all=0.025065354;af_esp_ea=0.034302326;af_exac_all=0.032;an_adj_exac_afr=10402;an_adj_exac_amr=11572;an_adj_exac_eas=8648;an_adj_exac_fin=6614;an_adj_exac_nfe=66736;an_adj_exac_oth=908;an_adj_exac_sas=16510;an_exac_all=121390;clinvar_disease_name=Chdiak-Higashi_syndrome|not_specified	GT:AD:DP:GQ:PL	0/1:5,3:8:98:98,0,172
