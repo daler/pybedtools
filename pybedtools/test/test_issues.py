@@ -806,3 +806,10 @@ def test_issue_291():
     e = b.saveas(prefix + "x.gz")
 
     assert a == b == c == d == e
+
+
+def test_issue_319():
+    vrn_file = os.path.join(testdir, "data", "issue319.vcf.gz")
+    spliceslop = os.path.join(testdir, "data", "issue319.bed")
+    output_bed = os.path.join(testdir, "data", "issue319.out.bed")
+    bt = pybedtools.BedTool(vrn_file).intersect(spliceslop, wa=True, header=True, v=True).saveas(output_bed)
