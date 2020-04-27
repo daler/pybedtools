@@ -1403,17 +1403,14 @@ class BedTool(object):
         # the files directly
         if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
             with out_open_func(fn, "wt") as out_:
-                in_ = in_open_func(iterable.fn, "rt")
+                if sys.version_info > (3,0):
+                    in_ = in_open_func(iterable.fn, "rt", errors="ignore")
+                else:
+                    in_ = in_open_func(iterable.fn, "rt")
                 if trackline:
                     out_.write(trackline.strip() + "\n")
-                try:
-                    out_.writelines(in_)
-                except UnicodeDecodeError:
-                    in_.close()
-                    with in_open_func(iterable.fn, "rt", errors="ignore") as in_:
-                        out_.writelines(in_)
-                else:
-                    in_.close()
+                out_.writelines(in_)
+                in_.close()
         else:
             with out_open_func(fn, "wt") as out_:
                 for i in iterable:
