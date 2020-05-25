@@ -60,13 +60,16 @@ if ! conda env list | grep -q $no_cy; then
     # pysam not available from bioconda for py37 so remove it from
     # requirements.
     TMPREQS=$(tempfile)
-    grep -v pysam requirements.txt > $TMPREQS
+    REQS=requirements.txt
     if [[ "$PY_VERSION" == "3.7" ]]; then
+        grep -v pysam requirements.txt > $TMPREQS
         REQS=$TMPREQS
-    else
-        REQS=requirements.txt
     fi
 
+    if [[ "$PY_VERSION" == "3.8" ]]; then
+        grep -v -E "matplotlib|pysam" requirements.txt > $TMPREQS
+        REQS=$TMPREQS
+    fi
     conda create -n $no_cy -y \
         --channel conda-forge \
         --channel bioconda \
