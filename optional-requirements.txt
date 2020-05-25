@@ -1,4 +1,5 @@
 bedtools
+genomepy
 matplotlib
 ucsc-bigwigtobedgraph
 ucsc-bedgraphtobigwig
