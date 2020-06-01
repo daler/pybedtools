@@ -144,7 +144,7 @@ def test_tuple_creation():
 def test_tabix():
     try:
         a = pybedtools.example_bedtool("a.bed")
-        t = a.tabix()
+        t = a.tabix(force=True)
         assert t._tabixed()
         results = t.tabix_intervals("chr1:99-200")
         results = str(results)
