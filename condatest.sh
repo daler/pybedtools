@@ -66,17 +66,22 @@ if ! conda env list | grep -q $no_cy; then
         REQS=$TMPREQS
     fi
 
-    if [[ "$PY_VERSION" == "3.8" ]]; then
-        grep -v -E "matplotlib|pysam" requirements.txt > $TMPREQS
-        REQS=$TMPREQS
+    # genomepy>=0.8 not available for py27
+    TMPOPTREQS=$(tempfile)
+    grep -v genomepy optional-requirements.txt > $TMPOPTREQS
+    if [[ "$PY_VERSION" == "2.7" ]]; then
+        OPTREQS=$TMPOPTREQS
+    else
+        OPTREQS=optional-requirements.txt
     fi
+
     conda create -n $no_cy -y \
         --channel conda-forge \
         --channel bioconda \
         python=${PY_VERSION} \
         --file $REQS \
         --file test-requirements.txt \
-        --file optional-requirements.txt
+        --file $OPTREQS
 else
     echo "Using existing environment '${no_cy}'"
 fi
@@ -89,8 +94,12 @@ tar -xf $TMP/dist/pybedtools-*.tar.gz
 cd pybedtools-*
 pip install -e .
 
+# The import manipulation in genomepy tests conflicts with the import
+# manipulation in test_helpers and test_issues. So run in its own separate
+# pytests process.
 log "Unit tests"
-pytest -v --doctest-modules
+pytest -v --doctest-modules --ignore pybedtools/test/test_genomepy_integration.py
+pytest -v pybedtools/test/test_genomepy_integration.py
 
 # ----------------------------------------------------------------------------
 # sphinx doctests
@@ -100,5 +109,8 @@ pytest -v --doctest-modules
 log "copying over docs directory from repo"
 cp -r $TMP/docs .
 
-log "sphinx doctests"
-(cd docs && make clean doctest)
+# numpydoc is not supported in py27, so we can't run doctests.
+if [[ "$PY_VERSION" != "2.7" ]]; then
+    log "sphinx doctests"
+    (cd docs && make clean doctest)
+fi

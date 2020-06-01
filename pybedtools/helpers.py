@@ -13,6 +13,11 @@ import six
 import pysam
 import re
 from six.moves import urllib
+
+try:  # Use genomepy to determine chrom sizes if it is installed
+    import genomepy
+except ImportError:
+    pass
 from . import cbedtools
 from . import settings
 from . import filenames
@@ -817,11 +822,48 @@ def chromsizes_to_file(chrom_sizes, fn=None):
     return fn
 
 
+def get_chromsizes_from_genomepy(
+    genome, saveas=None,
+):
+    """
+    Get chrom size info for *genome* from genomepy, if genomepy is installed.
+
+    Parameters
+    ----------
+
+    genome : str
+        Name of the genome assembly (e.g., "hg38")
+
+    saveas : str
+        Filename to save output to. Dictionary will still be returned.
+    """
+    if "genomepy" not in sys.modules:
+        return None
+
+    d = {}
+    try:
+        g = genomepy.Genome(genome)
+        # Fail silently if the sizes file cannot be accessed
+        if not hasattr(g, "sizes_file"):
+            return None
+        for line in open(g.sizes_file):
+            chrom, size = line.split()
+            d[chrom] = (0, int(size))
+
+        if saveas is not None:
+            chromsizes_to_file(d, saveas)
+    except FileNotFoundError:
+        return None
+
+    return d
+
+
 def chromsizes(genome):
     """
     Looks for a *genome* already included in the genome registry; if not found
-    then it looks it up on UCSC.  Returns the dictionary of chromsize tuples
-    where each tuple has (start,stop).
+    it first tries to look it up via genomepy. If genomepy is not installed, or
+    if this lookup fails then it looks it up on UCSC.  Returns the dictionary of 
+    chromsize tuples where each tuple has (start,stop).
 
     Chromsizes are described as (start, stop) tuples to allow randomization
     within specified regions; e. g., you can make a chromsizes dictionary that
@@ -853,7 +895,11 @@ def chromsizes(genome):
     try:
         return getattr(genome_registry, genome)
     except AttributeError:
-        return get_chromsizes_from_ucsc(genome)
+        chromsizes = get_chromsizes_from_genomepy(genome)
+        if chromsizes is None:
+            return get_chromsizes_from_ucsc(genome)
+        else:
+            return chromsizes
 
 
 def get_includes():
