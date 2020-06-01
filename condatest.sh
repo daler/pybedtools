@@ -98,7 +98,7 @@ pip install -e .
 
 log "Unit tests"
 pytest -v --doctest-modules --ignore pybedtools/test/test_genomepy_integration.py
-pytests -v pybedtools/test/test_genomepy_integration.py
+pytest -v pybedtools/test/test_genomepy_integration.py
 
 # ----------------------------------------------------------------------------
 # sphinx doctests
