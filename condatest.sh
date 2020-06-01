@@ -67,13 +67,23 @@ if ! conda env list | grep -q $no_cy; then
         REQS=requirements.txt
     fi
 
+    # genomepy>=0.8 not available for py27
+    TMPOPTREQS=$(tempfile)
+    grep -v genomepy optional-requirements.txt > $TMPOPTREQS
+    if [[ "$PY_VERSION" == "2.7" ]]; then
+        OPTREQS=$TMPOPTREQS
+    else
+        OPTREQS=optional-requirements.txt
+    fi
+
+
     conda create -n $no_cy -y \
         --channel conda-forge \
         --channel bioconda \
         python=${PY_VERSION} \
         --file $REQS \
         --file test-requirements.txt \
-        --file optional-requirements.txt
+        --file $OPTREQS
 else
     echo "Using existing environment '${no_cy}'"
 fi
