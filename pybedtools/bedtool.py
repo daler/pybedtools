@@ -2794,7 +2794,7 @@ class BedTool(object):
                 a_len = np.array(list(range(len(a)))) + 1.0
 
             a = np.sort(a)
-            idx = [a == score]
+            idx = tuple([a == score])
             pct = (np.mean(a_len[idx]) / n) * 100.0
             return pct
 
