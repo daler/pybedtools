@@ -10,8 +10,6 @@ language: python
 matrix:
   include:
     - python: 2.7
-    - python: 3.4
-    - python: 3.5
     - python: 3.6
     - python: 3.7
       dist: xenial
@@ -24,10 +22,6 @@ notifications:
             - dalerr@niddk.nih.gov
         on_success: always
         on_failure: always
-
-# See http://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-GUI-(e.g.-a-Web-browser)
-before_install:
-  - 'if [[ $TRAVIS_PYTHON_VERSION != "3.7" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; fi'
 
 services:
   - xvfb

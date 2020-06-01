@@ -13,7 +13,7 @@ def data_dir():
     Returns the data directory that contains example files for tests and
     documentation.
     """
-    return os.path.join(os.path.dirname(__file__), 'test', 'data')
+    return os.path.join(os.path.dirname(__file__), "test", "data")
 
 
 def example_filename(fn):
@@ -45,6 +45,6 @@ def list_example_files():
 
     """
     candidate_fns = os.listdir(data_dir())
-    exts = ('.bed', '.gff', '.gtf', '.bed.gz', '.bam', '.gff.gz')
+    exts = (".bed", ".gff", ".gtf", ".bed.gz", ".bam", ".gff.gz")
     valid_fns = [f for f in candidate_fns if f.endswith(exts)]
     return sorted(valid_fns)

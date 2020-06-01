@@ -7,12 +7,26 @@ import logging
 from six.moves import urllib
 from six.moves import copyreg
 from . import scripts
-from .cbedtools import (Interval, IntervalFile, overlap, Attributes,
-                        MalformedBedLineError, IntervalIterator)
+from .cbedtools import (
+    Interval,
+    IntervalFile,
+    overlap,
+    Attributes,
+    MalformedBedLineError,
+    IntervalIterator,
+)
 from . import contrib
-from .helpers import (get_tempdir, set_tempdir, cleanup, find_tagged,
-                      set_bedtools_path, chromsizes, get_chromsizes_from_ucsc,
-                      chromsizes_to_file, create_interval_from_list)
+from .helpers import (
+    get_tempdir,
+    set_tempdir,
+    cleanup,
+    find_tagged,
+    set_bedtools_path,
+    chromsizes,
+    get_chromsizes_from_ucsc,
+    chromsizes_to_file,
+    create_interval_from_list,
+)
 from . import helpers
 from .bedtool import BedTool
 from . import genome_registry
@@ -25,7 +39,7 @@ from .bedtool import example_bedtool
 from . import settings
 from .logger import logger, ch
 
-example_files = ['a.bed.', 'b.bed', 'test.fa', 'a.bam']
+example_files = ["a.bed.", "b.bed", "test.fa", "a.bam"]
 
 
 def debug_mode(x):
@@ -45,22 +59,23 @@ def debug_mode(x):
         _DEBUG = True
         KEEP_TEMPFILES = True
         logger.info(
-            'Debug mode enabled.  You may also want to set '
-            'pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion '
-            'of files upon exit.')
+            "Debug mode enabled.  You may also want to set "
+            "pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion "
+            "of files upon exit."
+        )
     else:
         logger.setLevel(logging.INFO)
         ch.setLevel(logging.INFO)
         _DEBUG = False
         KEEP_TEMPFILES = False
-        logger.info('Debug mode disabled')
+        logger.info("Debug mode disabled")
 
 
-def check_for_bedtools(program_to_check="intersectBed", force_check=False):
+def check_for_bedtools(*args, **kwargs):
     """
     For backwards compatibility; please use helpers._check_for_bedtools()
     """
-    return helpers._check_for_bedtools(program_to_check, force_check)
+    return helpers._check_for_bedtools(*args, **kwargs)
 
 
 # Allow Interval objects to be pickled -- required if you want to pass them
@@ -70,7 +85,8 @@ def interval_constructor(fields):
 
 
 def interval_reducer(interval):
-    return interval_constructor, (tuple(interval.fields), )
+    return interval_constructor, (tuple(interval.fields),)
+
 
 copyreg.pickle(Interval, interval_reducer, interval_constructor)
 
@@ -103,7 +119,8 @@ def load_path_config(fn):
         bedtools=helpers.set_bedtools_path,
         r=helpers.set_R_path,
         tabix=helpers.set_tabix_path,
-        bgzip=helpers.set_bgzip_path)
+        bgzip=helpers.set_bgzip_path,
+    )
 
     if isinstance(fn, dict):
         for prog, setter in list(setters.items()):
@@ -115,14 +132,16 @@ def load_path_config(fn):
 
     if isinstance(fn, str):
         from six.moves import configparser
+
         c = configparser.SafeConfigParser()
         c.read(fn)
-        if c.sections() != ['paths']:
-            raise ValueError("Invalid path config -- must have "
-                             "only one section, [paths].")
+        if c.sections() != ["paths"]:
+            raise ValueError(
+                "Invalid path config -- must have " "only one section, [paths]."
+            )
         for prog, setter in list(setters.items()):
             try:
-                path = c.get('paths', prog)
+                path = c.get("paths", prog)
                 setter(path)
 
             except configparser.NoOptionError:

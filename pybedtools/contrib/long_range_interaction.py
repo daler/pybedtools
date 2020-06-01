@@ -171,7 +171,6 @@ def tag_bedpe(bedpe, queries, verbose=False):
     extra = observed - 10
     extra_inds = [10 + i for i in range(extra)]
 
-
     end1_fn = pybedtools.BedTool._tmp()
     end2_fn = pybedtools.BedTool._tmp()
 
@@ -180,22 +179,21 @@ def tag_bedpe(bedpe, queries, verbose=False):
     # a pybedtools.Interval object just so we can grab the fields. Doing so
     # takes 3.5x more time than simply splitting each line on a tab.
     if verbose:
-        print('splitting BEDPE into separate files.')
-        print('end1 is going to %s' % end1_fn)
-        print('end2 is going to %s' % end2_fn)
-
+        print("splitting BEDPE into separate files.")
+        print("end1 is going to %s" % end1_fn)
+        print("end2 is going to %s" % end2_fn)
 
     n = 0
-    with open(end1_fn, 'w') as end1_out, open(end2_fn, 'w') as end2_out:
+    with open(end1_fn, "w") as end1_out, open(end2_fn, "w") as end2_out:
         for line in open(b.fn):
             n += 1
-            f = line.strip().split('\t')
+            f = line.strip().split("\t")
             end1_out.write(
-                '\t'.join(
-                    (f[i] for i in [0, 1, 2, 6, 7, 8] + extra_inds)) + '\n')
+                "\t".join((f[i] for i in [0, 1, 2, 6, 7, 8] + extra_inds)) + "\n"
+            )
             end2_out.write(
-                '\t'.join(
-                    (f[i] for i in [3, 4, 5, 6, 7, 9] + extra_inds)) + '\n')
+                "\t".join((f[i] for i in [3, 4, 5, 6, 7, 9] + extra_inds)) + "\n"
+            )
 
     # Performance notes:
     #
@@ -222,21 +220,22 @@ def tag_bedpe(bedpe, queries, verbose=False):
             fns.append(fn)
 
     if verbose:
-        print('intersecting end 1')
+        print("intersecting end 1")
     end1_hits = end1_bt.intersect(list(fns), names=names, wao=True)
     if verbose:
-        print('intersecting end 2')
+        print("intersecting end 2")
     end2_hits = end2_bt.intersect(list(fns), names=names, wao=True)
     if verbose:
-        print('intersection with end1 is in %s' % (end1_hits.fn))
-        print('intersection with end2 is in %s' % (end2_hits.fn))
+        print("intersection with end1 is in %s" % (end1_hits.fn))
+        print("intersection with end2 is in %s" % (end2_hits.fn))
 
     grouped_end1 = itertools.groupby(end1_hits, lambda f: f[3])
     grouped_end2 = itertools.groupby(end2_hits, lambda f: f[3])
 
     def gen():
-        for (label1, group1), (label2, group2) \
-            in six.moves.zip(grouped_end1, grouped_end2):
+        for (label1, group1), (label2, group2) in six.moves.zip(
+            grouped_end1, grouped_end2
+        ):
             assert label1 == label2
             yield label1, group1, group2
 
@@ -356,7 +355,7 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     for label, end1_hits, end2_hits in iterator:
         c += 1
         if c % 1000 == 0:
-            print('%d (%.1f%%)\r' % (c, c / float(n) * 100), end='')
+            print("%d (%.1f%%)\r" % (c, c / float(n) * 100), end="")
             sys.stdout.flush()
 
         # end1_hits has the full lines of all intersections with end1
@@ -369,23 +368,21 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
             (of the individual feature).
             """
             # this is the "name" reported if there was no hit.
-            if f[6 + extra] == '.':
-                return ('.', '.')
-            interval = pybedtools.create_interval_from_list(f[7 + extra:])
-            return ([f[6 + extra], interval.name])
+            if f[6 + extra] == ".":
+                return (".", ".")
+            interval = pybedtools.create_interval_from_list(f[7 + extra :])
+            return [f[6 + extra], interval.name]
 
-        names1 = set(
-            six.moves.map(tuple, six.moves.map(get_name_hits, end1_hits)))
-        names2 = set(
-            six.moves.map(tuple, six.moves.map(get_name_hits, end2_hits)))
+        names1 = set(six.moves.map(tuple, six.moves.map(get_name_hits, end1_hits)))
+        names2 = set(six.moves.map(tuple, six.moves.map(get_name_hits, end2_hits)))
 
         for cis, others in [(names1, names2), (names2, names1)]:
             for target in cis:
-                if target == ('.', '.'):
+                if target == (".", "."):
                     continue
                 non_targets = set(cis).difference([target])
                 if len(non_targets) == 0:
-                    non_targets = [('.', '.')]
+                    non_targets = [(".", ".")]
                 for non_target in non_targets:
                     for other in others:
                         line = []
@@ -397,7 +394,15 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
 
     df = pandas.DataFrame(
         lines,
-        columns=['target_label', 'target_name', 'cis_label', 'cis_name',
-                 'distal_label', 'distal_name', 'label'])
+        columns=[
+            "target_label",
+            "target_name",
+            "cis_label",
+            "cis_name",
+            "distal_label",
+            "distal_name",
+            "label",
+        ],
+    )
     df = df.drop_duplicates()
     return df

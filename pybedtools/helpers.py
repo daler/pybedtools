@@ -11,7 +11,13 @@ import struct
 import atexit
 import six
 import pysam
+import re
 from six.moves import urllib
+
+try:  # Use genomepy to determine chrom sizes if it is installed
+    import genomepy
+except ImportError:
+    pass
 from . import cbedtools
 from . import settings
 from . import filenames
@@ -36,6 +42,7 @@ def set_bedtools_path(path=""):
     arguments or use path="".
     """
     from . import paths
+
     paths._set_bedtools_path(path)
 
 
@@ -44,6 +51,7 @@ def get_bedtools_path():
     Returns the currently-set path to bedtools
     """
     from . import paths
+
     return paths._get_bedtools_path()
 
 
@@ -57,10 +65,11 @@ def set_R_path(path=""):
     Use path="" to reset to default system path.
     """
     from . import paths
+
     paths._set_R_path(path)
 
 
-def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
+def _check_for_bedtools(force_check=False, verbose=False, override=None):
     """
     Checks installation as well as version (based on whether or not "bedtools
     intersect" works, or just "intersectBed")
@@ -68,39 +77,41 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
     if settings._bedtools_installed and not force_check:
         return True
 
-    if len(settings.bedtools_version) == 0:
-        # let us quickly determine the program version by calling without
-        # specifying application
+    if (len(settings.bedtools_version) == 0) or force_check:
         try:
-            v = subprocess.check_output(
-                [
-                    os.path.join(
-                        settings._bedtools_path, 'bedtools'),
-                    '--version'])
+            v = (
+                subprocess.check_output(
+                    [os.path.join(settings._bedtools_path, "bedtools"), "--version"]
+                )
+                .decode("utf-8")
+                .rstrip()
+            )
+
+            if verbose:
+                print("Found bedtools version '%s'" % v)
 
             settings._bedtools_installed = True
 
-            # e.g.,
-            #
-            #  bedtools v2.26.0
-            #
-            vv = v.decode().split('v')[1]
+            # Override, used for testing
+            if override is not None:
+                v = override
 
-            # Handle cases where the name of the executable corresponds to the
-            # git "dirty" version ID, e.g., bedtools v2.25.0-96-g5ee3285-dirty.
-            # See https://github.com/daler/pybedtools/issues/275 for details.
-            #
-            vv = vv.split('-')[0]
+            # To allow more complicated versions as found in Linux distributions, e.g.:
+            #  bedtools v2.26.0
+            #  bedtools debian/2.28.0+dfsg-2-dirty
+            m = re.search("^bedtools [^0-9]*([0-9][0-9.]*)", v)
+            if not m:
+                raise ValueError('Cannot identify version number from "{}"'.format(v))
+            vv = m.group(1)
+
             settings.bedtools_version = [int(i) for i in vv.split(".")]
 
             settings._v_2_27_plus = (
-                settings.bedtools_version[0] >= 2 and
-                settings.bedtools_version[1] >= 27
+                settings.bedtools_version[0] >= 2 and settings.bedtools_version[1] >= 27
             )
 
             settings._v_2_15_plus = (
-                settings.bedtools_version[0] >= 2 and
-                settings.bedtools_version[1] >= 15
+                settings.bedtools_version[0] >= 2 and settings.bedtools_version[1] >= 15
             )
 
         except subprocess.CalledProcessError:
@@ -108,55 +119,36 @@ def _check_for_bedtools(program_to_check='intersectBed', force_check=False):
                 add_msg = "(tried path '%s')" % settings._bedtools_path
             else:
                 add_msg = ""
-            raise OSError("Please make sure you have installed BEDTools"
-                          "(https://github.com/arq5x/bedtools) and that "
-                          "it's on the path. %s" % add_msg)
+            raise OSError(
+                "Please make sure you have installed BEDTools"
+                "(https://github.com/arq5x/bedtools) and that "
+                "it's on the path. %s" % add_msg
+            )
 
-    # Disabling the additional pre-2.15 check since the above code is now
-    # handling it based on what --version reports.
-    #
-    # TODO: fully deprecate this, and eventually remove v2.15 support.
-    #
-    # try:
-    #     p = subprocess.Popen(
-    #         [os.path.join(settings._bedtools_path, 'bedtools'),
-    #          settings._prog_names[program_to_check]],
-    #         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #     settings._bedtools_installed = True
-    #     settings._v_2_15_plus = True
-    #     settings._v_2_27_plus = False
-
-    # except (OSError, KeyError) as err:
-    #     try:
-    #         p = subprocess.Popen(
-    #             [os.path.join(settings._bedtools_path, program_to_check)],
-    #             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #         settings._bedtools_installed = True
-    #         settings._v_2_15_plus = False
-
-    #     except OSError as err:
-    #         if err.errno == 2:
-    #             raise OSError("BEDTools exists as a binary but seems otherwise incompatible. "
-    #                           "Please check that what is installed in '%s' is indeed from "
-    #                           "https://github.com/arq5x/bedtools." % settings._bedtools_path)
 
 def _check_for_R():
     try:
         p = subprocess.Popen(
-            [os.path.join(settings._R_path, 'R'), '--version'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            [os.path.join(settings._R_path, "R"), "--version"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
         settings._R_installed = True
     except OSError:
         if settings._R_path:
             add_msg = "(tried path '%s')" % settings._R_path
         else:
             add_msg = ""
-        raise ValueError(
-            'Please install R and ensure it is on your path %s' % add_msg)
+        raise ValueError("Please install R and ensure it is on your path %s" % add_msg)
 
 
 class Error(Exception):
     """Base class for this module's exceptions"""
+
+    pass
+
+
+class pybedtoolsError(Error):
     pass
 
 
@@ -166,13 +158,18 @@ class BEDToolsError(Error):
         self.msg = str(msg)
 
     def __str__(self):
-        m = '\nCommand was:\n\n\t' + self.cmd + '\n' + \
-            '\nError message was:\n' + self.msg
+        m = (
+            "\nCommand was:\n\n\t"
+            + self.cmd
+            + "\n"
+            + "\nError message was:\n"
+            + self.msg
+        )
         return m
 
 
 def isGZIP(fn):
-    with open(fn, 'rb') as f:
+    with open(fn, "rb") as f:
         start = f.read(3)
         if start == b"\x1f\x8b\x08":
             return True
@@ -183,17 +180,24 @@ def isBGZIP(fn):
     """
     Reads a filename to see if it's a BGZIPed file or not.
     """
-    with open(fn, 'rb') as fh:
+    with open(fn, "rb") as fh:
         header_str = fh.read(15)
 
     if len(header_str) < 15:
         return False
 
-    header = struct.unpack_from('BBBBiBBHBBB', header_str)
+    header = struct.unpack_from("BBBBiBBHBBB", header_str)
 
     id1, id2, cm, flg, mtime, xfl, os_, xlen, si1, si2, slen = header
-    if (id1 == 31) and (id2 == 139) and (cm == 8) and (flg == 4) and \
-       (si1 == 66) and (si2 == 67) and (slen == 2):
+    if (
+        (id1 == 31)
+        and (id2 == 139)
+        and (cm == 8)
+        and (flg == 4)
+        and (si1 == 66)
+        and (si2 == 67)
+        and (slen == 2)
+    ):
         return True
     return False
 
@@ -201,14 +205,26 @@ def isBGZIP(fn):
 def isBAM(fn):
     """
     Returns True if the file is both BGZIPed and the compressed contents have
-    start with the magic number `BAM\\x01`.
+    start with the magic number `BAM\\x01`, or if the file is CRAM format (see
+    isCRAM()).
     """
     # Note: previously we were catching ValueError when trying to open
     # a non-BAM with pysam.Samfile. That started segfaulting, so now do it the
     # right way with magic number.
-    if isBGZIP(fn) and (gzip.open(fn, 'rb').read(4).decode() == 'BAM\x01'):
+    with gzip.open(fn, "rb") as in_:
+        if isBGZIP(fn) and (in_.read(4).decode() == "BAM\x01"):
+            return True
+    if isCRAM(fn):
         return True
 
+
+def isCRAM(fn):
+    """
+    Returns True if the file starts with the bytes for the characters "CRAM".
+    """
+    with open(fn, "rb") as in_:
+        if in_.read(4).decode(errors="ignore") == "CRAM":
+            return True
 
 
 def find_tagged(tag):
@@ -250,7 +266,7 @@ def set_tempdir(tempdir):
     Convenience function to simply set tempfile.tempdir.
     """
     if not os.path.exists(tempdir):
-        errstr = 'The tempdir you specified, %s, does not exist' % tempdir
+        errstr = "The tempdir you specified, %s, does not exist" % tempdir
         if six.PY2:
             raise ValueError(errstr)
         raise FileNotFoundError(errstr)
@@ -278,11 +294,11 @@ def cleanup(verbose=False, remove_all=False):
         return
     for fn in filenames.TEMPFILES:
         if verbose:
-            print('removing', fn)
+            print("removing", fn)
         if os.path.exists(fn):
             os.unlink(fn)
     if remove_all:
-        fns = glob.glob(os.path.join(get_tempdir(), 'pybedtools.*.tmp'))
+        fns = glob.glob(os.path.join(get_tempdir(), "pybedtools.*.tmp"))
         for fn in fns:
             os.unlink(fn)
 
@@ -297,12 +313,18 @@ def _version_2_15_plus_names(prog_name):
     except KeyError:
         if prog_name in settings._new_names:
             pass
-        raise BEDToolsError(
-            prog_name, prog_name + 'not a recognized BEDTools program')
-    return [os.path.join(settings._bedtools_path, 'bedtools'), prog_name]
+        raise BEDToolsError(prog_name, prog_name + "not a recognized BEDTools program")
+    return [os.path.join(settings._bedtools_path, "bedtools"), prog_name]
 
 
-def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output=True, encode_input=True):
+def call_bedtools(
+    cmds,
+    tmpfn=None,
+    stdin=None,
+    check_stderr=None,
+    decode_output=True,
+    encode_input=True,
+):
     """
     Use subprocess.Popen to call BEDTools and catch any errors.
 
@@ -334,15 +356,16 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
         # coming from an iterator, sending as iterator
         if input_is_stream and output_is_stream:
             logger.debug(
-                'helpers.call_bedtools(): input is stream, output is '
-                'stream')
-            logger.debug(
-                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
-            p = subprocess.Popen(cmds,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 bufsize=BUFSIZE)
+                "helpers.call_bedtools(): input is stream, output is " "stream"
+            )
+            logger.debug("helpers.call_bedtools(): cmds=%s", " ".join(cmds))
+            p = subprocess.Popen(
+                cmds,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                bufsize=BUFSIZE,
+            )
             if encode_input:
                 for line in stdin:
                     p.stdin.write(line.encode())
@@ -354,7 +377,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
             p.stdin.close()
 
             if decode_output:
-                output = (i.decode('UTF-8') for i in p.stdout)
+                output = (i.decode("UTF-8") for i in p.stdout)
             else:
                 output = (i for i in p.stdout)
 
@@ -362,17 +385,17 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
 
         # coming from an iterator, writing to file
         if input_is_stream and not output_is_stream:
-            logger.debug(
-                'helpers.call_bedtools(): input is stream, output is file')
-            logger.debug(
-                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
-            outfile = open(tmpfn, 'wb')
-            p = subprocess.Popen(cmds,
-                                 stdout=outfile,
-                                 stderr=subprocess.PIPE,
-                                 stdin=subprocess.PIPE,
-                                 bufsize=BUFSIZE)
-            if hasattr(stdin, 'read'):
+            logger.debug("helpers.call_bedtools(): input is stream, output is file")
+            logger.debug("helpers.call_bedtools(): cmds=%s", " ".join(cmds))
+            outfile = open(tmpfn, "wb")
+            p = subprocess.Popen(
+                cmds,
+                stdout=outfile,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                bufsize=BUFSIZE,
+            )
+            if hasattr(stdin, "read"):
                 stdout, stderr = p.communicate(stdin.read())
             else:
                 for item in stdin:
@@ -384,16 +407,14 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
         # coming from a file, sending as iterator
         if not input_is_stream and output_is_stream:
             logger.debug(
-                'helpers.call_bedtools(): input is filename, '
-                'output is stream')
-            logger.debug(
-                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
-            p = subprocess.Popen(cmds,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE,
-                                 bufsize=BUFSIZE)
+                "helpers.call_bedtools(): input is filename, " "output is stream"
+            )
+            logger.debug("helpers.call_bedtools(): cmds=%s", " ".join(cmds))
+            p = subprocess.Popen(
+                cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=BUFSIZE
+            )
             if decode_output:
-                output = (i.decode('UTF-8') for i in p.stdout)
+                output = (i.decode("UTF-8") for i in p.stdout)
             else:
                 output = (i for i in p.stdout)
             stderr = None
@@ -401,15 +422,15 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
         # file-to-file
         if not input_is_stream and not output_is_stream:
             logger.debug(
-                'helpers.call_bedtools(): input is filename, output '
-                'is filename (%s)', tmpfn)
-            logger.debug(
-                'helpers.call_bedtools(): cmds=%s', ' '.join(cmds))
-            outfile = open(tmpfn, 'wb')
-            p = subprocess.Popen(cmds,
-                                 stdout=outfile,
-                                 stderr=subprocess.PIPE,
-                                 bufsize=BUFSIZE)
+                "helpers.call_bedtools(): input is filename, output "
+                "is filename (%s)",
+                tmpfn,
+            )
+            logger.debug("helpers.call_bedtools(): cmds=%s", " ".join(cmds))
+            outfile = open(tmpfn, "wb")
+            p = subprocess.Popen(
+                cmds, stdout=outfile, stderr=subprocess.PIPE, bufsize=BUFSIZE
+            )
             stdout, stderr = p.communicate()
             output = tmpfn
             outfile.close()
@@ -419,7 +440,7 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
         # don't raise an exception
         if check_stderr is not None:
             if isinstance(stderr, bytes):
-                stderr = stderr.decode('UTF_8')
+                stderr = stderr.decode("UTF_8")
             if check_stderr(stderr):
                 sys.stderr.write(stderr)
                 stderr = None
@@ -432,36 +453,41 @@ def call_bedtools(cmds, tmpfn=None, stdin=None, check_stderr=None, decode_output
             # but they seem to all have "WARNING" in the first 20 or so
             # characters
             if isinstance(stderr, bytes):
-                stderr = stderr.decode('UTF_8')
+                stderr = stderr.decode("UTF_8")
             if len(stderr) > 20 and "WARNING" in stderr[:20]:
                 sys.stderr.write(stderr)
             else:
                 raise BEDToolsError(subprocess.list2cmdline(cmds), stderr)
 
-
-
     except (OSError, IOError) as err:
-        print('%s: %s' % (type(err), os.strerror(err.errno)))
-        print('The command was:\n\n\t%s\n' % subprocess.list2cmdline(cmds))
+        print("%s: %s" % (type(err), os.strerror(err.errno)))
+        print("The command was:\n\n\t%s\n" % subprocess.list2cmdline(cmds))
 
         problems = {
-            2: ('* Did you spell the command correctly?',
-                '* Do you have BEDTools installed and on the path?'),
-            13: ('* Do you have permission to write '
-                 'to the output file ("%s")?' % tmpfn,),
-            24: ('* Too many files open -- please submit '
-                 'a bug report so that this can be fixed',),
-            32: ('* Broken pipe -- if you passed a BedTool object '
-                 'that was created using a generator function, '
-                 'please try saving it to disk first using the '
-                 '.saveas() method before calling this bedtools '
-                 'command. See issue #49 for more.' ,),
-
+            2: (
+                "* Did you spell the command correctly?",
+                "* Do you have BEDTools installed and on the path?",
+            ),
+            13: (
+                "* Do you have permission to write "
+                'to the output file ("%s")?' % tmpfn,
+            ),
+            24: (
+                "* Too many files open -- please submit "
+                "a bug report so that this can be fixed",
+            ),
+            32: (
+                "* Broken pipe -- if you passed a BedTool object "
+                "that was created using a generator function, "
+                "please try saving it to disk first using the "
+                ".saveas() method before calling this bedtools "
+                "command. See issue #49 for more.",
+            ),
         }
 
-        print('Things to check:')
-        print('\n\t' + '\n\t'.join(problems[err.errno]))
-        raise OSError('See above for commands that gave the error')
+        print("Things to check:")
+        print("\n\t" + "\n\t".join(problems[err.errno]))
+        raise OSError("See above for commands that gave the error")
 
     return output
 
@@ -472,29 +498,39 @@ def _check_sequence_stderr(x):
     consider it an error.
     """
     if isinstance(x, bytes):
-        x = x.decode('UTF-8')
-    if x.startswith('index file'):
+        x = x.decode("UTF-8")
+    if x.startswith("index file"):
         return True
     if x.startswith("WARNING"):
         return True
     return False
 
 
-def _call_randomintersect(_self, other, iterations, intersect_kwargs,
-                          shuffle_kwargs, report_iterations, debug,
-                          _orig_processes):
+def _call_randomintersect(
+    _self,
+    other,
+    iterations,
+    intersect_kwargs,
+    shuffle_kwargs,
+    report_iterations,
+    debug,
+    _orig_processes,
+):
     """
     Helper function that list-ifies the output from randomintersection, s.t.
     it can be pickled across a multiprocess Pool.
     """
     return list(
         _self.randomintersection(
-            other, iterations,
+            other,
+            iterations,
             intersect_kwargs=intersect_kwargs,
             shuffle_kwargs=shuffle_kwargs,
             report_iterations=report_iterations,
-            debug=False, processes=None,
-            _orig_processes=_orig_processes)
+            debug=False,
+            processes=None,
+            _orig_processes=_orig_processes,
+        )
     )
 
 
@@ -506,30 +542,32 @@ def close_or_delete(*args):
     for x in args:
         if isinstance(x.fn, six.string_types):
             os.unlink(x.fn)
-        elif hasattr(x.fn, 'close'):
+        elif hasattr(x.fn, "close"):
             x.fn.close()
-        if hasattr(x.fn, 'throw'):
+        if hasattr(x.fn, "throw"):
             x.fn.throw(StopIteration)
 
 
 def n_open_fds():
     pid = os.getpid()
-    procs = subprocess.check_output(
-        ['lsof', '-w', '-Ff', '-p', str(pid)])
+    procs = subprocess.check_output(["lsof", "-w", "-Ff", "-p", str(pid)])
     nprocs = 0
     for i in procs.splitlines():
-        if i[1:].isdigit() and i[0] == 'f':
+        if i[1:].isdigit() and i[0] == "f":
             nprocs += 1
     return nprocs
 
 
 import re
+
 coord_re = re.compile(
     r"""
     (?P<chrom>.+):
     (?P<start>\d+)-
     (?P<stop>\d+)
-    (?:\[(?P<strand>.)\])?""", re.VERBOSE)
+    (?:\[(?P<strand>.)\])?""",
+    re.VERBOSE,
+)
 
 
 def string_to_interval(s):
@@ -543,21 +581,23 @@ def string_to_interval(s):
     """
     if isinstance(s, six.string_types):
         m = coord_re.search(s)
-        if m.group('strand'):
-            return create_interval_from_list([
-                m.group('chrom'),
-                m.group('start'),
-                m.group('stop'),
-                '.',
-                '0',
-                m.group('strand')])
+        if m.group("strand"):
+            return create_interval_from_list(
+                [
+                    m.group("chrom"),
+                    m.group("start"),
+                    m.group("stop"),
+                    ".",
+                    "0",
+                    m.group("strand"),
+                ]
+            )
         else:
-            return create_interval_from_list([
-                m.group('chrom'),
-                m.group('start'),
-                m.group('stop'),
-            ])
+            return create_interval_from_list(
+                [m.group("chrom"), m.group("start"), m.group("stop")]
+            )
     return s
+
 
 class FisherOutput(object):
     def __init__(self, s, **kwargs):
@@ -577,30 +617,24 @@ class FisherOutput(object):
         """
         if isinstance(s, str):
             s = open(s).read()
-        if hasattr(s, 'next'):
-            s = ''.join(i for i in s)
+        if hasattr(s, "next"):
+            s = "".join(i for i in s)
         table = {
-            'not in -a': {
-                'not in -b': None,
-                'in -b': None
-            },
-            'in -a': {
-                'not in -b': None,
-                'in -b': None,
-            },
+            "not in -a": {"not in -b": None, "in -b": None},
+            "in -a": {"not in -b": None, "in -b": None},
         }
         self.text = s
         lines = s.splitlines()
         for i in lines:
-            if 'not in -a' in i:
-                _, in_b, not_in_b, _= i.strip().split('|')
-                table['not in -a']['not in -b'] = int(not_in_b)
-                table['not in -a']['in -b'] = int(in_b)
+            if "not in -a" in i:
+                _, in_b, not_in_b, _ = i.strip().split("|")
+                table["not in -a"]["not in -b"] = int(not_in_b)
+                table["not in -a"]["in -b"] = int(in_b)
 
-            if '    in -a' in i:
-                _, in_b, not_in_b, _ = i.strip().split('|')
-                table['in -a']['not in -b'] = int(not_in_b)
-                table['in -a']['in -b'] = int(in_b)
+            if "    in -a" in i:
+                _, in_b, not_in_b, _ = i.strip().split("|")
+                table["in -a"]["not in -b"] = int(not_in_b)
+                table["in -a"]["in -b"] = int(in_b)
         self.table = table
         left, right, two_tail, ratio = lines[-1].split()
         self.left_tail = float(left)
@@ -612,7 +646,7 @@ class FisherOutput(object):
         return self.text
 
     def __repr__(self):
-        return '<%s at %s>\n%s' % (self.__class__.__name__, id(self), self.text)
+        return "<%s at %s>\n%s" % (self.__class__.__name__, id(self), self.text)
 
 
 class SplitOutput(object):
@@ -629,8 +663,8 @@ class SplitOutput(object):
 
         if isinstance(output, str):
             output = open(output).read()
-        if hasattr(output, 'next'):
-            output = ''.join(i for i in output)
+        if hasattr(output, "next"):
+            output = "".join(i for i in output)
 
         #: store a copy of the output
         self.text = output
@@ -657,15 +691,21 @@ class SplitOutput(object):
 
 def internet_on(timeout=1):
     try:
-        response = urllib.request.urlopen('http://genome.ucsc.edu', timeout=timeout)
+        response = urllib.request.urlopen("http://genome.ucsc.edu", timeout=timeout)
         return True
     except urllib.error.URLError as err:
         pass
     return False
 
 
-def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
-                             fetchchromsizes='fetchChromSizes', timeout=None):
+def get_chromsizes_from_ucsc(
+    genome,
+    saveas=None,
+    mysql="mysql",
+    fetchchromsizes="fetchChromSizes",
+    timeout=None,
+    host_url="genome-mysql.cse.ucsc.edu",
+):
     """
     Download chrom size info for *genome* from UCSC and returns the dictionary.
 
@@ -684,39 +724,43 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
     timeout : float
         How long to wait for a response; mostly used for testing.
 
+    host_url : str
+        URL of UCSC mirror MySQL server.
     """
     if not internet_on(timeout=timeout):
-        raise ValueError('It appears you don\'t have an internet connection '
-                         '-- unable to get chromsizes from UCSC')
-    cmds = [mysql,
-            '--user=genome',
-            '--host=genome-mysql.cse.ucsc.edu',
-            '-A',
-            '-e',
-            'select chrom, size from %s.chromInfo' % genome]
+        raise ValueError(
+            "It appears you don't have an internet connection "
+            "-- unable to get chromsizes from UCSC"
+        )
+    cmds = [
+        mysql,
+        "--user=genome",
+        "--host=" + host_url,
+        "-A",
+        "-e",
+        "select chrom, size from %s.chromInfo" % genome,
+    ]
     failures = []
     d = {}
     try:
-        p = subprocess.Popen(cmds,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             bufsize=1)
+        p = subprocess.Popen(
+            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1
+        )
         stdout, stderr = p.communicate()
         if stderr:
             print(stderr)
-            print('Commands were:\n')
+            print("Commands were:\n")
             print((subprocess.list2cmdline(cmds)))
 
         lines = stdout.splitlines()[1:]
         for line in lines:
             if isinstance(line, bytes):
-                line = line.decode('UTF-8')
+                line = line.decode("UTF-8")
             chrom, size = line.split()
             d[chrom] = (0, int(size))
 
         if saveas is not None:
             chromsizes_to_file(d, saveas)
-
 
     except OSError as err:
         if err.errno == 2:
@@ -725,21 +769,20 @@ def get_chromsizes_from_ucsc(genome, saveas=None, mysql='mysql',
             raise
     try:
         cmds = [fetchchromsizes, genome]
-        p = subprocess.Popen(cmds,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             bufsize=1)
+        p = subprocess.Popen(
+            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1
+        )
         stdout, stderr = p.communicate()
         if stderr:
-            if 'INFO: trying WGET' not in str(stderr):
+            if "INFO: trying WGET" not in str(stderr):
                 print(stderr)
-                print('Commands were:\n')
+                print("Commands were:\n")
                 print((subprocess.list2cmdline(cmds)))
 
         lines = stdout.splitlines()
         for line in lines:
             if isinstance(line, bytes):
-                line = line.decode('UTF-8')
+                line = line.decode("UTF-8")
             chrom, size = line.split()
             d[chrom] = (0, int(size))
 
@@ -763,26 +806,64 @@ def chromsizes_to_file(chrom_sizes, fn=None):
     Returns the filename.
     """
     if fn is None:
-        tmpfn = tempfile.NamedTemporaryFile(prefix='pybedtools.',
-                                            suffix='.tmp', delete=False)
+        tmpfn = tempfile.NamedTemporaryFile(
+            prefix="pybedtools.", suffix=".tmp", delete=False
+        )
         tmpfn = tmpfn.name
         filenames.TEMPFILES.append(tmpfn)
         fn = tmpfn
     if isinstance(chrom_sizes, str):
         chrom_sizes = chromsizes(chrom_sizes)
-    fout = open(fn, 'wt')
+    fout = open(fn, "wt")
     for chrom, bounds in sorted(chrom_sizes.items()):
-        line = chrom + '\t' + str(bounds[1]) + '\n'
+        line = chrom + "\t" + str(bounds[1]) + "\n"
         fout.write(line)
     fout.close()
     return fn
 
 
+def get_chromsizes_from_genomepy(
+    genome, saveas=None,
+):
+    """
+    Get chrom size info for *genome* from genomepy, if genomepy is installed.
+
+    Parameters
+    ----------
+
+    genome : str
+        Name of the genome assembly (e.g., "hg38")
+
+    saveas : str
+        Filename to save output to. Dictionary will still be returned.
+    """
+    if "genomepy" not in sys.modules:
+        return None
+
+    d = {}
+    try:
+        g = genomepy.Genome(genome)
+        # Fail silently if the sizes file cannot be accessed
+        if not hasattr(g, "sizes_file"):
+            return None
+        for line in open(g.sizes_file):
+            chrom, size = line.split()
+            d[chrom] = (0, int(size))
+
+        if saveas is not None:
+            chromsizes_to_file(d, saveas)
+    except FileNotFoundError:
+        return None
+
+    return d
+
+
 def chromsizes(genome):
     """
     Looks for a *genome* already included in the genome registry; if not found
-    then it looks it up on UCSC.  Returns the dictionary of chromsize tuples
-    where each tuple has (start,stop).
+    it first tries to look it up via genomepy. If genomepy is not installed, or
+    if this lookup fails then it looks it up on UCSC.  Returns the dictionary of 
+    chromsize tuples where each tuple has (start,stop).
 
     Chromsizes are described as (start, stop) tuples to allow randomization
     within specified regions; e. g., you can make a chromsizes dictionary that
@@ -814,18 +895,19 @@ def chromsizes(genome):
     try:
         return getattr(genome_registry, genome)
     except AttributeError:
-        return get_chromsizes_from_ucsc(genome)
+        chromsizes = get_chromsizes_from_genomepy(genome)
+        if chromsizes is None:
+            return get_chromsizes_from_ucsc(genome)
+        else:
+            return chromsizes
+
 
 def get_includes():
     """
     Returns a list of include directories with BEDTools headers
     """
     dirname = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-    return [
-        dirname,
-        os.path.join(dirname, 'include')
-    ]
+    return [dirname, os.path.join(dirname, "include")]
 
 
 atexit.register(cleanup)
-
