@@ -98,8 +98,8 @@ pip install -e .
 # manipulation in test_helpers and test_issues. So run in its own separate
 # pytests process.
 log "Unit tests"
-pytest -v --doctest-modules --ignore pybedtools/test/test_genomepy_integration.py
-pytest -v pybedtools/test/test_genomepy_integration.py
+pytest -v --doctest-modules
+pytest -v pybedtools/test/genomepy_integration.py
 
 # ----------------------------------------------------------------------------
 # sphinx doctests
