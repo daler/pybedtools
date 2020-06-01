@@ -96,6 +96,9 @@ tar -xf $TMP/dist/pybedtools-*.tar.gz
 cd pybedtools-*
 pip install -e .
 
+# The import manipulation in genomepy tests conflicts with the import
+# manipulation in test_helpers and test_issues. So run in its own separate
+# pytests process.
 log "Unit tests"
 pytest -v --doctest-modules --ignore pybedtools/test/test_genomepy_integration.py
 pytest -v pybedtools/test/test_genomepy_integration.py
@@ -108,5 +111,8 @@ pytest -v pybedtools/test/test_genomepy_integration.py
 log "copying over docs directory from repo"
 cp -r $TMP/docs .
 
-log "sphinx doctests"
-(cd docs && make clean doctest)
+# numpydoc is not supported in py27, so we can't run doctests.
+if [[ "$PY_VERSION" != "2.7" ]]; then
+    log "sphinx doctests"
+    (cd docs && make clean doctest)
+fi
