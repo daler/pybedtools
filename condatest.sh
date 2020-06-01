@@ -57,11 +57,16 @@ no_cy="pbtpy${PY_VERSION}_conda_no_cython"
 if ! conda env list | grep -q $no_cy; then
     log "creating environment"
 
-    # pysam not available from bioconda for py37 so remove it from
-    # requirements.
+    # conflicts with pysam in bioconda for py37 or py38 so remove it from
+    # conda requirements; allow to install from pip
     TMPREQS=$(tempfile)
     REQS=requirements.txt
     if [[ "$PY_VERSION" == "3.7" ]]; then
+        grep -v pysam requirements.txt > $TMPREQS
+        REQS=$TMPREQS
+    fi
+
+    if [[ "$PY_VERSION" == "3.8" ]]; then
         grep -v pysam requirements.txt > $TMPREQS
         REQS=$TMPREQS
     fi
