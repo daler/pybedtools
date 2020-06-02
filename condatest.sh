@@ -57,14 +57,18 @@ no_cy="pbtpy${PY_VERSION}_conda_no_cython"
 if ! conda env list | grep -q $no_cy; then
     log "creating environment"
 
-    # pysam not available from bioconda for py37 so remove it from
-    # requirements.
+    # conflicts with pysam in bioconda for py37 or py38 so remove it from
+    # conda requirements; allow to install from pip
     TMPREQS=$(tempfile)
-    grep -v pysam requirements.txt > $TMPREQS
+    REQS=requirements.txt
     if [[ "$PY_VERSION" == "3.7" ]]; then
+        grep -v pysam requirements.txt > $TMPREQS
         REQS=$TMPREQS
-    else
-        REQS=requirements.txt
+    fi
+
+    if [[ "$PY_VERSION" == "3.8" ]]; then
+        grep -v pysam requirements.txt > $TMPREQS
+        REQS=$TMPREQS
     fi
 
     # genomepy>=0.8 not available for py27
@@ -75,7 +79,6 @@ if ! conda env list | grep -q $no_cy; then
     else
         OPTREQS=optional-requirements.txt
     fi
-
 
     conda create -n $no_cy -y \
         --channel conda-forge \
@@ -100,8 +103,8 @@ pip install -e .
 # manipulation in test_helpers and test_issues. So run in its own separate
 # pytests process.
 log "Unit tests"
-pytest -v --doctest-modules --ignore pybedtools/test/test_genomepy_integration.py
-pytest -v pybedtools/test/test_genomepy_integration.py
+pytest -v --doctest-modules
+pytest -v pybedtools/test/genomepy_integration.py
 
 # ----------------------------------------------------------------------------
 # sphinx doctests
