@@ -25,7 +25,7 @@ from . import genome_registry
 from .logger import logger
 from .cbedtools import create_interval_from_list
 
-BUFSIZE = 1
+BUFSIZE = -1
 
 _tags = {}
 
@@ -744,7 +744,7 @@ def get_chromsizes_from_ucsc(
     d = {}
     try:
         p = subprocess.Popen(
-            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1
+            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=BUFSIZE
         )
         stdout, stderr = p.communicate()
         if stderr:
@@ -770,7 +770,7 @@ def get_chromsizes_from_ucsc(
     try:
         cmds = [fetchchromsizes, genome]
         p = subprocess.Popen(
-            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1
+            cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=BUFSIZE
         )
         stdout, stderr = p.communicate()
         if stderr:

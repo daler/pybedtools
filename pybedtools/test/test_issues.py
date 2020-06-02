@@ -690,10 +690,11 @@ def test_issue_251():
 def test_issue_257():
     try:
         import pandas
+        import numpy as np
     except ImportError:
         pytest.mark.skip("Pandas not installed; skipping")
     df = pybedtools.example_bedtool("a.bed").to_dataframe()
-    df.iloc[-1, -3:] = pandas.np.nan
+    df.iloc[-1, -3:] = np.nan
     b = pybedtools.BedTool.from_dataframe(df)
     assert str(b) == fix(
         """
