@@ -1,4 +1,5 @@
 import pybedtools
+import six
 from textwrap import dedent
 from .tfuncs import setup_module, teardown_module
 from pybedtools.scripts import annotate, venn_mpl, venn_gchart
@@ -188,7 +189,7 @@ def test_venn_gchart_main():
     sys.stderr = orig_stderr
     os.unlink("gcharttmp")
 
-
+@pytest.mark.skipif(six.PY2, reason="multiprocessing pool context manager does not work for py2")
 def test_intron_exon_reads():
     gff = pybedtools.example_filename("gdc.gff")
     bam = pybedtools.example_filename("gdc.bam")
