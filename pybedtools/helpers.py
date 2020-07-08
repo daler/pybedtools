@@ -454,7 +454,7 @@ def call_bedtools(
             # characters
             if isinstance(stderr, bytes):
                 stderr = stderr.decode("UTF_8")
-            if len(stderr) > 20 and "WARNING" in stderr[:20]:
+            if len(stderr) > 20 and "WARNING" in stderr[:20].upper():
                 sys.stderr.write(stderr)
             else:
                 raise BEDToolsError(subprocess.list2cmdline(cmds), stderr)
