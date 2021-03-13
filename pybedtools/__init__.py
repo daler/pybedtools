@@ -6,7 +6,6 @@ import tempfile
 import logging
 from six.moves import urllib
 from six.moves import copyreg
-from . import scripts
 from .cbedtools import (
     Interval,
     IntervalFile,
