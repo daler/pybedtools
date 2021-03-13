@@ -3689,8 +3689,11 @@ class BedTool(object):
                 _names = None
             kwargs["names"] = _names
 
-        return pandas.read_csv(self.fn, *args, sep="\t", **kwargs)
-
+        if os.path.isfile(self.fn) and os.path.getsize(self.fn) > 0:
+            return pandas.read_csv(self.fn, *args, sep="\t", **kwargs)
+        else:
+            return pandas.DataFrame()
+        
     def tail(self, lines=10, as_string=False):
         """
         Like `head`, but prints last 10 lines of the file by default.

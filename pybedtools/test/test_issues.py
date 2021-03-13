@@ -814,3 +814,13 @@ def test_issue_319():
     spliceslop = os.path.join(testdir, "data", "issue319.bed")
     output_bed = os.path.join(testdir, "data", "issue319.out.bed")
     bt = pybedtools.BedTool(vrn_file).intersect(spliceslop, wa=True, header=True, v=True).saveas(output_bed)
+
+
+def test_issue_333():
+    tmp = pybedtools.BedTool._tmp()
+    with open(tmp, 'w') as fout:
+        pass
+    a = pybedtools.BedTool(tmp)
+
+    # Previously would raise EmptyDataError:
+    a.to_dataframe()
