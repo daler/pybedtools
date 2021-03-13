@@ -1588,10 +1588,16 @@ def test_igv():
     assert obs == exp
 
 
+@pytest.mark.xfail(reason="bedtools bam2fastq (v2.30) outputs double the reads")
 def test_bam_to_fastq():
     x = pybedtools.example_bedtool("small.bam")
     tmpfn = pybedtools.BedTool._tmp()
     y = x.bam_to_fastq(fq=tmpfn)
+    obs = open(y.fastq).read()
+    exp = open(pybedtools.example_filename("small.fastq")).read()
+    print(obs)
+    print(exp)
+
     assert (
         open(y.fastq).read() == open(pybedtools.example_filename("small.fastq")).read()
     )
