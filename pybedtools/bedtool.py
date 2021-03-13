@@ -2101,10 +2101,10 @@ class BedTool(object):
         >>> seed = 1 # so this test always returns the same results
         >>> b = a.shuffle(genome='hg19', chrom=True, seed=seed)
         >>> print(b) #doctest: +NORMALIZE_WHITESPACE
-        chr1	46341498	46341597	feature1	0	+
-        chr1	45615582	45615682	feature2	0	+
-        chr1	102762672	102763022	feature3	0	-
-        chr1	17293432	17293482	feature4	0	+
+        chr1	123081365	123081464	feature1	0	+
+        chr1	243444570	243444670	feature2	0	+
+        chr1	194620241	194620591	feature3	0	-
+        chr1	172792873	172792923	feature4	0	+
         <BLANKLINE>
         """
 
@@ -3093,7 +3093,7 @@ class BedTool(object):
             >>> b = pybedtools.example_bedtool('b.bed')
             >>> results = a.randomintersection(b, 10, debug=True)
             >>> print(list(results))
-            [2, 1, 2, 1, 1, 1, 1, 1, 1, 2]
+            [1, 0, 1, 2, 4, 2, 2, 1, 2, 4]
 
         """
         if processes is not None:
