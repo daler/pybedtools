@@ -3,6 +3,28 @@
 Changelog
 =========
 
+Changes in v0.8.2
+-----------------
+
+2021-03-13: Minor updates
+
+* Removed scripts directory from installed version. These are still available
+  in the GitHub repo, but were causing import issues with Python 3.9 and were
+  not well-used in the first place.
+* Bugfix: unicode is better handled in gzipped files (thanks @naumenko-sa, see
+  `#320 <https://github.com/daler/pybedtools/pull/320>`_)
+* Bugfix: correctly ignore warnings even with capital letters (thanks
+  @JureZmrzlikar, see `#326 <https://github.com/daler/pybedtools/pull/326>`_)
+* Bugfix/improvements: update tests and code to work with Python 3.8 (see `#324
+  <https://github.com/daler/pybedtools/pull/324>`_). Also addresses `#322
+  <https://github.com/daler/pybedtools/issues/322>`_.
+* Improvement: updates tests to work with bedtools v2.30
+* Improvement: integration of `genomepy
+  <https://github.com/vanheeringen-lab/genomepy>`_, which if installed will
+  help retrieve chromsizes files for less commonly used assemblies (thanks
+  @simonvh, see `#323 <https://github.com/daler/pybedtools/pull/323/>`_)
+
+
 Changes in v0.8.1
 -----------------
 
