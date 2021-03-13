@@ -31,7 +31,6 @@ from . import helpers
 from .bedtool import BedTool
 from . import genome_registry
 from . import stats
-from .__main__ import main
 from .version import __version__
 from .filenames import data_dir, example_filename, list_example_files
 from .bedtool import example_bedtool
