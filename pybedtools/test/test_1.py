@@ -850,7 +850,9 @@ def test_randomstats():
         results = a.randomstats(b, 100, debug=True)
         assert results["actual"] == 3
         assert results["median randomized"] == 2.0
-        assert results["percentile"] == 91.0
+
+        # NOTE: changed to reflect bedtools v2.30 output
+        assert results["percentile"] == 90.0
 
     except ImportError:
         # allow doctests to pass if SciPy not installed
@@ -1546,19 +1548,20 @@ def test_window_maker():
 
 def test_random():
     a = pybedtools.BedTool()
-    result = a.random(l=10, n=10, genome="hg19", seed=1)
+    result = a.random(l=10, n=10, genome="hg19", seed=1).saveas()
+    print(result)
     assert result == fix(
-        """
-    chr3	11945098	11945108	1	10	+
-    chr15	84985693	84985703	2	10	-
-    chr2	62691196	62691206	3	10	-
-    chr18	18871346	18871356	4	10	+
-    chr9	133374407	133374417	5	10	+
-    chr9	48958184	48958194	6	10	+
-    chrY	41568406	41568416	7	10	-
-    chr4	16579517	16579527	8	10	+
-    chr1	76589882	76589892	9	10	-
-    chr3	55995799	55995809	10	10	-
+    """
+    chr12	95739557	95739567	1	10	-
+    chr2	113014250	113014260	2	10	-
+    chr19	28057962	28057972	3	10	+
+    chr4	76502010	76502020	4	10	+
+    chr3	151395380	151395390	5	10	-
+    chr2	43767824	43767834	6	10	+
+    chr10	117350440	117350450	7	10	+
+    chr6	65439870	65439880	8	10	+
+    chr16	19569197	19569207	9	10	-
+    chr7	104134021	104134031	10	10	-
     """
     )
 

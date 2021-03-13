@@ -103,7 +103,7 @@ def parallel_apply(
 
     >>> # get results
     >>> print(list(results))
-    [2, 1, 2, 1, 1, 1, 1, 1, 1, 2]
+    [1, 0, 1, 2, 4, 2, 2, 1, 2, 4]
 
     >>> # We can compare this to the actual intersection:
     >>> reduce_func(a.intersect(**method_kwargs))
@@ -120,9 +120,9 @@ def parallel_apply(
     ... genome=genome, iterations=3, processes=1, sort=True, debug=True)
     >>> for i in results:
     ...     print(sorted(i.items()))
-    [('intersection', 101), ('jaccard', 0.226966), ('n_intersections', 1), ('union', 445)]
-    [('intersection', 20), ('jaccard', 0.0296296), ('n_intersections', 1), ('union', 675)]
-    [('intersection', 45), ('jaccard', 0.0725806), ('n_intersections', 1), ('union', 620)]
+    [('intersection', 12), ('jaccard', 0.0171184), ('n_intersections', 1), ('union', 701)]
+    [('intersection', 0), ('jaccard', 0.0), ('n_intersections', 0), ('union', 527)]
+    [('intersection', 73), ('jaccard', 0.137996), ('n_intersections', 1), ('union', 529)]
 
     Parameters
     ----------

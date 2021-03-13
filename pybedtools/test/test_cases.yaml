@@ -702,5 +702,5 @@
             seed: 1
             n: 2
     expected: |
-        chr2L	140	145	None	255	-
-        chr2L	70	75	None	255	-
+        chr2L	70	75	None	255	+
+        chr2L	160	165	None	255	+
