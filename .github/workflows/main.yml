@@ -2,7 +2,8 @@ name: main
 on: [push]
 
 jobs:
-  conda-env:
+  cythonize-and-pip:
+    name: Cythonize code and try installing source tarball with pip
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
@@ -10,6 +11,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+
+    - name: build
+      run: |
+        eval "$(conda shell.bash hook)"
+        ENV=./cython-${{ matrix.python-version }}
+        conda create -p $ENV -y cython
+        conda activate $ENV
+        python setup.py clean cythonize sdist
+        (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
+
+
+
+  docs:
     - name: git setup
       # Set up git and export env vars to be used in later steps.
       #   Note the unconventional mechanism for exporting envs by appending to
@@ -20,8 +34,3 @@ jobs:
         git config --global user.name "GitHub Action"
         echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
         echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
-
-    - name: build
-      run: |
-        eval "$(conda shell.bash hook)"
-        echo "./condatest.sh ${{ matrix.python-version }}"
