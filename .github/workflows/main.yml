@@ -119,7 +119,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: docs
-        path: docs/build/html
+        path: /tmp/docs
 
 
     - name: push docs to gh-pages branch
