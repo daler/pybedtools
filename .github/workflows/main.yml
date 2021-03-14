@@ -5,7 +5,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.8]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -33,6 +33,7 @@ jobs:
         conda deactivate
 
 
+    # Set up conda and install pybedtools into that env
     - name: conda env and install locally
       run: |
         eval "$(conda shell.bash hook)"
@@ -47,31 +48,32 @@ jobs:
         ls *
 
 
+    # Run pytest and sphinx doctests
     - name: tests
       run: |
         eval "$(conda shell.bash hook)"
         cd $WORKDIR
         conda activate ./test-env
+
+        # Note that the tests cannot be run from within the source directory,
+        # otherwise there are issues importing cbedtools. The tests are part of
+        # the built package though, and so can be run from the unpacked sdist
+        # tarball
         cd /tmp/pybedtools-uncompressed/pybedtools-*
         pytest -v --doctest-modules
         pytest -v pybedtools/test/genomepy_integration.py
         cp -r $WORKDIR/docs .
         (cd docs && make clean doctest)
-        cd $WORKDIR
-
-    - name: docs artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: docs
-        path: docs/build/html
 
 
     - name: build-docs
       run: |
         eval "$(conda shell.bash hook)"
+        cd $WORKDIR
         conda activate ./test-env
         (cd docs && make html)
 
+        # It's easier to clone elsewhere and copy the built docs there
         git clone \
           --single-branch \
           --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
@@ -89,6 +91,13 @@ jobs:
         fi
         cd $WORKDIR
 
+
+    # Upload built docs as an artifact for inspection, even on PRs
+    - name: docs artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: docs
+        path: docs/build/html
 
 
     - name: push docs to gh-pages branch
