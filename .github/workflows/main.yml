@@ -4,7 +4,8 @@ on: [push]
 jobs:
   conda-env:
     strategy:
-      matrix: [3.6, 3.7, 3.8]
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
