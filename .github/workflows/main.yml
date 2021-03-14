@@ -34,6 +34,7 @@ jobs:
         pip install -e .
 
     - name: tests
+      run: |
         eval "$(conda shell.bash hook)"
         conda activate ./test-env
         HERE=$(pwd)
