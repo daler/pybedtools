@@ -26,22 +26,28 @@ jobs:
         eval "$(conda shell.bash hook)"
         conda create -y -p ./test-env --channel conda-forge --channel bioconda python=${{ matrix.python-version }} --file requirements.txt --file test-requirements.txt --file optional-requirements.txt
         conda activate ./test-env
-        HERE=$(pwd)
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
-        tar -xf $HERE/dist/pybedtools-*.tar.gz
+        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
         cd pybedtools-*
         pip install -e .
+
 
     - name: tests
       run: |
         eval "$(conda shell.bash hook)"
         conda activate ./test-env
-        HERE=$(pwd)
-        pytest -v --doctest-modules
+        pytest -v --doctest-modules pybedtools
         pytest -v pybedtools/test/genomepy_integration.py
-        cp -r $HERE/docs .
+        cp -r $WORKDIR/docs .
         (cd docs && make clean doctest)
+        cd $WORKDIR
+
+    - name: docs artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: docs
+        path: docs/build/html
 
     - name: git setup
       # Set up git and export env vars to be used in later steps.
@@ -53,3 +59,35 @@ jobs:
         git config --global user.name "GitHub Action"
         echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
         echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
+
+
+    - name: build-docs
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda activate ./test-env
+
+        git clone \
+          --single-branch \
+          --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
+          /tmp/docs
+
+        rm -rf /tmp/docs/*
+        cp -r docs/build/html/* /tmp/docs
+        touch /tmp/docs/.nojekyll
+        cd /tmp/docs
+        git add .
+        if git diff --cached --quiet; then
+          echo "no changes, nothing to commit"
+        else
+          git commit -m 'update docs'
+        fi
+        cd $WORKDIR
+
+
+
+    - name: push docs to gh-pages branch
+      if: ${{ github.ref == 'refs/heads/master' }}
+      run: |
+        cd /tmp/docs
+        git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" gh-pages
+        cd $WORKDIR
