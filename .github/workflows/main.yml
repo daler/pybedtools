@@ -5,7 +5,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.6, 3.7, 3.8]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,7 +23,11 @@ jobs:
         echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
 
 
+
     - name: cythonize and pip
+      # Convert .pyx files to .cpp and package into sdist tarball.
+      #
+      # This only requires Cython, no other dependencies.
       run: |
         eval "$(conda shell.bash hook)"
         conda create -p ./cython-env -y cython
@@ -33,12 +37,30 @@ jobs:
         conda deactivate
 
 
-    # Set up conda and install pybedtools into that env
     - name: conda env and install locally
+      # Set up conda and install pybedtools into that env
+      #
+      # NOTE: Tests require *.so files that are created by installing the
+      # package, otherwise we get:
+      #
+      #   ModuleNotFoundError: No module named 'pybedtools.cbedtools'
+      #
+      # We could install from the source repo dir. However this may inadvertently
+      # rely on files that are in the source repo but not in the actual sdist
+      # package. So we extract the sdist tarball to another location and install
+      # from there.
+      #
+      # Tests below will operate in this newly-installed directory.
       run: |
         eval "$(conda shell.bash hook)"
-        conda create -y -p ./test-env --channel conda-forge --channel bioconda python=${{ matrix.python-version }} --file requirements.txt --file test-requirements.txt --file optional-requirements.txt
+        conda create -y -p ./test-env \
+          --channel conda-forge \
+          --channel bioconda python=${{ matrix.python-version }} \
+          --file requirements.txt \
+          --file test-requirements.txt \
+          --file optional-requirements.txt
         conda activate ./test-env
+
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
         tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
@@ -48,17 +70,14 @@ jobs:
         ls *
 
 
-    # Run pytest and sphinx doctests
     - name: tests
+      # Run pytest and sphinx doctests
       run: |
         eval "$(conda shell.bash hook)"
         cd $WORKDIR
         conda activate ./test-env
 
-        # Note that the tests cannot be run from within the source directory,
-        # otherwise there are issues importing cbedtools. The tests are part of
-        # the built package though, and so can be run from the unpacked sdist
-        # tarball
+        # Move to extracted tarball dir, see above notes
         cd /tmp/pybedtools-uncompressed/pybedtools-*
         pytest -v --doctest-modules
         pytest -v pybedtools/test/genomepy_integration.py
@@ -67,16 +86,16 @@ jobs:
 
 
     - name: build-docs
+      # Build docs and commit to gh-pages branch. Note that no push happens
+      # unless we're on the master branch
       run: |
         eval "$(conda shell.bash hook)"
         conda activate ./test-env
 
-        # Again, to avoid "ModuleNotFoundError: No module named
-        # 'pybedtools.cbedtools' we move to the copy
+        # Move to extracted tarball dir, see above notes
         cd /tmp/pybedtools-uncompressed/pybedtools-*
         (cd docs && make html)
 
-        # It's easier to clone elsewhere and copy the built docs there
         git clone \
           --single-branch \
           --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
@@ -95,8 +114,8 @@ jobs:
         cd $WORKDIR
 
 
-    # Upload built docs as an artifact for inspection, even on PRs
     - name: docs artifact
+      # Upload built docs as an artifact for inspection, even on PRs
       uses: actions/upload-artifact@v2
       with:
         name: docs
@@ -104,6 +123,7 @@ jobs:
 
 
     - name: push docs to gh-pages branch
+      # Push docs to gh-pages if this test is running on master branch
       if: ${{ github.ref == 'refs/heads/master' }}
       run: |
         cd /tmp/docs
