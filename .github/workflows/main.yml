@@ -44,6 +44,7 @@ jobs:
         cd pybedtools-*
         pip install -e .
         python -c 'import pybedtools; print(pybedtools.__file__)'
+        ls *
 
 
     - name: tests
@@ -51,7 +52,7 @@ jobs:
         eval "$(conda shell.bash hook)"
         cd $WORKDIR
         conda activate ./test-env
-        cd pybedtools/test
+        cd /tmp/pybedtools-uncompressed/pybedtools-*
         pytest -v --doctest-modules
         pytest -v test/genomepy_integration.py
         cp -r $WORKDIR/docs .
