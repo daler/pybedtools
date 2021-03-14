@@ -2,8 +2,7 @@ name: main
 on: [push]
 
 jobs:
-  cythonize-and-pip:
-    name: Cythonize code and try installing source tarball with pip
+  build-and-test:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
@@ -12,16 +11,36 @@ jobs:
     - uses: actions/checkout@v2
 
 
-    - name: build
+    - name: cythonize and pip
       run: |
         eval "$(conda shell.bash hook)"
-        ENV=./cython-${{ matrix.python-version }}
-        conda create -p $ENV -y cython
-        conda activate $ENV
+        conda create -p ./cython-env -y cython
+        conda activate ./cython-env
         python setup.py clean cythonize sdist
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
+        conda deactivate
 
 
+    - name: conda env and install locally
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda create -y -p ./test-env --channel conda-forge --channel bioconda python=${{ matrix.python-version }} --file requirements.txt --file test-requirements.txt --file optional-requirements.txt
+        conda activate ./test-env
+        HERE=$(pwd)
+        mkdir -p /tmp/pybedtools-uncompressed
+        cd /tmp/pybedtools-uncompressed
+        tar -xf $HERE/dist/pybedtools-*.tar.gz
+        cd pybedtools-*
+        pip install -e .
+
+    - name: tests
+        eval "$(conda shell.bash hook)"
+        conda activate ./test-env
+        HERE=$(pwd)
+        pytest -v --doctest-modules
+        pytest -v pybedtools/test/genomepy_integration.py
+        cp -r $HERE/docs .
+        (cd docs && make clean doctest)
 
     - name: git setup
       # Set up git and export env vars to be used in later steps.
