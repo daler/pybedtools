@@ -70,6 +70,7 @@ jobs:
       run: |
         eval "$(conda shell.bash hook)"
         conda activate ./test-env
+        (cd docs && make html)
 
         git clone \
           --single-branch \
