@@ -2,10 +2,14 @@ name: main
 on: [push]
 
 jobs:
-  conda-env:
+  build-and-test:
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
 
     - name: git setup
       # Set up git and export env vars to be used in later steps.
@@ -18,7 +22,110 @@ jobs:
         echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
         echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
 
-    - name: build
+
+
+    - name: cythonize and pip
+      # Convert .pyx files to .cpp and package into sdist tarball.
+      #
+      # This only requires Cython, no other dependencies.
       run: |
         eval "$(conda shell.bash hook)"
-        ./condatest.sh 3.8
+        conda create -p ./cython-env -y cython
+        conda activate ./cython-env
+        python setup.py clean cythonize sdist
+        (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
+        conda deactivate
+
+
+    - name: conda env and install locally
+      # Set up conda and install pybedtools into that env
+      #
+      # NOTE: Tests require *.so files that are created by installing the
+      # package, otherwise we get:
+      #
+      #   ModuleNotFoundError: No module named 'pybedtools.cbedtools'
+      #
+      # We could install from the source repo dir. However this may inadvertently
+      # rely on files that are in the source repo but not in the actual sdist
+      # package. So we extract the sdist tarball to another location and install
+      # from there.
+      #
+      # Tests below will operate in this newly-installed directory.
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda create -y -p ./test-env \
+          --channel conda-forge \
+          --channel bioconda python=${{ matrix.python-version }} \
+          --file requirements.txt \
+          --file test-requirements.txt \
+          --file optional-requirements.txt
+        conda activate ./test-env
+
+        mkdir -p /tmp/pybedtools-uncompressed
+        cd /tmp/pybedtools-uncompressed
+        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
+        cd pybedtools-*
+        pip install -e .
+        python -c 'import pybedtools; print(pybedtools.__file__)'
+        ls *
+
+
+    - name: tests
+      # Run pytest and sphinx doctests
+      run: |
+        eval "$(conda shell.bash hook)"
+        cd $WORKDIR
+        conda activate ./test-env
+
+        # Move to extracted tarball dir, see above notes
+        cd /tmp/pybedtools-uncompressed/pybedtools-*
+        pytest -v --doctest-modules
+        pytest -v pybedtools/test/genomepy_integration.py
+        cp -r $WORKDIR/docs .
+        (cd docs && make clean doctest)
+
+
+    - name: build-docs
+      # Build docs and commit to gh-pages branch. Note that no push happens
+      # unless we're on the master branch
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda activate ./test-env
+
+        # Move to extracted tarball dir, see above notes
+        cd /tmp/pybedtools-uncompressed/pybedtools-*
+        (cd docs && make html)
+
+        git clone \
+          --single-branch \
+          --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
+          /tmp/docs
+
+        rm -rf /tmp/docs/*
+        cp -r docs/build/html/* /tmp/docs
+        touch /tmp/docs/.nojekyll
+        cd /tmp/docs
+        git add .
+        if git diff --cached --quiet; then
+          echo "no changes, nothing to commit"
+        else
+          git commit -m 'update docs'
+        fi
+        cd $WORKDIR
+
+
+    - name: docs artifact
+      # Upload built docs as an artifact for inspection, even on PRs
+      uses: actions/upload-artifact@v2
+      with:
+        name: docs
+        path: /tmp/docs
+
+
+    - name: push docs to gh-pages branch
+      # Push docs to gh-pages if this test is running on master branch
+      if: ${{ github.ref == 'refs/heads/master' }}
+      run: |
+        cd /tmp/docs
+        git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" gh-pages
+        cd $WORKDIR

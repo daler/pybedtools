@@ -9,7 +9,6 @@ language: python
 # see https://github.com/travis-ci/travis-ci/issues/9815 for py3.7 support
 matrix:
   include:
-    - python: 2.7
     - python: 3.6
     - python: 3.7
     - python: 3.8

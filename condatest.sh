@@ -15,6 +15,7 @@ log () {
 }
 
 
+eval "$(conda shell.bash hook)"
 
 # ----------------------------------------------------------------------------
 # sdist and pip install tests
