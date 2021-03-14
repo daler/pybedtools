@@ -11,6 +11,18 @@ jobs:
     - uses: actions/checkout@v2
 
 
+    - name: git setup
+      # Set up git and export env vars to be used in later steps.
+      #   Note the unconventional mechanism for exporting envs by appending to
+      #   $GITHUB_ENV.
+      id: git-setup
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
+        echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
+
+
     - name: cythonize and pip
       run: |
         eval "$(conda shell.bash hook)"
@@ -48,17 +60,6 @@ jobs:
       with:
         name: docs
         path: docs/build/html
-
-    - name: git setup
-      # Set up git and export env vars to be used in later steps.
-      #   Note the unconventional mechanism for exporting envs by appending to
-      #   $GITHUB_ENV.
-      id: git-setup
-      run: |
-        git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
-        echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
-        echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
 
 
     - name: build-docs
