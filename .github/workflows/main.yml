@@ -51,7 +51,7 @@ jobs:
         eval "$(conda shell.bash hook)"
         cd $WORKDIR
         conda activate ./test-env
-        cd pybedtools
+        cd pybedtools/test
         pytest -v --doctest-modules
         pytest -v test/genomepy_integration.py
         cp -r $WORKDIR/docs .
