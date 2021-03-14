@@ -44,8 +44,6 @@ jobs:
         cd pybedtools-*
         pip install -e .
         python -c 'import pybedtools; print(pybedtools.__file__)'
-        cd $WORKDIR
-        python -c 'import pybedtools; print(pybedtools.__file__)'
 
 
     - name: tests
