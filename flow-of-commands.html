@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Under the hood &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Under the hood &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="FAQs" href="FAQs.html" />
@@ -40,9 +39,9 @@ object is created and exactly what happens when a BEDTools command is called.
 It’s mostly useful for developers or for debugging.</p>
 <p>There are three kinds of sources/sinks for BedTool objects:</p>
 <ul class="simple">
-<li>filename</li>
-<li>open file object</li>
-<li>iterator of Interval objects</li>
+<li><p>filename</p></li>
+<li><p>open file object</p></li>
+<li><p>iterator of Interval objects</p></li>
 </ul>
 <div class="section" id="iterator-protocol">
 <h2>Iterator “protocol”<a class="headerlink" href="#iterator-protocol" title="Permalink to this headline">¶</a></h2>
@@ -106,52 +105,44 @@ Popen’s stdout will be subprocess.PIPE, and the new BedTool object will be
 open-file based (which is what subprocess.PIPE acts like).</p>
 <p>Specifically, here is the information flow of stdin/stdout for various
 interconversions of BedTool types … .</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">filename -&gt; filename:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">filename -&gt; filename</dt>
+<dd class="field-odd"><p>The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=False</span></code>.</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: <code class="file docutils literal notranslate"><span class="pre">None</span></code> (the filenames are provided in the BEDTools command)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open tempfile object</li>
-<li>new BedTool: filename-based BedTool pointing to the tempfile’s filename</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: <code class="file docutils literal notranslate"><span class="pre">None</span></code> (the filenames are provided in the BEDTools command)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open tempfile object</p></li>
+<li><p>new BedTool: filename-based BedTool pointing to the tempfile’s filename</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">filename -&gt; open file object:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code> is requested.</p>
+</dd>
+<dt class="field-even">filename -&gt; open file object</dt>
+<dd class="field-even"><p>The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code> is requested.</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: None (provided in the cmds)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object – specifically, subprocess.PIPE</li>
-<li>new BedTool: iterator-based BedTool.  Each <code class="file docutils literal notranslate"><span class="pre">next()</span></code> call retrieves the
-next line in subprocess.PIPE</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: None (provided in the cmds)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object – specifically, subprocess.PIPE</p></li>
+<li><p>new BedTool: iterator-based BedTool.  Each <code class="file docutils literal notranslate"><span class="pre">next()</span></code> call retrieves the
+next line in subprocess.PIPE</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">open file object -&gt; filename:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is from, e.g., subprocess.PIPE and there’s
+</dd>
+<dt class="field-odd">open file object -&gt; filename</dt>
+<dd class="field-odd"><p>The calling BedTool is from, e.g., subprocess.PIPE and there’s
 a saveas() call to “render” to file.</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: each line in the open file object is written to subprocess.PIPE</li>
-<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object – either a tempfile or new file created from
-supplied filename</li>
-<li>new BedTool: filename-based BedTool</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: each line in the open file object is written to subprocess.PIPE</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object – either a tempfile or new file created from
+supplied filename</p></li>
+<li><p>new BedTool: filename-based BedTool</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">open file object -&gt; iterator:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The calling BedTool is usually based on subprocess.PIPE, and the output
+</dd>
+<dt class="field-even">open file object -&gt; iterator</dt>
+<dd class="field-even"><p>The calling BedTool is usually based on subprocess.PIPE, and the output
 will <em>also</em> come from subprocess.PIPE.</p>
-<ul class="last simple">
-<li><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: each line from the open file is written to subprocess.PIPE</li>
-<li><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object, subprocess.PIPE</li>
-<li>new BedTool: filename based on subprocess.PIPE</li>
+<ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: each line from the open file is written to subprocess.PIPE</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">stdout</span></code>: open file object, subprocess.PIPE</p></li>
+<li><p>new BedTool: filename based on subprocess.PIPE</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </div>
 </div>
 
@@ -179,8 +170,8 @@ will <em>also</em> come from subprocess.PIPE.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
@@ -190,13 +181,13 @@ will <em>also</em> come from subprocess.PIPE.</p>
 <li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Under the hood</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -205,24 +196,22 @@ will <em>also</em> come from subprocess.PIPE.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="topical-documentation-contents.html">Topical Documentation</a><ul>
-      <li>Previous: <a href="pybedtools-dev-history.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+      <li>Previous: <a href="pybedtools-dev-history.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
       <li>Next: <a href="FAQs.html" title="next chapter">FAQs</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -251,8 +240,9 @@ will <em>also</em> come from subprocess.PIPE.</p>
         <li class="right" >
           <a href="pybedtools-dev-history.html" title="pybedtools development model"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Under the hood</a></li> 
       </ul>
     </div>
 
@@ -261,7 +251,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,4 +1,4 @@
-pybedtools.contrib.bigbed.bigbed\_to\_bed
+﻿pybedtools.contrib.bigbed.bigbed\_to\_bed
 =========================================
 
 .. currentmodule:: pybedtools.contrib.bigbed

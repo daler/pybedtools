@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Default arguments &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Default arguments &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Chaining methods together (pipe)" href="piping.html" />
@@ -39,7 +38,7 @@
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a_with_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_with_b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Let’s do the same thing but use different variable names for the <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects so that
@@ -47,14 +46,14 @@ the next section is less confusing:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">exons</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">snps</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>While we’re on the subject of arguments, note that we didn’t have to specify
 <code class="file docutils literal notranslate"><span class="pre">-a</span></code> or <code class="file docutils literal notranslate"><span class="pre">-b</span></code> arguments, like you would need if calling <code class="file docutils literal notranslate"><span class="pre">intersectBed</span></code> from the
 command line.  In other words, since <code class="file docutils literal notranslate"><span class="pre">exons</span></code> refers to the file <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code> and
 <code class="file docutils literal notranslate"><span class="pre">snps</span></code> refers to the file <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>, the following line:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exons_with_snps</span> <span class="o">=</span> <span class="n">exons</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">snps</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>is equivalent to the command line usage of:</p>
@@ -93,7 +92,7 @@ non-keyword arguments must come before keyword arguments, but
 <p>If you’re ever unsure, the docstring for these methods indicates which, if
 any, arguments are used as default.  For example, in the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.intersect()</span></code> help, it says:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">For</span> <span class="n">convenience</span><span class="p">,</span> <span class="n">the</span> <span class="nb">file</span> <span class="ow">or</span> <span class="n">stream</span> <span class="n">this</span> <span class="n">BedTool</span> <span class="n">points</span> <span class="n">to</span> <span class="ow">is</span> <span class="n">implicitly</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">For</span> <span class="n">convenience</span><span class="p">,</span> <span class="n">the</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">stream</span> <span class="n">this</span> <span class="n">BedTool</span> <span class="n">points</span> <span class="n">to</span> <span class="ow">is</span> <span class="n">implicitly</span>
 <span class="n">passed</span> <span class="k">as</span> <span class="n">the</span> <span class="o">-</span><span class="n">a</span> <span class="n">argument</span> <span class="n">to</span> <span class="n">intersectBed</span>
 </pre></div>
 </div>
@@ -124,7 +123,7 @@ any, arguments are used as default.  For example, in the
 <li class="toctree-l1"><a class="reference internal" href="3-brief-examples.html">Three brief examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
-<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="intersections.html">Intersections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Default arguments</a></li>
@@ -134,13 +133,13 @@ any, arguments are used as default.  For example, in the
 <li class="toctree-l2"><a class="reference internal" href="filtering.html">Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html">Using the history and tags</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -156,17 +155,15 @@ any, arguments are used as default.  For example, in the
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -195,8 +192,9 @@ any, arguments are used as default.  For example, in the
         <li class="right" >
           <a href="save-results.html" title="Saving the results"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Default arguments</a></li> 
       </ul>
     </div>
 
@@ -205,7 +203,7 @@ any, arguments are used as default.  For example, in the
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

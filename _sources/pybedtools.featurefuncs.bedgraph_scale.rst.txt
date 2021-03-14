@@ -1,5 +1,5 @@
-pybedtools.featurefuncs.bedgraph_scale
-======================================
+﻿pybedtools.featurefuncs.bedgraph\_scale
+=======================================
 
 .. currentmodule:: pybedtools.featurefuncs
 

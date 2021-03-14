@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Shell script comparison &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shell script comparison &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pybedtools development model" href="pybedtools-dev-history.html" />
@@ -48,145 +47,9 @@ awk) to accomplish the same thing as the Python script.</p>
 between the two scripts.</p>
 <div class="section" id="pybedtools-version-py-ms-example-py">
 <h2><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> version (<code class="file docutils literal notranslate"><span class="pre">py_ms_example.py</span></code>)<a class="headerlink" href="#pybedtools-version-py-ms-example-py" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Example from the manuscript; see sh_ms_example.sh for the shell script \</span>
-<span class="sd">equivalent.</span>
-
-<span class="sd">Prints the names of genes that are &lt;5000 bp away from intergenic SNPs.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
-<span class="kn">from</span> <span class="nn">pybedtools</span> <span class="kn">import</span> <span class="n">BedTool</span>
-
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Runs Python example from the manuscript</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bedtools_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">snps</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bedtools_dir</span><span class="p">,</span> <span class="s1">&#39;../test/data/snps.bed.gz&#39;</span><span class="p">))</span>
-    <span class="n">genes</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bedtools_dir</span><span class="p">,</span> <span class="s1">&#39;../test/data/hg19.gff&#39;</span><span class="p">))</span>
-
-    <span class="n">intergenic_snps</span> <span class="o">=</span> <span class="p">(</span><span class="n">snps</span> <span class="o">-</span> <span class="n">genes</span><span class="p">)</span>
-
-    <span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">gene</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="bash-version-sh-ms-example-sh">
 <h2><code class="file docutils literal notranslate"><span class="pre">bash</span></code> version (<code class="file docutils literal notranslate"><span class="pre">sh_ms_example.sh</span></code>)<a class="headerlink" href="#bash-version-sh-ms-example-sh" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
-
-<span class="c1"># Shell script to do the same analysis as py_ms_example.py -- namely,</span>
-<span class="c1"># print the names of genes that are &lt;5000 bp away from intergenic SNPs</span>
-<span class="c1">#</span>
-<span class="c1"># See below for timing comparisons.</span>
-
-<span class="nv">snps</span><span class="o">=</span>../test/data/snps.bed.gz
-<span class="nv">genes</span><span class="o">=</span>../test/data/hg19.gff
-<span class="nv">intergenic_snps</span><span class="o">=</span>/tmp/intergenic_snps
-
-<span class="c1"># see note #1 below</span>
-<span class="nv">snp_fields</span><span class="o">=</span><span class="sb">`</span>zcat <span class="nv">$snps</span> <span class="p">|</span> awk <span class="s1">&#39;(NR == 2){print NF; exit;}&#39;</span><span class="sb">`</span>
-<span class="nv">gene_fields</span><span class="o">=</span><span class="m">9</span>
-<span class="nv">distance_field</span><span class="o">=</span><span class="k">$((</span><span class="nv">$gene_fields</span> <span class="o">+</span> <span class="nv">$snp_fields</span> <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
-
-intersectBed -a <span class="nv">$snps</span> -b <span class="nv">$genes</span> -v &gt; <span class="nv">$intergenic_snps</span>
-
-<span class="c1"># see note #2 below</span>
-closestBed -a <span class="nv">$genes</span> -b <span class="nv">$intergenic_snps</span> -d <span class="se">\</span>
-<span class="p">|</span> awk <span class="s1">&#39;($&#39;</span><span class="nv">$distance_field</span><span class="s1">&#39; &lt; 5000){print $9;}&#39;</span> <span class="se">\</span>
-<span class="p">|</span> perl -ne <span class="s1">&#39;m/[ID|Name|gene_id]=(.*?);/; print &quot;$1\n&quot;&#39;</span>
-
-<span class="c1"># see note #3 below</span>
-rm <span class="nv">$intergenic_snps</span>
-
-
-
-
-
-
-
-<span class="c1"># -----corresponding pybedtools script (see py_ms_example.py in this same dir)----</span>
-<span class="c1">#</span>
-<span class="c1">#  from pybedtools import BedTool</span>
-<span class="c1">#  snps = BedTool(&#39;../test/data/snps.bed.gz&#39;)</span>
-<span class="c1">#  genes = BedTool(&#39;../test/data/hg19.gff&#39;)</span>
-<span class="c1">#</span>
-<span class="c1">#  intergenic_snps = (snps - genes)</span>
-<span class="c1">#  nearby = genes.closest(intergenic_snps,</span>
-<span class="c1">#                         d=True,</span>
-<span class="c1">#                         stream=True)</span>
-<span class="c1">#  for gene in nearby:</span>
-<span class="c1">#      if int(gene[-1]) &lt; 5000:</span>
-<span class="c1">#         print gene.name</span>
-
-<span class="c1">#------------------------------------------------------------------------------</span>
-<span class="c1"># Note 1:</span>
-<span class="c1">#   pybedtools allows the user to index into the fields of a feature using</span>
-<span class="c1">#   Python indexing.  The &quot;gene[-1]&quot; in the python example above gets last item</span>
-<span class="c1">#   in the line, no matter what the line sizes of the input files.</span>
-<span class="c1">#</span>
-<span class="c1">#   In bash, we need to explicitly check how many fields the original files</span>
-<span class="c1">#   have so we can know the total field count after the the closestBed</span>
-<span class="c1">#   operation.  This will change depending on the input BED file, since BED</span>
-<span class="c1">#   files can have 3-6, 9, or 12 columns.  GFF is defined to have 9 fields.</span>
-<span class="c1">#   Pre-calculating these numbers saves a little time by not having to get the</span>
-<span class="c1">#   number of fields for each line in the awk script</span>
-<span class="c1">#------------------------------------------------------------------------------</span>
-<span class="c1"># Note 2:</span>
-<span class="c1">#   First, we use the distance field calculated previously.  The closestBed</span>
-<span class="c1">#   operation was driven by a GFF file, so that file&#39;s fields will come first.</span>
-<span class="c1">#   GFF files are defined to have 9 fields, and the 9th contains the</span>
-<span class="c1">#   attributes . . . so we can rely on the 9th field being GFF attributes.</span>
-<span class="c1">#</span>
-<span class="c1">#   pybedtools stores GFF attributes as a dictionary, and can pull out the name</span>
-<span class="c1">#   of a gene with the `name` attribute, as in the Python line &quot;print</span>
-<span class="c1">#   gene.name&quot;.  There is no standard for GFF formats; the gene name could be</span>
-<span class="c1">#   listed as &quot;ID&quot;, &quot;Name&quot;, or &quot;gene_id&quot; attributes. Here, the Perl regular</span>
-<span class="c1">#   expression performs the same function</span>
-<span class="c1">#------------------------------------------------------------------------------</span>
-<span class="c1"># Note 3:</span>
-<span class="c1">#   pybedtools automatically deletes temporary files from disk. The Python line</span>
-<span class="c1">#   &quot;intergenic_snps = (snps - genes)&quot; saves a temporary file for the length of</span>
-<span class="c1">#   the script, and that file is deleted at exit.  Here, we need to explicitly</span>
-<span class="c1">#   remove the tempfile we created.</span>
-<span class="c1">#------------------------------------------------------------------------------</span>
-
-<span class="c1"># =============================================================================</span>
-<span class="c1"># Timing</span>
-<span class="c1"># =============================================================================</span>
-<span class="c1"># The running times of the Python version and the bash script version are</span>
-<span class="c1"># equivalent:</span>
-<span class="c1">#</span>
-<span class="c1"># time ./sh_ms_example.sh &gt; sh.out</span>
-<span class="c1"># (best of 3)</span>
-<span class="c1"># --------------------------------</span>
-<span class="c1"># real	0m42.059s</span>
-<span class="c1"># user	0m41.970s</span>
-<span class="c1"># sys	0m0.190s</span>
-
-<span class="c1"># time ./py_ms_example.py &gt; py.out</span>
-<span class="c1"># (best of 3)</span>
-<span class="c1"># --------------------------------</span>
-<span class="c1"># real	0m42.000s</span>
-<span class="c1"># user	0m42.050s</span>
-<span class="c1"># sys	0m0.230s</span>
-
-
-<span class="c1"># Confirm identical results</span>
-<span class="c1"># -------------------------</span>
-<span class="c1"># diff sh.out py.out | wc -l</span>
-<span class="c1"># 0</span>
-</pre></div>
-</div>
 </div>
 </div>
 
@@ -214,8 +77,8 @@ rm <span class="nv">$intergenic_snps</span>
 <li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
@@ -225,13 +88,13 @@ rm <span class="nv">$intergenic_snps</span>
 <li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Shell script comparison</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -241,23 +104,21 @@ rm <span class="nv">$intergenic_snps</span>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="topical-documentation-contents.html">Topical Documentation</a><ul>
       <li>Previous: <a href="topical-comparisons.html" title="previous chapter">Comparisons</a></li>
-      <li>Next: <a href="pybedtools-dev-history.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+      <li>Next: <a href="pybedtools-dev-history.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -286,8 +147,9 @@ rm <span class="nv">$intergenic_snps</span>
         <li class="right" >
           <a href="topical-comparisons.html" title="Comparisons"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Shell script comparison</a></li> 
       </ul>
     </div>
 
@@ -296,7 +158,7 @@ rm <span class="nv">$intergenic_snps</span>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

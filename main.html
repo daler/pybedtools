@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installation &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Installation &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Three brief examples" href="3-brief-examples.html" />
@@ -53,48 +52,39 @@ will install <code class="xref py py-mod docutils literal notranslate"><span cla
 environments.</p>
 <div class="section" id="required">
 <h3>Required<a class="headerlink" href="#required" title="Permalink to this headline">¶</a></h3>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name"><a class="reference external" href="http://www.python.org/">Python</a>:</th><td class="field-body"><p class="first">version 2.7 or greater (Python 3 is supported). If you’re setting up
+<dl class="field-list simple">
+<dt class="field-odd"><a class="reference external" href="http://www.python.org/">Python</a></dt>
+<dd class="field-odd"><p>version 2.7 or greater (Python 3 is supported). If you’re setting up
 Python for the first time, the <a class="reference external" href="http://continuum.io/downloads">Anaconda Python distribution</a> is highly recommended.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name"><a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a>:</th><td class="field-body"><p class="first">The version is not important, but later versions will have more features so
+</dd>
+<dt class="field-even"><a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a></dt>
+<dd class="field-even"><p>The version is not important, but later versions will have more features so
 it’s a good idea to get the latest.  Follow the instructions at
 <a class="reference external" href="https://github.com/arq5x/bedtools2">https://github.com/arq5x/bedtools2</a> to install, and make sure the programs
 are on your path. That is, you should be able to call <code class="file docutils literal notranslate"><span class="pre">bedtools</span></code> from
 any directory</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">A C/C++ compiler:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first last simple">
-<li><strong>OSX:</strong> Install Xcode from <a class="reference external" href="http://developer.apple.com/xcode/">http://developer.apple.com/xcode/</a></li>
-<li><strong>Linux:</strong> <code class="file docutils literal notranslate"><span class="pre">gcc</span></code>, usually already installed; on Ubuntu, install with <code class="file docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span>
-<span class="pre">build-essentials</span></code></li>
-<li><strong>Windows:</strong> may work with conda compliers or Cygwin but this is
-untested. Windows is not supported.</li>
+</dd>
+<dt class="field-odd">A C/C++ compiler</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>OSX:</strong> Install Xcode from <a class="reference external" href="http://developer.apple.com/xcode/">http://developer.apple.com/xcode/</a></p></li>
+<li><p><strong>Linux:</strong> <code class="file docutils literal notranslate"><span class="pre">gcc</span></code>, usually already installed; on Ubuntu, install with <code class="file docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span>
+<span class="pre">build-essentials</span></code></p></li>
+<li><p><strong>Windows:</strong> may work with conda compliers or Cygwin but this is
+untested. Windows is not supported.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </div>
 <div class="section" id="optional">
 <h3>Optional<a class="headerlink" href="#optional" title="Permalink to this headline">¶</a></h3>
 <p>The following external tools are <strong>optional</strong>:</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2"><a class="reference external" href="http://samtools.sourceforge.net/tabix.shtml">Tabix</a> [<a class="reference external" href="http://sourceforge.net/projects/samtools/files/">download page</a>]:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">Required for fast, random access to BED/GFF/GTF/VCF files by providing
+<dl class="field-list simple">
+<dt class="field-odd"><a class="reference external" href="http://samtools.sourceforge.net/tabix.shtml">Tabix</a> [<a class="reference external" href="http://sourceforge.net/projects/samtools/files/">download page</a>]</dt>
+<dd class="field-odd"><p>Required for fast, random access to BED/GFF/GTF/VCF files by providing
 a chrom:start-stop coordinate.  Similar to the above, you should be able to
-call <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> from any directory.</td>
-</tr>
-</tbody>
-</table>
+call <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> from any directory.</p>
+</dd>
+</dl>
 </div>
 </div>
 <div class="section" id="installing-pybedtools">
@@ -116,14 +106,15 @@ rights:</p>
 <h3>Install development version via github<a class="headerlink" href="#install-development-version-via-github" title="Permalink to this headline">¶</a></h3>
 <p>Assumptions:</p>
 <ol class="arabic simple">
-<li><code class="file docutils literal notranslate"><span class="pre">git</span></code> is installed</li>
-<li>Cython is installed (<code class="file docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">cython</span></code> or <code class="file docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">cython</span></code>)</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">git</span></code> is installed</p></li>
+<li><p>Cython is installed (<code class="file docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">cython</span></code> or <code class="file docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">cython</span></code>)</p></li>
 </ol>
 <p>The following commands will clone the repository
 .. code-block:: bash</p>
 <blockquote>
-<div>git clone <a class="reference external" href="https://github.com/daler/pybedtools.git">https://github.com/daler/pybedtools.git</a>
-cd pybedtools</div></blockquote>
+<div><p>git clone <a class="reference external" href="https://github.com/daler/pybedtools.git">https://github.com/daler/pybedtools.git</a>
+cd pybedtools</p>
+</div></blockquote>
 <p>The only time the C++ files will be rebuilt from Cython .pyx source is if the
 <code class="file docutils literal notranslate"><span class="pre">cythonize</span></code> subcommand is used. To rebuild the C++ files using Cython, run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py cythonize
@@ -148,7 +139,7 @@ source files have been changed, run:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Run the script with <code class="file docutils literal notranslate"><span class="pre">python</span> <span class="pre">mytest.py</span></code>. You should get the results:</p>
@@ -175,9 +166,9 @@ e.g., by running:</p>
 <p>To test within the existing installation, install the additional packages for
 testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="o">--</span><span class="n">channel</span> <span class="n">bioconda</span> \
-  <span class="o">--</span><span class="nb">file</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span> \
-  <span class="o">--</span><span class="nb">file</span> <span class="n">test</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span> \
-  <span class="o">--</span><span class="nb">file</span> <span class="n">optional</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span> \
+  <span class="o">--</span><span class="n">file</span> <span class="n">test</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span> \
+  <span class="o">--</span><span class="n">file</span> <span class="n">optional</span><span class="o">-</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 <p>Then run unit tests along with module doctests:</p>
@@ -214,17 +205,17 @@ creates a new isolated conda environment and runs both unit tests and doctests.<
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
 <p>Any and all contributions are welcome.  Here’s how to contribute:</p>
 <ol class="arabic simple">
-<li>Fork the <a class="reference external" href="http://github.com/daler/pybedtools">pybedtools repository</a> on
-github (see <a class="reference external" href="http://help.github.com/fork-a-repo/">forking help</a>).</li>
-<li>Make your changes/fixes/improvements locally.</li>
-<li><dl class="first docutils">
-<dt>Optional, but much-appreciated: write some tests for your changes.</dt>
-<dd>(Don’t worry about integrating your tests into the test framework. You
+<li><p>Fork the <a class="reference external" href="http://github.com/daler/pybedtools">pybedtools repository</a> on
+github (see <a class="reference external" href="http://help.github.com/fork-a-repo/">forking help</a>).</p></li>
+<li><p>Make your changes/fixes/improvements locally.</p></li>
+<li><dl class="simple">
+<dt>Optional, but much-appreciated: write some tests for your changes.</dt><dd><p>(Don’t worry about integrating your tests into the test framework. You
 can just attach the tests either as a commited script or as comments to
-the commit and I can integrate them later)</dd>
+the commit and I can integrate them later)</p>
+</dd>
 </dl>
 </li>
-<li>Send a pull request (see <a class="reference external" href="http://help.github.com/send-pull-requests/">pull request help</a>)</li>
+<li><p>Send a pull request (see <a class="reference external" href="http://help.github.com/send-pull-requests/">pull request help</a>)</p></li>
 </ol>
 </div>
 </div>
@@ -249,7 +240,7 @@ the commit and I can integrate them later)</dd>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#install-via-conda">Install via <code class="file docutils literal notranslate"><span class="pre">conda</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-pybedtools">Installing <code class="docutils literal notranslate"><span class="pre">pybedtools</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-pybedtools">Installing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quick-test">Quick test</a></li>
 </ul>
 </li>
@@ -265,7 +256,7 @@ the commit and I can integrate them later)</dd>
 <li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -279,17 +270,15 @@ the commit and I can integrate them later)</dd>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -318,7 +307,8 @@ the commit and I can integrate them later)</dd>
         <li class="right" >
           <a href="index.html" title="pybedtools documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>
 
@@ -327,7 +317,7 @@ the commit and I can integrate them later)</dd>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.random\_op
+﻿pybedtools.bedtool.BedTool.random\_op
 =====================================
 
 .. currentmodule:: pybedtools.bedtool

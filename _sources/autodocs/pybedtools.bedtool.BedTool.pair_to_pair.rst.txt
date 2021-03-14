@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.pair\_to\_pair
+﻿pybedtools.bedtool.BedTool.pair\_to\_pair
 =========================================
 
 .. currentmodule:: pybedtools.bedtool

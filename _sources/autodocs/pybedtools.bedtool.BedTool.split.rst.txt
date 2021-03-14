@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.split
+﻿pybedtools.bedtool.BedTool.split
 ================================
 
 .. currentmodule:: pybedtools.bedtool

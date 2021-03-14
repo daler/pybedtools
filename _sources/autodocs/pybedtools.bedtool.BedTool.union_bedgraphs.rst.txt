@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.union\_bedgraphs
+﻿pybedtools.bedtool.BedTool.union\_bedgraphs
 ===========================================
 
 .. currentmodule:: pybedtools.bedtool

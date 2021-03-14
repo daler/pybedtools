@@ -1,4 +1,4 @@
-pybedtools.cbedtools.Interval
+﻿pybedtools.cbedtools.Interval
 =============================
 
 .. currentmodule:: pybedtools.cbedtools
@@ -13,6 +13,7 @@ pybedtools.cbedtools.Interval
 
    .. autosummary::
    
+      ~Interval.__init__
       ~Interval.append
       ~Interval.deparse_attrs
    

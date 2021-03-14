@@ -1,4 +1,4 @@
-pybedtools.helpers.set\_tempdir
+﻿pybedtools.helpers.set\_tempdir
 ===============================
 
 .. currentmodule:: pybedtools.helpers

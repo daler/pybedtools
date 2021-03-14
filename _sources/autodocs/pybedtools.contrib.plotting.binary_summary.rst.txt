@@ -1,4 +1,4 @@
-pybedtools.contrib.plotting.binary\_summary
+﻿pybedtools.contrib.plotting.binary\_summary
 ===========================================
 
 .. currentmodule:: pybedtools.contrib.plotting

@@ -53,9 +53,13 @@ file with `g`:
 As a string
 -----------
 This is probably the most convenient way of specifying a genome.  If the
-genome exists in the genome registry it will be used directly; otherwise it
-will automatically be downloaded from UCSC.  You must use the `genome`
-kwarg for this; if you use `g` a string will be interpreted as a filename:
+genome exists in the genome registry it will be used directly.  Alternatively,
+if you have `genomepy<https://github.com/vanheeringen-lab/genomepy/>`_ 
+installed, you can use the genomepy genome name, such as `hg38`.  In this case, 
+the genome file will be located automatically.  Finally, if the genome is not 
+in the registry or managed by genomepy, it will automatically be downloaded 
+from UCSC.  You must use the `genome` kwarg for this; if you use `g` a string 
+will be interpreted as a filename:
 
 .. doctest::
 

@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.merge
+﻿pybedtools.bedtool.BedTool.merge
 ================================
 
 .. currentmodule:: pybedtools.bedtool

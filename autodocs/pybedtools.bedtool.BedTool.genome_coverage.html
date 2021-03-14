@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.bedtool.BedTool.genome_coverage &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.bedtool.BedTool.genome_coverage &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.merge" href="pybedtools.bedtool.BedTool.merge.html" />
@@ -35,9 +34,9 @@
             
   <div class="section" id="pybedtools-bedtool-bedtool-genome-coverage">
 <h1>pybedtools.bedtool.BedTool.genome_coverage<a class="headerlink" href="#pybedtools-bedtool-bedtool-genome-coverage" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
+<dl class="py method">
 <dt id="pybedtools.bedtool.BedTool.genome_coverage">
-<code class="descclassname">BedTool.</code><code class="descname">genome_coverage</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.genome_coverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.genome_coverage" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">BedTool.</span></code><code class="sig-name descname"><span class="pre">genome_coverage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.genome_coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.genome_coverage" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">genomecov</span></code>.</p>
 <p>Note that some invocations of <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">genomecov</span></code> do not result in
@@ -48,18 +47,18 @@ non-BED-format file will raise exceptions in pybedtools’ parser.</p>
 non-BED files into a pandas DataFrame for further use.</p>
 <p>Example usage:</p>
 <p>BAM file input does not require a genome:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bam&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bam&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">#doctest: +NORMALIZE_WHITESPACE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> 
 <span class="go">chr2L   9329    9365    1</span>
 <span class="go">chr2L   10212   10248   1</span>
 <span class="go">chr2L   10255   10291   1</span>
 </pre></div>
 </div>
 <p>Other input does require a genome:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bed&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;x.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;dm3&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">#doctest: +NORMALIZE_WHITESPACE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> 
 <span class="go">chr2L   9329    9365    1</span>
 <span class="go">chr2L   10212   10248   1</span>
 <span class="go">chr2L   10255   10291   1</span>
@@ -83,13 +82,13 @@ a separate file.  The <code class="file docutils literal notranslate"><span clas
 details.</p>
 <p><strong>Original BEDTools help:</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">genomecov</span> <span class="p">(</span><span class="n">aka</span> <span class="n">genomeCoverageBed</span><span class="p">)</span>
-<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">27.1</span>
-<span class="n">Summary</span><span class="p">:</span> <span class="n">Compute</span> <span class="n">the</span> <span class="n">coverage</span> <span class="n">of</span> <span class="n">a</span> <span class="n">feature</span> <span class="nb">file</span> <span class="n">among</span> <span class="n">a</span> <span class="n">genome</span><span class="o">.</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">30.0</span>
+<span class="n">Summary</span><span class="p">:</span> <span class="n">Compute</span> <span class="n">the</span> <span class="n">coverage</span> <span class="n">of</span> <span class="n">a</span> <span class="n">feature</span> <span class="n">file</span> <span class="n">among</span> <span class="n">a</span> <span class="n">genome</span><span class="o">.</span>
 
 <span class="n">Usage</span><span class="p">:</span> <span class="n">bedtools</span> <span class="n">genomecov</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">i</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">g</span> <span class="o">&lt;</span><span class="n">genome</span><span class="o">&gt;</span>
 
 <span class="n">Options</span><span class="p">:</span> 
-        <span class="o">-</span><span class="n">ibam</span>           <span class="n">The</span> <span class="nb">input</span> <span class="nb">file</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">BAM</span> <span class="n">format</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">ibam</span>           <span class="n">The</span> <span class="nb">input</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">BAM</span> <span class="nb">format</span><span class="o">.</span>
                         <span class="n">Note</span><span class="p">:</span> <span class="n">BAM</span> <span class="o">**</span><span class="n">must</span><span class="o">**</span> <span class="n">be</span> <span class="nb">sorted</span> <span class="n">by</span> <span class="n">position</span>
 
         <span class="o">-</span><span class="n">d</span>              <span class="n">Report</span> <span class="n">the</span> <span class="n">depth</span> <span class="n">at</span> <span class="n">each</span> <span class="n">genome</span> <span class="n">position</span> <span class="p">(</span><span class="k">with</span> <span class="n">one</span><span class="o">-</span><span class="n">based</span> <span class="n">coordinates</span><span class="p">)</span><span class="o">.</span>
@@ -99,10 +98,10 @@ details.</p>
                         <span class="n">Reports</span> <span class="n">only</span> <span class="n">non</span><span class="o">-</span><span class="n">zero</span> <span class="n">positions</span><span class="o">.</span>
                         <span class="n">Default</span> <span class="n">behavior</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">report</span> <span class="n">a</span> <span class="n">histogram</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">bg</span>             <span class="n">Report</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">BedGraph</span> <span class="n">format</span><span class="o">.</span> <span class="n">For</span> <span class="n">details</span><span class="p">,</span> <span class="n">see</span><span class="p">:</span>
+        <span class="o">-</span><span class="n">bg</span>             <span class="n">Report</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">BedGraph</span> <span class="nb">format</span><span class="o">.</span> <span class="n">For</span> <span class="n">details</span><span class="p">,</span> <span class="n">see</span><span class="p">:</span>
                         <span class="n">genome</span><span class="o">.</span><span class="n">ucsc</span><span class="o">.</span><span class="n">edu</span><span class="o">/</span><span class="n">goldenPath</span><span class="o">/</span><span class="n">help</span><span class="o">/</span><span class="n">bedgraph</span><span class="o">.</span><span class="n">html</span>
 
-        <span class="o">-</span><span class="n">bga</span>            <span class="n">Report</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">BedGraph</span> <span class="n">format</span><span class="p">,</span> <span class="k">as</span> <span class="n">above</span> <span class="p">(</span><span class="o">-</span><span class="n">bg</span><span class="p">)</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">bga</span>            <span class="n">Report</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">BedGraph</span> <span class="nb">format</span><span class="p">,</span> <span class="k">as</span> <span class="n">above</span> <span class="p">(</span><span class="o">-</span><span class="n">bg</span><span class="p">)</span><span class="o">.</span>
                         <span class="n">However</span> <span class="k">with</span> <span class="n">this</span> <span class="n">option</span><span class="p">,</span> <span class="n">regions</span> <span class="k">with</span> <span class="n">zero</span> 
                         <span class="n">coverage</span> <span class="n">are</span> <span class="n">also</span> <span class="n">reported</span><span class="o">.</span> <span class="n">This</span> <span class="n">allows</span> <span class="n">one</span> <span class="n">to</span>
                         <span class="n">quickly</span> <span class="n">extract</span> <span class="nb">all</span> <span class="n">regions</span> <span class="n">of</span> <span class="n">a</span> <span class="n">genome</span> <span class="k">with</span> <span class="mi">0</span> 
@@ -115,7 +114,10 @@ details.</p>
                         <span class="n">For</span> <span class="n">BED12</span> <span class="n">files</span><span class="p">,</span> <span class="n">this</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">BlockCount</span><span class="p">,</span> <span class="n">BlockStarts</span><span class="p">,</span> <span class="ow">and</span> <span class="n">BlockEnds</span>
                         <span class="n">fields</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span> <span class="n">columns</span> <span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">strand</span>         <span class="n">Calculate</span> <span class="n">coverage</span> <span class="n">of</span> <span class="n">intervals</span> <span class="kn">from</span> <span class="nn">a</span> <span class="nn">specific</span> <span class="nn">strand.</span>
+        <span class="o">-</span><span class="n">ignoreD</span>        <span class="n">Ignore</span> <span class="n">local</span> <span class="n">deletions</span> <span class="p">(</span><span class="n">CIGAR</span> <span class="s2">&quot;D&quot;</span> <span class="n">operations</span><span class="p">)</span> <span class="ow">in</span> <span class="n">BAM</span> <span class="n">entries</span>
+                        <span class="n">when</span> <span class="n">computing</span> <span class="n">coverage</span><span class="o">.</span>
+
+        <span class="o">-</span><span class="n">strand</span>         <span class="n">Calculate</span> <span class="n">coverage</span> <span class="n">of</span> <span class="n">intervals</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">specific</span> <span class="n">strand</span><span class="o">.</span>
                         <span class="n">With</span> <span class="n">BED</span> <span class="n">files</span><span class="p">,</span> <span class="n">requires</span> <span class="n">at</span> <span class="n">least</span> <span class="mi">6</span> <span class="n">columns</span> <span class="p">(</span><span class="n">strand</span> <span class="ow">is</span> <span class="n">column</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span> 
                         <span class="o">-</span> <span class="p">(</span><span class="n">STRING</span><span class="p">):</span> <span class="n">can</span> <span class="n">be</span> <span class="o">+</span> <span class="ow">or</span> <span class="o">-</span>
 
@@ -123,7 +125,7 @@ details.</p>
                         <span class="n">Works</span> <span class="k">for</span> <span class="n">BAM</span> <span class="n">files</span> <span class="n">only</span>
         <span class="o">-</span><span class="n">fs</span>             <span class="n">Force</span> <span class="n">to</span> <span class="n">use</span> <span class="n">provided</span> <span class="n">fragment</span> <span class="n">size</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">read</span> <span class="n">length</span>
                         <span class="n">Works</span> <span class="k">for</span> <span class="n">BAM</span> <span class="n">files</span> <span class="n">only</span>
-        <span class="o">-</span><span class="n">du</span>             <span class="n">Change</span> <span class="n">strand</span> <span class="n">af</span> <span class="n">the</span> <span class="n">mate</span> <span class="n">read</span> <span class="p">(</span><span class="n">so</span> <span class="n">both</span> <span class="n">reads</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">same</span> <span class="nn">strand</span><span class="p">)</span> <span class="n">useful</span> <span class="k">for</span> <span class="n">strand</span> <span class="n">specific</span>
+        <span class="o">-</span><span class="n">du</span>             <span class="n">Change</span> <span class="n">strand</span> <span class="n">af</span> <span class="n">the</span> <span class="n">mate</span> <span class="n">read</span> <span class="p">(</span><span class="n">so</span> <span class="n">both</span> <span class="n">reads</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">same</span> <span class="n">strand</span><span class="p">)</span> <span class="n">useful</span> <span class="k">for</span> <span class="n">strand</span> <span class="n">specific</span>
                         <span class="n">Works</span> <span class="k">for</span> <span class="n">BAM</span> <span class="n">files</span> <span class="n">only</span>
         <span class="o">-</span><span class="mi">5</span>              <span class="n">Calculate</span> <span class="n">coverage</span> <span class="n">of</span> <span class="mi">5</span><span class="s2">&quot; positions (instead of entire interval).</span>
 
@@ -145,7 +147,7 @@ details.</p>
                               <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">genome</span><span class="o">.</span><span class="n">ucsc</span><span class="o">.</span><span class="n">edu</span><span class="o">/</span><span class="n">goldenPath</span><span class="o">/</span><span class="n">help</span><span class="o">/</span><span class="n">bedgraph</span><span class="o">.</span><span class="n">html</span>
                         <span class="o">-</span> <span class="n">NOTE</span><span class="p">:</span> <span class="n">When</span> <span class="n">adding</span> <span class="n">a</span> <span class="n">trackline</span> <span class="n">definition</span><span class="p">,</span> <span class="n">the</span> <span class="n">output</span> <span class="n">BedGraph</span> <span class="n">can</span> <span class="n">be</span> <span class="n">easily</span>
                               <span class="n">uploaded</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Genome</span> <span class="n">Browser</span> <span class="k">as</span> <span class="n">a</span> <span class="n">custom</span> <span class="n">track</span><span class="p">,</span>
-                              <span class="n">BUT</span> <span class="n">CAN</span> <span class="n">NOT</span> <span class="n">be</span> <span class="n">converted</span> <span class="n">into</span> <span class="n">a</span> <span class="n">BigWig</span> <span class="nb">file</span> <span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="n">o</span> <span class="n">removing</span> <span class="n">the</span> <span class="n">first</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span>
+                              <span class="n">BUT</span> <span class="n">CAN</span> <span class="n">NOT</span> <span class="n">be</span> <span class="n">converted</span> <span class="n">into</span> <span class="n">a</span> <span class="n">BigWig</span> <span class="n">file</span> <span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="n">o</span> <span class="n">removing</span> <span class="n">the</span> <span class="n">first</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">trackopts</span>      <span class="n">Writes</span> <span class="n">additional</span> <span class="n">track</span> <span class="n">line</span> <span class="n">definition</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">first</span> <span class="n">line</span><span class="o">.</span>
                         <span class="o">-</span> <span class="n">Example</span><span class="p">:</span>
@@ -154,7 +156,7 @@ details.</p>
                         <span class="o">-</span> <span class="p">(</span><span class="n">TEXT</span><span class="p">)</span>
 
 <span class="n">Notes</span><span class="p">:</span> 
-        <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">The</span> <span class="n">genome</span> <span class="nb">file</span> <span class="n">should</span> <span class="n">tab</span> <span class="n">delimited</span> <span class="ow">and</span> <span class="n">structured</span> <span class="k">as</span> <span class="n">follows</span><span class="p">:</span>
+        <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">The</span> <span class="n">genome</span> <span class="n">file</span> <span class="n">should</span> <span class="n">tab</span> <span class="n">delimited</span> <span class="ow">and</span> <span class="n">structured</span> <span class="k">as</span> <span class="n">follows</span><span class="p">:</span>
          <span class="o">&lt;</span><span class="n">chromName</span><span class="o">&gt;&lt;</span><span class="n">TAB</span><span class="o">&gt;&lt;</span><span class="n">chromSize</span><span class="o">&gt;</span>
 
         <span class="n">For</span> <span class="n">example</span><span class="p">,</span> <span class="n">Human</span> <span class="p">(</span><span class="n">hg19</span><span class="p">):</span>
@@ -163,10 +165,10 @@ details.</p>
         <span class="o">...</span>
         <span class="n">chr18</span><span class="o">**</span><span class="n">gl000207</span><span class="o">**</span><span class="n">random</span> <span class="mi">4262</span>
 
-        <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="n">The</span> <span class="nb">input</span> <span class="n">BED</span> <span class="p">(</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="nb">file</span> <span class="n">must</span> <span class="n">be</span> <span class="n">grouped</span> <span class="n">by</span> <span class="n">chromosome</span><span class="o">.</span>
+        <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="n">The</span> <span class="nb">input</span> <span class="n">BED</span> <span class="p">(</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="n">file</span> <span class="n">must</span> <span class="n">be</span> <span class="n">grouped</span> <span class="n">by</span> <span class="n">chromosome</span><span class="o">.</span>
          <span class="n">A</span> <span class="n">simple</span> <span class="s2">&quot;sort -k 1,1 &lt;BED&gt; &gt; &lt;BED&gt;.sorted&quot;</span> <span class="n">will</span> <span class="n">suffice</span><span class="o">.</span>
 
-        <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">The</span> <span class="nb">input</span> <span class="n">BAM</span> <span class="p">(</span><span class="o">-</span><span class="n">ibam</span><span class="p">)</span> <span class="nb">file</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">sorted</span> <span class="n">by</span> <span class="n">position</span><span class="o">.</span>
+        <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="n">The</span> <span class="nb">input</span> <span class="n">BAM</span> <span class="p">(</span><span class="o">-</span><span class="n">ibam</span><span class="p">)</span> <span class="n">file</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">sorted</span> <span class="n">by</span> <span class="n">position</span><span class="o">.</span>
          <span class="n">A</span> <span class="s2">&quot;samtools sort &lt;BAM&gt;&quot;</span> <span class="n">should</span> <span class="n">suffice</span><span class="o">.</span>
 
 <span class="n">Tips</span><span class="p">:</span> 
@@ -206,13 +208,12 @@ details.</p>
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -222,7 +223,7 @@ details.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.bedtool.BedTool.map.html" title="previous chapter">pybedtools.bedtool.BedTool.map</a></li>
       <li>Next: <a href="pybedtools.bedtool.BedTool.merge.html" title="next chapter">pybedtools.bedtool.BedTool.merge</a></li>
   </ul></li>
@@ -230,17 +231,15 @@ details.</p>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -269,8 +268,9 @@ details.</p>
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.map.html" title="pybedtools.bedtool.BedTool.map"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.genome_coverage</a></li> 
       </ul>
     </div>
 
@@ -279,7 +279,7 @@ details.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

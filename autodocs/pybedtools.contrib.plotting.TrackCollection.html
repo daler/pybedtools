@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.contrib.plotting.TrackCollection &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.contrib.plotting.TrackCollection &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.contrib.plotting.binary_heatmap" href="pybedtools.contrib.plotting.binary_heatmap.html" />
@@ -35,19 +34,17 @@
             
   <div class="section" id="pybedtools-contrib-plotting-trackcollection">
 <h1>pybedtools.contrib.plotting.TrackCollection<a class="headerlink" href="#pybedtools-contrib-plotting-trackcollection" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="pybedtools.contrib.plotting.TrackCollection">
-<em class="property">class </em><code class="descclassname">pybedtools.contrib.plotting.</code><code class="descname">TrackCollection</code><span class="sig-paren">(</span><em>config</em>, <em>yheight=1</em>, <em>figsize=None</em>, <em>padding=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#TrackCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.TrackCollection" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pybedtools.contrib.plotting.</span></code><code class="sig-name descname"><span class="pre">TrackCollection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yheight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#TrackCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.contrib.plotting.TrackCollection" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
 <dt id="pybedtools.contrib.plotting.TrackCollection.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>config</em>, <em>yheight=1</em>, <em>figsize=None</em>, <em>padding=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#TrackCollection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.TrackCollection.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yheight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#TrackCollection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.contrib.plotting.TrackCollection.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles multiple tracks on the same figure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>config</strong> – <p>A list of tuples that configures tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – <p>A list of tuples that configures tracks.</p>
 <p>Each tuple contains a filename, BedTool object, or other
 iterable of pybedtools.Interval objects and a dictionary of
 keyword args that will be used to create a corresponding Track
@@ -64,29 +61,27 @@ object, e.g.:</p>
 handled for you.  Also do not specify <code class="file docutils literal notranslate"><span class="pre">yheight</span></code> in these
 dictionaries – <code class="file docutils literal notranslate"><span class="pre">yheight</span></code> should be provided as a separate kwarg to
 so that the <code class="file docutils literal notranslate"><span class="pre">padding</span></code> kwarg works correctly.</p>
-</li>
-<li><strong>figsize</strong> – Figure size tuple of (width, height), in inches.</li>
-<li><strong>padding</strong> – Amount of padding to place in between tracks, as a fraction of
-<code class="file docutils literal notranslate"><span class="pre">yheight</span></code></li>
+</p></li>
+<li><p><strong>figsize</strong> – Figure size tuple of (width, height), in inches.</p></li>
+<li><p><strong>padding</strong> – Amount of padding to place in between tracks, as a fraction of
+<code class="file docutils literal notranslate"><span class="pre">yheight</span></code></p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.plotting.TrackCollection.__init__" title="pybedtools.contrib.plotting.TrackCollection.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(config[,&nbsp;yheight,&nbsp;figsize,&nbsp;padding])</td>
-<td>Handles multiple tracks on the same figure.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pybedtools.contrib.plotting.TrackCollection.__init__" title="pybedtools.contrib.plotting.TrackCollection.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(config[, yheight, figsize, padding])</p></td>
+<td><p>Handles multiple tracks on the same figure.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([ax])</td>
-<td>If <code class="file docutils literal notranslate"><span class="pre">ax</span></code> is None, create a new figure.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([ax])</p></td>
+<td><p>If <code class="file docutils literal notranslate"><span class="pre">ax</span></code> is None, create a new figure.</p></td>
 </tr>
 </tbody>
 </table>
@@ -119,13 +114,12 @@ so that the <code class="file docutils literal notranslate"><span class="pre">pa
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -135,7 +129,7 @@ so that the <code class="file docutils literal notranslate"><span class="pre">pa
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.contrib.plotting.Track.html" title="previous chapter">pybedtools.contrib.plotting.Track</a></li>
       <li>Next: <a href="pybedtools.contrib.plotting.binary_heatmap.html" title="next chapter">pybedtools.contrib.plotting.binary_heatmap</a></li>
   </ul></li>
@@ -143,17 +137,15 @@ so that the <code class="file docutils literal notranslate"><span class="pre">pa
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -182,8 +174,9 @@ so that the <code class="file docutils literal notranslate"><span class="pre">pa
         <li class="right" >
           <a href="pybedtools.contrib.plotting.Track.html" title="pybedtools.contrib.plotting.Track"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.plotting.TrackCollection</a></li> 
       </ul>
     </div>
 
@@ -192,7 +185,7 @@ so that the <code class="file docutils literal notranslate"><span class="pre">pa
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

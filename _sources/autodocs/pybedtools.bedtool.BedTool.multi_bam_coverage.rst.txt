@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.multi\_bam\_coverage
+﻿pybedtools.bedtool.BedTool.multi\_bam\_coverage
 ===============================================
 
 .. currentmodule:: pybedtools.bedtool

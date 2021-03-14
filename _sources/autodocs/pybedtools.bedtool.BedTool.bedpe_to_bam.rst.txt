@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.bedpe\_to\_bam
+﻿pybedtools.bedtool.BedTool.bedpe\_to\_bam
 =========================================
 
 .. currentmodule:: pybedtools.bedtool

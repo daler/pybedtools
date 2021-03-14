@@ -1,6 +1,0 @@
-pybedtools\.contrib\.MultiClassifier\.print\_table
-==================================================
-
-.. currentmodule:: pybedtools.contrib
-
-.. automethod:: MultiClassifier.print_table

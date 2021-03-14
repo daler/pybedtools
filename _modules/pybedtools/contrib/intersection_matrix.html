@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.contrib.intersection_matrix &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.contrib.intersection_matrix &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -52,7 +51,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class to handle many pairwise comparisons of interval files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="IntersectionMatrix.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.IntersectionMatrix.html#pybedtools.contrib.IntersectionMatrix.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beds</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">dbfn</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="IntersectionMatrix.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.IntersectionMatrix.html#pybedtools.contrib.IntersectionMatrix.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">beds</span><span class="p">,</span> <span class="n">genome</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">dbfn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class to handle and keep track of many pairwise comparisons of interval</span>
 <span class="sd">        files.</span>
@@ -101,33 +101,35 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_init_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_init_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare the database if it doesn&#39;t already exist</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbfn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbfn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfn</span><span class="p">)</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;DROP TABLE IF EXISTS intersections;&#39;</span><span class="p">)</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        CREATE TABLE intersections (</span>
-<span class="s2">            filea TEXT,</span>
-<span class="s2">            fileb TEXT,</span>
-<span class="s2">            timestamp FLOAT,</span>
-<span class="s2">            actual FLOAT,</span>
-<span class="s2">            median FLOAT,</span>
-<span class="s2">            iterations INT,</span>
-<span class="s2">            self INT,</span>
-<span class="s2">            other INT,</span>
-<span class="s2">            fractionabove FLOAT,</span>
-<span class="s2">            fractionbelow FLOAT,</span>
-<span class="s2">            percentile FLOAT,</span>
-<span class="s2">            PRIMARY KEY (filea, fileb, iterations));</span>
-<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;DROP TABLE IF EXISTS intersections;&quot;</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CREATE TABLE intersections (</span>
+<span class="sd">            filea TEXT,</span>
+<span class="sd">            fileb TEXT,</span>
+<span class="sd">            timestamp FLOAT,</span>
+<span class="sd">            actual FLOAT,</span>
+<span class="sd">            median FLOAT,</span>
+<span class="sd">            iterations INT,</span>
+<span class="sd">            self INT,</span>
+<span class="sd">            other INT,</span>
+<span class="sd">            fractionabove FLOAT,</span>
+<span class="sd">            fractionbelow FLOAT,</span>
+<span class="sd">            percentile FLOAT,</span>
+<span class="sd">            PRIMARY KEY (filea, fileb, iterations));</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">)</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="n">iterations</span><span class="p">):</span>
@@ -135,15 +137,19 @@
 <span class="sd">        Return the sqlite3.Row from the database corresponding to files `fa`</span>
 <span class="sd">        and `fb`; returns None if not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbfn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbfn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
                 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">                SELECT * FROM intersections</span>
 <span class="sd">                WHERE</span>
 <span class="sd">                filea=:fa AND fileb=:fb AND iterations=:iterations</span>
-<span class="sd">                &quot;&quot;&quot;</span><span class="p">,</span> <span class="nb">locals</span><span class="p">()))</span>
+<span class="sd">                &quot;&quot;&quot;</span><span class="p">,</span>
+                <span class="nb">locals</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
@@ -158,13 +164,13 @@
         <span class="k">if</span> <span class="n">row</span><span class="p">:</span>
             <span class="n">tfa</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">fa</span><span class="p">)</span>
             <span class="n">tfb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getmtime</span><span class="p">(</span><span class="n">fb</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tfa</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tfb</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tfa</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tfb</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">run_and_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">fa</span><span class="p">)</span><span class="o">.</span><span class="n">set_chromsizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">genome</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;iterations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomstats</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
@@ -191,16 +197,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># translate results keys into db-friendly versions</span>
         <span class="n">translations</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="s1">&#39;file_a&#39;</span><span class="p">,</span> <span class="s1">&#39;filea&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;file_b&#39;</span><span class="p">,</span> <span class="s1">&#39;fileb&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;median randomized&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;frac randomized above actual&#39;</span><span class="p">,</span> <span class="s1">&#39;fractionabove&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;frac randomized below actual&#39;</span><span class="p">,</span> <span class="s1">&#39;fractionbelow&#39;</span><span class="p">),</span>
-                <span class="p">]</span>
+            <span class="p">(</span><span class="s2">&quot;file_a&quot;</span><span class="p">,</span> <span class="s2">&quot;filea&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;file_b&quot;</span><span class="p">,</span> <span class="s2">&quot;fileb&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;median randomized&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;frac randomized above actual&quot;</span><span class="p">,</span> <span class="s2">&quot;fractionabove&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;frac randomized below actual&quot;</span><span class="p">,</span> <span class="s2">&quot;fractionbelow&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
         <span class="k">for</span> <span class="n">orig</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">translations</span><span class="p">:</span>
             <span class="n">results</span><span class="p">[</span><span class="n">new</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">orig</span><span class="p">]</span>
 
-        <span class="n">results</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now</span><span class="p">()</span>
+        <span class="n">results</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now</span><span class="p">()</span>
 
         <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        INSERT OR REPLACE INTO intersections (</span>
@@ -235,7 +241,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">create_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Matrix (implemented as a dictionary), where the final values are</span>
 <span class="sd">        sqlite3.ROW objects from the database::</span>
@@ -262,15 +268,15 @@
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                            <span class="s1">&#39;</span><span class="si">%(i)s</span><span class="s1"> of </span><span class="si">%(total)s</span><span class="s1">: </span><span class="si">%(fa)s</span><span class="s1"> + </span><span class="si">%(fb)s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(i)s</span><span class="s2"> of </span><span class="si">%(total)s</span><span class="s2">: </span><span class="si">%(fa)s</span><span class="s2"> + </span><span class="si">%(fb)s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
                     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">run_and_insert</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-                <span class="n">matrix</span><span class="p">[</span><span class="n">get_name</span><span class="p">(</span><span class="n">fa</span><span class="p">)][</span><span class="n">get_name</span><span class="p">(</span><span class="n">fb</span><span class="p">)]</span> <span class="o">=</span> \
-                        <span class="bp">self</span><span class="o">.</span><span class="n">get_row</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">get_name</span><span class="p">(</span><span class="n">fa</span><span class="p">)][</span><span class="n">get_name</span><span class="p">(</span><span class="n">fb</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_row</span><span class="p">(</span>
+                    <span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span>
+                <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">matrix</span>
 
@@ -282,7 +288,6 @@
 <span class="sd">        [&#39;filea&#39;, &#39;fileb&#39;, &#39;timestamp&#39;, &#39;actual&#39;, &#39;median&#39;, &#39;iterations&#39;,</span>
 <span class="sd">        &#39;self&#39;, &#39;other&#39;, &#39;fractionabove&#39;, &#39;fractionbelow&#39;, &#39;percentile&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
-
 </pre></div>
 
           </div>
@@ -309,7 +314,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changes.html">Changelog</a></li>
 </ul>
 
@@ -325,17 +330,15 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -358,9 +361,10 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.intersection_matrix</a></li> 
       </ul>
     </div>
 
@@ -369,7 +373,7 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

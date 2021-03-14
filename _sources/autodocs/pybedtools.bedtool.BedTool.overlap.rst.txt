@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.overlap
+﻿pybedtools.bedtool.BedTool.overlap
 ==================================
 
 .. currentmodule:: pybedtools.bedtool

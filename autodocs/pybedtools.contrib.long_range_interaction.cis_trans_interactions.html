@@ -1,21 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.contrib.long_range_interaction.cis_trans_interactions &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.contrib.long_range_interaction.cis_trans_interactions &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pybedtools.scripts.venn_mpl" href="pybedtools.scripts.venn_mpl.html" />
+    <link rel="next" title="Changelog" href="../changes.html" />
     <link rel="prev" title="pybedtools.contrib.long_range_interaction.tag_bedpe" href="pybedtools.contrib.long_range_interaction.tag_bedpe.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -35,34 +34,31 @@
             
   <div class="section" id="pybedtools-contrib-long-range-interaction-cis-trans-interactions">
 <h1>pybedtools.contrib.long_range_interaction.cis_trans_interactions<a class="headerlink" href="#pybedtools-contrib-long-range-interaction-cis-trans-interactions" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="pybedtools.contrib.long_range_interaction.cis_trans_interactions">
-<code class="descclassname">pybedtools.contrib.long_range_interaction.</code><code class="descname">cis_trans_interactions</code><span class="sig-paren">(</span><em>iterator</em>, <em>n</em>, <em>extra</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/long_range_interaction.html#cis_trans_interactions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.long_range_interaction.cis_trans_interactions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pybedtools.contrib.long_range_interaction.</span></code><code class="sig-name descname"><span class="pre">cis_trans_interactions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/long_range_interaction.html#cis_trans_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.contrib.long_range_interaction.cis_trans_interactions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the output from <code class="file docutils literal notranslate"><span class="pre">tag_bedpe</span></code> into a pandas DataFrame containing
 information about regions that contact each other in cis (same fragment) or
 trans (different fragments).</p>
 <p>For example, given a BEDPE file representing 3D interactions in the genome,
 we want to identify which transcription start sites are connected to distal
 regions containing a peak.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bedpe</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;test_bedpe.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bedpe</span><span class="p">)</span> <span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bedpe</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;test_bedpe.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bedpe</span><span class="p">)</span> 
 <span class="go">chr1  1  10  chr1  50   90   pair1  5  +  -  x1</span>
 <span class="go">chr1  2  15  chr1  200  210  pair2  1  +  +  y1</span>
-<span class="go">&lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tsses</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;test_tsses.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tsses</span><span class="p">)</span> <span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tsses</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;test_tsses.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tsses</span><span class="p">)</span> 
 <span class="go">chr1  5   6   gene1</span>
 <span class="go">chr1  60  61  gene2</span>
 <span class="go">chr1  88  89  gene3</span>
-<span class="go">&lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;test_peaks.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">peaks</span><span class="p">)</span> <span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">peaks</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;test_peaks.bed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">peaks</span><span class="p">)</span> 
 <span class="go">chr1  3  4  peak1  50  .</span>
-<span class="go">&lt;BLANKLINE&gt;</span>
 </pre></div>
 </div>
 <p>Here’s what the tracks look like. Note that pair1 is evidence of
@@ -70,14 +66,14 @@ a gene1-gene2 interaction and a gene1-gene3 interaction:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="n">TRACKS</span><span class="p">:</span>
 
                <span class="mi">1</span>         <span class="mi">2</span>  <span class="o">/</span>         <span class="mi">5</span>         <span class="mi">6</span>    <span class="o">/</span> <span class="mi">8</span>         <span class="mi">9</span>     <span class="o">/</span> <span class="mi">20</span>
-     <span class="mo">01234567</span><span class="mi">89012345678901</span> <span class="o">/</span> <span class="mi">2345678901234567890123</span> <span class="o">/</span> <span class="mo">01234567</span><span class="mi">8901234</span> <span class="o">/</span> <span class="mo">01234567</span><span class="mi">89</span>
+     <span class="mi">0123456789012345678901</span> <span class="o">/</span> <span class="mi">2345678901234567890123</span> <span class="o">/</span> <span class="mi">012345678901234</span> <span class="o">/</span> <span class="mi">0123456789</span>
 <span class="n">pair1</span> <span class="o">|||||||||------------</span> <span class="o">/</span> <span class="o">--------||||||||||||||</span> <span class="o">/</span> <span class="o">|||||||||||||||</span> <span class="o">/</span>
 <span class="n">pair2</span>  <span class="o">|||||||||||||-------</span> <span class="o">/</span> <span class="o">----------------------</span> <span class="o">/</span> <span class="o">---------------</span> <span class="o">/</span> <span class="o">||||||||||</span>
 <span class="n">tsses</span>     <span class="mi">1</span>                 <span class="o">/</span>                   <span class="mi">2</span>    <span class="o">/</span>         <span class="mi">3</span>
 <span class="n">peaks</span>   <span class="mi">1</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span><span class="p">[</span><span class="s1">&#39;tss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsses</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">peaks</span>
@@ -86,9 +82,9 @@ a gene1-gene2 interaction and a gene1-gene3 interaction:</p>
 <span class="gp">... </span>   <span class="n">group1</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="gp">... </span>   <span class="n">group2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">group2</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="gp">... </span>   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">group1</span><span class="p">:</span>
-<span class="gp">... </span>       <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+<span class="gp">... </span>       <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  
 <span class="gp">... </span>   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">group2</span><span class="p">:</span>
-<span class="gp">... </span>       <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># doctest: +NORMALIZE_WHITESPACE</span>
+<span class="gp">... </span>       <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  
 <span class="go">chr1       1       10      pair1   5       +       x1      pk      chr1    3       4       peak1   50      .       1</span>
 <span class="go">chr1       1       10      pair1   5       +       x1      tss     chr1    5       6       gene1   1</span>
 <span class="go">chr1       50      90      pair1   5       -       x1      tss     chr1    60      61      gene2   1</span>
@@ -103,7 +99,7 @@ interaction evidence has its own line. The first line shows that pair1 has
 gene1 and peak1 in the same fragment, and that they are connected to gene2.
 The second line shows again that gene1 and peak1 are in the same fragmet
 and that they are also connected to gene3:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span><span class="p">;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span><span class="p">;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="n">tag_bedpe</span><span class="p">(</span><span class="n">bedpe</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;tss&#39;</span><span class="p">:</span> <span class="n">tsses</span><span class="p">,</span> <span class="s1">&#39;pk&#39;</span><span class="p">:</span> <span class="n">peaks</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span>  <span class="n">cis_trans_interactions</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -121,7 +117,7 @@ and that they are also connected to gene3:</p>
 </pre></div>
 </div>
 <p>If we only care about genes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">target_label</span> <span class="o">==</span> <span class="s1">&#39;tss&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">target_label</span> <span class="o">==</span> <span class="s1">&#39;tss&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="go">  target_label target_name cis_label cis_name distal_label distal_name  label</span>
 <span class="go">0          tss       gene1        pk    peak1            .           .  pair2</span>
 <span class="go">1          tss       gene1        pk    peak1          tss       gene2  pair1</span>
@@ -135,7 +131,7 @@ and that they are also connected to gene3:</p>
 <p>Note that in pair2, there is no evidence of interaction between gene1 and
 gene2.</p>
 <p>What interacts distally with gene2’s TSS?</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">target_name</span> <span class="o">==</span> <span class="s1">&#39;gene2&#39;</span><span class="p">,</span> <span class="s1">&#39;distal_name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="sa">u</span><span class="s1">&#39;gene1&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;peak1&#39;</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">target_name</span> <span class="o">==</span> <span class="s1">&#39;gene2&#39;</span><span class="p">,</span> <span class="s1">&#39;distal_name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">([</span><span class="sa">u</span><span class="s1">&#39;gene1&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;peak1&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -167,13 +163,12 @@ gene2.</p>
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -183,25 +178,23 @@ gene2.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.contrib.long_range_interaction.tag_bedpe.html" title="previous chapter">pybedtools.contrib.long_range_interaction.tag_bedpe</a></li>
-      <li>Next: <a href="pybedtools.scripts.venn_mpl.html" title="next chapter">pybedtools.scripts.venn_mpl</a></li>
+      <li>Next: <a href="../changes.html" title="next chapter">Changelog</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -225,13 +218,14 @@ gene2.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pybedtools.scripts.venn_mpl.html" title="pybedtools.scripts.venn_mpl"
+          <a href="../changes.html" title="Changelog"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pybedtools.contrib.long_range_interaction.tag_bedpe.html" title="pybedtools.contrib.long_range_interaction.tag_bedpe"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.long_range_interaction.cis_trans_interactions</a></li> 
       </ul>
     </div>
 
@@ -240,7 +234,7 @@ gene2.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

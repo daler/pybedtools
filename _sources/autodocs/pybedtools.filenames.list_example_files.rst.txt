@@ -1,4 +1,4 @@
-pybedtools.filenames.list\_example\_files
+﻿pybedtools.filenames.list\_example\_files
 =========================================
 
 .. currentmodule:: pybedtools.filenames

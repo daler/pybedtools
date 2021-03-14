@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.subtract
+﻿pybedtools.bedtool.BedTool.subtract
 ===================================
 
 .. currentmodule:: pybedtools.bedtool

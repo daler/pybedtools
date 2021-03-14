@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.genome\_coverage
+﻿pybedtools.bedtool.BedTool.genome\_coverage
 ===========================================
 
 .. currentmodule:: pybedtools.bedtool

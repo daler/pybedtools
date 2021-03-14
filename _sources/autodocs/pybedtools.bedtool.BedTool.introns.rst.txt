@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.introns
+﻿pybedtools.bedtool.BedTool.introns
 ==================================
 
 .. currentmodule:: pybedtools.bedtool

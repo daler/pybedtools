@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.window\_maker
+﻿pybedtools.bedtool.BedTool.window\_maker
 ========================================
 
 .. currentmodule:: pybedtools.bedtool

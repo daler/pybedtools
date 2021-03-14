@@ -1,4 +1,4 @@
-pybedtools.contrib.plotting.TrackCollection
+﻿pybedtools.contrib.plotting.TrackCollection
 ===========================================
 
 .. currentmodule:: pybedtools.contrib.plotting

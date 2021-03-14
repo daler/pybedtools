@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.relative\_distance
+﻿pybedtools.bedtool.BedTool.relative\_distance
 =============================================
 
 .. currentmodule:: pybedtools.bedtool

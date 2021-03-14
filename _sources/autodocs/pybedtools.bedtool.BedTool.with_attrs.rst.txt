@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.with\_attrs
+﻿pybedtools.bedtool.BedTool.with\_attrs
 ======================================
 
 .. currentmodule:: pybedtools.bedtool

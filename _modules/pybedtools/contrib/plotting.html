@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.contrib.plotting &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.contrib.plotting &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -37,14 +36,22 @@
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">collections</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="kn">import</span> <span class="nn">six</span>
 
 
 <div class="viewcode-block" id="Track"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track">[docs]</a><span class="k">class</span> <span class="nc">Track</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">PolyCollection</span><span class="p">):</span>
-<div class="viewcode-block" id="Track.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ybase</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">visibility</span><span class="o">=</span><span class="s1">&#39;dense&#39;</span><span class="p">,</span> <span class="n">stranded</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Track.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">features</span><span class="p">,</span>
+        <span class="n">chrom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ybase</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">visibility</span><span class="o">=</span><span class="s2">&quot;dense&quot;</span><span class="p">,</span>
+        <span class="n">stranded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subclass of matplotlib&#39;s PolyCollection that can be added to an Axes.</span>
 
@@ -110,8 +117,9 @@
 <span class="sd">        &lt;pybedtools.contrib.plotting.Track object at 0x...&gt;</span>
 <span class="sd">        &gt;&gt;&gt; limits = ax.axis(&#39;tight&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">)</span>\
-                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">features</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
@@ -122,45 +130,44 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_stranded_dict</span><span class="p">()</span>
         <span class="n">facecolors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">()</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolors</span><span class="o">=</span><span class="n">facecolors</span><span class="p">))</span>
-        <span class="n">collections</span><span class="o">.</span><span class="n">PolyCollection</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">verts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_verts</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="n">collections</span><span class="o">.</span><span class="n">PolyCollection</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_verts</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">ybase</span><span class="p">,</span> <span class="n">yheight</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>
-            <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">strand</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span><span class="p">)</span>
-                        <span class="p">]</span>
-
-            <span class="k">elif</span> <span class="n">feature</span><span class="o">.</span><span class="n">strand</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">[</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span><span class="p">)</span>
-                        <span class="p">]</span>
-        <span class="k">return</span> <span class="p">[</span>
-                <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span><span class="p">)</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
                 <span class="p">]</span>
+
+            <span class="k">elif</span> <span class="n">feature</span><span class="o">.</span><span class="n">strand</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
+                <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span> <span class="o">+</span> <span class="n">yheight</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">ybase</span><span class="p">),</span>
+        <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get_verts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">verts</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visibility</span> <span class="o">==</span> <span class="s1">&#39;dense&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visibility</span> <span class="o">==</span> <span class="s2">&quot;dense&quot;</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
                 <span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ybase</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yheight</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ybase</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yheight</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visibility</span> <span class="o">==</span> <span class="s1">&#39;squish&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visibility</span> <span class="o">==</span> <span class="s2">&quot;squish&quot;</span><span class="p">:</span>
             <span class="c1"># Using &quot;squish&quot; mode will create multiple &quot;strata&quot; of features.</span>
             <span class="c1"># The stack keeps track of the end coord of the longest feature in</span>
             <span class="c1"># each strata</span>
@@ -171,13 +178,13 @@
             <span class="n">ybase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ybase</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ybase</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yheight</span>
             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-                <span class="n">ybase</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">ybase</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stack</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">start</span> <span class="o">&gt;</span> <span class="n">s</span><span class="p">:</span>
                         <span class="n">ybase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ybase</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yheight</span>
                         <span class="n">stack</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">stop</span>
                         <span class="k">break</span>
-                <span class="k">if</span> <span class="n">ybase</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ybase</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">ybase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ybase</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yheight</span>
                     <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
                 <span class="n">verts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">ybase</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yheight</span><span class="p">))</span>
@@ -187,25 +194,29 @@
 
     <span class="k">def</span> <span class="nf">_check_stranded_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">if</span> <span class="s1">&#39;+&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;stranded dict &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have required &#39;</span>
-                    <span class="s1">&#39;key &quot;+&quot;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;stranded dict &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have required &#39;</span>
-                    <span class="s1">&#39;key &quot;-&quot;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="s2">&quot;+&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;stranded dict &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have required &#39;</span> <span class="s1">&#39;key &quot;+&quot;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;stranded dict &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have required &#39;</span> <span class="s1">&#39;key &quot;-&quot;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">stranded</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;strand color dict &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have a key &#39;</span>
-                        <span class="s1">&#39;for strand &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">,</span> <span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="s1">&#39;strand color dict &quot;</span><span class="si">%s</span><span class="s1">&quot; does not have a key &#39;</span>
+                    <span class="s1">&#39;for strand &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stranded</span><span class="p">,</span> <span class="n">feature</span><span class="o">.</span><span class="n">strand</span><span class="p">)</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="n">colors</span>
 
     <span class="k">def</span> <span class="nf">get_xlims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
@@ -241,9 +252,8 @@
 
         <span class="c1"># Do the multi-intersection.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">()</span><span class="o">.</span><span class="n">multi_intersect</span><span class="p">(</span>
-                <span class="n">i</span><span class="o">=</span><span class="n">_bts</span><span class="p">,</span>
-                <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
-                <span class="n">cluster</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">i</span><span class="o">=</span><span class="n">_bts</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">cluster</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
 
         <span class="c1"># If 4 files were provided with labels &#39;a&#39;, &#39;b&#39;, &#39;c&#39;, and &#39;d, each line</span>
         <span class="c1"># would look something like:</span>
@@ -269,22 +279,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sort_ind</span> <span class="o">=</span> <span class="n">sort_binary_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
         <span class="c1"># matplotlib.cm.binary: 1 = black, 0 = white; force origin=&#39;upper&#39; so</span>
         <span class="c1"># that array&#39;s [0,0] is in the upper left corner.</span>
-        <span class="n">mappable</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_ind</span><span class="p">],</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span>
-                <span class="n">cmap</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;upper&#39;</span><span class="p">)</span>
+        <span class="n">mappable</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_ind</span><span class="p">],</span>
+            <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;upper&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">))))</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span>
 
 
-<div class="viewcode-block" id="binary_heatmap"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.binary_heatmap.html#pybedtools.contrib.plotting.binary_heatmap">[docs]</a><span class="k">def</span> <span class="nf">binary_heatmap</span><span class="p">(</span><span class="n">bts</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">cluster</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="binary_heatmap"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.binary_heatmap.html#pybedtools.contrib.plotting.binary_heatmap">[docs]</a><span class="k">def</span> <span class="nf">binary_heatmap</span><span class="p">(</span><span class="n">bts</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cluster</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plots a &quot;binary heatmap&quot;, showing the results of a multi-intersection.</span>
 
@@ -330,13 +345,13 @@
 <span class="sd">    Convenience function useful printing the results from binary_heatmap().</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> : </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">item</span><span class="p">))</span>
-    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">item</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TrackCollection"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection">[docs]</a><span class="k">class</span> <span class="nc">TrackCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="TrackCollection.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+<div class="viewcode-block" id="TrackCollection.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles multiple tracks on the same figure.</span>
 
@@ -373,22 +388,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">padding</span>
 
         <span class="k">for</span> <span class="n">features</span><span class="p">,</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;ybase&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please do not specify &quot;ybase&quot;; this &#39;</span>
-                <span class="s1">&#39;is handled automatically by the </span><span class="si">%s</span><span class="s1"> class&#39;</span> \
-                        <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s1">&#39;yheight&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please do not specify &quot;yheight&quot;, &#39;</span>
-                        <span class="s1">&#39;this should be a separate arg to the </span><span class="si">%s</span><span class="s1"> &#39;</span>
-                        <span class="s1">&#39;constructor&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="s2">&quot;ybase&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Please do not specify &quot;ybase&quot;; this &#39;</span>
+                    <span class="s2">&quot;is handled automatically by the </span><span class="si">%s</span><span class="s2"> class&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;yheight&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Please do not specify &quot;yheight&quot;, &#39;</span>
+                    <span class="s2">&quot;this should be a separate arg to the </span><span class="si">%s</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;constructor&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If `ax` is None, create a new figure.  Otherwise, plot on `ax`.</span>
 <span class="sd">        Iterates through the configuration, plotting each BedTool-like object</span>
 <span class="sd">        as a separate track.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">figsize</span><span class="p">)</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
         <span class="n">yticks</span> <span class="o">=</span> <span class="p">[]</span>
@@ -403,8 +421,8 @@
             <span class="n">t</span> <span class="o">=</span> <span class="n">Track</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">yheight</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">yheight</span><span class="p">,</span> <span class="n">ybase</span><span class="o">=</span><span class="n">ybase</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">ybase</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">ymax</span> <span class="o">+</span> <span class="n">padding</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s1">&#39;label&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">yticklabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">&quot;label&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">yticklabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">yticklabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -413,14 +431,24 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">yticklabels</span><span class="p">)</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
 
 <div class="viewcode-block" id="BedToolsDemo"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo">[docs]</a><span class="k">class</span> <span class="nc">BedToolsDemo</span><span class="p">(</span><span class="n">TrackCollection</span><span class="p">):</span>
-<div class="viewcode-block" id="BedToolsDemo.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">data_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">result_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">new_style</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">subplots_adjust</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BedToolsDemo.__init__"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">,</span>
+        <span class="n">data_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">result_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">method_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">title_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_style</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">subplots_adjust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class to handle BEDTools demos in a way that maintains flexibility.</span>
 
@@ -467,11 +495,11 @@
 <span class="sd">        :param kwargs:</span>
 <span class="sd">            Additional keyword arguments sent to TrackCollection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">method_kwargs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">method_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">method_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">result_kwargs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">result_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">result_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">title_kwargs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">title_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">title_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title_kwargs</span> <span class="o">=</span> <span class="n">title_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_style</span> <span class="o">=</span> <span class="n">new_style</span>
@@ -482,8 +510,10 @@
         <span class="k">if</span> <span class="n">data_path</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_path was specified, so you need &quot;</span>
-                            <span class="s2">&quot;filenames in the config&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;data_path was specified, so you need &quot;</span>
+                        <span class="s2">&quot;filenames in the config&quot;</span>
+                    <span class="p">)</span>
                 <span class="n">conf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">conf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="n">bt1</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
@@ -493,23 +523,24 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">**</span><span class="n">method_kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`config` must have length 1 (for &#39;-i&#39; tools) or &quot;</span>
-                    <span class="s2">&quot;length 2 (for &#39;-a -b&#39; tools).&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;`config` must have length 1 (for &#39;-i&#39; tools) or &quot;</span>
+                <span class="s2">&quot;length 2 (for &#39;-a -b&#39; tools).&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">config</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">result</span><span class="p">,</span> <span class="n">result_kwargs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">BedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">cmds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">_cmds</span><span class="p">[:]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_style</span><span class="p">:</span>
-            <span class="n">cmds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bedtools </span><span class="si">%s</span><span class="s2">&quot;</span> \
-                    <span class="o">%</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_prog_names</span><span class="p">[</span>
-                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cmds</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
-                <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cmds</span><span class="p">]),</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">title_kwargs</span><span class="p">)</span>
+            <span class="n">cmds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;bedtools </span><span class="si">%s</span><span class="s2">&quot;</span>
+                <span class="o">%</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">_prog_names</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cmds</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+            <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cmds</span><span class="p">]),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">title_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">:</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
@@ -525,16 +556,16 @@
 <span class="sd">        and kwargs **except** `method` and `method_kwargs`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">yaml</span>
+
         <span class="n">conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">yaml_config</span><span class="p">))</span>
 
-        <span class="n">disallowed</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;method_kwargs&#39;</span><span class="p">]</span>
+        <span class="n">disallowed</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;method_kwargs&quot;</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">dis</span> <span class="ow">in</span> <span class="n">disallowed</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">dis</span> <span class="ow">in</span> <span class="n">conf</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; cannot be provided in the YAML config&quot;</span> <span class="o">%</span> <span class="n">dis</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; cannot be provided in the YAML config&quot;</span> <span class="o">%</span> <span class="n">dis</span><span class="p">)</span>
 
-        <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
-        <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;method_kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method_kwargs</span>
+        <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;method_kwargs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">method_kwargs</span>
         <span class="n">conf</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ConfiguredBedToolsDemo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">conf</span><span class="p">)</span></div></div>
 
@@ -556,12 +587,14 @@
 <span class="sd">    d, m = binary_heatmap(bts, names)</span>
 <span class="sd">    print binary_summary(d)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">conf_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;democonfig.yaml&#39;</span><span class="p">)</span>
+    <span class="n">conf_file</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s2">&quot;democonfig.yaml&quot;</span><span class="p">)</span>
     <span class="n">data_path</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>  <span class="c1"># dir name</span>
-    <span class="n">ax1</span> <span class="o">=</span> <span class="n">ConfiguredBedToolsDemo</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;intersect&#39;</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="p">{},</span>
-            <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-    <span class="n">ax2</span> <span class="o">=</span> <span class="n">ConfiguredBedToolsDemo</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;intersect&#39;</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-            <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">ConfiguredBedToolsDemo</span><span class="p">(</span>
+        <span class="n">conf_file</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;intersect&quot;</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+    <span class="n">ax2</span> <span class="o">=</span> <span class="n">ConfiguredBedToolsDemo</span><span class="p">(</span>
+        <span class="n">conf_file</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;intersect&quot;</span><span class="p">,</span> <span class="n">method_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -589,7 +622,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../changes.html">Changelog</a></li>
 </ul>
 
@@ -605,17 +638,15 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -638,9 +669,10 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.plotting</a></li> 
       </ul>
     </div>
 
@@ -649,7 +681,7 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

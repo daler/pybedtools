@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
    
@@ -40,18 +39,30 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="n">urllib</span>
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="n">copyreg</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">scripts</span>
-<span class="kn">from</span> <span class="nn">.cbedtools</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Interval</span><span class="p">,</span> <span class="n">IntervalFile</span><span class="p">,</span> <span class="n">overlap</span><span class="p">,</span> <span class="n">Attributes</span><span class="p">,</span>
-                        <span class="n">MalformedBedLineError</span><span class="p">,</span> <span class="n">IntervalIterator</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.cbedtools</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Interval</span><span class="p">,</span>
+    <span class="n">IntervalFile</span><span class="p">,</span>
+    <span class="n">overlap</span><span class="p">,</span>
+    <span class="n">Attributes</span><span class="p">,</span>
+    <span class="n">MalformedBedLineError</span><span class="p">,</span>
+    <span class="n">IntervalIterator</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">contrib</span>
-<span class="kn">from</span> <span class="nn">.helpers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_tempdir</span><span class="p">,</span> <span class="n">set_tempdir</span><span class="p">,</span> <span class="n">cleanup</span><span class="p">,</span> <span class="n">find_tagged</span><span class="p">,</span>
-                      <span class="n">set_bedtools_path</span><span class="p">,</span> <span class="n">chromsizes</span><span class="p">,</span> <span class="n">get_chromsizes_from_ucsc</span><span class="p">,</span>
-                      <span class="n">chromsizes_to_file</span><span class="p">,</span> <span class="n">create_interval_from_list</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.helpers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_tempdir</span><span class="p">,</span>
+    <span class="n">set_tempdir</span><span class="p">,</span>
+    <span class="n">cleanup</span><span class="p">,</span>
+    <span class="n">find_tagged</span><span class="p">,</span>
+    <span class="n">set_bedtools_path</span><span class="p">,</span>
+    <span class="n">chromsizes</span><span class="p">,</span>
+    <span class="n">get_chromsizes_from_ucsc</span><span class="p">,</span>
+    <span class="n">chromsizes_to_file</span><span class="p">,</span>
+    <span class="n">create_interval_from_list</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">helpers</span>
 <span class="kn">from</span> <span class="nn">.bedtool</span> <span class="kn">import</span> <span class="n">BedTool</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">genome_registry</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">stats</span>
-<span class="kn">from</span> <span class="nn">.__main__</span> <span class="kn">import</span> <span class="n">main</span>
 <span class="kn">from</span> <span class="nn">.version</span> <span class="kn">import</span> <span class="n">__version__</span>
 <span class="kn">from</span> <span class="nn">.filenames</span> <span class="kn">import</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">example_filename</span><span class="p">,</span> <span class="n">list_example_files</span>
 <span class="kn">from</span> <span class="nn">.bedtool</span> <span class="kn">import</span> <span class="n">example_bedtool</span>
@@ -59,7 +70,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">ch</span>
 
-<span class="n">example_files</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a.bed.&#39;</span><span class="p">,</span> <span class="s1">&#39;b.bed&#39;</span><span class="p">,</span> <span class="s1">&#39;test.fa&#39;</span><span class="p">,</span> <span class="s1">&#39;a.bam&#39;</span><span class="p">]</span>
+<span class="n">example_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a.bed.&quot;</span><span class="p">,</span> <span class="s2">&quot;b.bed&quot;</span><span class="p">,</span> <span class="s2">&quot;test.fa&quot;</span><span class="p">,</span> <span class="s2">&quot;a.bam&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="debug_mode"><a class="viewcode-back" href="../autodocs/pybedtools.debug_mode.html#pybedtools.debug_mode">[docs]</a><span class="k">def</span> <span class="nf">debug_mode</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -76,25 +87,26 @@
     <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
         <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-        <span class="n">_DEBUG</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="n">KEEP_TEMPFILES</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">KEEP_TEMPFILES</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s1">&#39;Debug mode enabled.  You may also want to set &#39;</span>
-            <span class="s1">&#39;pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion &#39;</span>
-            <span class="s1">&#39;of files upon exit.&#39;</span><span class="p">)</span>
+            <span class="s2">&quot;Debug mode enabled.  You may also want to set &quot;</span>
+            <span class="s2">&quot;pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion &quot;</span>
+            <span class="s2">&quot;of files upon exit.&quot;</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
         <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-        <span class="n">_DEBUG</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">KEEP_TEMPFILES</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Debug mode disabled&#39;</span><span class="p">)</span></div>
+        <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">KEEP_TEMPFILES</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Debug mode disabled&quot;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">check_for_bedtools</span><span class="p">(</span><span class="n">program_to_check</span><span class="o">=</span><span class="s2">&quot;intersectBed&quot;</span><span class="p">,</span> <span class="n">force_check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">check_for_bedtools</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For backwards compatibility; please use helpers._check_for_bedtools()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_bedtools</span><span class="p">(</span><span class="n">program_to_check</span><span class="p">,</span> <span class="n">force_check</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_bedtools</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="c1"># Allow Interval objects to be pickled -- required if you want to pass them</span>
@@ -104,7 +116,8 @@
 
 
 <span class="k">def</span> <span class="nf">interval_reducer</span><span class="p">(</span><span class="n">interval</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">interval_constructor</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">fields</span><span class="p">),</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">interval_constructor</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">fields</span><span class="p">),)</span>
+
 
 <span class="n">copyreg</span><span class="o">.</span><span class="n">pickle</span><span class="p">(</span><span class="n">Interval</span><span class="p">,</span> <span class="n">interval_reducer</span><span class="p">,</span> <span class="n">interval_constructor</span><span class="p">)</span>
 
@@ -137,7 +150,8 @@
         <span class="n">bedtools</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_bedtools_path</span><span class="p">,</span>
         <span class="n">r</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_R_path</span><span class="p">,</span>
         <span class="n">tabix</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_tabix_path</span><span class="p">,</span>
-        <span class="n">bgzip</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_bgzip_path</span><span class="p">)</span>
+        <span class="n">bgzip</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_bgzip_path</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">prog</span><span class="p">,</span> <span class="n">setter</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">setters</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -149,14 +163,16 @@
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="n">configparser</span>
+
         <span class="n">c</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">SafeConfigParser</span><span class="p">()</span>
         <span class="n">c</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid path config -- must have &quot;</span>
-                             <span class="s2">&quot;only one section, [paths].&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span> <span class="o">!=</span> <span class="p">[</span><span class="s2">&quot;paths&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid path config -- must have &quot;</span> <span class="s2">&quot;only one section, [paths].&quot;</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">prog</span><span class="p">,</span> <span class="n">setter</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">setters</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paths&#39;</span><span class="p">,</span> <span class="n">prog</span><span class="p">)</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;paths&quot;</span><span class="p">,</span> <span class="n">prog</span><span class="p">)</span>
                 <span class="n">setter</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="n">configparser</span><span class="o">.</span><span class="n">NoOptionError</span><span class="p">:</span>
@@ -187,7 +203,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
 </ul>
 
@@ -201,17 +217,15 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -234,8 +248,9 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools</a></li> 
       </ul>
     </div>
 
@@ -244,7 +259,7 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

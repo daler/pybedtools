@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.bam\_to\_fastq
+﻿pybedtools.bedtool.BedTool.bam\_to\_fastq
 =========================================
 
 .. currentmodule:: pybedtools.bedtool

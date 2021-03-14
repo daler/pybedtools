@@ -1,4 +1,4 @@
-pybedtools.contrib.long\_range\_interaction.tag\_bedpe
+﻿pybedtools.contrib.long\_range\_interaction.tag\_bedpe
 ======================================================
 
 .. currentmodule:: pybedtools.contrib.long_range_interaction

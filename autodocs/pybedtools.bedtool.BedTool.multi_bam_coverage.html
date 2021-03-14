@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.bedtool.BedTool.multi_bam_coverage &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.bedtool.BedTool.multi_bam_coverage &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.tag_bam" href="pybedtools.bedtool.BedTool.tag_bam.html" />
@@ -35,9 +34,9 @@
             
   <div class="section" id="pybedtools-bedtool-bedtool-multi-bam-coverage">
 <h1>pybedtools.bedtool.BedTool.multi_bam_coverage<a class="headerlink" href="#pybedtools-bedtool-bedtool-multi-bam-coverage" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
+<dl class="py method">
 <dt id="pybedtools.bedtool.BedTool.multi_bam_coverage">
-<code class="descclassname">BedTool.</code><code class="descname">multi_bam_coverage</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.multi_bam_coverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.multi_bam_coverage" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">BedTool.</span></code><code class="sig-name descname"><span class="pre">multi_bam_coverage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.multi_bam_coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.multi_bam_coverage" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">multicov</span></code>.</p>
 <p>Pass a list of sorted and indexed BAM files as <code class="file docutils literal notranslate"><span class="pre">bams</span></code></p>
@@ -46,7 +45,7 @@
 is implicitly passed as the <code class="file docutils literal notranslate"><span class="pre">-bed</span></code> argument to <code class="file docutils literal notranslate"><span class="pre">multiBamCov</span></code></p>
 <p><strong>Original BEDTools help:</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">multicov</span> <span class="p">(</span><span class="n">aka</span> <span class="n">multiBamCov</span><span class="p">)</span>
-<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">27.1</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">30.0</span>
 <span class="n">Summary</span><span class="p">:</span> <span class="n">Counts</span> <span class="n">sequence</span> <span class="n">coverage</span> <span class="k">for</span> <span class="n">multiple</span> <span class="n">bams</span> <span class="n">at</span> <span class="n">specific</span> <span class="n">loci</span><span class="o">.</span>
 
 <span class="n">Usage</span><span class="p">:</span>   <span class="n">bedtools</span> <span class="n">multicov</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">bams</span> <span class="n">aln</span><span class="o">.</span><span class="mf">1.</span><span class="n">bam</span> <span class="n">aln</span><span class="o">.</span><span class="mf">2.</span><span class="n">bam</span> <span class="o">...</span> <span class="n">aln</span><span class="o">.</span><span class="n">n</span><span class="o">.</span><span class="n">bam</span> <span class="o">-</span><span class="n">bed</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span>
@@ -54,7 +53,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 <span class="n">Options</span><span class="p">:</span> 
         <span class="o">-</span><span class="n">bams</span>   <span class="n">The</span> <span class="n">bam</span> <span class="n">files</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">bed</span>    <span class="n">The</span> <span class="n">bed</span> <span class="nb">file</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">bed</span>    <span class="n">The</span> <span class="n">bed</span> <span class="n">file</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">split</span>  <span class="n">Treat</span> <span class="s2">&quot;split&quot;</span> <span class="n">BAM</span> <span class="ow">or</span> <span class="n">BED12</span> <span class="n">entries</span> <span class="k">as</span> <span class="n">distinct</span> <span class="n">BED</span> <span class="n">intervals</span><span class="o">.</span>
 
@@ -66,13 +65,13 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
                 <span class="n">that</span> <span class="n">overlap</span> <span class="n">A</span> <span class="n">on</span> <span class="n">the</span> <span class="o">**</span><span class="n">opposite</span><span class="o">**</span> <span class="n">strand</span><span class="o">.</span>
                 <span class="o">-</span> <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">overlaps</span> <span class="n">are</span> <span class="n">reported</span> <span class="n">without</span> <span class="n">respect</span> <span class="n">to</span> <span class="n">strand</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">f</span>      <span class="n">Minimum</span> <span class="n">overlap</span> <span class="n">required</span> <span class="k">as</span> <span class="n">a</span> <span class="n">fraction</span> <span class="n">of</span> <span class="n">each</span> <span class="n">A</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">f</span>      <span class="n">Minimum</span> <span class="n">overlap</span> <span class="n">required</span> <span class="k">as</span> <span class="n">a</span> <span class="n">fraction</span> <span class="n">of</span> <span class="n">each</span> <span class="o">-</span><span class="n">bed</span> <span class="n">record</span><span class="o">.</span>
                 <span class="o">-</span> <span class="n">Default</span> <span class="ow">is</span> <span class="mf">1E-9</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span> <span class="mi">1</span><span class="n">bp</span><span class="p">)</span><span class="o">.</span>
                 <span class="o">-</span> <span class="n">FLOAT</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="mf">0.50</span><span class="p">)</span>
 
-        <span class="o">-</span><span class="n">r</span>      <span class="n">Require</span> <span class="n">that</span> <span class="n">the</span> <span class="n">fraction</span> <span class="n">overlap</span> <span class="n">be</span> <span class="n">reciprocal</span> <span class="k">for</span> <span class="n">each</span> <span class="n">A</span> <span class="ow">and</span> <span class="n">B</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">r</span>      <span class="n">Require</span> <span class="n">that</span> <span class="n">the</span> <span class="n">fraction</span> <span class="n">overlap</span> <span class="n">be</span> <span class="n">reciprocal</span> <span class="k">for</span> <span class="n">each</span> <span class="o">-</span><span class="n">bed</span> <span class="ow">and</span> <span class="n">B</span><span class="o">.</span>
                 <span class="o">-</span> <span class="n">In</span> <span class="n">other</span> <span class="n">words</span><span class="p">,</span> <span class="k">if</span> <span class="o">-</span><span class="n">f</span> <span class="ow">is</span> <span class="mf">0.90</span> <span class="ow">and</span> <span class="o">-</span><span class="n">r</span> <span class="ow">is</span> <span class="n">used</span><span class="p">,</span> <span class="n">this</span> <span class="n">requires</span>
-                  <span class="n">that</span> <span class="n">B</span> <span class="n">overlap</span> <span class="mi">90</span><span class="o">%</span> <span class="n">of</span> <span class="n">A</span> <span class="ow">and</span> <span class="n">A</span> <span class="o">**</span><span class="n">also</span><span class="o">**</span> <span class="n">overlaps</span> <span class="mi">90</span><span class="o">%</span> <span class="n">of</span> <span class="n">B</span><span class="o">.</span>
+                  <span class="n">that</span> <span class="n">B</span> <span class="n">overlap</span> <span class="mi">90</span><span class="o">%</span> <span class="n">of</span> <span class="n">each</span> <span class="o">-</span><span class="n">bed</span> <span class="ow">and</span> <span class="n">the</span> <span class="o">-</span><span class="n">bed</span> <span class="n">record</span> <span class="o">**</span><span class="n">also</span><span class="o">**</span> <span class="n">overlaps</span> <span class="mi">90</span><span class="o">%</span> <span class="n">of</span> <span class="n">B</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">q</span>      <span class="n">Minimum</span> <span class="n">mapping</span> <span class="n">quality</span> <span class="n">allowed</span><span class="o">.</span> <span class="n">Default</span> <span class="ow">is</span> <span class="mf">0.</span>
 
@@ -113,13 +112,12 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -129,7 +127,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.bedtool.BedTool.nucleotide_content.html" title="previous chapter">pybedtools.bedtool.BedTool.nucleotide_content</a></li>
       <li>Next: <a href="pybedtools.bedtool.BedTool.tag_bam.html" title="next chapter">pybedtools.bedtool.BedTool.tag_bam</a></li>
   </ul></li>
@@ -137,17 +135,15 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -176,8 +172,9 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.nucleotide_content.html" title="pybedtools.bedtool.BedTool.nucleotide_content"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.multi_bam_coverage</a></li> 
       </ul>
     </div>
 
@@ -186,7 +183,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

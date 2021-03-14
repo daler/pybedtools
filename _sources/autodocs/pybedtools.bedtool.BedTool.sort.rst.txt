@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.sort
+﻿pybedtools.bedtool.BedTool.sort
 ===============================
 
 .. currentmodule:: pybedtools.bedtool

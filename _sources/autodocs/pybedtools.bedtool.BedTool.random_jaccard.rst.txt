@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.random\_jaccard
+﻿pybedtools.bedtool.BedTool.random\_jaccard
 ==========================================
 
 .. currentmodule:: pybedtools.bedtool

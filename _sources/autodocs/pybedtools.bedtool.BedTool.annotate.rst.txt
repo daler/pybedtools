@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.annotate
+﻿pybedtools.bedtool.BedTool.annotate
 ===================================
 
 .. currentmodule:: pybedtools.bedtool

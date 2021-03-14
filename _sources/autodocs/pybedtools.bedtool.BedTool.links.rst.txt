@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.links
+﻿pybedtools.bedtool.BedTool.links
 ================================
 
 .. currentmodule:: pybedtools.bedtool

@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.contrib.plotting.Track &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.contrib.plotting.Track &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.contrib.plotting.TrackCollection" href="pybedtools.contrib.plotting.TrackCollection.html" />
@@ -35,43 +34,39 @@
             
   <div class="section" id="pybedtools-contrib-plotting-track">
 <h1>pybedtools.contrib.plotting.Track<a class="headerlink" href="#pybedtools-contrib-plotting-track" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="pybedtools.contrib.plotting.Track">
-<em class="property">class </em><code class="descclassname">pybedtools.contrib.plotting.</code><code class="descname">Track</code><span class="sig-paren">(</span><em>features</em>, <em>chrom=None</em>, <em>ybase=0</em>, <em>yheight=1</em>, <em>visibility='dense'</em>, <em>stranded=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#Track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.Track" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pybedtools.contrib.plotting.</span></code><code class="sig-name descname"><span class="pre">Track</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yheight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visibility</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stranded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#Track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.contrib.plotting.Track" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
 <dt id="pybedtools.contrib.plotting.Track.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>features</em>, <em>chrom=None</em>, <em>ybase=0</em>, <em>yheight=1</em>, <em>visibility='dense'</em>, <em>stranded=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#Track.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.contrib.plotting.Track.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ybase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yheight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visibility</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dense'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stranded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/contrib/plotting.html#Track.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.contrib.plotting.Track.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subclass of matplotlib’s PolyCollection that can be added to an Axes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>features</strong> – Can be an existing BedTool, or anything than can be used to create
-a BedTool (e.g., a filename or a generator of Interval objects)</li>
-<li><strong>ybase</strong> – y-coord of the bottom edge of the track (in data coordinates)</li>
-<li><strong>yheight</strong> – How high each feature will be, in data coordinates</li>
-<li><strong>visibility</strong> – <p>Mimics the settings in the UCSC Genome Browser:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features</strong> – Can be an existing BedTool, or anything than can be used to create
+a BedTool (e.g., a filename or a generator of Interval objects)</p></li>
+<li><p><strong>ybase</strong> – y-coord of the bottom edge of the track (in data coordinates)</p></li>
+<li><p><strong>yheight</strong> – How high each feature will be, in data coordinates</p></li>
+<li><p><strong>visibility</strong> – <p>Mimics the settings in the UCSC Genome Browser:</p>
 <ul>
-<li>”dense” is the default; overlapping features can be seen if you
-set alpha &lt; 1.</li>
-<li>”squish” prevents adjacent features from overlapping.  This keeps
+<li><p>”dense” is the default; overlapping features can be seen if you
+set alpha &lt; 1.</p></li>
+<li><p>”squish” prevents adjacent features from overlapping.  This keeps
 <code class="file docutils literal notranslate"><span class="pre">yheight</span></code> for all features, so if you have a lot of features
 piling up, the track will be a lot higher on the y-axis than
-<code class="file docutils literal notranslate"><span class="pre">yheight</span></code>.</li>
+<code class="file docutils literal notranslate"><span class="pre">yheight</span></code>.</p></li>
 </ul>
-</li>
-<li><strong>stranded</strong> – <p>If boolean and True, will draw arrrow-shaped features to indicate
+</p></li>
+<li><p><strong>stranded</strong> – <p>If boolean and True, will draw arrrow-shaped features to indicate
 direction (where the point is 10% of the total gene length)</p>
 <p>If a dictionary, map strands to colors, e.g., {‘+’: ‘r’, ‘-‘: ‘b’}.</p>
-</li>
-<li><strong>kwargs</strong> – Additional keyword args are passed to
-matplotlib.collections.PolyCollection.</li>
+</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword args are passed to
+matplotlib.collections.PolyCollection.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>Notes:</p>
 <p>After creating a track, use the <code class="file docutils literal notranslate"><span class="pre">ymax</span></code> attribute to get the max y-value
 used in the track – useful if you’ve created a “squish” track but
@@ -86,17 +81,17 @@ functions for event handling, e.g.:</p>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">coll</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">artist</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">ind</span><span class="p">:</span>
-        <span class="k">print</span> <span class="n">coll</span><span class="o">.</span><span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="nb">print</span> <span class="n">coll</span><span class="o">.</span><span class="n">features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s1">&#39;on_pick&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">track</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">Track</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">picker</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> <span class="c1">#doctest: +ELLIPSIS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> 
 <span class="go">&lt;pybedtools.contrib.plotting.Track object at 0x...&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">limits</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 </pre></div>
@@ -104,427 +99,444 @@ functions for event handling, e.g.:</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#pybedtools.contrib.plotting.Track.__init__" title="pybedtools.contrib.plotting.Track.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(features[,&nbsp;chrom,&nbsp;ybase,&nbsp;yheight,&nbsp;…])</td>
-<td>Subclass of matplotlib’s PolyCollection that can be added to an Axes.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pybedtools.contrib.plotting.Track.__init__" title="pybedtools.contrib.plotting.Track.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(features[, chrom, ybase, yheight, …])</p></td>
+<td><p>Subclass of matplotlib’s PolyCollection that can be added to an Axes.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_callback</span></code>(func)</td>
-<td>Adds a callback function that will be called whenever one of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code>’s properties changes.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_callback</span></code>(func)</p></td>
+<td><p>Add a callback function that will be called whenever one of the <code class="file docutils literal notranslate"><span class="pre">.Artist</span></code>’s properties changes.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_checker</span></code>(checker)</td>
-<td>Add an entry to a dictionary of boolean flags that are set to True when the mappable is changed.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_checker</span></code>(checker)</p></td>
+<td><p>[<em>Deprecated</em>]</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">autoscale</span></code>()</td>
-<td>Autoscale the scalar limits on the norm instance using the current array</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">autoscale</span></code>()</p></td>
+<td><p>Autoscale the scalar limits on the norm instance using the current array</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">autoscale_None</span></code>()</td>
-<td>Autoscale the scalar limits on the norm instance using the current array, changing only limits that are None</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">autoscale_None</span></code>()</p></td>
+<td><p>Autoscale the scalar limits on the norm instance using the current array, changing only limits that are None</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">changed</span></code>()</td>
-<td>Call this whenever the mappable is changed to notify all the callbackSM listeners to the ‘changed’ signal</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">changed</span></code>()</p></td>
+<td><p>Call this whenever the mappable is changed to notify all the callbackSM listeners to the ‘changed’ signal.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_update</span></code>(checker)</td>
-<td>If mappable has changed since the last check, return True; else return False</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_update</span></code>(checker)</p></td>
+<td><p>[<em>Deprecated</em>]</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code>(mouseevent)</td>
-<td>Test whether the mouse event occurred in the collection.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code>(mouseevent)</p></td>
+<td><p>Test whether the mouse event occurred in the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_xunits</span></code>(x)</td>
-<td>For artists in an axes, if the xaxis has units support, convert <em>x</em> using xaxis unit type</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_xunits</span></code>(x)</p></td>
+<td><p>Convert <em>x</em> using the unit type of the xaxis.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_yunits</span></code>(y)</td>
-<td>For artists in an axes, if the yaxis has units support, convert <em>y</em> using yaxis unit type</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_yunits</span></code>(y)</p></td>
+<td><p>Convert <em>y</em> using the unit type of the yaxis.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw</span></code>(renderer)</td>
-<td>Derived classes drawing method</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw</span></code>(renderer)</p></td>
+<td><p>Draw the Artist (and its children) using the given renderer.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">findobj</span></code>([match,&nbsp;include_self])</td>
-<td>Find artist objects.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">findobj</span></code>([match, include_self])</p></td>
+<td><p>Find artist objects.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_cursor_data</span></code>(data)</td>
-<td>Return <em>cursor data</em> string formatted.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_cursor_data</span></code>(data)</p></td>
+<td><p>Return a string representation of <em>data</em>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_agg_filter</span></code>()</td>
-<td>Return filter function to be used for agg filter.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_agg_filter</span></code>()</p></td>
+<td><p>Return filter function to be used for agg filter.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_alpha</span></code>()</td>
-<td>Return the alpha value used for blending - not supported on all backends</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_alpha</span></code>()</p></td>
+<td><p>Return the alpha value used for blending - not supported on all backends.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_animated</span></code>()</td>
-<td>Return the artist’s animated state</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_animated</span></code>()</p></td>
+<td><p>Return whether the artist is animated.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_array</span></code>()</td>
-<td>Return the array</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_array</span></code>()</p></td>
+<td><p>Return the data array.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_capstyle</span></code>()</td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_capstyle</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_children</span></code>()</td>
-<td>Return a list of the child <code class="xref py py-class docutils literal notranslate"><span class="pre">Artist`s</span> <span class="pre">this</span> <span class="pre">:class:`Artist</span></code> contains.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_children</span></code>()</p></td>
+<td><p>Return a list of the child <code class="file docutils literal notranslate"><span class="pre">.Artist</span></code>s of this <code class="file docutils literal notranslate"><span class="pre">.Artist</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clim</span></code>()</td>
-<td>return the min, max of the color limits for image scaling</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clim</span></code>()</p></td>
+<td><p>Return the values (min, max) that are mapped to the colormap limits.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_box</span></code>()</td>
-<td>Return artist clipbox</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_box</span></code>()</p></td>
+<td><p>Return the clipbox.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_on</span></code>()</td>
-<td>Return whether artist uses clipping</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_on</span></code>()</p></td>
+<td><p>Return whether the artist uses clipping.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_path</span></code>()</td>
-<td>Return artist clip path</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_path</span></code>()</p></td>
+<td><p>Return the clip path.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cmap</span></code>()</td>
-<td>return the colormap</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cmap</span></code>()</p></td>
+<td><p>Return the <code class="file docutils literal notranslate"><span class="pre">.Colormap</span></code> instance.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_contains</span></code>()</td>
-<td>Return the _contains test used by the artist, or <em>None</em> for default.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_contains</span></code>()</p></td>
+<td><p>[<em>Deprecated</em>] Return the custom contains function of the artist if set, or <em>None</em>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code>(event)</td>
-<td>Get the cursor data for a given event.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code>(event)</p></td>
+<td><p>Return the cursor data for a given event.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dashes</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">get_linestyle</span></code></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dashes</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_linestyle</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_datalim</span></code>(transData)</td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_datalim</span></code>(transData)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edgecolor</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ec</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_edgecolor</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edgecolors</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">get_edgecolor</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edgecolor</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_facecolor</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edgecolors</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_edgecolor</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_facecolors</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">get_facecolor</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_facecolor</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_figure</span></code>()</td>
-<td>Return the <code class="file docutils literal notranslate"><span class="pre">.Figure</span></code> instance the artist belongs to.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_facecolors</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_facecolor</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fill</span></code>()</td>
-<td>return whether fill is set</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fc</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_facecolor</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gid</span></code>()</td>
-<td>Returns the group id.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_figure</span></code>()</p></td>
+<td><p>Return the <code class="file docutils literal notranslate"><span class="pre">.Figure</span></code> instance the artist belongs to.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_hatch</span></code>()</td>
-<td>Return the current hatching pattern.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fill</span></code>()</p></td>
+<td><p>Return whether fill is set.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_joinstyle</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gid</span></code>()</p></td>
+<td><p>Return the group id.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code>()</td>
-<td>Get the label used for this artist in the legend.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_hatch</span></code>()</p></td>
+<td><p>Return the current hatching pattern.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linestyle</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_in_layout</span></code>()</p></td>
+<td><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout calculations.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linestyles</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">get_linestyle</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_joinstyle</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linewidth</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code>()</p></td>
+<td><p>Return the label used for this artist in the legend.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linewidths</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">get_linewidth</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linestyle</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset_position</span></code>()</td>
-<td>Returns how offsets are applied for the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linestyles</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_linestyle</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset_transform</span></code>()</td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linewidth</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offsets</span></code>()</td>
-<td>Return the offsets for the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_linewidths</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_linewidth</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code>()</td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ls</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_linestyle</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_paths</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_lw</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_linewidth</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code>()</td>
-<td>Return the picker object used by this artist.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset_position</span></code>()</p></td>
+<td><p>[<em>Deprecated</em>] Return how offsets are applied for the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pickradius</span></code>()</td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset_transform</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code>()</td>
-<td>Return whether the artist is to be rasterized.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offsets</span></code>()</p></td>
+<td><p>Return the offsets for the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sizes</span></code>()</td>
-<td>Returns the sizes of the elements in the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code>()</td>
-<td>Returns the sketch parameters for the artist.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_paths</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code>()</td>
-<td>Returns the snap setting which may be:</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code>()</p></td>
+<td><p>Return the picking behavior of the artist.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code>()</td>
-<td>Return the <code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code> instance used by this artist.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pickradius</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transformed_clip_path_and_affine</span></code>()</td>
-<td>Return the clip path with the non-affine part of its transformation applied, and the remaining affine part of its transformation.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code>()</p></td>
+<td><p>Return whether the artist is to be rasterized.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transforms</span></code>()</td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sizes</span></code>()</p></td>
+<td><p>Return the sizes (‘areas’) of the elements in the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code>()</td>
-<td>Returns the url.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code>()</p></td>
+<td><p>Return the sketch parameters for the artist.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_urls</span></code>()</td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code>()</p></td>
+<td><p>Return the snap setting.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible</span></code>()</td>
-<td>Return the artist’s visiblity</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tightbbox</span></code>(renderer)</p></td>
+<td><p>Like <code class="file docutils literal notranslate"><span class="pre">.Artist.get_window_extent</span></code>, but includes any clipping.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code>(renderer)</td>
-<td>Get the axes bounding box in display space.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code>()</p></td>
+<td><p>Return the <code class="file docutils literal notranslate"><span class="pre">.Transform</span></code> instance used by this artist.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xlims</span></code>(ax)</td>
-<td>Needs <code class="file docutils literal notranslate"><span class="pre">ax</span></code> to convert to transData coords</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transformed_clip_path_and_affine</span></code>()</p></td>
+<td><p>Return the clip path with the non-affine part of its transformation applied, and the remaining affine part of its transformation.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zorder</span></code>()</td>
-<td>Return the artist’s zorder.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transforms</span></code>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">have_units</span></code>()</td>
-<td>Return <em>True</em> if units are set on the <em>x</em> or <em>y</em> axes</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code>()</p></td>
+<td><p>Return the url.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">hitlist</span></code>(event)</td>
-<td><div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 2.2.</span></p>
-</div>
-</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_urls</span></code>()</p></td>
+<td><p>Return a list of URLs, one for each element of the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_figure_set</span></code>()</td>
-<td><div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 2.2.</span></p>
-</div>
-</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible</span></code>()</p></td>
+<td><p>Return the visibility.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transform_set</span></code>()</td>
-<td>Returns <em>True</em> if <code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code> has a transform explicitly set.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code>(renderer)</p></td>
+<td><p>Get the axes bounding box in display space.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">pchanged</span></code>()</td>
-<td>Fire an event when property changed, calling all of the registered callbacks.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xlims</span></code>(ax)</p></td>
+<td><p>Needs <code class="file docutils literal notranslate"><span class="pre">ax</span></code> to convert to transData coords</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code>(mouseevent)</td>
-<td>Process pick event</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zorder</span></code>()</p></td>
+<td><p>Return the artist’s zorder.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code>()</td>
-<td>Return <em>True</em> if <code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code> is pickable.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">have_units</span></code>()</p></td>
+<td><p>Return <em>True</em> if units are set on any axis.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code>()</td>
-<td>return a dictionary mapping property name -&gt; value for all Artist props</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transform_set</span></code>()</p></td>
+<td><p>Return whether the Artist has an explicitly set transform.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>()</td>
-<td>Remove the artist from the figure if possible.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pchanged</span></code>()</p></td>
+<td><p>Call all of the registered callbacks.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code>(oid)</td>
-<td>Remove a callback based on its <em>id</em>.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code>(mouseevent)</p></td>
+<td><p>Process a pick event.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code>(**kwargs)</td>
-<td>A property batch setter.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code>()</p></td>
+<td><p>Return whether the artist is pickable.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_agg_filter</span></code>(filter_func)</td>
-<td>Set the agg filter.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code>()</p></td>
+<td><p>Return a dictionary of all the properties of the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_alpha</span></code>(alpha)</td>
-<td>Set the alpha tranparencies of the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>()</p></td>
+<td><p>Remove the artist from the figure if possible.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_animated</span></code>(b)</td>
-<td>Set the artist’s animation state.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code>(oid)</p></td>
+<td><p>Remove a callback based on its observer id.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_antialiased</span></code>(aa)</td>
-<td>Set the antialiasing state for rendering.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code>(**kwargs)</p></td>
+<td><p>A property batch setter.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_antialiaseds</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_antialiased</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_aa</span></code>(aa)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_antialiased</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_array</span></code>(A)</td>
-<td>Set the image array from numpy array <em>A</em>.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_agg_filter</span></code>(filter_func)</p></td>
+<td><p>Set the agg filter.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_capstyle</span></code>(cs)</td>
-<td>Set the capstyle for the collection.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_alpha</span></code>(alpha)</p></td>
+<td><p>Set the alpha value used for blending - not supported on all backends.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clim</span></code>([vmin,&nbsp;vmax])</td>
-<td>set the norm limits for image scaling; if <em>vmin</em> is a length2 sequence, interpret it as <code class="docutils literal notranslate"><span class="pre">(vmin,</span> <span class="pre">vmax)</span></code> which is used to support setp</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_animated</span></code>(b)</p></td>
+<td><p>Set the artist’s animation state.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_box</span></code>(clipbox)</td>
-<td>Set the artist’s clip <code class="file docutils literal notranslate"><span class="pre">.Bbox</span></code>.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_antialiased</span></code>(aa)</p></td>
+<td><p>Set the antialiasing state for rendering.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_on</span></code>(b)</td>
-<td>Set whether artist uses clipping.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_antialiaseds</span></code>(aa)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_antialiased</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_path</span></code>(path[,&nbsp;transform])</td>
-<td>Set the artist’s clip path, which may be:</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_array</span></code>(A)</p></td>
+<td><p>Set the image array from numpy array <em>A</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_cmap</span></code>(cmap)</td>
-<td>set the colormap for luminance data</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_capstyle</span></code>(cs)</p></td>
+<td><p>Set the capstyle for the collection (for all its elements).</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color</span></code>(c)</td>
-<td>Set both the edgecolor and the facecolor.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clim</span></code>([vmin, vmax])</p></td>
+<td><p>Set the norm limits for image scaling.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_contains</span></code>(picker)</td>
-<td>Replace the contains test used by this artist.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_box</span></code>(clipbox)</p></td>
+<td><p>Set the artist’s clip <code class="file docutils literal notranslate"><span class="pre">.Bbox</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_dashes</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_linestyle</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_on</span></code>(b)</p></td>
+<td><p>Set whether the artist uses clipping.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_edgecolor</span></code>(c)</td>
-<td>Set the edgecolor(s) of the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_path</span></code>(path[, transform])</p></td>
+<td><p>Set the artist’s clip path.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_edgecolors</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_edgecolor</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_cmap</span></code>(cmap)</p></td>
+<td><p>Set the colormap for luminance data.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facecolor</span></code>(c)</td>
-<td>Set the facecolor(s) of the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color</span></code>(c)</p></td>
+<td><p>Set both the edgecolor and the facecolor.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facecolors</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_facecolor</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_contains</span></code>(picker)</p></td>
+<td><p>[<em>Deprecated</em>] Define a custom contains test for the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_figure</span></code>(fig)</td>
-<td>Set the <code class="file docutils literal notranslate"><span class="pre">.Figure</span></code> instance the artist belongs to.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_dashes</span></code>(ls)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_linestyle</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gid</span></code>(gid)</td>
-<td>Sets the (group) id for the artist.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ec</span></code>(c)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_edgecolor</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_hatch</span></code>(hatch)</td>
-<td>Set the hatching pattern</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_edgecolor</span></code>(c)</p></td>
+<td><p>Set the edgecolor(s) of the collection.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_joinstyle</span></code>(js)</td>
-<td>Set the joinstyle for the collection.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_edgecolors</span></code>(c)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_edgecolor</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_label</span></code>(s)</td>
-<td>Set the label to <em>s</em> for auto legend.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facecolor</span></code>(c)</p></td>
+<td><p>Set the facecolor(s) of the collection.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linestyle</span></code>(ls)</td>
-<td>Set the linestyle(s) for the collection.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facecolors</span></code>(c)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_facecolor</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linestyles</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_linestyle</span></code></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fc</span></code>(c)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_facecolor</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linewidth</span></code>(lw)</td>
-<td>Set the linewidth(s) for the collection.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_figure</span></code>(fig)</p></td>
+<td><p>Set the <code class="file docutils literal notranslate"><span class="pre">.Figure</span></code> instance the artist belongs to.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linewidths</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_linewidth</span></code></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gid</span></code>(gid)</p></td>
+<td><p>Set the (group) id for the artist.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lw</span></code>(*args,&nbsp;**kwargs)</td>
-<td>alias for <code class="file docutils literal notranslate"><span class="pre">set_linewidth</span></code></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_hatch</span></code>(hatch)</p></td>
+<td><p>Set the hatching pattern</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_norm</span></code>(norm)</td>
-<td>Set the normalization instance.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_in_layout</span></code>(in_layout)</p></td>
+<td><p>Set if artist is to be included in layout calculations, E.g.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offset_position</span></code>(offset_position)</td>
-<td>Set how offsets are applied.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_joinstyle</span></code>(js)</p></td>
+<td><p>Set the joinstyle for the collection (for all its elements).</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offsets</span></code>(offsets)</td>
-<td>Set the offsets for the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_label</span></code>(s)</p></td>
+<td><p>Set a label that will be displayed in the legend.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code>(path_effects)</td>
-<td>Set the path effects.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linestyle</span></code>(ls)</p></td>
+<td><p>Set the linestyle(s) for the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_paths</span></code>(verts[,&nbsp;closed])</td>
-<td>This allows one to delay initialization of the vertices.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linestyles</span></code>(ls)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_linestyle</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code>(picker)</td>
-<td>Set the epsilon for picking used by this artist</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linewidth</span></code>(lw)</p></td>
+<td><p>Set the linewidth(s) for the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_pickradius</span></code>(pr)</td>
-<td>Set the pick radius used for containment tests.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_linewidths</span></code>(lw)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_linewidth</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code>(rasterized)</td>
-<td>Force rasterized (bitmap) drawing in vector backend output.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ls</span></code>(ls)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_linestyle</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sizes</span></code>(sizes[,&nbsp;dpi])</td>
-<td>Set the sizes of each member of the collection.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lw</span></code>(lw)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_linewidth</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code>([scale,&nbsp;length,&nbsp;randomness])</td>
-<td>Sets the sketch parameters.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_norm</span></code>(norm)</p></td>
+<td><p>Set the normalization instance.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code>(snap)</td>
-<td>Sets the snap setting which may be:</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offset_position</span></code>(offset_position)</p></td>
+<td><p>[<em>Deprecated</em>] Set how offsets are applied.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code>(t)</td>
-<td>Set the artist transform.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offsets</span></code>(offsets)</p></td>
+<td><p>Set the offsets for the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_url</span></code>(url)</td>
-<td>Sets the url for the artist.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code>(path_effects)</p></td>
+<td><p>Set the path effects.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_urls</span></code>(urls)</td>
-<td><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_paths</span></code>(verts[, closed])</p></td>
+<td><p>Set the vertices of the polygons.</p></td>
 </tr>
-</tbody>
-</table>
-</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code>(picker)</p></td>
+<td><p>Define the picking behavior of the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_verts</span></code>(verts[,&nbsp;closed])</td>
-<td>This allows one to delay initialization of the vertices.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_pickradius</span></code>(pr)</p></td>
+<td><p>Set the pick radius used for containment tests.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_verts_and_codes</span></code>(verts,&nbsp;codes)</td>
-<td>This allows one to initialize vertices with path codes.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code>(rasterized)</p></td>
+<td><p>Force rasterized (bitmap) drawing in vector backend output.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_visible</span></code>(b)</td>
-<td>Set the artist’s visibility.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sizes</span></code>(sizes[, dpi])</p></td>
+<td><p>Set the sizes of each member of the collection.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zorder</span></code>(level)</td>
-<td>Set the zorder for the artist.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code>([scale, length, randomness])</p></td>
+<td><p>Sets the sketch parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_rgba</span></code>(x[,&nbsp;alpha,&nbsp;bytes,&nbsp;norm])</td>
-<td>Return a normalized rgba array corresponding to <em>x</em>.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code>(snap)</p></td>
+<td><p>Set the snapping behavior.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>(props)</td>
-<td>Update this artist’s properties from the dictionary <em>prop</em>.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code>(t)</p></td>
+<td><p>Set the artist transform.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code>(other)</td>
-<td>copy properties from other to self</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_url</span></code>(url)</p></td>
+<td><p>Set the url for the artist.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_scalarmappable</span></code>()</td>
-<td>If the scalar mappable array is not none, update colors from scalar data</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_urls</span></code>(urls)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_verts</span></code>(verts[, closed])</p></td>
+<td><p>Set the vertices of the polygons.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_verts_and_codes</span></code>(verts, codes)</p></td>
+<td><p>Initialize vertices with path codes.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_visible</span></code>(b)</p></td>
+<td><p>Set the artist’s visibility.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zorder</span></code>(level)</p></td>
+<td><p>Set the zorder for the artist.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_rgba</span></code>(x[, alpha, bytes, norm])</p></td>
+<td><p>Return a normalized rgba array corresponding to <em>x</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>(props)</p></td>
+<td><p>Update this artist’s properties from the dict <em>props</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code>(other)</p></td>
+<td><p>Copy properties from other to self.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_scalarmappable</span></code>()</p></td>
+<td><p>Update colors from the scalar mappable array, if it is not None.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">aname</span></code></td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes</span></code></p></td>
+<td><p>The <code class="file docutils literal notranslate"><span class="pre">~.axes.Axes</span></code> instance the artist resides in, or <em>None</em>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes</span></code></td>
-<td>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code> instance the artist resides in, or <em>None</em>.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">midpoint</span></code></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">midpoint</span></code></td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mouseover</span></code></p></td>
+<td><p>If this property is set to <em>True</em>, the artist will be queried for custom context information when the mouse cursor moves over it.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">mouseover</span></code></td>
-<td></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stale</span></code></p></td>
+<td><p>Whether the artist is ‘stale’ and needs to be re-drawn for the output to match the internal state of the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">stale</span></code></td>
-<td>If the artist is ‘stale’ and needs to be re-drawn for the output to match the internal state of the artist.</td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sticky_edges</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> sticky edge lists for autoscaling.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">sticky_edges</span></code></td>
-<td><code class="file docutils literal notranslate"><span class="pre">x</span></code> and <code class="file docutils literal notranslate"><span class="pre">y</span></code> sticky edge lists.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dict</span></code></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zorder</span></code></td>
-<td></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zorder</span></code></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -557,13 +569,12 @@ functions for event handling, e.g.:</p>
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -573,7 +584,7 @@ functions for event handling, e.g.:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.parallel.parallel_apply.html" title="previous chapter">pybedtools.parallel.parallel_apply</a></li>
       <li>Next: <a href="pybedtools.contrib.plotting.TrackCollection.html" title="next chapter">pybedtools.contrib.plotting.TrackCollection</a></li>
   </ul></li>
@@ -581,17 +592,15 @@ functions for event handling, e.g.:</p>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -620,8 +629,9 @@ functions for event handling, e.g.:</p>
         <li class="right" >
           <a href="pybedtools.parallel.parallel_apply.html" title="pybedtools.parallel.parallel_apply"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.plotting.Track</a></li> 
       </ul>
     </div>
 
@@ -630,7 +640,7 @@ functions for event handling, e.g.:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

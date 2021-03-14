@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.flank
+﻿pybedtools.bedtool.BedTool.flank
 ================================
 
 .. currentmodule:: pybedtools.bedtool

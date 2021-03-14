@@ -1,4 +1,4 @@
-pybedtools.contrib.IntersectionMatrix
+﻿pybedtools.contrib.IntersectionMatrix
 =====================================
 
 .. currentmodule:: pybedtools.contrib

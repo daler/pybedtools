@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Randomization &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Randomization &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Wrapping new tools" href="topical-wrapping.html" />
@@ -76,7 +75,7 @@ In practice, make sure you use <code class="file docutils literal notranslate"><
 results.</p>
 <p>Furthermore, using the <code class="file docutils literal notranslate"><span class="pre">processes</span></code> kwarg will substantially speed up the
 comparison (e.g., <code class="file docutils literal notranslate"><span class="pre">processes=8</span></code> to split the randomizations across 8 cores).</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomintersection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chrom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomintersection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chrom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="file docutils literal notranslate"><span class="pre">results</span></code> is a generator of intersection counts where each number is the
@@ -86,8 +85,8 @@ it to a list in order to look at it:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 <span class="go">100</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">results</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
-<span class="go">[0, 3, 1, 1, 2, 2, 2, 1, 4, 2]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+<span class="go">[1, 0, 1, 2, 4, 2, 2, 1, 2, 4]</span>
 </pre></div>
 </div>
 <p>Running thousands of iterations on files with many features will of course
@@ -99,63 +98,71 @@ and SciPy to be installed.  This method also calls
 in a dictionary.</p>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> takes the same arguments as
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomintersection()</span></code>:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results_dict</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomstats</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chrom&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results_dict</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">randomstats</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">shuffle_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chrom&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The keys to this results dictionary are as follows (some are redundant,
 I’ve found these keys useful for writing out to file):</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">iterations:</th><td class="field-body">the number of iterations we specified</td>
-</tr>
-<tr class="field-even field"><th class="field-name">actual:</th><td class="field-body">the number of intersections between then un-shuffled <code class="file docutils literal notranslate"><span class="pre">a</span></code> and <code class="file docutils literal notranslate"><span class="pre">b</span></code></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">file_a:</th><td class="field-body">the filename of <code class="file docutils literal notranslate"><span class="pre">a</span></code></td>
-</tr>
-<tr class="field-even field"><th class="field-name">file_b:</th><td class="field-body">the filename of <code class="file docutils literal notranslate"><span class="pre">b</span></code></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">&lt;file_a&gt;:</th><td class="field-body">the key is actully the filename of <code class="file docutils literal notranslate"><span class="pre">a</span></code>, and the value is the number of
-features in <code class="file docutils literal notranslate"><span class="pre">a</span></code></td>
-</tr>
-<tr class="field-even field"><th class="field-name">&lt;file_b&gt;:</th><td class="field-body">the key is actually the filename of <code class="file docutils literal notranslate"><span class="pre">b</span></code> and the value is the number of
-features in <code class="file docutils literal notranslate"><span class="pre">b</span></code></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">self:</th><td class="field-body">number of features in <code class="file docutils literal notranslate"><span class="pre">a</span></code> (or “self”; same value as for &lt;file_a&gt;)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">other:</th><td class="field-body">number of features in <code class="file docutils literal notranslate"><span class="pre">b</span></code> (or “other”; same value as for &lt;file_b&gt;)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">frac randomized above actual:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">fraction of iterations that had counts above the actual count</td>
-</tr>
-<tr class="field-even field"><th class="field-name" colspan="2">frac randomized below actual:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body">fraction of iterations that had counts below the actual count</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">median randomized:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">the median of the distribution of randomized intersections</td>
-</tr>
-<tr class="field-even field"><th class="field-name">normalized:</th><td class="field-body">the actual count divided by the median; can be considered as a score</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">percentile:</th><td class="field-body">the percentile of actual within the distribution of randomized
-intersections; can be considered an empirical p-value</td>
-</tr>
-<tr class="field-even field"><th class="field-name">upper 97.5th:</th><td class="field-body">the 97.5th percentile of the randomized distribution</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">lower 2.5th:</th><td class="field-body">the 2.5th percentile of the randomized distribution</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">iterations</dt>
+<dd class="field-odd"><p>the number of iterations we specified</p>
+</dd>
+<dt class="field-even">actual</dt>
+<dd class="field-even"><p>the number of intersections between then un-shuffled <code class="file docutils literal notranslate"><span class="pre">a</span></code> and <code class="file docutils literal notranslate"><span class="pre">b</span></code></p>
+</dd>
+<dt class="field-odd">file_a</dt>
+<dd class="field-odd"><p>the filename of <code class="file docutils literal notranslate"><span class="pre">a</span></code></p>
+</dd>
+<dt class="field-even">file_b</dt>
+<dd class="field-even"><p>the filename of <code class="file docutils literal notranslate"><span class="pre">b</span></code></p>
+</dd>
+<dt class="field-odd">&lt;file_a&gt;</dt>
+<dd class="field-odd"><p>the key is actully the filename of <code class="file docutils literal notranslate"><span class="pre">a</span></code>, and the value is the number of
+features in <code class="file docutils literal notranslate"><span class="pre">a</span></code></p>
+</dd>
+<dt class="field-even">&lt;file_b&gt;</dt>
+<dd class="field-even"><p>the key is actually the filename of <code class="file docutils literal notranslate"><span class="pre">b</span></code> and the value is the number of
+features in <code class="file docutils literal notranslate"><span class="pre">b</span></code></p>
+</dd>
+<dt class="field-odd">self</dt>
+<dd class="field-odd"><p>number of features in <code class="file docutils literal notranslate"><span class="pre">a</span></code> (or “self”; same value as for &lt;file_a&gt;)</p>
+</dd>
+<dt class="field-even">other</dt>
+<dd class="field-even"><p>number of features in <code class="file docutils literal notranslate"><span class="pre">b</span></code> (or “other”; same value as for &lt;file_b&gt;)</p>
+</dd>
+<dt class="field-odd">frac randomized above actual</dt>
+<dd class="field-odd"><p>fraction of iterations that had counts above the actual count</p>
+</dd>
+<dt class="field-even">frac randomized below actual</dt>
+<dd class="field-even"><p>fraction of iterations that had counts below the actual count</p>
+</dd>
+<dt class="field-odd">median randomized</dt>
+<dd class="field-odd"><p>the median of the distribution of randomized intersections</p>
+</dd>
+<dt class="field-even">normalized</dt>
+<dd class="field-even"><p>the actual count divided by the median; can be considered as a score</p>
+</dd>
+<dt class="field-odd">percentile</dt>
+<dd class="field-odd"><p>the percentile of actual within the distribution of randomized
+intersections; can be considered an empirical p-value</p>
+</dd>
+<dt class="field-even">upper 97.5th</dt>
+<dd class="field-even"><p>the 97.5th percentile of the randomized distribution</p>
+</dd>
+<dt class="field-odd">lower 2.5th</dt>
+<dd class="field-odd"><p>the 2.5th percentile of the randomized distribution</p>
+</dd>
+</dl>
 <p>For example:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">,</span> <span class="s1">&#39;actual&#39;</span><span class="p">,</span> <span class="s1">&#39;median randomized&#39;</span><span class="p">,</span> <span class="s1">&#39;normalized&#39;</span><span class="p">,</span> <span class="s1">&#39;percentile&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
 <span class="go">self: 4</span>
 <span class="go">other: 2</span>
 <span class="go">actual: 3</span>
 <span class="go">median randomized: 2.0</span>
 <span class="go">normalized: 1.5</span>
-<span class="go">percentile: 93.5</span>
+<span class="go">percentile: 90.0</span>
 </pre></div>
 </div>
 <p>Contributions toward improving this code or implementing other methods of
@@ -218,8 +225,8 @@ actual-divided-by-median approach could be tried here as well.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
@@ -229,13 +236,13 @@ actual-divided-by-median approach could be tried here as well.</p>
 <li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -251,17 +258,15 @@ actual-divided-by-median approach could be tried here as well.</p>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -290,8 +295,9 @@ actual-divided-by-median approach could be tried here as well.</p>
         <li class="right" >
           <a href="topical-genome.html" title="Specifying genomes"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Randomization</a></li> 
       </ul>
     </div>
 
@@ -300,7 +306,7 @@ actual-divided-by-median approach could be tried here as well.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

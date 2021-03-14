@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.as\_intervalfile
+﻿pybedtools.bedtool.BedTool.as\_intervalfile
 ===========================================
 
 .. currentmodule:: pybedtools.bedtool

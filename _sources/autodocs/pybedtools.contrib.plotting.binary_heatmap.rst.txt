@@ -1,4 +1,4 @@
-pybedtools.contrib.plotting.binary\_heatmap
+﻿pybedtools.contrib.plotting.binary\_heatmap
 ===========================================
 
 .. currentmodule:: pybedtools.contrib.plotting

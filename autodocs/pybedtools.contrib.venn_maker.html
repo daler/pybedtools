@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.contrib.venn_maker &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.contrib.venn_maker &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.contrib.venn_maker.venn_maker" href="pybedtools.contrib.venn_maker.venn_maker.html" />
@@ -39,20 +38,20 @@
 <p>Rather than depend on the user to have rpy2 installed, this simply writes an
 R script that can be edited and tweaked by the user before being run in R.</p>
 <p class="rubric">Functions</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="pybedtools.contrib.venn_maker.cleaned_intersect.html#pybedtools.contrib.venn_maker.cleaned_intersect" title="pybedtools.contrib.venn_maker.cleaned_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cleaned_intersect</span></code></a>(items)</td>
-<td>Perform interval intersections such that the end products have identical     features for overlapping intervals.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.contrib.venn_maker.cleaned_intersect.html#pybedtools.contrib.venn_maker.cleaned_intersect" title="pybedtools.contrib.venn_maker.cleaned_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cleaned_intersect</span></code></a>(items)</p></td>
+<td><p>Perform interval intersections such that the end products have identical     features for overlapping intervals.</p></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncator</span></code>(feature)</td>
-<td>Convert a feature of any format into a BED3 format.</td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncator</span></code>(feature)</p></td>
+<td><p>Convert a feature of any format into a BED3 format.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="pybedtools.contrib.venn_maker.venn_maker.html#pybedtools.contrib.venn_maker.venn_maker" title="pybedtools.contrib.venn_maker.venn_maker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">venn_maker</span></code></a>(beds[,&nbsp;names,&nbsp;figure_filename,&nbsp;…])</td>
-<td>Given a list of interval files, write an R script to create a Venn     diagram of overlaps (and optionally run it).</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.contrib.venn_maker.venn_maker.html#pybedtools.contrib.venn_maker.venn_maker" title="pybedtools.contrib.venn_maker.venn_maker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">venn_maker</span></code></a>(beds[, names, figure_filename, …])</p></td>
+<td><p>Given a list of interval files, write an R script to create a Venn     diagram of overlaps (and optionally run it).</p></td>
 </tr>
 </tbody>
 </table>
@@ -83,13 +82,12 @@ R script that can be edited and tweaked by the user before being run in R.</p>
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -99,7 +97,7 @@ R script that can be edited and tweaked by the user before being run in R.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.contrib.IntersectionMatrix.html" title="previous chapter">pybedtools.contrib.IntersectionMatrix</a></li>
       <li>Next: <a href="pybedtools.contrib.venn_maker.venn_maker.html" title="next chapter">pybedtools.contrib.venn_maker.venn_maker</a></li>
   </ul></li>
@@ -107,17 +105,15 @@ R script that can be edited and tweaked by the user before being run in R.</p>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -146,8 +142,9 @@ R script that can be edited and tweaked by the user before being run in R.</p>
         <li class="right" >
           <a href="pybedtools.contrib.IntersectionMatrix.html" title="pybedtools.contrib.IntersectionMatrix"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.venn_maker</a></li> 
       </ul>
     </div>
 
@@ -156,7 +153,7 @@ R script that can be edited and tweaked by the user before being run in R.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

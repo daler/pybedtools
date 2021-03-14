@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools documentation &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools documentation &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="main.html" />
@@ -56,21 +55,21 @@ intergenic SNPs:</p>
 <span class="n">genes</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;hg19.gff&#39;</span><span class="p">)</span>    <span class="c1"># [1]</span>
 
 <span class="n">intergenic_snps</span> <span class="o">=</span> <span class="n">snps</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>                       <span class="c1"># [2]</span>
-<span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># [2, 3]</span>
+<span class="n">nearby</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="n">intergenic_snps</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># [2, 3]</span>
 
 <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>             <span class="c1"># [4]</span>
     <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5000</span><span class="p">:</span>    <span class="c1"># [4]</span>
-        <span class="k">print</span> <span class="n">gene</span><span class="o">.</span><span class="n">name</span>         <span class="c1"># [4]</span>
+        <span class="nb">print</span> <span class="n">gene</span><span class="o">.</span><span class="n">name</span>         <span class="c1"># [4]</span>
 </pre></div>
 </div>
 <p>Useful features shown here include:</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><span class="pre">[1]</span></code> support for all BEDTools-supported formats (here gzipped BED and GFF)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">[2]</span></code> wrapping of all BEDTools programs and arguments (here, <code class="file docutils literal notranslate"><span class="pre">subtract</span></code> and <code class="file docutils literal notranslate"><span class="pre">closest</span></code> and passing
-the <code class="file docutils literal notranslate"><span class="pre">-d</span></code> flag to <code class="file docutils literal notranslate"><span class="pre">closest</span></code>);</li>
-<li><code class="file docutils literal notranslate"><span class="pre">[3]</span></code> streaming results (like Unix pipes, here specified by <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">[4]</span></code> iterating over results while accessing feature data by index or by attribute
-access (here <code class="file docutils literal notranslate"><span class="pre">[-1]</span></code> and <code class="file docutils literal notranslate"><span class="pre">.name</span></code>).</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">[1]</span></code> support for all BEDTools-supported formats (here gzipped BED and GFF)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">[2]</span></code> wrapping of all BEDTools programs and arguments (here, <code class="file docutils literal notranslate"><span class="pre">subtract</span></code> and <code class="file docutils literal notranslate"><span class="pre">closest</span></code> and passing
+the <code class="file docutils literal notranslate"><span class="pre">-d</span></code> flag to <code class="file docutils literal notranslate"><span class="pre">closest</span></code>);</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">[3]</span></code> streaming results (like Unix pipes, here specified by <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">[4]</span></code> iterating over results while accessing feature data by index or by attribute
+access (here <code class="file docutils literal notranslate"><span class="pre">[-1]</span></code> and <code class="file docutils literal notranslate"><span class="pre">.name</span></code>).</p></li>
 </ul>
 <p>In contrast, here is the same analysis using shell scripting.  Note that this
 requires knowledge in Perl, bash, and awk.  The run time is identical to the
@@ -98,11 +97,11 @@ for more details on this comparison, or keep reading the full documentation at
 <p><code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> is released under the GPLv2 license; see LICENSE.txt for more
 info.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>If you use <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> in your work, please cite the <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/27/24/3423">pybedtools
 manuscript</a>
 and the <a class="reference external" href="http://bioinformatics.oxfordjournals.org/content/26/6/841.short">BEDTools manuscript</a>:</p>
-<blockquote class="last">
+<blockquote>
 <div><p>Dale RK, Pedersen BS, and Quinlan AR. 2011. <em>Pybedtools: a flexible
 Python library for manipulating genomic datasets and annotations</em>.
 Bioinformatics 27(24):3423-3424.</p>
@@ -116,11 +115,11 @@ for comparing genomic features</em>. Bioinformatics 26(6):841–842.</p>
 <p>The documentation is separated into 4 main parts, depending on the depth you’d
 like to cover:</p>
 <ul class="simple">
-<li>Lazy, or just want to jump in?  Check out <a class="reference internal" href="3-brief-examples.html#examples"><span class="std std-ref">Three brief examples</span></a> to
-get a feel for the package.</li>
-<li>Want a guided tour?  Give the <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a> a shot.</li>
-<li>More advanced features are described in the <a class="reference internal" href="topical-documentation-contents.html#topical"><span class="std std-ref">Topical Documentation</span></a> section.</li>
-<li>Finally, doctested module documentation can be found in <a class="reference internal" href="autodoc_source.html#autodoc"><span class="std std-ref">pybedtools Reference</span></a>.</li>
+<li><p>Lazy, or just want to jump in?  Check out <a class="reference internal" href="3-brief-examples.html#examples"><span class="std std-ref">Three brief examples</span></a> to
+get a feel for the package.</p></li>
+<li><p>Want a guided tour?  Give the <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a> a shot.</p></li>
+<li><p>More advanced features are described in the <a class="reference internal" href="topical-documentation-contents.html#topical"><span class="std std-ref">Topical Documentation</span></a> section.</p></li>
+<li><p>Finally, doctested module documentation can be found in <a class="reference internal" href="autodoc_source.html#autodoc"><span class="std std-ref">pybedtools Reference</span></a>.</p></li>
 </ul>
 </div>
 <div class="section" id="contents">
@@ -129,7 +128,7 @@ get a feel for the package.</li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="main.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="main.html#install-via-conda">Install via <code class="file docutils literal notranslate"><span class="pre">conda</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html#installing-pybedtools">Installing <code class="docutils literal notranslate"><span class="pre">pybedtools</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html#installing-pybedtools">Installing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="main.html#quick-test">Quick test</a></li>
 </ul>
 </li>
@@ -148,7 +147,7 @@ get a feel for the package.</li>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="intro.html">Intro</a></li>
-<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-a-bedtool-tutorial.html">Create a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="intersections.html">Intersections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="save-results.html">Saving the results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default-arguments.html">Default arguments</a></li>
@@ -158,13 +157,13 @@ get a feel for the package.</li>
 <li class="toctree-l2"><a class="reference internal" href="filtering.html">Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="each.html">Each</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html">Using the history and tags</a></li>
-<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#deleting-temp-files-specific-to-a-single-bedtool">Deleting temp files specific to a single <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-saving.html">Saving <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
@@ -174,7 +173,7 @@ get a feel for the package.</li>
 <li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
 </ul>
 </li>
@@ -188,22 +187,18 @@ get a feel for the package.</li>
 <li class="toctree-l2"><a class="reference internal" href="FAQs.html#too-many-files-open-error">“Too many files open” error</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#venn-diagram-scripts">Venn diagram scripts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#intron-exon-classification">Intron/exon classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts.html#annotate-py">Annotate.py</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-8-2">Changes in v0.8.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-8-1">Changes in v0.8.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-8-0">Changes in v0.8.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-7-10">Changes in v0.7.10</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-7-9">Changes in v0.7.9</a></li>
@@ -235,9 +230,9 @@ get a feel for the package.</li>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 
@@ -266,7 +261,7 @@ get a feel for the package.</li>
 <li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -279,17 +274,15 @@ get a feel for the package.</li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -315,7 +308,8 @@ get a feel for the package.</li>
         <li class="right" >
           <a href="main.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pybedtools 0.8.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">pybedtools 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> documentation</a></li> 
       </ul>
     </div>
 
@@ -324,7 +318,7 @@ get a feel for the package.</li>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

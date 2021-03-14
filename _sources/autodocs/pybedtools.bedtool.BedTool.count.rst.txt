@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.count
+﻿pybedtools.bedtool.BedTool.count
 ================================
 
 .. currentmodule:: pybedtools.bedtool

@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.cut
+﻿pybedtools.bedtool.BedTool.cut
 ==============================
 
 .. currentmodule:: pybedtools.bedtool

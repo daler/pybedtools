@@ -1,4 +1,4 @@
-pybedtools.contrib.bigwig.bedgraph\_to\_bigwig
+﻿pybedtools.contrib.bigwig.bedgraph\_to\_bigwig
 ==============================================
 
 .. currentmodule:: pybedtools.contrib.bigwig

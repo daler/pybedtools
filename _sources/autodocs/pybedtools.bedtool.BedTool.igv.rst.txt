@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.igv
+﻿pybedtools.bedtool.BedTool.igv
 ==============================
 
 .. currentmodule:: pybedtools.bedtool

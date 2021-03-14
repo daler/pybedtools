@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool
+﻿pybedtools.bedtool.BedTool
 ==========================
 
 .. currentmodule:: pybedtools.bedtool
@@ -22,8 +22,13 @@ pybedtools.bedtool.BedTool
       ~BedTool.at
       ~BedTool.bam_to_bed
       ~BedTool.bam_to_fastq
+      ~BedTool.bamtobed
+      ~BedTool.bamtofastq
+      ~BedTool.bed12tobed6
       ~BedTool.bed6
       ~BedTool.bedpe_to_bam
+      ~BedTool.bedpetobam
+      ~BedTool.bedtobam
       ~BedTool.bgzip
       ~BedTool.cat
       ~BedTool.check_genome
@@ -45,6 +50,8 @@ pybedtools.bedtool.BedTool
       ~BedTool.flank
       ~BedTool.from_dataframe
       ~BedTool.genome_coverage
+      ~BedTool.genomecov
+      ~BedTool.getfasta
       ~BedTool.groupby
       ~BedTool.handle_kwargs
       ~BedTool.head
@@ -54,16 +61,23 @@ pybedtools.bedtool.BedTool
       ~BedTool.jaccard
       ~BedTool.liftover
       ~BedTool.links
+      ~BedTool.makewindows
       ~BedTool.map
       ~BedTool.mask_fasta
+      ~BedTool.maskfasta
       ~BedTool.merge
       ~BedTool.moveto
       ~BedTool.multi_bam_coverage
       ~BedTool.multi_intersect
+      ~BedTool.multicov
+      ~BedTool.multiinter
+      ~BedTool.nuc
       ~BedTool.nucleotide_content
       ~BedTool.overlap
       ~BedTool.pair_to_bed
       ~BedTool.pair_to_pair
+      ~BedTool.pairtobed
+      ~BedTool.pairtopair
       ~BedTool.parallel_apply
       ~BedTool.print_sequence
       ~BedTool.random
@@ -86,10 +100,14 @@ pybedtools.bedtool.BedTool
       ~BedTool.shuffle
       ~BedTool.slop
       ~BedTool.sort
+      ~BedTool.spacing
       ~BedTool.split
+      ~BedTool.splitbed
       ~BedTool.subtract
       ~BedTool.tabix
+      ~BedTool.tabix_contigs
       ~BedTool.tabix_intervals
+      ~BedTool.tag
       ~BedTool.tag_bam
       ~BedTool.tail
       ~BedTool.to_bam
@@ -97,6 +115,7 @@ pybedtools.bedtool.BedTool
       ~BedTool.total_coverage
       ~BedTool.truncate_to_chrom
       ~BedTool.union_bedgraphs
+      ~BedTool.unionbedg
       ~BedTool.window
       ~BedTool.window_maker
       ~BedTool.with_attrs

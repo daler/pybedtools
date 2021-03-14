@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.bgzip
+﻿pybedtools.bedtool.BedTool.bgzip
 ================================
 
 .. currentmodule:: pybedtools.bedtool

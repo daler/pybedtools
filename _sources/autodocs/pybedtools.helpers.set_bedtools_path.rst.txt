@@ -1,4 +1,4 @@
-pybedtools.helpers.set\_bedtools\_path
+﻿pybedtools.helpers.set\_bedtools\_path
 ======================================
 
 .. currentmodule:: pybedtools.helpers

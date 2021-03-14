@@ -1,21 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Changelog &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Changelog &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="pybedtools.scripts.py_ms_example" href="autodocs/pybedtools.scripts.py_ms_example.html" />
+    <link rel="prev" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions" href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -34,127 +33,167 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-v0-8-2">
+<h2>Changes in v0.8.2<a class="headerlink" href="#changes-in-v0-8-2" title="Permalink to this headline">¶</a></h2>
+<p>2021-03-13: Minor updates</p>
+<ul class="simple">
+<li><p>Removed scripts directory from installed version. These are still available
+in the GitHub repo, but were causing import issues with Python 3.9 and were
+not well-used in the first place.</p></li>
+<li><p>Bugfix: unicode is better handled in gzipped files (thanks &#64;naumenko-sa, see
+<a class="reference external" href="https://github.com/daler/pybedtools/pull/320">#320</a>)</p></li>
+<li><p>Bugfix: correctly ignore warnings even with capital letters (thanks
+&#64;JureZmrzlikar, see <a class="reference external" href="https://github.com/daler/pybedtools/pull/326">#326</a>)</p></li>
+<li><p>Bugfix/improvements: update tests and code to work with Python 3.8 (see <a class="reference external" href="https://github.com/daler/pybedtools/pull/324">#324</a>). Also addresses <a class="reference external" href="https://github.com/daler/pybedtools/issues/322">#322</a>.</p></li>
+<li><p>Improvement: updates tests to work with bedtools v2.30</p></li>
+<li><p>Improvement: integration of <a class="reference external" href="https://github.com/vanheeringen-lab/genomepy">genomepy</a>, which if installed will
+help retrieve chromsizes files for less commonly used assemblies (thanks
+&#64;simonvh, see <a class="reference external" href="https://github.com/daler/pybedtools/pull/323/">#323</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-v0-8-1">
+<h2>Changes in v0.8.1<a class="headerlink" href="#changes-in-v0-8-1" title="Permalink to this headline">¶</a></h2>
+<p>2019-12-27: This version has minor updates and bugfixes:</p>
+<ul class="simple">
+<li><p>Bugfix: Fixes to <code class="file docutils literal notranslate"><span class="pre">pbt_plotting_example.py</span></code> (thanks Steffen Möllera &#64;smoe)</p></li>
+<li><p>Bugfix: Using <code class="file docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code> when a BedTool already points to a compressed file
+correctly saves (<a class="reference external" href="https://github.com/daler/pybedtools/pull/308">#308</a>)</p></li>
+<li><p>Improvement: Deprecate <code class="file docutils literal notranslate"><span class="pre">pandas.read_table</span></code> (thanks André F. Rendeiro
+&#64;afrendeiro)</p></li>
+<li><p>Improvement: overhaul testing on travis-ci</p></li>
+<li><p>Improvement: BedTool objects support either strings or Path objects (<a class="reference external" href="https://github.com/daler/pybedtools/pull/287">#287</a>, thanks &#64;drchsl)</p></li>
+<li><p>Improvement: MySQL host can be configured (<a class="reference external" href="https://github.com/daler/pybedtools/pull/301">#301</a>, thanks André F. Rendeiro
+&#64;afrendeiro)</p></li>
+<li><p>Improvement: Better version string parsing (<a class="reference external" href="https://github.com/daler/pybedtools/pull/289">#289</a>, thanks Steffen Möllera
+&#64;smoe), fixes <a class="reference external" href="https://github.com/daler/pybedtools/issues/275">#275</a> and others.</p></li>
+<li><p>Improvement: Proper CRAM support: <a class="reference external" href="https://github.com/daler/pybedtools/pull/307">#307</a></p></li>
+<li><p>Improvement: Raise an exception when the <code class="file docutils literal notranslate"><span class="pre">-b</span></code> argument to <code class="file docutils literal notranslate"><span class="pre">BedTool.intersect</span></code> has more
+than 510 files (<a class="reference external" href="https://github.com/daler/pybedtools/pull/306">#303</a>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">*.h</span></code> files now included in the distribution (thanks &#64;blaiseli)</p></li>
+<li><p>Improvement: Update tests to work with bedtools v2.29.2</p></li>
+</ul>
+</div>
 <div class="section" id="changes-in-v0-8-0">
 <h2>Changes in v0.8.0<a class="headerlink" href="#changes-in-v0-8-0" title="Permalink to this headline">¶</a></h2>
 <p>This version further improves testing, improves the way C++ files are included
 in the package, and fixes many long-standing bugs.</p>
 <ul class="simple">
-<li>Using pytest framework rather than nose for testing</li>
-<li>Updated <code class="file docutils literal notranslate"><span class="pre">setup.py</span></code> to be more robust and to more clearly separate
-“cythonization” into .cpp files</li>
-<li>Updated test harness for testing in independent conda environments</li>
-<li>All issue tests go in their own test module</li>
-<li>Included Python 3.7 tests (note that at the time of this writing, pysam is
+<li><p>Using pytest framework rather than nose for testing</p></li>
+<li><p>Updated <code class="file docutils literal notranslate"><span class="pre">setup.py</span></code> to be more robust and to more clearly separate
+“cythonization” into .cpp files</p></li>
+<li><p>Updated test harness for testing in independent conda environments</p></li>
+<li><p>All issue tests go in their own test module</p></li>
+<li><p>Included Python 3.7 tests (note that at the time of this writing, pysam is
 not yet available on bioconda so that dependency is pip-installed in the
-test) (<a class="reference external" href="https://github.com/daler/pybedtools/issues/254">#254</a>)</li>
-<li>Updated tests to reflect BEDTool 2.27.1 output (<a class="reference external" href="https://github.com/daler/pybedtools/issues/261">#260
-&lt;https://github.com/daler/pybedtools/issues/260&gt;`_`#261</a>)</li>
-<li>Removed the <code class="file docutils literal notranslate"><span class="pre">contrib.classifier</span></code> module, which has been unsupported for
-a while.</li>
-<li>More informative error messages for UCSC tools if they’re missing (<a class="reference external" href="https://github.com/daler/pybedtools/issues/227">#227</a>)</li>
-<li>BedTool objects that are the result of operations that create files that are
+test) (<a class="reference external" href="https://github.com/daler/pybedtools/issues/254">#254</a>)</p></li>
+<li><p>Updated tests to reflect BEDTool 2.27.1 output (<a class="reference external" href="https://github.com/daler/pybedtools/issues/261">#260
+&lt;https://github.com/daler/pybedtools/issues/260&gt;`_`#261</a>)</p></li>
+<li><p>Removed the <code class="file docutils literal notranslate"><span class="pre">contrib.classifier</span></code> module, which has been unsupported for
+a while.</p></li>
+<li><p>More informative error messages for UCSC tools if they’re missing (<a class="reference external" href="https://github.com/daler/pybedtools/issues/227">#227</a>)</p></li>
+<li><p>BedTool objects that are the result of operations that create files that are
 not BED/GTF/GFF/BAM can be more easily converted to pandas.DataFrame with
-<code class="file docutils literal notranslate"><span class="pre">disable_auto_names=True</span></code> arg to <code class="file docutils literal notranslate"><span class="pre">BedTool.to_dataframe()</span></code> (<a class="reference external" href="https://github.com/daler/pybedtools/issues/258">#258</a>)</li>
-<li>Added aliases to existing methods to match current BEDTools commands, e.g.
+<code class="file docutils literal notranslate"><span class="pre">disable_auto_names=True</span></code> arg to <code class="file docutils literal notranslate"><span class="pre">BedTool.to_dataframe()</span></code> (<a class="reference external" href="https://github.com/daler/pybedtools/issues/258">#258</a>)</p></li>
+<li><p>Added aliases to existing methods to match current BEDTools commands, e.g.
 the <code class="file docutils literal notranslate"><span class="pre">BedTool.nucleotide_content</span></code> method can now also be called using
-<code class="file docutils literal notranslate"><span class="pre">BedTool.nuc</span></code> which is consistent with the <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">nuc</span></code> command line name.</li>
-<li>New wrapper for <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">split</span></code>. The wrapper method is called <code class="file docutils literal notranslate"><span class="pre">splitbed</span></code> to
+<code class="file docutils literal notranslate"><span class="pre">BedTool.nuc</span></code> which is consistent with the <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">nuc</span></code> command line name.</p></li>
+<li><p>New wrapper for <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">split</span></code>. The wrapper method is called <code class="file docutils literal notranslate"><span class="pre">splitbed</span></code> to
 maintain backwards compatibility because <code class="file docutils literal notranslate"><span class="pre">pybedtools.BedTool</span></code> objects have
-long had a <code class="file docutils literal notranslate"><span class="pre">split</span></code> method that splits intervals based on a custom function.</li>
-<li>New wrapper for <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">spacing</span></code>.</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.from_dataframe</span></code> handles NaN in dataframes by replacing with <code class="file docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>,
+long had a <code class="file docutils literal notranslate"><span class="pre">split</span></code> method that splits intervals based on a custom function.</p></li>
+<li><p>New wrapper for <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">spacing</span></code>.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.from_dataframe</span></code> handles NaN in dataframes by replacing with <code class="file docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>,
 and is more explicit about kwargs that are passed to <code class="file docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>
-(<a class="reference external" href="https://github.com/daler/pybedtools/issues/257">#257</a>)</li>
-<li>Raise FileNotFoundError when on Python 3 (thanks Gosuke Shibahara, (<a class="reference external" href="https://github.com/daler/pybedtools/issues/255">#255</a>)</li>
-<li>Relocated BEDTools header and .cpp files to the <code class="file docutils literal notranslate"><span class="pre">pybedtools/include</span></code>
+(<a class="reference external" href="https://github.com/daler/pybedtools/issues/257">#257</a>)</p></li>
+<li><p>Raise FileNotFoundError when on Python 3 (thanks Gosuke Shibahara, (<a class="reference external" href="https://github.com/daler/pybedtools/issues/255">#255</a>)</p></li>
+<li><p>Relocated BEDTools header and .cpp files to the <code class="file docutils literal notranslate"><span class="pre">pybedtools/include</span></code>
 directory, so they can more easily be linked to from external packages
-(<a class="reference external" href="https://github.com/daler/pybedtools/issues/253">#253</a>)</li>
-<li>Add test for (<a class="reference external" href="https://github.com/daler/pybedtools/issues/118">#118</a>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.tabix_contigs</span></code> will list the sequence names indexed by tabix
-(<a class="reference external" href="https://github.com/daler/pybedtools/issues/180">#180</a>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.tabix_intervals</span></code> will return an empty generator if the coordinates
+(<a class="reference external" href="https://github.com/daler/pybedtools/issues/253">#253</a>)</p></li>
+<li><p>Add test for (<a class="reference external" href="https://github.com/daler/pybedtools/issues/118">#118</a>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.tabix_contigs</span></code> will list the sequence names indexed by tabix
+(<a class="reference external" href="https://github.com/daler/pybedtools/issues/180">#180</a>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.tabix_intervals</span></code> will return an empty generator if the coordinates
 provided are not indexed, unless <code class="file docutils literal notranslate"><span class="pre">check_coordinates=True</span></code> in which case the
-previous behavior of raising a ValueError is triggered (<a class="reference external" href="https://github.com/daler/pybedtools/issues/181">#181</a>)</li>
-<li>Bugfix: Avoid “ResourceWarning: unclosed file” in <code class="file docutils literal notranslate"><span class="pre">helpers.isBGZIP</span></code> (thanks
-Stephen Bush)</li>
-<li>Bugfix: Interval objects created directly no longer have their filetype set
-to None (<a class="reference external" href="https://github.com/daler/pybedtools/issues/217">#217</a>)</li>
-<li>Bugfix: Fixed the ability to set paths and reload module afterwards (<a class="reference external" href="https://github.com/daler/pybedtools/issues/218">#218</a>, <a class="reference external" href="https://github.com/daler/pybedtools/issues/220">#220</a>, <a class="reference external" href="https://github.com/daler/pybedtools/issues/222">#222</a>)</li>
-<li>Bugfix: <code class="file docutils literal notranslate"><span class="pre">BedTool.head()</span></code> no longer uses an IntervalIterator (which would
+previous behavior of raising a ValueError is triggered (<a class="reference external" href="https://github.com/daler/pybedtools/issues/181">#181</a>)</p></li>
+<li><p>Bugfix: Avoid “ResourceWarning: unclosed file” in <code class="file docutils literal notranslate"><span class="pre">helpers.isBGZIP</span></code> (thanks
+Stephen Bush)</p></li>
+<li><p>Bugfix: Interval objects created directly no longer have their filetype set
+to None (<a class="reference external" href="https://github.com/daler/pybedtools/issues/217">#217</a>)</p></li>
+<li><p>Bugfix: Fixed the ability to set paths and reload module afterwards (<a class="reference external" href="https://github.com/daler/pybedtools/issues/218">#218</a>, <a class="reference external" href="https://github.com/daler/pybedtools/issues/220">#220</a>, <a class="reference external" href="https://github.com/daler/pybedtools/issues/222">#222</a>)</p></li>
+<li><p>Bugfix: <code class="file docutils literal notranslate"><span class="pre">BedTool.head()</span></code> no longer uses an IntervalIterator (which would
 check to make sure lines are valid BED/GTF/GFF/BAM/SAM). Instead, it simply
-prints the first lines of the underlying file.</li>
-<li>Bugfix: functions passed to <code class="file docutils literal notranslate"><span class="pre">BedTool.filter</span></code> and <code class="file docutils literal notranslate"><span class="pre">BedTool.each</span></code> no longer
-silently pass ValueErrors (<a class="reference external" href="https://github.com/daler/pybedtools/issues/231">#231</a>)</li>
-<li>Bugfix: Fixed IndexError in IntervalIterator if there was an empty line (<a class="reference external" href="https://github.com/daler/pybedtools/issues/233">#233</a>)</li>
-<li>Bugfix: Add additional constraint to SAM file detection to avoid incorrectly
-detecting a BED file as SAM (<a class="reference external" href="https://github.com/daler/pybedtools/issues/246">#246</a>)</li>
-<li>Bugfix: accessing Interval.fields after accessing Interval.attrs no longer
-raises ValueError (<a class="reference external" href="https://github.com/daler/pybedtools/issues/246">#246</a>)</li>
+prints the first lines of the underlying file.</p></li>
+<li><p>Bugfix: functions passed to <code class="file docutils literal notranslate"><span class="pre">BedTool.filter</span></code> and <code class="file docutils literal notranslate"><span class="pre">BedTool.each</span></code> no longer
+silently pass ValueErrors (<a class="reference external" href="https://github.com/daler/pybedtools/issues/231">#231</a>)</p></li>
+<li><p>Bugfix: Fixed IndexError in IntervalIterator if there was an empty line (<a class="reference external" href="https://github.com/daler/pybedtools/issues/233">#233</a>)</p></li>
+<li><p>Bugfix: Add additional constraint to SAM file detection to avoid incorrectly
+detecting a BED file as SAM (<a class="reference external" href="https://github.com/daler/pybedtools/issues/246">#246</a>)</p></li>
+<li><p>Bugfix: accessing Interval.fields after accessing Interval.attrs no longer
+raises ValueError (<a class="reference external" href="https://github.com/daler/pybedtools/issues/246">#246</a>)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-10">
 <h2>Changes in v0.7.10<a class="headerlink" href="#changes-in-v0-7-10" title="Permalink to this headline">¶</a></h2>
 <p>Various bug fixes and some minor feature additions:</p>
 <ul class="simple">
-<li>Support for comma-separated lists for <code class="file docutils literal notranslate"><span class="pre">mapBed</span></code> (thanks Chuan-Sheng Foo)</li>
-<li>Support many calls to <code class="file docutils literal notranslate"><span class="pre">tabix_intervals</span></code> without hitting a “Too many open
-files” error (<a class="reference external" href="https://github.com/daler/pybedtools/issues/190">#190</a>)</li>
-<li>Clarify documentation for <code class="file docutils literal notranslate"><span class="pre">genome_coverage</span></code> when used with default
-parameters (<a class="reference external" href="https://github.com/daler/pybedtools/issues/113">#113</a>)</li>
-<li>Ignore stderr from samtools on older zlib versions (<a class="reference external" href="https://github.com/daler/pybedtools/issues/209">#209</a>, thanks Gert Hulselmans)</li>
-<li>Support fetching all regions from a chromosome (<a class="reference external" href="https://github.com/daler/pybedtools/issues/210">#201</a>, thanks Matt Stone)</li>
-<li>Add wrapper for <code class="file docutils literal notranslate"><span class="pre">shiftBed</span></code> (<a class="reference external" href="https://github.com/daler/pybedtools/issues/200">#200</a>, thanks Saket Choudhary)</li>
-<li>Fix <code class="file docutils literal notranslate"><span class="pre">truncate_to_chrom</span></code> in Python 3 (<a class="reference external" href="https://github.com/daler/pybedtools/issues/203">#203</a>, thanks Saulius Lukauskas)</li>
-<li>When making bigWigs, use <code class="file docutils literal notranslate"><span class="pre">bedSort</span></code> to ensure the sort order matches that expected by UCSC tools (<a class="reference external" href="https://github.com/daler/pybedtools/issues/178">#178</a>)</li>
-<li>Fix newline handling of <code class="file docutils literal notranslate"><span class="pre">pysam.ctabix.TabixIterator</span></code> output (<a class="reference external" href="https://github.com/daler/pybedtools/issues/196">#196</a>)</li>
+<li><p>Support for comma-separated lists for <code class="file docutils literal notranslate"><span class="pre">mapBed</span></code> (thanks Chuan-Sheng Foo)</p></li>
+<li><p>Support many calls to <code class="file docutils literal notranslate"><span class="pre">tabix_intervals</span></code> without hitting a “Too many open
+files” error (<a class="reference external" href="https://github.com/daler/pybedtools/issues/190">#190</a>)</p></li>
+<li><p>Clarify documentation for <code class="file docutils literal notranslate"><span class="pre">genome_coverage</span></code> when used with default
+parameters (<a class="reference external" href="https://github.com/daler/pybedtools/issues/113">#113</a>)</p></li>
+<li><p>Ignore stderr from samtools on older zlib versions (<a class="reference external" href="https://github.com/daler/pybedtools/issues/209">#209</a>, thanks Gert Hulselmans)</p></li>
+<li><p>Support fetching all regions from a chromosome (<a class="reference external" href="https://github.com/daler/pybedtools/issues/210">#201</a>, thanks Matt Stone)</p></li>
+<li><p>Add wrapper for <code class="file docutils literal notranslate"><span class="pre">shiftBed</span></code> (<a class="reference external" href="https://github.com/daler/pybedtools/issues/200">#200</a>, thanks Saket Choudhary)</p></li>
+<li><p>Fix <code class="file docutils literal notranslate"><span class="pre">truncate_to_chrom</span></code> in Python 3 (<a class="reference external" href="https://github.com/daler/pybedtools/issues/203">#203</a>, thanks Saulius Lukauskas)</p></li>
+<li><p>When making bigWigs, use <code class="file docutils literal notranslate"><span class="pre">bedSort</span></code> to ensure the sort order matches that expected by UCSC tools (<a class="reference external" href="https://github.com/daler/pybedtools/issues/178">#178</a>)</p></li>
+<li><p>Fix newline handling of <code class="file docutils literal notranslate"><span class="pre">pysam.ctabix.TabixIterator</span></code> output (<a class="reference external" href="https://github.com/daler/pybedtools/issues/196">#196</a>)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-9">
 <h2>Changes in v0.7.9<a class="headerlink" href="#changes-in-v0-7-9" title="Permalink to this headline">¶</a></h2>
 <p>Minor bugfix release:</p>
 <ul class="simple">
-<li>add <code class="file docutils literal notranslate"><span class="pre">contrib.bigwig.bigwigtobedgraph</span></code> (thanks Justin Fear)</li>
-<li>fix <code class="file docutils literal notranslate"><span class="pre">BedTool.seq()</span></code> in Python 3</li>
-<li>fix intron creation (<a class="reference external" href="https://github.com/daler/pybedtools/pull/182">#182</a>, thanks &#64;mmendez12)</li>
-<li>add <code class="file docutils literal notranslate"><span class="pre">six</span></code> as an explicit requirement (<a class="reference external" href="https://github.com/daler/pybedtools/pull/184">#184</a>, thanks &#64;jrdemasi)</li>
-<li>improvements to setup (<a class="reference external" href="https://github.com/daler/pybedtools/issues/185">https://github.com/daler/pybedtools/issues/185</a>)</li>
-<li>make pandas fully optional</li>
+<li><p>add <code class="file docutils literal notranslate"><span class="pre">contrib.bigwig.bigwigtobedgraph</span></code> (thanks Justin Fear)</p></li>
+<li><p>fix <code class="file docutils literal notranslate"><span class="pre">BedTool.seq()</span></code> in Python 3</p></li>
+<li><p>fix intron creation (<a class="reference external" href="https://github.com/daler/pybedtools/pull/182">#182</a>, thanks &#64;mmendez12)</p></li>
+<li><p>add <code class="file docutils literal notranslate"><span class="pre">six</span></code> as an explicit requirement (<a class="reference external" href="https://github.com/daler/pybedtools/pull/184">#184</a>, thanks &#64;jrdemasi)</p></li>
+<li><p>improvements to setup (<a class="reference external" href="https://github.com/daler/pybedtools/issues/185">https://github.com/daler/pybedtools/issues/185</a>)</p></li>
+<li><p>make pandas fully optional</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-8">
 <h2>Changes in v0.7.8<a class="headerlink" href="#changes-in-v0-7-8" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Be more careful about BAM vs bgzipped files (#168)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.bgzip</span></code> now preserves the header when sorting</li>
-<li>In Python 3, parsed BEDTools help string is decoded properly</li>
-<li>Ensure integer number of processes in Python 3 (thanks Illa Shamovsky)</li>
-<li>Add details on IOError messages for broken pipe error</li>
-<li>Make converting to pandas.DataFrames easier with non-standard BED files (thanks Panos Firmpas)</li>
+<li><p>Be more careful about BAM vs bgzipped files (#168)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.bgzip</span></code> now preserves the header when sorting</p></li>
+<li><p>In Python 3, parsed BEDTools help string is decoded properly</p></li>
+<li><p>Ensure integer number of processes in Python 3 (thanks Illa Shamovsky)</p></li>
+<li><p>Add details on IOError messages for broken pipe error</p></li>
+<li><p>Make converting to pandas.DataFrames easier with non-standard BED files (thanks Panos Firmpas)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-7">
 <h2>Changes in v0.7.7<a class="headerlink" href="#changes-in-v0-7-7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Chromsizes for dm6 and mm10 assemblies added to <code class="file docutils literal notranslate"><span class="pre">genome_registry</span></code></li>
-<li>Better Python 3 compatibility in the <code class="file docutils literal notranslate"><span class="pre">long_range_interaction</span></code> module</li>
-<li>New <code class="file docutils literal notranslate"><span class="pre">featurefuncs.UniqueID</span></code> class, useful for ensuring all features in a file
-have a unique ID in their name field.</li>
-<li>Fix error message when a specified genome file doesn’t exist (thanks Saket Choudhary)</li>
+<li><p>Chromsizes for dm6 and mm10 assemblies added to <code class="file docutils literal notranslate"><span class="pre">genome_registry</span></code></p></li>
+<li><p>Better Python 3 compatibility in the <code class="file docutils literal notranslate"><span class="pre">long_range_interaction</span></code> module</p></li>
+<li><p>New <code class="file docutils literal notranslate"><span class="pre">featurefuncs.UniqueID</span></code> class, useful for ensuring all features in a file
+have a unique ID in their name field.</p></li>
+<li><p>Fix error message when a specified genome file doesn’t exist (thanks Saket Choudhary)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-6">
 <h2>Changes in v0.7.6<a class="headerlink" href="#changes-in-v0-7-6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>New module <code class="file docutils literal notranslate"><span class="pre">pybedtools.contrib.long_range_interaction</span></code> for working with
-HiC-like data.</li>
+<li><p>New module <code class="file docutils literal notranslate"><span class="pre">pybedtools.contrib.long_range_interaction</span></code> for working with
+HiC-like data.</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-5">
 <h2>Changes in v0.7.5<a class="headerlink" href="#changes-in-v0-7-5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>When using tabix-indexed files, <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> and <code class="file docutils literal notranslate"><span class="pre">bgzip</span></code> are no longer required to
-be installed separately. Only <code class="file docutils literal notranslate"><span class="pre">pysam</span></code> is needed.</li>
-<li>Recent BEDTools releases support multiple files for the <code class="file docutils literal notranslate"><span class="pre">-b</span></code> argument of
+<li><p>When using tabix-indexed files, <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> and <code class="file docutils literal notranslate"><span class="pre">bgzip</span></code> are no longer required to
+be installed separately. Only <code class="file docutils literal notranslate"><span class="pre">pysam</span></code> is needed.</p></li>
+<li><p>Recent BEDTools releases support multiple files for the <code class="file docutils literal notranslate"><span class="pre">-b</span></code> argument of
 <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">intersect</span></code>. This version of <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> now supports multiple
 files as well. Note that it is still possible to provide a list of strings
 representing intervals as the <code class="file docutils literal notranslate"><span class="pre">b</span></code> argument to <code class="file docutils literal notranslate"><span class="pre">BedTool.intersect</span></code>. To
@@ -162,28 +201,28 @@ differentiate between a list of intervals and a list of filenames, the first
 item converted into an <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> object; if it fails then consider the items
 to be filenames; otherwise assume strings representing intervals. This check
 only occurs if the <code class="file docutils literal notranslate"><span class="pre">b</span></code> argument is a list or tuple; other iterable types are
-always assumed to be intervals.</li>
+always assumed to be intervals.</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-4">
 <h2>Changes in v0.7.4<a class="headerlink" href="#changes-in-v0-7-4" title="Permalink to this headline">¶</a></h2>
 <p>Bugfix release.</p>
 <ul class="simple">
-<li>fix <a class="reference external" href="https://github.com/daler/pybedtools/issues/147">#147</a> so that warnings
-are simply passed to the user without raising exceptions</li>
-<li>in setup.py, allow depedencies to have “loose” versions with suffixes like
-“rc1”</li>
-<li>fix in <code class="file docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> on empty files (thanks Brad Chapman (<a class="reference external" href="https://github.com/daler/pybedtools/pull/149">PR #149</a>)</li>
+<li><p>fix <a class="reference external" href="https://github.com/daler/pybedtools/issues/147">#147</a> so that warnings
+are simply passed to the user without raising exceptions</p></li>
+<li><p>in setup.py, allow depedencies to have “loose” versions with suffixes like
+“rc1”</p></li>
+<li><p>fix in <code class="file docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> on empty files (thanks Brad Chapman (<a class="reference external" href="https://github.com/daler/pybedtools/pull/149">PR #149</a>)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-1">
 <h2>Changes in v0.7.1<a class="headerlink" href="#changes-in-v0-7-1" title="Permalink to this headline">¶</a></h2>
 <p>This is largely a bugfix release with the following changes:</p>
 <ul class="simple">
-<li>fix for some BAM headers (thanks Gabriel Platt)</li>
-<li>unified IntervalIterator to address some streaming issues (fixes #143)</li>
-<li>fix bug where <code class="file docutils literal notranslate"><span class="pre">__add__</span></code> was not re-raising exceptions (thanks Brad Chapman
-and Dan Halligan)</li>
+<li><p>fix for some BAM headers (thanks Gabriel Platt)</p></li>
+<li><p>unified IntervalIterator to address some streaming issues (fixes #143)</p></li>
+<li><p>fix bug where <code class="file docutils literal notranslate"><span class="pre">__add__</span></code> was not re-raising exceptions (thanks Brad Chapman
+and Dan Halligan)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-7-0">
@@ -294,8 +333,8 @@ so:</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This currently only works on Linux; contributions to Mac conda recipes (see
+<p class="admonition-title">Note</p>
+<p>This currently only works on Linux; contributions to Mac conda recipes (see
 the <code class="file docutils literal notranslate"><span class="pre">conda</span></code> dir in the github repo) would be welcomed.</p>
 </div>
 </div>
@@ -304,14 +343,14 @@ the <code class="file docutils literal notranslate"><span class="pre">conda</spa
 <h2>Changes in v0.6.9<a class="headerlink" href="#changes-in-v0-6-9" title="Permalink to this headline">¶</a></h2>
 <p>Minor bug fix release.</p>
 <ul class="simple">
-<li>improved the automatic field name handling when converting an interval file to
-a <code class="file docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">DataFrame</span></code>.</li>
-<li>fixed a bug in <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> methods <code class="file docutils literal notranslate"><span class="pre">all_hits</span></code>, <code class="file docutils literal notranslate"><span class="pre">any_hits</span></code> and <code class="file docutils literal notranslate"><span class="pre">count_hits</span></code>
+<li><p>improved the automatic field name handling when converting an interval file to
+a <code class="file docutils literal notranslate"><span class="pre">pandas</span> <span class="pre">DataFrame</span></code>.</p></li>
+<li><p>fixed a bug in <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> methods <code class="file docutils literal notranslate"><span class="pre">all_hits</span></code>, <code class="file docutils literal notranslate"><span class="pre">any_hits</span></code> and <code class="file docutils literal notranslate"><span class="pre">count_hits</span></code>
 where zero-length features were being counted multiple times (thanks Brent
-Pedersen and Kyle Smith)</li>
-<li>bgzip and tabix paths can now be configured separately (thanks Rob Beagrie)</li>
-<li>fixed a bug where streaming BAM files were read fully into memory (thanks
-Alexey Sergushichev)</li>
+Pedersen and Kyle Smith)</p></li>
+<li><p>bgzip and tabix paths can now be configured separately (thanks Rob Beagrie)</p></li>
+<li><p>fixed a bug where streaming BAM files were read fully into memory (thanks
+Alexey Sergushichev)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6-8">
@@ -326,26 +365,26 @@ in the C code causing the notorious “Too many files open” error.</p>
 allows multiple <code class="file docutils literal notranslate"><span class="pre">-b</span></code> files is not yet implemented in <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code>.</p>
 <p>New features:</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.fisher()</span></code> wraps the new BEDTools <code class="file docutils literal notranslate"><span class="pre">fisher</span></code> tool.  The result is
-an object containing parsed results.</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.colormap_normalize()</span></code> accepts a <code class="file docutils literal notranslate"><span class="pre">percentile</span></code> argument, useful when
-applying colormaps to data with a handful of extreme outliers</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.to_datafame()</span></code> converts a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object into a <code class="file docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.fisher()</span></code> wraps the new BEDTools <code class="file docutils literal notranslate"><span class="pre">fisher</span></code> tool.  The result is
+an object containing parsed results.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.colormap_normalize()</span></code> accepts a <code class="file docutils literal notranslate"><span class="pre">percentile</span></code> argument, useful when
+applying colormaps to data with a handful of extreme outliers</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.to_datafame()</span></code> converts a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object into a <code class="file docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>
 with columns named after the appropriate fields for the filetype (thanks
-Radhouane Aniba for the suggestion)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">BedTool.tail()</span></code> to complement <code class="file docutils literal notranslate"><span class="pre">BedTool.head()</span></code> (thanks Radhouane Aniba for
-the suggestion)</li>
-<li>Add hg38 and hg38.default chromsizes</li>
+Radhouane Aniba for the suggestion)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.tail()</span></code> to complement <code class="file docutils literal notranslate"><span class="pre">BedTool.head()</span></code> (thanks Radhouane Aniba for
+the suggestion)</p></li>
+<li><p>Add hg38 and hg38.default chromsizes</p></li>
 </ul>
 <p>Minor bug fixes:</p>
 <ul class="simple">
-<li>Ensure tuple-like args to <code class="file docutils literal notranslate"><span class="pre">parallel_apply</span></code> (fixes #109)</li>
-<li>Temp fix for BEDTools v2.20.0 which required the <code class="file docutils literal notranslate"><span class="pre">-w</span></code> arg to come before the
-<code class="file docutils literal notranslate"><span class="pre">-s</span></code> arg in <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">makewindows</span></code> (#81)</li>
-<li>Better (i.e., UCSC Genome Browser-compliant) defaults for <code class="file docutils literal notranslate"><span class="pre">featurefuncs.expand_fields</span></code>.</li>
-<li>Fix for BedTool.all_hits() and any_hits() which will now show hits for
+<li><p>Ensure tuple-like args to <code class="file docutils literal notranslate"><span class="pre">parallel_apply</span></code> (fixes #109)</p></li>
+<li><p>Temp fix for BEDTools v2.20.0 which required the <code class="file docutils literal notranslate"><span class="pre">-w</span></code> arg to come before the
+<code class="file docutils literal notranslate"><span class="pre">-s</span></code> arg in <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">makewindows</span></code> (#81)</p></li>
+<li><p>Better (i.e., UCSC Genome Browser-compliant) defaults for <code class="file docutils literal notranslate"><span class="pre">featurefuncs.expand_fields</span></code>.</p></li>
+<li><p>Fix for BedTool.all_hits() and any_hits() which will now show hits for
 zero-length features intersecting with other zero-length features with the
-same coordinates.</li>
+same coordinates.</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6-6">
@@ -358,24 +397,24 @@ represents an empty file.</p>
 empty.  Previously:</p>
 <blockquote>
 <div><ul class="simple">
-<li>a + b = a</li>
-<li>b + a = b</li>
-<li>a - b = a</li>
-<li>b - a = a</li>
-<li>b - b = b</li>
-<li>a + a = a</li>
+<li><p>a + b = a</p></li>
+<li><p>b + a = b</p></li>
+<li><p>a - b = a</p></li>
+<li><p>b - a = a</p></li>
+<li><p>b - b = b</p></li>
+<li><p>a + a = a</p></li>
 </ul>
 </div></blockquote>
 <p>The following changes have been made (indicated in <strong>bold</strong>), which hopefully
 make more logical sense:</p>
 <blockquote>
 <div><ul class="simple">
-<li><strong>a + b = b</strong></li>
-<li>b + a = b</li>
-<li>a - b = a</li>
-<li><strong>b - a = b</strong></li>
-<li>b - b = b</li>
-<li>a + a = a</li>
+<li><p><strong>a + b = b</strong></p></li>
+<li><p>b + a = b</p></li>
+<li><p>a - b = a</p></li>
+<li><p><strong>b - a = b</strong></p></li>
+<li><p>b - b = b</p></li>
+<li><p>a + a = a</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -383,237 +422,234 @@ make more logical sense:</p>
 <h2>Changes in v0.6.5<a class="headerlink" href="#changes-in-v0-6-5" title="Permalink to this headline">¶</a></h2>
 <p>This is a minor bug-fix release:</p>
 <ul class="simple">
-<li>Fix for BedTool.all_hits() and any_hits() which will now show hits for
-zero-length features with the same coordinates, like the rest of BEDTools.</li>
-<li>Improved error-handling to avoid Python interpreter crashing in cases when
+<li><p>Fix for BedTool.all_hits() and any_hits() which will now show hits for
+zero-length features with the same coordinates, like the rest of BEDTools.</p></li>
+<li><p>Improved error-handling to avoid Python interpreter crashing in cases when
 a BED file on the filesystem becomes unavailable after a BedTool object has
-been created for it.</li>
+been created for it.</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6-4">
 <h2>Changes in v0.6.4<a class="headerlink" href="#changes-in-v0-6-4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Full integration with BEDTools v2.18.  This includes some compatibility fixes
+<li><p>Full integration with BEDTools v2.18.  This includes some compatibility fixes
 for the new buffered output capabilities of BEDTool <code class="file docutils literal notranslate"><span class="pre">intersect</span></code> and wrapping
-the new <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">sample</span></code> tool.</li>
-<li>Overloaded operators (<code class="file docutils literal notranslate"><span class="pre">+</span></code> and <code class="file docutils literal notranslate"><span class="pre">-</span></code>) allow empty files as input, even using
-BEDTools v2.18+.</li>
-<li>Travis-CI builds now use BEDTools v2.18+ for tests.</li>
-<li>Fix for <a class="reference internal" href="pybedtools.featurefuncs.midpoint.html#pybedtools.featurefuncs.midpoint" title="pybedtools.featurefuncs.midpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.midpoint()</span></code></a> (thanks ny-shao)</li>
-<li>Fix to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> (thanks Michael Reschen)</li>
+the new <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">sample</span></code> tool.</p></li>
+<li><p>Overloaded operators (<code class="file docutils literal notranslate"><span class="pre">+</span></code> and <code class="file docutils literal notranslate"><span class="pre">-</span></code>) allow empty files as input, even using
+BEDTools v2.18+.</p></li>
+<li><p>Travis-CI builds now use BEDTools v2.18+ for tests.</p></li>
+<li><p>Fix for <a class="reference internal" href="pybedtools.featurefuncs.midpoint.html#pybedtools.featurefuncs.midpoint" title="pybedtools.featurefuncs.midpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.midpoint()</span></code></a> (thanks ny-shao)</p></li>
+<li><p>Fix to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> (thanks Michael Reschen)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6-3">
 <h2>Changes in v0.6.3<a class="headerlink" href="#changes-in-v0-6-3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>New <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.parallel</span></code> module for working with many operations in
+<li><p>New <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.parallel</span></code> module for working with many operations in
 parallel.  See the docs for <a class="reference internal" href="autodocs/pybedtools.parallel.parallel_apply.html#pybedtools.parallel.parallel_apply" title="pybedtools.parallel.parallel_apply"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.parallel.parallel_apply()</span></code></a> for
-details.</li>
-<li><a class="reference internal" href="autodocs/pybedtools.contrib.bigbed.bigbed.html#pybedtools.contrib.bigbed.bigbed" title="pybedtools.contrib.bigbed.bigbed"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigbed.bigbed()</span></code></a> for converting to bigBed format,
-along with auto-SQL creation as needed.</li>
-<li>New function <a class="reference internal" href="autodocs/pybedtools.contrib.bigbed.bigbed_to_bed.html#pybedtools.contrib.bigbed.bigbed_to_bed" title="pybedtools.contrib.bigbed.bigbed_to_bed"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigbed.bigbed_to_bed()</span></code></a>, so now bigBed
--&gt; BED and BED -&gt; bigBed interconversions are trivial.</li>
-<li>Support for remote BAMs by passing <code class="file docutils literal notranslate"><span class="pre">remote=True</span></code> when creating
-a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object</li>
-<li>New method <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.at()</span></code> for subsetting a BedTool by a set of (sorted)
-indexes.</li>
-<li>New functions <a class="reference internal" href="pybedtools.featurefuncs.gff2bed.html#pybedtools.featurefuncs.gff2bed" title="pybedtools.featurefuncs.gff2bed"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurefuncs.gff2bed()</span></code></a> and <a class="reference internal" href="pybedtools.featurefuncs.bed2gff.html#pybedtools.featurefuncs.bed2gff" title="pybedtools.featurefuncs.bed2gff"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurefuncs.bed2gff()</span></code></a>
-for use with <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code>, for easy converting GFF/GTF to BED</li>
-<li>New function <code class="xref py py-func docutils literal notranslate"><span class="pre">add_color()</span></code> for applying matplotlib colormaps to BED
-files; see also new method <code class="xref py py-meth docutils literal notranslate"><span class="pre">pybedtools.BedTool.colormap_normalize()</span></code>.</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.plotting.BinaryHeatmap</span></code> class for working with results
-from <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.multi_intersect()</span></code>.</li>
-<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code> now also has some filter capabilities (if provided
-function’s return value evaluates to False, feature will be skipped)</li>
-<li>Better detection for samtools (thanks Luca Beltrame)</li>
-<li>Expand BEDToolsError (thanks Ryan Layer)</li>
-<li>Creating a BedTool from a list of intervals now saves to temp file instead of treating
-like a consume-once iterator (#73)</li>
-<li>Various fixes to keyword arg handling to match semantics of BEDTools.</li>
-<li>Command line help and improved docs for the <code class="file docutils literal notranslate"><span class="pre">peak_pie.py</span></code> script.</li>
-<li>Fix to GFF attributes (thanks Libor Mořkovský)</li>
-<li>Fix to labels in <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib.venn_maker.py</span></code> (thanks Luca
-Pinello)</li>
-<li>Make the naive scaling (to million mapped reads) in
-<code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigwig.bam_to_bigwiq()</span></code> optional.</li>
-<li>Fix for <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> to handle cases where at least one input is an
-empty file</li>
-<li>Removed SciPy dependency</li>
-<li>Every commit is built with Travis-CI for continuous integration testing of
-changes to source code.</li>
+details.</p></li>
+<li><p><a class="reference internal" href="autodocs/pybedtools.contrib.bigbed.bigbed.html#pybedtools.contrib.bigbed.bigbed" title="pybedtools.contrib.bigbed.bigbed"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigbed.bigbed()</span></code></a> for converting to bigBed format,
+along with auto-SQL creation as needed.</p></li>
+<li><p>New function <a class="reference internal" href="autodocs/pybedtools.contrib.bigbed.bigbed_to_bed.html#pybedtools.contrib.bigbed.bigbed_to_bed" title="pybedtools.contrib.bigbed.bigbed_to_bed"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigbed.bigbed_to_bed()</span></code></a>, so now bigBed
+-&gt; BED and BED -&gt; bigBed interconversions are trivial.</p></li>
+<li><p>Support for remote BAMs by passing <code class="file docutils literal notranslate"><span class="pre">remote=True</span></code> when creating
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object</p></li>
+<li><p>New method <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.at()</span></code> for subsetting a BedTool by a set of (sorted)
+indexes.</p></li>
+<li><p>New functions <a class="reference internal" href="pybedtools.featurefuncs.gff2bed.html#pybedtools.featurefuncs.gff2bed" title="pybedtools.featurefuncs.gff2bed"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurefuncs.gff2bed()</span></code></a> and <a class="reference internal" href="pybedtools.featurefuncs.bed2gff.html#pybedtools.featurefuncs.bed2gff" title="pybedtools.featurefuncs.bed2gff"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurefuncs.bed2gff()</span></code></a>
+for use with <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code>, for easy converting GFF/GTF to BED</p></li>
+<li><p>New function <code class="xref py py-func docutils literal notranslate"><span class="pre">add_color()</span></code> for applying matplotlib colormaps to BED
+files; see also new method <code class="xref py py-meth docutils literal notranslate"><span class="pre">pybedtools.BedTool.colormap_normalize()</span></code>.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.plotting.BinaryHeatmap</span></code> class for working with results
+from <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.multi_intersect()</span></code>.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code> now also has some filter capabilities (if provided
+function’s return value evaluates to False, feature will be skipped)</p></li>
+<li><p>Better detection for samtools (thanks Luca Beltrame)</p></li>
+<li><p>Expand BEDToolsError (thanks Ryan Layer)</p></li>
+<li><p>Creating a BedTool from a list of intervals now saves to temp file instead of treating
+like a consume-once iterator (#73)</p></li>
+<li><p>Various fixes to keyword arg handling to match semantics of BEDTools.</p></li>
+<li><p>Command line help and improved docs for the <code class="file docutils literal notranslate"><span class="pre">peak_pie.py</span></code> script.</p></li>
+<li><p>Fix to GFF attributes (thanks Libor Mořkovský)</p></li>
+<li><p>Fix to labels in <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib.venn_maker.py</span></code> (thanks Luca
+Pinello)</p></li>
+<li><p>Make the naive scaling (to million mapped reads) in
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigwig.bam_to_bigwiq()</span></code> optional.</p></li>
+<li><p>Fix for <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> to handle cases where at least one input is an
+empty file</p></li>
+<li><p>Removed SciPy dependency</p></li>
+<li><p>Every commit is built with Travis-CI for continuous integration testing of
+changes to source code.</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6-2">
 <h2>Changes in v0.6.2<a class="headerlink" href="#changes-in-v0-6-2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Wrapped new tools available in BEDTools 2.17: <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.jaccard()</span></code> and
+<li><p>Wrapped new tools available in BEDTools 2.17: <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.jaccard()</span></code> and
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.reldist()</span></code> wrap the new <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">jaccard</span></code> and <code class="file docutils literal notranslate"><span class="pre">bedtools</span>
-<span class="pre">reldist</span></code> respectively.</li>
-<li>Initial implementations of building blocks for computing statistics,
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.absolute_distance()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.relative_distance()</span></code></li>
-<li><a class="reference internal" href="pybedtools.featurefuncs.three_prime.html#pybedtools.featurefuncs.three_prime" title="pybedtools.featurefuncs.three_prime"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.three_prime()</span></code></a>,
+<span class="pre">reldist</span></code> respectively.</p></li>
+<li><p>Initial implementations of building blocks for computing statistics,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.absolute_distance()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.relative_distance()</span></code></p></li>
+<li><p><a class="reference internal" href="pybedtools.featurefuncs.three_prime.html#pybedtools.featurefuncs.three_prime" title="pybedtools.featurefuncs.three_prime"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.three_prime()</span></code></a>,
 <a class="reference internal" href="pybedtools.featurefuncs.five_prime.html#pybedtools.featurefuncs.five_prime" title="pybedtools.featurefuncs.five_prime"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.five_prime()</span></code></a>, and
 <a class="reference internal" href="pybedtools.featurefuncs.TSS.html#pybedtools.featurefuncs.TSS" title="pybedtools.featurefuncs.TSS"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.TSS()</span></code></a> modifier functions that can be passed to
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code></li>
-<li><a class="reference internal" href="autodocs/pybedtools.contrib.plotting.binary_heatmap.html#pybedtools.contrib.plotting.binary_heatmap" title="pybedtools.contrib.plotting.binary_heatmap"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.binary_heatmap()</span></code></a> for visualizing results
-from <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.multi_intersect()</span></code></li>
-<li>Fixed a long-standing issue where streaming <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects did not
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code></p></li>
+<li><p><a class="reference internal" href="autodocs/pybedtools.contrib.plotting.binary_heatmap.html#pybedtools.contrib.plotting.binary_heatmap" title="pybedtools.contrib.plotting.binary_heatmap"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.binary_heatmap()</span></code></a> for visualizing results
+from <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.multi_intersect()</span></code></p></li>
+<li><p>Fixed a long-standing issue where streaming <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects did not
 close their open file handles (stdout).  When working with many (i.e. tens
 of thousands) files, this caused the operating system to hit its open file
-limit.  This is now fixed.</li>
-<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.random_op()</span></code>, a new mechanism for implementing operations that
+limit.  This is now fixed.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.random_op()</span></code>, a new mechanism for implementing operations that
 you would like to apply over tens of thousands of shuffled interval files.
 This makes it easy to extend the existing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> multiprocessing
-functionality.</li>
-<li><a class="reference internal" href="autodocs/pybedtools.contrib.bigwig.bam_to_bigwig.html#pybedtools.contrib.bigwig.bam_to_bigwig" title="pybedtools.contrib.bigwig.bam_to_bigwig"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigwig.bam_to_bigwig()</span></code></a>, a helper function to create
-a libary-size-scaled bigWig file from an input BAM file.</li>
-<li><a class="reference internal" href="autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection" title="pybedtools.contrib.plotting.TrackCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.TrackCollection</span></code></a> class, which handles
+functionality.</p></li>
+<li><p><a class="reference internal" href="autodocs/pybedtools.contrib.bigwig.bam_to_bigwig.html#pybedtools.contrib.bigwig.bam_to_bigwig" title="pybedtools.contrib.bigwig.bam_to_bigwig"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.bigwig.bam_to_bigwig()</span></code></a>, a helper function to create
+a libary-size-scaled bigWig file from an input BAM file.</p></li>
+<li><p><a class="reference internal" href="autodocs/pybedtools.contrib.plotting.TrackCollection.html#pybedtools.contrib.plotting.TrackCollection" title="pybedtools.contrib.plotting.TrackCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.TrackCollection</span></code></a> class, which handles
 plotting multiple files at once, using a provided “stylesheet” configuration
-to tweak colors etc.</li>
-<li><a class="reference internal" href="autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo" title="pybedtools.contrib.plotting.BedToolsDemo"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.BedToolsDemo</span></code></a> and
+to tweak colors etc.</p></li>
+<li><p><a class="reference internal" href="autodocs/pybedtools.contrib.plotting.BedToolsDemo.html#pybedtools.contrib.plotting.BedToolsDemo" title="pybedtools.contrib.plotting.BedToolsDemo"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.BedToolsDemo</span></code></a> and
 <a class="reference internal" href="autodocs/pybedtools.contrib.plotting.ConfiguredBedToolsDemo.html#pybedtools.contrib.plotting.ConfiguredBedToolsDemo" title="pybedtools.contrib.plotting.ConfiguredBedToolsDemo"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.ConfiguredBedToolsDemo</span></code></a>, useful for
 running many graphical demos of BEDTools operations using the same
 “stylesheet” configuration.  Run <code class="file docutils literal notranslate"><span class="pre">pybedtools/contrib/plotting.py</span></code> for
-a demo.</li>
-<li>chromsizes dictionaries for common assemblies now have a <code class="file docutils literal notranslate"><span class="pre">default</span></code> attribute,
+a demo.</p></li>
+<li><p>chromsizes dictionaries for common assemblies now have a <code class="file docutils literal notranslate"><span class="pre">default</span></code> attribute,
 which is an OrderedDict of a default set of chromosome.  For example,
 <code class="docutils literal notranslate"><span class="pre">pybedtools.chromsizes('hg19').default</span></code> contains only the entries for the
-autosomes and X and Y.</li>
-<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> now works better with multiprocessing</li>
-<li>added <code class="file docutils literal notranslate"><span class="pre">include_distribution</span></code> kwarg to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code>, which will
+autosomes and X and Y.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> now works better with multiprocessing</p></li>
+<li><p>added <code class="file docutils literal notranslate"><span class="pre">include_distribution</span></code> kwarg to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code>, which will
 attach the full distribution of all the randomized files to the results
-dictionary.</li>
-<li>New method implementing Jaccard statistic (with pvalue using randomizations):
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.random_jaccard()</span></code></li>
-<li><a class="reference internal" href="pybedtools.featurefuncs.extend_fields.html#pybedtools.featurefuncs.extend_fields" title="pybedtools.featurefuncs.extend_fields"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurefuncs.extend_fields()</span></code></a> helper function to pad fields with <code class="file docutils literal notranslate"><span class="pre">'.'</span></code>,
-useful for manipulating features with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code> method</li>
-<li>Fixed a bug where BAM files, when written to disk via <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code>,
-were saved as SAM files.</li>
-<li>Better GTF/GFF detection, and if the input had quoted attribute values, then
-the output will, too</li>
-<li>various minor bug fixes and improvments as documented in the github commit
-logs….</li>
+dictionary.</p></li>
+<li><p>New method implementing Jaccard statistic (with pvalue using randomizations):
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.random_jaccard()</span></code></p></li>
+<li><p><a class="reference internal" href="pybedtools.featurefuncs.extend_fields.html#pybedtools.featurefuncs.extend_fields" title="pybedtools.featurefuncs.extend_fields"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurefuncs.extend_fields()</span></code></a> helper function to pad fields with <code class="file docutils literal notranslate"><span class="pre">'.'</span></code>,
+useful for manipulating features with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code> method</p></li>
+<li><p>Fixed a bug where BAM files, when written to disk via <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code>,
+were saved as SAM files.</p></li>
+<li><p>Better GTF/GFF detection, and if the input had quoted attribute values, then
+the output will, too</p></li>
+<li><p>various minor bug fixes and improvments as documented in the github commit
+logs….</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6-1">
 <h2>Changes in v0.6.1<a class="headerlink" href="#changes-in-v0-6-1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>New <a class="reference internal" href="autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track" title="pybedtools.contrib.plotting.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.Track</span></code></a> class allows plotting of
+<li><p>New <a class="reference internal" href="autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track" title="pybedtools.contrib.plotting.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.Track</span></code></a> class allows plotting of
 features with matplotlib.  The <code class="file docutils literal notranslate"><span class="pre">Track</span></code> class subclasses
 <code class="file docutils literal notranslate"><span class="pre">matplotlib.collections.PolyCollection</span></code>, making it rather fast for 1000s of
-features.</li>
-<li>See the <code class="file docutils literal notranslate"><span class="pre">scripts/pbt_plotting_example.py</span></code> script for a way of visually showing
+features.</p></li>
+<li><p>See the <code class="file docutils literal notranslate"><span class="pre">scripts/pbt_plotting_example.py</span></code> script for a way of visually showing
 the results of BEDTools operations … great for teaching BEDTools to new
-users.</li>
-<li>New <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.liftover()</span></code> method (needs a chain file from UCSC and the
-<code class="file docutils literal notranslate"><span class="pre">liftover</span></code> program installed)</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation using tuples/lists of values – everything is
-converted to string before creating an <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> object.</li>
-<li>bugfix: <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.window_maker()</span></code> now handles the <code class="file docutils literal notranslate"><span class="pre">genome</span></code> kwarg correctly</li>
-<li>bugfix: <code class="file docutils literal notranslate"><span class="pre">pybedtools.cleanup(remove_all=True)</span></code> now works correctly when using
-the default temp dir</li>
+users.</p></li>
+<li><p>New <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.liftover()</span></code> method (needs a chain file from UCSC and the
+<code class="file docutils literal notranslate"><span class="pre">liftover</span></code> program installed)</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation using tuples/lists of values – everything is
+converted to string before creating an <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> object.</p></li>
+<li><p>bugfix: <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.window_maker()</span></code> now handles the <code class="file docutils literal notranslate"><span class="pre">genome</span></code> kwarg correctly</p></li>
+<li><p>bugfix: <code class="file docutils literal notranslate"><span class="pre">pybedtools.cleanup(remove_all=True)</span></code> now works correctly when using
+the default temp dir</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-6">
 <h2>Changes in v0.6<a class="headerlink" href="#changes-in-v0-6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Overhaul in online documentation to hopefully make functionality easier to
+<li><p>Overhaul in online documentation to hopefully make functionality easier to
 find and/or discover.  See <a class="reference internal" href="autodoc_source.html#pybedtools-reference"><span class="std std-ref">pybedtools Reference</span></a> for summary tables of
 the different parts of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>; each entry is linked to further
 class/method/function-specific docs.  These more detailed docs also have
-links to view the source code from within the HTML docs for more exploration.</li>
-<li><a class="reference internal" href="autodocs/pybedtools.contrib.venn_maker.html#module-pybedtools.contrib.venn_maker" title="pybedtools.contrib.venn_maker"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.venn_maker()</span></code></a> function that acts as an interface to
+links to view the source code from within the HTML docs for more exploration.</p></li>
+<li><p><a class="reference internal" href="autodocs/pybedtools.contrib.venn_maker.html#module-pybedtools.contrib.venn_maker" title="pybedtools.contrib.venn_maker"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.contrib.venn_maker()</span></code></a> function that acts as an interface to
 the VennDiagram R package – just give it some BED files and it’ll do the
-rest.</li>
-<li>Debug mode – <a class="reference internal" href="autodocs/pybedtools.debug_mode.html#pybedtools.debug_mode" title="pybedtools.debug_mode"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.debug_mode()</span></code></a> – for verbose logging messages.</li>
-<li>Fixed an open file leak (OSError: too many open files) that occured when
-opening thousands of streaming bed files in a single session.</li>
-<li>Initial support for tabix files.  Useful for extracting features from
-a single region when you don’t need a full intersection.</li>
-<li>New <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code> module (in the spirit of Django’s <code class="file docutils literal notranslate"><span class="pre">contrib</span></code>)
-where higher-level functionality will be built.</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.Classifier</span></code> class for identifying the classes of
+rest.</p></li>
+<li><p>Debug mode – <a class="reference internal" href="autodocs/pybedtools.debug_mode.html#pybedtools.debug_mode" title="pybedtools.debug_mode"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.debug_mode()</span></code></a> – for verbose logging messages.</p></li>
+<li><p>Fixed an open file leak (OSError: too many open files) that occured when
+opening thousands of streaming bed files in a single session.</p></li>
+<li><p>Initial support for tabix files.  Useful for extracting features from
+a single region when you don’t need a full intersection.</p></li>
+<li><p>New <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code> module (in the spirit of Django’s <code class="file docutils literal notranslate"><span class="pre">contrib</span></code>)
+where higher-level functionality will be built.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.Classifier</span></code> class for identifying the classes of
 intervals.  Useful for making pie charts of intronic/exonic/intergenic etc
 classes of peaks.  Note that this is somewhat redundant with the new <code class="file docutils literal notranslate"><span class="pre">mapBed</span></code>
-program in BEDTools.</li>
-<li>Experimental <a class="reference internal" href="autodocs/pybedtools.contrib.IntersectionMatrix.html#pybedtools.contrib.IntersectionMatrix" title="pybedtools.contrib.IntersectionMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.IntersectionMatrix</span></code></a> class for
+program in BEDTools.</p></li>
+<li><p>Experimental <a class="reference internal" href="autodocs/pybedtools.contrib.IntersectionMatrix.html#pybedtools.contrib.IntersectionMatrix" title="pybedtools.contrib.IntersectionMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.IntersectionMatrix</span></code></a> class for
 handling pairwise intersections of a large number of interval files –
 including a local sqlite3 database to avoid re-computing already up-to-date
-results.</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects are now hashable (it’s just a hash of the string
-representation) so that you can use them as dictionary keys.</li>
-<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.split()</span></code> method, which accepts a function returning an iterable
+results.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects are now hashable (it’s just a hash of the string
+representation) so that you can use them as dictionary keys.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.split()</span></code> method, which accepts a function returning an iterable
 of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects. The function is applied to each interval.
 Useful for, say, splitting each gene into TSS, TTS, upstream and downstream
-features.</li>
-<li><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.truncate_to_chrom()</span></code> method, which truncates features to the
+features.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.truncate_to_chrom()</span></code> method, which truncates features to the
 chromosome sizes of the provided genome.  Useful for when you try uploading
 a MACS-generated track to the UCSC genome browser, but it complains because
 peak boundaries have been extended outside chromosome boundaries … this
-method fixes the problem.</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects now have full functionality of <code class="xref py py-class docutils literal notranslate"><span class="pre">IntervalFile</span></code>
+method fixes the problem.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects now have full functionality of <code class="xref py py-class docutils literal notranslate"><span class="pre">IntervalFile</span></code>
 objects – that is, they have the methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.any_hits()</span></code>,
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.all_hits()</span></code>, and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.count_hits()</span></code> for doing
 single-interval tests.  Sometimes this will be faster than using the tabix
-support, sometimes it won’t – it’s best to try both, depending on your data.</li>
-<li>String representations of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects now have a newline at the
+support, sometimes it won’t – it’s best to try both, depending on your data.</p></li>
+<li><p>String representations of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects now have a newline at the
 end, just like a raw lines from a BED/GFF/VCF file.  Previously, this was
 inconsistent and sometimes led to extra blank lines in “streaming”
 <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instances … which in turn led to problems with BEDTools
-programs using the chromsweep algorithm.</li>
-<li>Concatentate multiple files with one call to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> (thanks Jake
-Biesinger)</li>
-<li><dl class="first docutils">
-<dt>Wrapped previous BEDTools programs:</dt>
-<dd><ul class="first last">
-<li><code class="file docutils literal notranslate"><span class="pre">unionBedGraphs</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.union_bedgraphs()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">pairToBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.pair_to_bed()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">pairToPair</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.pair_to_pair()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">bedpeToBam</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.bedpe_to_bam()</span></code>)</li>
+programs using the chromsweep algorithm.</p></li>
+<li><p>Concatentate multiple files with one call to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> (thanks Jake
+Biesinger)</p></li>
+<li><dl class="simple">
+<dt>Wrapped previous BEDTools programs:</dt><dd><ul>
+<li><p><code class="file docutils literal notranslate"><span class="pre">unionBedGraphs</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.union_bedgraphs()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">pairToBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.pair_to_bed()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">pairToPair</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.pair_to_pair()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">bedpeToBam</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.bedpe_to_bam()</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Wrapped new BEDTools programs:</dt>
-<dd><ul class="first last">
-<li><code class="file docutils literal notranslate"><span class="pre">mapBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.map()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">clusterBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cluster()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">randomBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.random()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">multiIntersectBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.multi_intersect()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">expandCols</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.expand()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">windowMaker</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.window_maker()</span></code>)</li>
-<li><code class="file docutils literal notranslate"><span class="pre">bamToFastq</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.bam_to_fastq()</span></code>)</li>
+<li><dl class="simple">
+<dt>Wrapped new BEDTools programs:</dt><dd><ul>
+<li><p><code class="file docutils literal notranslate"><span class="pre">mapBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.map()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">clusterBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.cluster()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">randomBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.random()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">multiIntersectBed</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.multi_intersect()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">expandCols</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.expand()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">windowMaker</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.window_maker()</span></code>)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">bamToFastq</span></code> (<code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.bam_to_fastq()</span></code>)</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li>Made venn_gchart and venn_mpl tests more stable</li>
-<li>Automatic documenting of which args are passed implicitly for BedTool method
-calls</li>
-<li>More robust mechanisms for specifying custom paths for BEDTools installation
+<li><p>Made venn_gchart and venn_mpl tests more stable</p></li>
+<li><p>Automatic documenting of which args are passed implicitly for BedTool method
+calls</p></li>
+<li><p>More robust mechanisms for specifying custom paths for BEDTools installation
 as well as optional tabix, samtools, and R installations.  This makes it
-easier to explicitly specify which versions of the tools to use.</li>
-<li>Improvements to GFF attributes: handle unescaped “=” (from sim4db GFFs) and
-make Attribute class properly dict-like (thanks Libor Mořkovský)</li>
+easier to explicitly specify which versions of the tools to use.</p></li>
+<li><p>Improvements to GFF attributes: handle unescaped “=” (from sim4db GFFs) and
+make Attribute class properly dict-like (thanks Libor Mořkovský)</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-5-5">
 <h2>Changes in v0.5.5<a class="headerlink" href="#changes-in-v0-5-5" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">Use <code class="file docutils literal notranslate"><span class="pre">additional_args</span></code> kwarg to pass arguments verbatim to the underlying
+<li><p>Use <code class="file docutils literal notranslate"><span class="pre">additional_args</span></code> kwarg to pass arguments verbatim to the underlying
 BEDTools programs.  This is necessary for arguments like
 <code class="file docutils literal notranslate"><span class="pre">genomeCoverageBed</span></code>’s <code class="file docutils literal notranslate"><span class="pre">-5</span></code> argument, since <code class="file docutils literal notranslate"><span class="pre">5=True</span></code> is not a valid Python
 expression.  For example, you can use:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="s1">&#39;-5&#39;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="s1">&#39;-5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Brent Pedersen added support for just 2 BED files in the Venn diagram scripts</p>
-</li>
-<li><p class="first"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.all_hits()</span></code> uses the underlying BEDTools C++ API to get all hits
+<li><p>Brent Pedersen added support for just 2 BED files in the Venn diagram scripts</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.all_hits()</span></code> uses the underlying BEDTools C++ API to get all hits
 in a file for a particular Interval:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="n">interval</span> <span class="o">=</span> <span class="n">Interval</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
@@ -621,38 +657,34 @@ in a file for a particular Interval:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">New semantics for comparisons of Interval objects.  Visual documentation of
-this coming soon.</p>
-</li>
-<li><p class="first">More tests for latest BEDTools code</p>
-</li>
-<li><p class="first">Interval instances are now pickleable; they can now be used across processes
-for parallel code.</p>
-</li>
+<li><p>New semantics for comparisons of Interval objects.  Visual documentation of
+this coming soon.</p></li>
+<li><p>More tests for latest BEDTools code</p></li>
+<li><p>Interval instances are now pickleable; they can now be used across processes
+for parallel code.</p></li>
 </ul>
 </div>
 <div class="section" id="changes-in-v0-5">
 <h2>Changes in v0.5<a class="headerlink" href="#changes-in-v0-5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>support for running random intersections in parallel.  See
+<li><p>support for running random intersections in parallel.  See
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomintersection()</span></code> (thanks,
-Jake Biesinger)</li>
-<li>Cython <code class="file docutils literal notranslate"><span class="pre">Interval.__copy__()</span></code> for compatibility with <code class="file docutils literal notranslate"><span class="pre">copy</span></code> module</li>
-<li><code class="file docutils literal notranslate"><span class="pre">seek()</span></code> and <code class="file docutils literal notranslate"><span class="pre">rewind()</span></code> methods for <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> class, used for Aaron
+Jake Biesinger)</p></li>
+<li><p>Cython <code class="file docutils literal notranslate"><span class="pre">Interval.__copy__()</span></code> for compatibility with <code class="file docutils literal notranslate"><span class="pre">copy</span></code> module</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">seek()</span></code> and <code class="file docutils literal notranslate"><span class="pre">rewind()</span></code> methods for <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> class, used for Aaron
 Quinlan’s new chromsweep algorithm (<a class="reference external" href="https://github.com/arq5x/chrom_sweep">https://github.com/arq5x/chrom_sweep</a>)
-(thanks, Aaron)</li>
-<li>support and tests for new BEDTools programs <code class="file docutils literal notranslate"><span class="pre">multiBamCov</span></code>, <code class="file docutils literal notranslate"><span class="pre">tagBam</span></code>, and <code class="file docutils literal notranslate"><span class="pre">nucBed</span></code></li>
-<li><code class="file docutils literal notranslate"><span class="pre">output=&quot;out.bed&quot;</span></code> kwarg for all wrapped methods for explicitly specifying
-where to save output – no more moving tempfiles</li>
-<li><dl class="first docutils">
-<dt>docs improvements:</dt>
-<dd><ul class="first last">
-<li>direct comparison with a shell script to illustrate benefit of
-<code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code>; see <a class="reference internal" href="sh-comparison.html#shell-comparison"><span class="std std-ref">Shell script comparison</span></a></li>
-<li>more installation details</li>
-<li>0- and 1-based coordinates discussed early on (the 3 brief examples page,
-<a class="reference internal" href="3-brief-examples.html#examples"><span class="std std-ref">Three brief examples</span></a>)</li>
-<li>development history and open collaboration model (see <a class="reference internal" href="pybedtools-dev-history.html#devmodel"><span class="std std-ref">pybedtools development model</span></a>)</li>
+(thanks, Aaron)</p></li>
+<li><p>support and tests for new BEDTools programs <code class="file docutils literal notranslate"><span class="pre">multiBamCov</span></code>, <code class="file docutils literal notranslate"><span class="pre">tagBam</span></code>, and <code class="file docutils literal notranslate"><span class="pre">nucBed</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">output=&quot;out.bed&quot;</span></code> kwarg for all wrapped methods for explicitly specifying
+where to save output – no more moving tempfiles</p></li>
+<li><dl class="simple">
+<dt>docs improvements:</dt><dd><ul>
+<li><p>direct comparison with a shell script to illustrate benefit of
+<code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code>; see <a class="reference internal" href="sh-comparison.html#shell-comparison"><span class="std std-ref">Shell script comparison</span></a></p></li>
+<li><p>more installation details</p></li>
+<li><p>0- and 1-based coordinates discussed early on (the 3 brief examples page,
+<a class="reference internal" href="3-brief-examples.html#examples"><span class="std std-ref">Three brief examples</span></a>)</p></li>
+<li><p>development history and open collaboration model (see <a class="reference internal" href="pybedtools-dev-history.html#devmodel"><span class="std std-ref">pybedtools development model</span></a>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -686,8 +718,10 @@ where to save output – no more moving tempfiles</li>
 <li class="toctree-l1"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-8-2">Changes in v0.8.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-8-1">Changes in v0.8.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-8-0">Changes in v0.8.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-7-10">Changes in v0.7.10</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-7-9">Changes in v0.7.9</a></li>
@@ -718,22 +752,20 @@ where to save output – no more moving tempfiles</li>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="autodocs/pybedtools.scripts.py_ms_example.html" title="previous chapter">pybedtools.scripts.py_ms_example</a></li>
+      <li>Previous: <a href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" title="previous chapter">pybedtools.contrib.long_range_interaction.cis_trans_interactions</a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -757,9 +789,10 @@ where to save output – no more moving tempfiles</li>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="autodocs/pybedtools.scripts.py_ms_example.html" title="pybedtools.scripts.py_ms_example"
+          <a href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Changelog</a></li> 
       </ul>
     </div>
 
@@ -768,7 +801,7 @@ where to save output – no more moving tempfiles</li>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

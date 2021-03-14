@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.mask\_fasta
+﻿pybedtools.bedtool.BedTool.mask\_fasta
 ======================================
 
 .. currentmodule:: pybedtools.bedtool

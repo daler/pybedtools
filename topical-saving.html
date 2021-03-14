@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Saving BedTool results &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saving BedTool results &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Using BedTool objects as iterators/generators" href="topical-iterators.html" />
@@ -84,7 +83,7 @@ BED/GFF/GTF/BAM/SAM/VCF.</p>
 a 2-column file containing the number of intervals in each featuretype:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -96,7 +95,7 @@ be fixed in the next BEDTools release (see
 <a class="reference external" href="https://github.com/arq5x/bedtools2/issues/435">https://github.com/arq5x/bedtools2/issues/435</a>,
 <a class="reference external" href="https://github.com/arq5x/bedtools2/issues/436">https://github.com/arq5x/bedtools2/issues/436</a> for details).</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># bedtools v2.26.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 <span class="go">UTR 0</span>
 <span class="go">CDS 2</span>
 <span class="go">intron      4</span>
@@ -113,11 +112,11 @@ be fixed in the next BEDTools release (see
 <p>Trying to iterate over <code class="file docutils literal notranslate"><span class="pre">d</span></code> (<code class="file docutils literal notranslate"><span class="pre">[i</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">d]</span></code>) or save it (<code class="file docutils literal notranslate"><span class="pre">d.saveas()</span></code>) raises
 exceptions. This is because:</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><span class="pre">saveas()</span></code> is expected to return a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object that can be
+<li><p><code class="file docutils literal notranslate"><span class="pre">saveas()</span></code> is expected to return a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object that can be
 used with other <code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> tools. We can’t create a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object out of
-an unsupported file format like this</li>
-<li>iterating over a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object is expected to yield <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> objects,
-but these lines can’t be converted into the supported formats</li>
+an unsupported file format like this</p></li>
+<li><p>iterating over a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object is expected to yield <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> objects,
+but these lines can’t be converted into the supported formats</p></li>
 </ul>
 <p>To save the output to a filename of your choosing, provide the <code class="file docutils literal notranslate"><span class="pre">output</span></code>
 argument instead of <code class="file docutils literal notranslate"><span class="pre">saveas()</span></code>, like this:</p>
@@ -159,8 +158,8 @@ tools, e.g.:</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorial-contents.html">Tutorial Contents</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="topical-documentation-contents.html">Topical Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="topical-design-principles.html">Design principles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Saving <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topical-create-a-bedtool.html">Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Saving <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-iterators.html">Using BedTool objects as iterators/generators</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-low-level-ops.html">Low-level operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-bam.html">Working with BAM files</a></li>
@@ -170,13 +169,13 @@ tools, e.g.:</p>
 <li class="toctree-l2"><a class="reference internal" href="topical-wrapping.html">Wrapping new tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topical-comparisons.html">Comparisons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sh-comparison.html">Shell script comparison</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pybedtools-dev-history.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> development model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flow-of-commands.html">Under the hood</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a></li>
 </ul>
 
@@ -185,24 +184,22 @@ tools, e.g.:</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="topical-documentation-contents.html">Topical Documentation</a><ul>
-      <li>Previous: <a href="topical-create-a-bedtool.html" title="previous chapter">Creating a <code class="docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
+      <li>Previous: <a href="topical-create-a-bedtool.html" title="previous chapter">Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code></a></li>
       <li>Next: <a href="topical-iterators.html" title="next chapter">Using BedTool objects as iterators/generators</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -231,8 +228,9 @@ tools, e.g.:</p>
         <li class="right" >
           <a href="topical-create-a-bedtool.html" title="Creating a BedTool"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Saving <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> results</a></li> 
       </ul>
     </div>
 
@@ -241,7 +239,7 @@ tools, e.g.:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

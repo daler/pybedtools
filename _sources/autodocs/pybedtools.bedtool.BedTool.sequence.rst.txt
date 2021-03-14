@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.sequence
+﻿pybedtools.bedtool.BedTool.sequence
 ===================================
 
 .. currentmodule:: pybedtools.bedtool

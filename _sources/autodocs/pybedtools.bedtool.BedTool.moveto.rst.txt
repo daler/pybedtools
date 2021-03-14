@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.moveto
+﻿pybedtools.bedtool.BedTool.moveto
 =================================
 
 .. currentmodule:: pybedtools.bedtool

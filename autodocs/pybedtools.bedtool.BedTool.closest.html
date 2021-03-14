@@ -1,18 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pybedtools.bedtool.BedTool.closest &#8212; pybedtools 0.8.0 documentation</title>
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pybedtools.bedtool.BedTool.closest &#8212; pybedtools 0.8.2 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.coverage" href="pybedtools.bedtool.BedTool.coverage.html" />
@@ -35,9 +34,9 @@
             
   <div class="section" id="pybedtools-bedtool-bedtool-closest">
 <h1>pybedtools.bedtool.BedTool.closest<a class="headerlink" href="#pybedtools-bedtool-bedtool-closest" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
+<dl class="py method">
 <dt id="pybedtools.bedtool.BedTool.closest">
-<code class="descclassname">BedTool.</code><code class="descname">closest</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.closest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.closest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">BedTool.</span></code><code class="sig-name descname"><span class="pre">closest</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.closest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.closest" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">closest</span></code>.</p>
 <p>Return a new BedTool object containing closest features in <em>b</em>.  Note
@@ -47,7 +46,7 @@ special “_closest” methods to work with the resulting file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="s1">&#39;in.bed&#39;</span><span class="p">)</span>
 
 <span class="c1"># get the closest feature in &#39;other.bed&#39; on the same strand</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="s1">&#39;other.bed&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">closest</span><span class="p">(</span><span class="s1">&#39;other.bed&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -55,7 +54,7 @@ special “_closest” methods to work with the resulting file.</p>
 is implicitly passed as the <code class="file docutils literal notranslate"><span class="pre">-a</span></code> argument to <code class="file docutils literal notranslate"><span class="pre">closestBed</span></code></p>
 <p><strong>Original BEDTools help:</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">closest</span> <span class="p">(</span><span class="n">aka</span> <span class="n">closestBed</span><span class="p">)</span>
-<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">27.1</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="o">.</span><span class="mf">30.0</span>
 <span class="n">Summary</span><span class="p">:</span> <span class="n">For</span> <span class="n">each</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">A</span><span class="p">,</span> <span class="n">finds</span> <span class="n">the</span> <span class="n">closest</span> 
          <span class="n">feature</span> <span class="p">(</span><span class="n">upstream</span> <span class="ow">or</span> <span class="n">downstream</span><span class="p">)</span> <span class="ow">in</span> <span class="n">B</span><span class="o">.</span>
 
@@ -90,11 +89,11 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
                 <span class="n">This</span> <span class="n">option</span> <span class="n">requires</span> <span class="o">-</span><span class="n">D</span> <span class="ow">and</span> <span class="n">follows</span> <span class="n">its</span> <span class="n">orientation</span>
                 <span class="n">rules</span> <span class="k">for</span> <span class="n">determining</span> <span class="n">what</span> <span class="ow">is</span> <span class="s2">&quot;downstream&quot;</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">fu</span>     <span class="n">Choose</span> <span class="n">first</span> <span class="kn">from</span> <span class="nn">features</span> <span class="nn">in</span> <span class="nn">B</span> <span class="nn">that</span> <span class="nn">are</span> <span class="nn">upstream</span> <span class="nn">of</span> <span class="nn">features</span> <span class="nn">in</span> <span class="nn">A.</span>
+        <span class="o">-</span><span class="n">fu</span>     <span class="n">Choose</span> <span class="n">first</span> <span class="kn">from</span> <span class="nn">features</span> <span class="ow">in</span> <span class="n">B</span> <span class="n">that</span> <span class="n">are</span> <span class="n">upstream</span> <span class="n">of</span> <span class="n">features</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span>
                 <span class="n">This</span> <span class="n">option</span> <span class="n">requires</span> <span class="o">-</span><span class="n">D</span> <span class="ow">and</span> <span class="n">follows</span> <span class="n">its</span> <span class="n">orientation</span>
                 <span class="n">rules</span> <span class="k">for</span> <span class="n">determining</span> <span class="n">what</span> <span class="ow">is</span> <span class="s2">&quot;upstream&quot;</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">fd</span>     <span class="n">Choose</span> <span class="n">first</span> <span class="kn">from</span> <span class="nn">features</span> <span class="nn">in</span> <span class="nn">B</span> <span class="nn">that</span> <span class="nn">are</span> <span class="nn">downstream</span> <span class="nn">of</span> <span class="nn">features</span> <span class="nn">in</span> <span class="nn">A.</span>
+        <span class="o">-</span><span class="n">fd</span>     <span class="n">Choose</span> <span class="n">first</span> <span class="kn">from</span> <span class="nn">features</span> <span class="ow">in</span> <span class="n">B</span> <span class="n">that</span> <span class="n">are</span> <span class="n">downstream</span> <span class="n">of</span> <span class="n">features</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span>
                 <span class="n">This</span> <span class="n">option</span> <span class="n">requires</span> <span class="o">-</span><span class="n">D</span> <span class="ow">and</span> <span class="n">follows</span> <span class="n">its</span> <span class="n">orientation</span>
                 <span class="n">rules</span> <span class="k">for</span> <span class="n">determining</span> <span class="n">what</span> <span class="ow">is</span> <span class="s2">&quot;downstream&quot;</span><span class="o">.</span>
 
@@ -103,8 +102,8 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
                 <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="nb">all</span> <span class="n">such</span> <span class="n">features</span> <span class="ow">in</span> <span class="n">B</span> <span class="n">are</span> <span class="n">reported</span><span class="o">.</span>
                 <span class="n">Here</span> <span class="n">are</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">options</span><span class="p">:</span>
                 <span class="o">-</span> <span class="s2">&quot;all&quot;</span>    <span class="n">Report</span> <span class="nb">all</span> <span class="n">ties</span> <span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span>
-                <span class="o">-</span> <span class="s2">&quot;first&quot;</span>  <span class="n">Report</span> <span class="n">the</span> <span class="n">first</span> <span class="n">tie</span> <span class="n">that</span> <span class="n">occurred</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">B</span> <span class="nb">file</span><span class="o">.</span>
-                <span class="o">-</span> <span class="s2">&quot;last&quot;</span>   <span class="n">Report</span> <span class="n">the</span> <span class="n">last</span> <span class="n">tie</span> <span class="n">that</span> <span class="n">occurred</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">B</span> <span class="nb">file</span><span class="o">.</span>
+                <span class="o">-</span> <span class="s2">&quot;first&quot;</span>  <span class="n">Report</span> <span class="n">the</span> <span class="n">first</span> <span class="n">tie</span> <span class="n">that</span> <span class="n">occurred</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">B</span> <span class="n">file</span><span class="o">.</span>
+                <span class="o">-</span> <span class="s2">&quot;last&quot;</span>   <span class="n">Report</span> <span class="n">the</span> <span class="n">last</span> <span class="n">tie</span> <span class="n">that</span> <span class="n">occurred</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">B</span> <span class="n">file</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">mdb</span>    <span class="n">How</span> <span class="n">multiple</span> <span class="n">databases</span> <span class="n">are</span> <span class="n">resolved</span><span class="o">.</span>
                 <span class="o">-</span> <span class="s2">&quot;each&quot;</span>    <span class="n">Report</span> <span class="n">closest</span> <span class="n">records</span> <span class="k">for</span> <span class="n">each</span> <span class="n">database</span> <span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span>
@@ -143,7 +142,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 
         <span class="o">-</span><span class="n">split</span>  <span class="n">Treat</span> <span class="s2">&quot;split&quot;</span> <span class="n">BAM</span> <span class="ow">or</span> <span class="n">BED12</span> <span class="n">entries</span> <span class="k">as</span> <span class="n">distinct</span> <span class="n">BED</span> <span class="n">intervals</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">g</span>      <span class="n">Provide</span> <span class="n">a</span> <span class="n">genome</span> <span class="nb">file</span> <span class="n">to</span> <span class="n">enforce</span> <span class="n">consistent</span> <span class="n">chromosome</span> <span class="n">sort</span> <span class="n">order</span>
+        <span class="o">-</span><span class="n">g</span>      <span class="n">Provide</span> <span class="n">a</span> <span class="n">genome</span> <span class="n">file</span> <span class="n">to</span> <span class="n">enforce</span> <span class="n">consistent</span> <span class="n">chromosome</span> <span class="n">sort</span> <span class="n">order</span>
                 <span class="n">across</span> <span class="nb">input</span> <span class="n">files</span><span class="o">.</span> <span class="n">Only</span> <span class="n">applies</span> <span class="n">when</span> <span class="n">used</span> <span class="k">with</span> <span class="o">-</span><span class="nb">sorted</span> <span class="n">option</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">nonamecheck</span>    <span class="n">For</span> <span class="nb">sorted</span> <span class="n">data</span><span class="p">,</span> <span class="n">don</span><span class="s1">&#39;t throw an error if the file has different naming conventions</span>
@@ -160,16 +159,16 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 
         <span class="o">-</span><span class="n">bed</span>    <span class="n">If</span> <span class="n">using</span> <span class="n">BAM</span> <span class="nb">input</span><span class="p">,</span> <span class="n">write</span> <span class="n">output</span> <span class="k">as</span> <span class="n">BED</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">header</span> <span class="n">Print</span> <span class="n">the</span> <span class="n">header</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">A</span> <span class="nn">file</span> <span class="nn">prior</span> <span class="nn">to</span> <span class="nn">results.</span>
+        <span class="o">-</span><span class="n">header</span> <span class="n">Print</span> <span class="n">the</span> <span class="n">header</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">A</span> <span class="n">file</span> <span class="n">prior</span> <span class="n">to</span> <span class="n">results</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">nobuf</span>  <span class="n">Disable</span> <span class="n">buffered</span> <span class="n">output</span><span class="o">.</span> <span class="n">Using</span> <span class="n">this</span> <span class="n">option</span> <span class="n">will</span> <span class="n">cause</span> <span class="n">each</span> <span class="n">line</span>
                 <span class="n">of</span> <span class="n">output</span> <span class="n">to</span> <span class="n">be</span> <span class="n">printed</span> <span class="k">as</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">generated</span><span class="p">,</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">saved</span>
-                <span class="ow">in</span> <span class="n">a</span> <span class="nb">buffer</span><span class="o">.</span> <span class="n">This</span> <span class="n">will</span> <span class="n">make</span> <span class="n">printing</span> <span class="n">large</span> <span class="n">output</span> <span class="n">files</span> 
+                <span class="ow">in</span> <span class="n">a</span> <span class="n">buffer</span><span class="o">.</span> <span class="n">This</span> <span class="n">will</span> <span class="n">make</span> <span class="n">printing</span> <span class="n">large</span> <span class="n">output</span> <span class="n">files</span> 
                 <span class="n">noticeably</span> <span class="n">slower</span><span class="p">,</span> <span class="n">but</span> <span class="n">can</span> <span class="n">be</span> <span class="n">useful</span> <span class="ow">in</span> <span class="n">conjunction</span> <span class="k">with</span>
                 <span class="n">other</span> <span class="n">software</span> <span class="n">tools</span> <span class="ow">and</span> <span class="n">scripts</span> <span class="n">that</span> <span class="n">need</span> <span class="n">to</span> <span class="n">process</span> <span class="n">one</span>
                 <span class="n">line</span> <span class="n">of</span> <span class="n">bedtools</span> <span class="n">output</span> <span class="n">at</span> <span class="n">a</span> <span class="n">time</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">iobuf</span>  <span class="n">Specify</span> <span class="n">amount</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">to</span> <span class="n">use</span> <span class="k">for</span> <span class="nb">input</span> <span class="nb">buffer</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">iobuf</span>  <span class="n">Specify</span> <span class="n">amount</span> <span class="n">of</span> <span class="n">memory</span> <span class="n">to</span> <span class="n">use</span> <span class="k">for</span> <span class="nb">input</span> <span class="n">buffer</span><span class="o">.</span>
                 <span class="n">Takes</span> <span class="n">an</span> <span class="n">integer</span> <span class="n">argument</span><span class="o">.</span> <span class="n">Optional</span> <span class="n">suffixes</span> <span class="n">K</span><span class="o">/</span><span class="n">M</span><span class="o">/</span><span class="n">G</span> <span class="n">supported</span><span class="o">.</span>
                 <span class="n">Note</span><span class="p">:</span> <span class="n">currently</span> <span class="n">has</span> <span class="n">no</span> <span class="n">effect</span> <span class="k">with</span> <span class="n">compressed</span> <span class="n">files</span><span class="o">.</span>
 
@@ -208,13 +207,12 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 <li class="toctree-l1"><a class="reference internal" href="../topical-documentation-contents.html">Topical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../FAQs.html">FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Scripts</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#bedtool-creation"><code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> creation</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../autodoc_source.html#bedtools-wrappers"><code class="file docutils literal notranslate"><span class="pre">BEDTools</span></code> wrappers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#other-bedtool-methods">Other <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#module-level-functions">Module-level functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#scripts">Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../autodoc_source.html#pybedtools-contrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.contrib</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changelog</a></li>
@@ -224,7 +222,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../autodoc_source.html"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
+  <li><a href="../autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a><ul>
       <li>Previous: <a href="pybedtools.bedtool.BedTool.window.html" title="previous chapter">pybedtools.bedtool.BedTool.window</a></li>
       <li>Next: <a href="pybedtools.bedtool.BedTool.coverage.html" title="next chapter">pybedtools.bedtool.BedTool.coverage</a></li>
   </ul></li>
@@ -232,17 +230,15 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -271,8 +267,9 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.window.html" title="pybedtools.bedtool.BedTool.window"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.closest</a></li> 
       </ul>
     </div>
 
@@ -281,7 +278,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

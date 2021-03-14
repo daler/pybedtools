@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.nucleotide\_content
+﻿pybedtools.bedtool.BedTool.nucleotide\_content
 ==============================================
 
 .. currentmodule:: pybedtools.bedtool

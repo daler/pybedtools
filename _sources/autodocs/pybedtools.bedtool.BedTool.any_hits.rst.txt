@@ -1,4 +1,4 @@
-pybedtools.bedtool.BedTool.any\_hits
+﻿pybedtools.bedtool.BedTool.any\_hits
 ====================================
 
 .. currentmodule:: pybedtools.bedtool
