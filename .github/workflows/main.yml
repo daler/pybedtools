@@ -23,14 +23,14 @@ jobs:
         echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
 
 
-    #- name: cythonize and pip
-    #  run: |
-    #    eval "$(conda shell.bash hook)"
-    #    conda create -p ./cython-env -y cython
-    #    conda activate ./cython-env
-    #    python setup.py clean cythonize sdist
-    #    (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
-    #    conda deactivate
+    - name: cythonize and pip
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda create -p ./cython-env -y cython
+        conda activate ./cython-env
+        python setup.py clean cythonize sdist
+        (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
+        conda deactivate
 
 
     # Set up conda and install pybedtools into that env
