@@ -23,7 +23,6 @@ jobs:
 
 
 
-  docs:
     - name: git setup
       # Set up git and export env vars to be used in later steps.
       #   Note the unconventional mechanism for exporting envs by appending to
