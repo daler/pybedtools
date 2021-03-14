@@ -43,6 +43,7 @@ jobs:
         tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
         cd pybedtools-*
         pip install -e .
+        cd $WORKDIR
 
 
     - name: tests
