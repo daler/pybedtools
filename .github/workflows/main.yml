@@ -54,7 +54,7 @@ jobs:
         conda activate ./test-env
         cd /tmp/pybedtools-uncompressed/pybedtools-*
         pytest -v --doctest-modules
-        pytest -v test/genomepy_integration.py
+        pytest -v pybedtools/test/genomepy_integration.py
         cp -r $WORKDIR/docs .
         (cd docs && make clean doctest)
         cd $WORKDIR
