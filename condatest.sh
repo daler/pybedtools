@@ -26,7 +26,7 @@ if conda env list | grep -q $with_cy; then
     conda env remove -y -n $with_cy
 fi
 conda create -n $with_cy -y --channel conda-forge --channel bioconda python=${PY_VERSION} cython
-source activate $with_cy
+conda activate $with_cy
 
 # Clone the repo -- so we're only catching things committed to git -- into
 # a temp dir
@@ -52,7 +52,7 @@ log "installing source package with pip"
 # ----------------------------------------------------------------------------
 # Deactivate that env, and build another one with all requirements that we'll
 # use for unit tests.
-source deactivate
+conda deactivate
 no_cy="pbtpy${PY_VERSION}_conda_no_cython"
 if ! conda env list | grep -q $no_cy; then
     log "creating environment"
