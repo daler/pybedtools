@@ -246,7 +246,7 @@ extensions = [
         depends=glob.glob('pybedtools/include/*h'),
         libraries=['stdc++', 'z'],
         include_dirs=['pybedtools/include/'],
-        sources=['pybedtools/cbedtools' + EXT] + glob.glob('pybedtools/include/*.cpp'),
+        sources=['pybedtools/cbedtools' + EXT] + sorted(glob.glob('pybedtools/include/*.cpp')),
         language='c++'),
 
     Extension(
@@ -254,7 +254,7 @@ extensions = [
         depends=glob.glob('pybedtools/include/*h'),
         libraries=['stdc++', 'z'],
         include_dirs=['pybedtools/include/'],
-        sources=['pybedtools/featurefuncs' + EXT] + glob.glob('pybedtools/include/*.cpp'),
+        sources=['pybedtools/featurefuncs' + EXT] + sorted(glob.glob('pybedtools/include/*.cpp')),
         language='c++'),
 ]
 
