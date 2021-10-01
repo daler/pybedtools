@@ -162,5 +162,6 @@
       ~Track.sticky_edges
       ~Track.update_dict
       ~Track.zorder
+      ~Track.colorbar
    
    

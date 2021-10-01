@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Installation &#8212; pybedtools 0.8.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,11 +33,11 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="installation">
+  <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> is a Python package that wraps BEDTools, so you’ll need both
 installed.</p>
-<div class="section" id="install-via-conda">
+<section id="install-via-conda">
 <span id="condainstall"></span><h2>Install via <code class="file docutils literal notranslate"><span class="pre">conda</span></code><a class="headerlink" href="#install-via-conda" title="Permalink to this headline">¶</a></h2>
 <p>This is by far the easiest option.  If you’re usng the <a class="reference external" href="http://continuum.io/downloads">Anaconda Python
 distribution</a> on Linux, then the following
@@ -50,7 +51,7 @@ will install <code class="xref py py-mod docutils literal notranslate"><span cla
 </div>
 <p>Otherwise, read on for installation on other platforms and in other
 environments.</p>
-<div class="section" id="required">
+<section id="required">
 <h3>Required<a class="headerlink" href="#required" title="Permalink to this headline">¶</a></h3>
 <dl class="field-list simple">
 <dt class="field-odd"><a class="reference external" href="http://www.python.org/">Python</a></dt>
@@ -74,8 +75,8 @@ untested. Windows is not supported.</p></li>
 </ul>
 </dd>
 </dl>
-</div>
-<div class="section" id="optional">
+</section>
+<section id="optional">
 <h3>Optional<a class="headerlink" href="#optional" title="Permalink to this headline">¶</a></h3>
 <p>The following external tools are <strong>optional</strong>:</p>
 <dl class="field-list simple">
@@ -85,15 +86,15 @@ a chrom:start-stop coordinate.  Similar to the above, you should be able to
 call <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> from any directory.</p>
 </dd>
 </dl>
-</div>
-</div>
-<div class="section" id="installing-pybedtools">
+</section>
+</section>
+<section id="installing-pybedtools">
 <h2>Installing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code><a class="headerlink" href="#installing-pybedtools" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="install-latest-release-via-conda-recommended">
+<section id="install-latest-release-via-conda-recommended">
 <h3>Install latest release via <code class="file docutils literal notranslate"><span class="pre">conda</span></code> (recommended)<a class="headerlink" href="#install-latest-release-via-conda-recommended" title="Permalink to this headline">¶</a></h3>
 <p>See <a class="reference internal" href="#condainstall"><span class="std std-ref">Install via conda</span></a> section above.</p>
-</div>
-<div class="section" id="install-latest-release-using-pip">
+</section>
+<section id="install-latest-release-using-pip">
 <h3>Install latest release using <code class="file docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#install-latest-release-using-pip" title="Permalink to this headline">¶</a></h3>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> is on PyPI, so you can install via <code class="file docutils literal notranslate"><span class="pre">pip</span></code> like most Python
 packages. Depending on your Python installation, this may require admin
@@ -101,8 +102,8 @@ rights:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="install-development-version-via-github">
+</section>
+<section id="install-development-version-via-github">
 <h3>Install development version via github<a class="headerlink" href="#install-development-version-via-github" title="Permalink to this headline">¶</a></h3>
 <p>Assumptions:</p>
 <ol class="arabic simple">
@@ -131,9 +132,9 @@ source files have been changed, run:</p>
 </pre></div>
 </div>
 <p>See <code class="file docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">--usage</span></code> for more information.</p>
-</div>
-</div>
-<div class="section" id="quick-test">
+</section>
+</section>
+<section id="quick-test">
 <h2>Quick test<a class="headerlink" href="#quick-test" title="Permalink to this headline">¶</a></h2>
 <p>Paste the following into a new file called <code class="file docutils literal notranslate"><span class="pre">mytest.py</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
@@ -148,9 +149,9 @@ source files have been changed, run:</p>
 <span class="n">chr1</span>        <span class="mi">900</span>     <span class="mi">901</span>     <span class="n">feature4</span>        <span class="mi">0</span>       <span class="o">+</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="running-tests-compiling-docs">
+</section>
+</section>
+<section id="running-tests-compiling-docs">
 <h1>Running tests, compiling docs<a class="headerlink" href="#running-tests-compiling-docs" title="Permalink to this headline">¶</a></h1>
 <p>There are several modes of testing described below, and in each mode both unit
 tests and doctests can be run.</p>
@@ -161,7 +162,7 @@ e.g., by running:</p>
 <span class="n">cd</span> <span class="n">pybedtools</span>
 </pre></div>
 </div>
-<div class="section" id="test-current-installation">
+<section id="test-current-installation">
 <h2>Test current installation<a class="headerlink" href="#test-current-installation" title="Permalink to this headline">¶</a></h2>
 <p>To test within the existing installation, install the additional packages for
 testing:</p>
@@ -179,8 +180,8 @@ testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">cd</span> <span class="n">docs</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">doctest</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="test-within-isolated-conda-environments">
+</section>
+<section id="test-within-isolated-conda-environments">
 <h2>Test within isolated conda environments<a class="headerlink" href="#test-within-isolated-conda-environments" title="Permalink to this headline">¶</a></h2>
 <p>Run the <code class="file docutils literal notranslate"><span class="pre">condatest.sh</span></code> script in the top-level dir of the repo. This script
 creates a new isolated conda environment and runs both unit tests and doctests.</p>
@@ -192,16 +193,16 @@ creates a new isolated conda environment and runs both unit tests and doctests.<
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">condatest</span><span class="o">.</span><span class="n">sh</span> <span class="mi">3</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="compile-docs">
+</section>
+<section id="compile-docs">
 <h2>Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this headline">¶</a></h2>
 <p>To compile the docs, from the top-level <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> directory:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">cd</span> <span class="n">docs</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">html</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Then point a browser to <code class="file docutils literal notranslate"><span class="pre">docs/build/html/index.html</span></code>.</p>
-</div>
-<div class="section" id="contributing">
+</section>
+<section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
 <p>Any and all contributions are welcome.  Here’s how to contribute:</p>
 <ol class="arabic simple">
@@ -217,8 +218,8 @@ the commit and I can integrate them later)</p>
 </li>
 <li><p>Send a pull request (see <a class="reference external" href="http://help.github.com/send-pull-requests/">pull request help</a>)</p></li>
 </ol>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -273,7 +274,7 @@ the commit and I can integrate them later)</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -317,7 +318,7 @@ the commit and I can integrate them later)</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

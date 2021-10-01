@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Chaining methods together (pipe) &#8212; pybedtools 0.8.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="chaining-methods-together-pipe">
+  <section id="chaining-methods-together-pipe">
 <h1>Chaining methods together (pipe)<a class="headerlink" href="#chaining-methods-together-pipe" title="Permalink to this headline">¶</a></h1>
 <p>One useful thing about <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> methods is that they often return a
 new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>.  In practice, this means that we can chain together
@@ -73,8 +74,8 @@ file.</p>
 <span class="gp">... </span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;a-with-b-merged.bed&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="operator-overloading">
+</section>
+<section id="operator-overloading">
 <h1>Operator overloading<a class="headerlink" href="#operator-overloading" title="Permalink to this headline">¶</a></h1>
 <p>There’s an even easier way to chain together commands.</p>
 <p>I found myself doing intersections so much that I thought it would be
@@ -109,7 +110,7 @@ intersection and merge example from above:</p>
 </pre></div>
 </div>
 <p>You can learn more about chaining in <a class="reference internal" href="topical-design-principles.html#chaining-principle"><span class="std std-ref">Principle 6: Chaining together commands</span></a>.</p>
-</div>
+</section>
 
 
           </div>
@@ -169,7 +170,7 @@ intersection and merge example from above:</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -214,7 +215,7 @@ intersection and merge example from above:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

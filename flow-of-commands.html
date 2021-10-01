@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Under the hood &#8212; pybedtools 0.8.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="under-the-hood">
+  <section id="under-the-hood">
 <h1>Under the hood<a class="headerlink" href="#under-the-hood" title="Permalink to this headline">¶</a></h1>
 <p>This section documents some details about what happens when a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>
 object is created and exactly what happens when a BEDTools command is called.
@@ -43,12 +44,12 @@ It’s mostly useful for developers or for debugging.</p>
 <li><p>open file object</p></li>
 <li><p>iterator of Interval objects</p></li>
 </ul>
-<div class="section" id="iterator-protocol">
+<section id="iterator-protocol">
 <h2>Iterator “protocol”<a class="headerlink" href="#iterator-protocol" title="Permalink to this headline">¶</a></h2>
 <p>BedTool objects yield an Interval object on each <code class="file docutils literal notranslate"><span class="pre">next()</span></code> call.  Where this
 Interval comes from depends on how the BedTool was created and what format the
 underlying data are in, as follows.</p>
-<div class="section" id="filename-based">
+<section id="filename-based">
 <h3>Filename-based<a class="headerlink" href="#filename-based" title="Permalink to this headline">¶</a></h3>
 <p>If BED/GTF/GFF/VCF format, then use an <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> object for Cython/C++
 speed.</p>
@@ -59,16 +60,16 @@ what format the line is, and this is how we are able to support SAM Interval
 objects.</p>
 <p>If BAM format, then first do a Popen call to <code class="file docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">view</span></code>, and create an
 <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code> from subprocess.PIPE similar to SAM format.</p>
-</div>
-<div class="section" id="open-file-based">
+</section>
+<section id="open-file-based">
 <h3>Open file-based<a class="headerlink" href="#open-file-based" title="Permalink to this headline">¶</a></h3>
 <p>All formats are passed to an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>, which reads one line at
 a time and yields an <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> object.</p>
 <p>If it’s a BAM file (specifically, a detected bgzip stream), then it’s actually
 first sent to the stdin of a <code class="file docutils literal notranslate"><span class="pre">samtools</span></code> Popen call, and then the
 subprocess.PIPE from that Popen’s stdout is sent to an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>.</p>
-</div>
-<div class="section" id="iterator-or-generator-based">
+</section>
+<section id="iterator-or-generator-based">
 <h3>Iterator or generator-based<a class="headerlink" href="#iterator-or-generator-based" title="Permalink to this headline">¶</a></h3>
 <p>If it’s neither of the above, then the assumption is that it’s already an
 iterable of <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> objects.  This is the case if a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> is created
@@ -82,9 +83,9 @@ with something like:</p>
 argument to the BedTool constructor is neither a filename nor an open file, the
 new BedTool <code class="file docutils literal notranslate"><span class="pre">b</span></code>’s <code class="file docutils literal notranslate"><span class="pre">.fn</span></code> attribute is directly set to this generator … so we
 have a generator-based BedTool.</p>
-</div>
-</div>
-<div class="section" id="calling-bedtools-programs">
+</section>
+</section>
+<section id="calling-bedtools-programs">
 <h2>Calling BEDTools programs<a class="headerlink" href="#calling-bedtools-programs" title="Permalink to this headline">¶</a></h2>
 <p>Depending on the type of BedTool (filename, open file, or iterator), the method
 of calling BEDTools programs differs.</p>
@@ -143,8 +144,8 @@ will <em>also</em> come from subprocess.PIPE.</p>
 </ul>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -206,7 +207,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -251,7 +252,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

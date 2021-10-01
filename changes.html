@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Changelog &#8212; pybedtools 0.8.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -31,9 +32,9 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="changelog">
+  <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="changes-in-v0-8-2">
+<section id="changes-in-v0-8-2">
 <h2>Changes in v0.8.2<a class="headerlink" href="#changes-in-v0-8-2" title="Permalink to this headline">¶</a></h2>
 <p>2021-03-13: Minor updates</p>
 <ul class="simple">
@@ -50,8 +51,8 @@ not well-used in the first place.</p></li>
 help retrieve chromsizes files for less commonly used assemblies (thanks
 &#64;simonvh, see <a class="reference external" href="https://github.com/daler/pybedtools/pull/323/">#323</a>)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-8-1">
+</section>
+<section id="changes-in-v0-8-1">
 <h2>Changes in v0.8.1<a class="headerlink" href="#changes-in-v0-8-1" title="Permalink to this headline">¶</a></h2>
 <p>2019-12-27: This version has minor updates and bugfixes:</p>
 <ul class="simple">
@@ -72,8 +73,8 @@ than 510 files (<a class="reference external" href="https://github.com/daler/pyb
 <li><p><code class="file docutils literal notranslate"><span class="pre">*.h</span></code> files now included in the distribution (thanks &#64;blaiseli)</p></li>
 <li><p>Improvement: Update tests to work with bedtools v2.29.2</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-8-0">
+</section>
+<section id="changes-in-v0-8-0">
 <h2>Changes in v0.8.0<a class="headerlink" href="#changes-in-v0-8-0" title="Permalink to this headline">¶</a></h2>
 <p>This version further improves testing, improves the way C++ files are included
 in the package, and fixes many long-standing bugs.</p>
@@ -130,8 +131,8 @@ detecting a BED file as SAM (<a class="reference external" href="https://github.
 <li><p>Bugfix: accessing Interval.fields after accessing Interval.attrs no longer
 raises ValueError (<a class="reference external" href="https://github.com/daler/pybedtools/issues/246">#246</a>)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-10">
+</section>
+<section id="changes-in-v0-7-10">
 <h2>Changes in v0.7.10<a class="headerlink" href="#changes-in-v0-7-10" title="Permalink to this headline">¶</a></h2>
 <p>Various bug fixes and some minor feature additions:</p>
 <ul class="simple">
@@ -147,8 +148,8 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 <li><p>When making bigWigs, use <code class="file docutils literal notranslate"><span class="pre">bedSort</span></code> to ensure the sort order matches that expected by UCSC tools (<a class="reference external" href="https://github.com/daler/pybedtools/issues/178">#178</a>)</p></li>
 <li><p>Fix newline handling of <code class="file docutils literal notranslate"><span class="pre">pysam.ctabix.TabixIterator</span></code> output (<a class="reference external" href="https://github.com/daler/pybedtools/issues/196">#196</a>)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-9">
+</section>
+<section id="changes-in-v0-7-9">
 <h2>Changes in v0.7.9<a class="headerlink" href="#changes-in-v0-7-9" title="Permalink to this headline">¶</a></h2>
 <p>Minor bugfix release:</p>
 <ul class="simple">
@@ -159,8 +160,8 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 <li><p>improvements to setup (<a class="reference external" href="https://github.com/daler/pybedtools/issues/185">https://github.com/daler/pybedtools/issues/185</a>)</p></li>
 <li><p>make pandas fully optional</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-8">
+</section>
+<section id="changes-in-v0-7-8">
 <h2>Changes in v0.7.8<a class="headerlink" href="#changes-in-v0-7-8" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Be more careful about BAM vs bgzipped files (#168)</p></li>
@@ -170,8 +171,8 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 <li><p>Add details on IOError messages for broken pipe error</p></li>
 <li><p>Make converting to pandas.DataFrames easier with non-standard BED files (thanks Panos Firmpas)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-7">
+</section>
+<section id="changes-in-v0-7-7">
 <h2>Changes in v0.7.7<a class="headerlink" href="#changes-in-v0-7-7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Chromsizes for dm6 and mm10 assemblies added to <code class="file docutils literal notranslate"><span class="pre">genome_registry</span></code></p></li>
@@ -180,15 +181,15 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 have a unique ID in their name field.</p></li>
 <li><p>Fix error message when a specified genome file doesn’t exist (thanks Saket Choudhary)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-6">
+</section>
+<section id="changes-in-v0-7-6">
 <h2>Changes in v0.7.6<a class="headerlink" href="#changes-in-v0-7-6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New module <code class="file docutils literal notranslate"><span class="pre">pybedtools.contrib.long_range_interaction</span></code> for working with
 HiC-like data.</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-5">
+</section>
+<section id="changes-in-v0-7-5">
 <h2>Changes in v0.7.5<a class="headerlink" href="#changes-in-v0-7-5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>When using tabix-indexed files, <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> and <code class="file docutils literal notranslate"><span class="pre">bgzip</span></code> are no longer required to
@@ -203,8 +204,8 @@ to be filenames; otherwise assume strings representing intervals. This check
 only occurs if the <code class="file docutils literal notranslate"><span class="pre">b</span></code> argument is a list or tuple; other iterable types are
 always assumed to be intervals.</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-4">
+</section>
+<section id="changes-in-v0-7-4">
 <h2>Changes in v0.7.4<a class="headerlink" href="#changes-in-v0-7-4" title="Permalink to this headline">¶</a></h2>
 <p>Bugfix release.</p>
 <ul class="simple">
@@ -214,8 +215,8 @@ are simply passed to the user without raising exceptions</p></li>
 “rc1”</p></li>
 <li><p>fix in <code class="file docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> on empty files (thanks Brad Chapman (<a class="reference external" href="https://github.com/daler/pybedtools/pull/149">PR #149</a>)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-1">
+</section>
+<section id="changes-in-v0-7-1">
 <h2>Changes in v0.7.1<a class="headerlink" href="#changes-in-v0-7-1" title="Permalink to this headline">¶</a></h2>
 <p>This is largely a bugfix release with the following changes:</p>
 <ul class="simple">
@@ -224,8 +225,8 @@ are simply passed to the user without raising exceptions</p></li>
 <li><p>fix bug where <code class="file docutils literal notranslate"><span class="pre">__add__</span></code> was not re-raising exceptions (thanks Brad Chapman
 and Dan Halligan)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-7-0">
+</section>
+<section id="changes-in-v0-7-0">
 <h2>Changes in v0.7.0<a class="headerlink" href="#changes-in-v0-7-0" title="Permalink to this headline">¶</a></h2>
 <p>This release reflects a major upgrade in the underlying code in order to
 support both Python 2 and Python 3 using the same code. Aside from trivial
@@ -236,7 +237,7 @@ work.</p>
 <p>Importantly, after converting them to Python 2- and 3-compatible syntax <em>all
 previous tests pass</em> so to the end user should not notice any differences
 except those noted below.</p>
-<div class="section" id="strings-from-interval-fields-are-unicode">
+<section id="strings-from-interval-fields-are-unicode">
 <h3>Strings from Interval fields are unicode<a class="headerlink" href="#strings-from-interval-fields-are-unicode" title="Permalink to this headline">¶</a></h3>
 <p>For consistency between Python 2 and 3, all strings from Interval objects are
 now unicode. That is, in Python 2, previously we would get this:</p>
@@ -251,8 +252,8 @@ now unicode. That is, in Python 2, previously we would get this:</p>
 <span class="go">u&#39;feature1&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="samtools-no-longer-a-dependency">
+</section>
+<section id="samtools-no-longer-a-dependency">
 <h3>samtools no longer a dependency<a class="headerlink" href="#samtools-no-longer-a-dependency" title="Permalink to this headline">¶</a></h3>
 <p>The dependency for samtools has been removed, which simplifies the installation
 process. Instead, <code class="file docutils literal notranslate"><span class="pre">pysam</span></code> is used for handling BAM files.</p>
@@ -263,14 +264,14 @@ in a BAM file using the <code class="file docutils literal notranslate"><span cl
 <p>In the future, iterating over a BAM file will yield <code class="file docutils literal notranslate"><span class="pre">pysam.AlignedSegment</span></code>
 objects directly, but for now you can use the <code class="file docutils literal notranslate"><span class="pre">pybedtools.BAM.pysam_bamfile</span></code>
 attribute to access the underlying <code class="file docutils literal notranslate"><span class="pre">pysam.AlignmentFile</span></code></p>
-</div>
-<div class="section" id="cython-no-longer-a-dependency">
+</section>
+<section id="cython-no-longer-a-dependency">
 <h3>Cython no longer a dependency<a class="headerlink" href="#cython-no-longer-a-dependency" title="Permalink to this headline">¶</a></h3>
 <p>The Cythonized <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> files are now shipped with the <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code>
 distribution, so Cython is no longer a requirement for installation.</p>
 <p>You will however need to have Cython installed if you’re developing pybedtools.</p>
-</div>
-<div class="section" id="remote-bam-support-clarification">
+</section>
+<section id="remote-bam-support-clarification">
 <h3>Remote BAM support clarification<a class="headerlink" href="#remote-bam-support-clarification" title="Permalink to this headline">¶</a></h3>
 <p>Previously, <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> was able to support remote BAMs by loosely wrapping
 samtools, but BAM files still needed to be fully downloaded to disk before
@@ -279,8 +280,8 @@ mechanism.</p>
 <p>Pysam does support remote BAMs, and as before, a BAM file needs to be created
 on disk for use with BEDTools. But now this needs to be explicitly done by the
 user, which should result in better performance.</p>
-</div>
-<div class="section" id="iterating-over-intervals">
+</section>
+<section id="iterating-over-intervals">
 <h3>Iterating over intervals<a class="headerlink" href="#iterating-over-intervals" title="Permalink to this headline">¶</a></h3>
 <p>Previously, when iterating over a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object, different machinery would
 be invoked depending on whether the BedTool was pointing to a file (a
@@ -289,20 +290,20 @@ objects, or to a stream like from the stdout of a BEDTools call
 (cbedtools.IntervalIterator in both cases).</p>
 <p>Everything is now an IntervalIterator, simplifying the path towards
 performance optimization.</p>
-</div>
-<div class="section" id="gzip-support">
+</section>
+<section id="gzip-support">
 <h3>gzip support<a class="headerlink" href="#gzip-support" title="Permalink to this headline">¶</a></h3>
 <p>Thanks to Saulius Lukauskas, gzip handling is now improved, and calling
 <code class="file docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code> with a <code class="file docutils literal notranslate"><span class="pre">.gz</span></code> extension on the filename will automatically
 compress the output.</p>
-</div>
-<div class="section" id="docker">
+</section>
+<section id="docker">
 <h3>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h3>
 <p>In the github repo there is a <code class="file docutils literal notranslate"><span class="pre">docker</span></code> directory containing Dockerfiles to set
 up isolated testing environments. These Dockerfiles also demonstrate how to set
 up a complete environment starting from a base Ubuntu install.</p>
-</div>
-<div class="section" id="tests">
+</section>
+<section id="tests">
 <h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
 <p>All tests from v0.6.9 (which was Python 2 only) have been made Python 2/3
 compatible and all previous tests pass.</p>
@@ -315,8 +316,8 @@ full tests like this:</p>
 <p>This will build docker containers for Python 2 and Python 3 with all
 depedencies, export the parent directory to the container, and run the test
 suite.</p>
-</div>
-<div class="section" id="conda-packages">
+</section>
+<section id="conda-packages">
 <h3>Conda packages<a class="headerlink" href="#conda-packages" title="Permalink to this headline">¶</a></h3>
 <p>You can now install the latest versions of tabix, bedtools, pysam, and
 pybedtools from conda, dramatically speeding up installation time. These
@@ -337,9 +338,9 @@ so:</p>
 <p>This currently only works on Linux; contributions to Mac conda recipes (see
 the <code class="file docutils literal notranslate"><span class="pre">conda</span></code> dir in the github repo) would be welcomed.</p>
 </div>
-</div>
-</div>
-<div class="section" id="changes-in-v0-6-9">
+</section>
+</section>
+<section id="changes-in-v0-6-9">
 <h2>Changes in v0.6.9<a class="headerlink" href="#changes-in-v0-6-9" title="Permalink to this headline">¶</a></h2>
 <p>Minor bug fix release.</p>
 <ul class="simple">
@@ -352,13 +353,13 @@ Pedersen and Kyle Smith)</p></li>
 <li><p>fixed a bug where streaming BAM files were read fully into memory (thanks
 Alexey Sergushichev)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6-8">
+</section>
+<section id="changes-in-v0-6-8">
 <h2>Changes in v0.6.8<a class="headerlink" href="#changes-in-v0-6-8" title="Permalink to this headline">¶</a></h2>
 <p>Bugfix: Thanks to Gabriel Pratt, <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> is no longer plagued by open filehandles
 in the C code causing the notorious “Too many files open” error.</p>
-</div>
-<div class="section" id="changes-in-v0-6-7">
+</section>
+<section id="changes-in-v0-6-7">
 <h2>Changes in v0.6.7<a class="headerlink" href="#changes-in-v0-6-7" title="Permalink to this headline">¶</a></h2>
 <p>Now compatible with BEDTools v2.21.0.</p>
 <p>The one exception is that the new <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">intersect</span></code> functionality that
@@ -386,8 +387,8 @@ the suggestion)</p></li>
 zero-length features intersecting with other zero-length features with the
 same coordinates.</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6-6">
+</section>
+<section id="changes-in-v0-6-6">
 <h2>Changes in v0.6.6<a class="headerlink" href="#changes-in-v0-6-6" title="Permalink to this headline">¶</a></h2>
 <p>This is a compatibility release, updated for BEDTools v2.20.0.</p>
 <p>There is one API change that affects the behavior of overloaded operators (that
@@ -417,8 +418,8 @@ make more logical sense:</p>
 <li><p>a + a = a</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="changes-in-v0-6-5">
+</section>
+<section id="changes-in-v0-6-5">
 <h2>Changes in v0.6.5<a class="headerlink" href="#changes-in-v0-6-5" title="Permalink to this headline">¶</a></h2>
 <p>This is a minor bug-fix release:</p>
 <ul class="simple">
@@ -428,8 +429,8 @@ zero-length features with the same coordinates, like the rest of BEDTools.</p></
 a BED file on the filesystem becomes unavailable after a BedTool object has
 been created for it.</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6-4">
+</section>
+<section id="changes-in-v0-6-4">
 <h2>Changes in v0.6.4<a class="headerlink" href="#changes-in-v0-6-4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Full integration with BEDTools v2.18.  This includes some compatibility fixes
@@ -441,8 +442,8 @@ BEDTools v2.18+.</p></li>
 <li><p>Fix for <a class="reference internal" href="pybedtools.featurefuncs.midpoint.html#pybedtools.featurefuncs.midpoint" title="pybedtools.featurefuncs.midpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.midpoint()</span></code></a> (thanks ny-shao)</p></li>
 <li><p>Fix to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> (thanks Michael Reschen)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6-3">
+</section>
+<section id="changes-in-v0-6-3">
 <h2>Changes in v0.6.3<a class="headerlink" href="#changes-in-v0-6-3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.parallel</span></code> module for working with many operations in
@@ -481,8 +482,8 @@ empty file</p></li>
 <li><p>Every commit is built with Travis-CI for continuous integration testing of
 changes to source code.</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6-2">
+</section>
+<section id="changes-in-v0-6-2">
 <h2>Changes in v0.6.2<a class="headerlink" href="#changes-in-v0-6-2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Wrapped new tools available in BEDTools 2.17: <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.jaccard()</span></code> and
@@ -533,8 +534,8 @@ the output will, too</p></li>
 <li><p>various minor bug fixes and improvments as documented in the github commit
 logs….</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6-1">
+</section>
+<section id="changes-in-v0-6-1">
 <h2>Changes in v0.6.1<a class="headerlink" href="#changes-in-v0-6-1" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>New <a class="reference internal" href="autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track" title="pybedtools.contrib.plotting.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.Track</span></code></a> class allows plotting of
@@ -552,8 +553,8 @@ converted to string before creating an <code class="xref py py-class docutils li
 <li><p>bugfix: <code class="file docutils literal notranslate"><span class="pre">pybedtools.cleanup(remove_all=True)</span></code> now works correctly when using
 the default temp dir</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-6">
+</section>
+<section id="changes-in-v0-6">
 <h2>Changes in v0.6<a class="headerlink" href="#changes-in-v0-6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Overhaul in online documentation to hopefully make functionality easier to
@@ -634,8 +635,8 @@ easier to explicitly specify which versions of the tools to use.</p></li>
 <li><p>Improvements to GFF attributes: handle unescaped “=” (from sim4db GFFs) and
 make Attribute class properly dict-like (thanks Libor Mořkovský)</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-5-5">
+</section>
+<section id="changes-in-v0-5-5">
 <h2>Changes in v0.5.5<a class="headerlink" href="#changes-in-v0-5-5" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Use <code class="file docutils literal notranslate"><span class="pre">additional_args</span></code> kwarg to pass arguments verbatim to the underlying
@@ -663,8 +664,8 @@ this coming soon.</p></li>
 <li><p>Interval instances are now pickleable; they can now be used across processes
 for parallel code.</p></li>
 </ul>
-</div>
-<div class="section" id="changes-in-v0-5">
+</section>
+<section id="changes-in-v0-5">
 <h2>Changes in v0.5<a class="headerlink" href="#changes-in-v0-5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>support for running random intersections in parallel.  See
@@ -690,8 +691,8 @@ where to save output – no more moving tempfiles</p></li>
 </dl>
 </li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -760,7 +761,7 @@ where to save output – no more moving tempfiles</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -801,7 +802,7 @@ where to save output – no more moving tempfiles</p></li>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

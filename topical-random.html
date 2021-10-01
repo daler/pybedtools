@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Randomization &#8212; pybedtools 0.8.2 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -32,7 +33,7 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="randomization">
+  <section id="randomization">
 <h1>Randomization<a class="headerlink" href="#randomization" title="Permalink to this headline">¶</a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> provides some basic functionality for assigning some
 significance value to the overlap between two BEDfiles.</p>
@@ -46,7 +47,7 @@ distribution to get a score.</p>
 <p>There are two methods, <code class="xref py py-meth docutils literal notranslate"><span class="pre">pybedtools.BedTool.randomintersection()</span></code> which does the
 brute force randomizations, and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> which compiles
 and reports the results from the former method.</p>
-<div class="section" id="example-workflow">
+<section id="example-workflow">
 <h2>Example workflow<a class="headerlink" href="#example-workflow" title="Permalink to this headline">¶</a></h2>
 <p>As a somewhat trivial example, we’ll intersect the example <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code> with
 <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>, taking care to set some options that will let it run in a
@@ -167,8 +168,8 @@ intersections; can be considered an empirical p-value</p>
 </div>
 <p>Contributions toward improving this code or implementing other methods of
 statistical testing are very welcome!</p>
-</div>
-<div class="section" id="other-statistics">
+</section>
+<section id="other-statistics">
 <h2>Other statistics<a class="headerlink" href="#other-statistics" title="Permalink to this headline">¶</a></h2>
 <p>In practice, a comparison between two sets of features (say, two transcription
 factors) with 1000 randomizations will have an empirical p-value of &lt; 0.001.
@@ -198,8 +199,8 @@ the ratio of the intersection over the union, and is introduced in a genomic
 intersection context in Favorov et al. (2012) PLoS Comput Biol 8(5): e1002529.
 However, this still has the same p-value resolution limitation, so the
 actual-divided-by-median approach could be tried here as well.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -261,7 +262,7 @@ actual-divided-by-median approach could be tried here as well.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -306,7 +307,7 @@ actual-divided-by-median approach could be tried here as well.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

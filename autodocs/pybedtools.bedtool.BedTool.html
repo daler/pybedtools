@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>pybedtools.bedtool.BedTool &#8212; pybedtools 0.8.2 documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -32,14 +33,14 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="pybedtools-bedtool-bedtool">
+  <section id="pybedtools-bedtool-bedtool">
 <h1>pybedtools.bedtool.BedTool<a class="headerlink" href="#pybedtools-bedtool-bedtool" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="pybedtools.bedtool.BedTool">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pybedtools.bedtool.</span></code><code class="sig-name descname"><span class="pre">BedTool</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pybedtools.bedtool.BedTool">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pybedtools.bedtool.</span></span><span class="sig-name descname"><span class="pre">BedTool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
-<dt id="pybedtools.bedtool.BedTool.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pybedtools.bedtool.BedTool.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper around Aaron Quinlan’s <code class="docutils literal notranslate"><span class="pre">BEDtools</span></code> suite of programs
 (<a class="reference external" href="https://github.com/arq5x/bedtools">https://github.com/arq5x/bedtools</a>); also contains many useful
 methods for more detailed work with BED files.</p>
@@ -86,9 +87,9 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pybedtools.bedtool.BedTool.__init__" title="pybedtools.bedtool.BedTool.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([fn, from_string, remote])</p></td>
-<td><p>Wrapper around Aaron Quinlan’s <code class="docutils literal notranslate"><span class="pre">BEDtools</span></code> suite of programs (<a class="reference external" href="https://github.com/arq5x/bedtools">https://github.com/arq5x/bedtools</a>); also contains many useful methods for more detailed work with BED files.</p></td>
+<td><p>Wrapper around Aaron Quinlan's <code class="docutils literal notranslate"><span class="pre">BEDtools</span></code> suite of programs (<a class="reference external" href="https://github.com/arq5x/bedtools">https://github.com/arq5x/bedtools</a>); also contains many useful methods for more detailed work with BED files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.absolute_distance.html#pybedtools.bedtool.BedTool.absolute_distance" title="pybedtools.bedtool.BedTool.absolute_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">absolute_distance</span></code></a>(other[, closest_kwargs, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.absolute_distance.html#pybedtools.bedtool.BedTool.absolute_distance" title="pybedtools.bedtool.BedTool.absolute_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">absolute_distance</span></code></a>(other[, closest_kwargs, ...])</p></td>
 <td><p>Returns an iterator of the <em>absolute</em> distances between features in self and other.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.all_hits.html#pybedtools.bedtool.BedTool.all_hits" title="pybedtools.bedtool.BedTool.all_hits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_hits</span></code></a>(interval[, same_strand, overlap])</p></td>
@@ -134,7 +135,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">bedtobam</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.bgzip.html#pybedtools.bedtool.BedTool.bgzip" title="pybedtools.bedtool.BedTool.bgzip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bgzip</span></code></a>([in_place, force, is_sorted])</p></td>
-<td><p>Helper function for more control over “tabixed” BedTools.</p></td>
+<td><p>Helper function for more control over &quot;tabixed&quot; BedTools.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.cat.html#pybedtools.bedtool.BedTool.cat" title="pybedtools.bedtool.BedTool.cat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cat</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Concatenate interval files together.</p></td>
@@ -185,12 +186,12 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <td><p>Filter features by user-defined function.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fisher</span></code>(*args, **kwargs)</p></td>
-<td><p>Wraps ‘fisher’. Returns an object representing the output.</p></td>
+<td><p>Wraps 'fisher'. Returns an object representing the output.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.flank.html#pybedtools.bedtool.BedTool.flank" title="pybedtools.bedtool.BedTool.flank"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flank</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">flank</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code>(df[, outfile, sep, header, …])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code>(df[, outfile, sep, header, ...])</p></td>
 <td><p>Creates a BedTool from a pandas.DataFrame.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.genome_coverage.html#pybedtools.bedtool.BedTool.genome_coverage" title="pybedtools.bedtool.BedTool.genome_coverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">genome_coverage</span></code></a>(*args, **kwargs)</p></td>
@@ -280,7 +281,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pairtopair</span></code>(*args, **kwargs)</p></td>
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">pairtopair</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.parallel_apply.html#pybedtools.bedtool.BedTool.parallel_apply" title="pybedtools.bedtool.BedTool.parallel_apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel_apply</span></code></a>(iterations, func, func_args, …)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.parallel_apply.html#pybedtools.bedtool.BedTool.parallel_apply" title="pybedtools.bedtool.BedTool.parallel_apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel_apply</span></code></a>(iterations, func, func_args, ...)</p></td>
 <td><p>Generalized method for applying a function in parallel.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.print_sequence.html#pybedtools.bedtool.BedTool.print_sequence" title="pybedtools.bedtool.BedTool.print_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_sequence</span></code></a>()</p></td>
@@ -289,7 +290,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.random.html#pybedtools.bedtool.BedTool.random" title="pybedtools.bedtool.BedTool.random"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">random</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.random_jaccard.html#pybedtools.bedtool.BedTool.random_jaccard" title="pybedtools.bedtool.BedTool.random_jaccard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_jaccard</span></code></a>(other[, genome_fn, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.random_jaccard.html#pybedtools.bedtool.BedTool.random_jaccard" title="pybedtools.bedtool.BedTool.random_jaccard"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_jaccard</span></code></a>(other[, genome_fn, ...])</p></td>
 <td><p>Computes the naive Jaccard statistic (intersection divided by union).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.random_op.html#pybedtools.bedtool.BedTool.random_op" title="pybedtools.bedtool.BedTool.random_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_op</span></code></a>(*args, **kwargs)</p></td>
@@ -298,13 +299,13 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.random_subset.html#pybedtools.bedtool.BedTool.random_subset" title="pybedtools.bedtool.BedTool.random_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_subset</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Return a BedTool containing a random subset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.randomintersection.html#pybedtools.bedtool.BedTool.randomintersection" title="pybedtools.bedtool.BedTool.randomintersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomintersection</span></code></a>(other, iterations[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.randomintersection.html#pybedtools.bedtool.BedTool.randomintersection" title="pybedtools.bedtool.BedTool.randomintersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomintersection</span></code></a>(other, iterations[, ...])</p></td>
 <td><p>Perform <code class="file docutils literal notranslate"><span class="pre">iterations</span></code> shufflings, each time intersecting with <code class="file docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.randomintersection_bp.html#pybedtools.bedtool.BedTool.randomintersection_bp" title="pybedtools.bedtool.BedTool.randomintersection_bp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomintersection_bp</span></code></a>(other, iterations, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.randomintersection_bp.html#pybedtools.bedtool.BedTool.randomintersection_bp" title="pybedtools.bedtool.BedTool.randomintersection_bp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomintersection_bp</span></code></a>(other, iterations, ...)</p></td>
 <td><p>Like randomintersection, but return the bp overlap instead of the number of intersecting intervals.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.randomstats.html#pybedtools.bedtool.BedTool.randomstats" title="pybedtools.bedtool.BedTool.randomstats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomstats</span></code></a>(other, iterations[, new, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.randomstats.html#pybedtools.bedtool.BedTool.randomstats" title="pybedtools.bedtool.BedTool.randomstats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">randomstats</span></code></a>(other, iterations[, new, ...])</p></td>
 <td><p>Dictionary of results from many randomly shuffled intersections.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.relative_distance.html#pybedtools.bedtool.BedTool.relative_distance" title="pybedtools.bedtool.BedTool.relative_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">relative_distance</span></code></a>(other[, genome, g])</p></td>
@@ -317,7 +318,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <td><p>Remove invalid features that may break BEDTools programs.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code>(*args, **kwargs)</p></td>
-<td><p>Wraps ‘sample’.</p></td>
+<td><p>Wraps 'sample'.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.save_seqs.html#pybedtools.bedtool.BedTool.save_seqs" title="pybedtools.bedtool.BedTool.save_seqs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_seqs</span></code></a>(fn)</p></td>
 <td><p>Save sequences, after calling BedTool.sequence.</p></td>
@@ -326,7 +327,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <td><p>Make a copy of the BedTool.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.seq.html#pybedtools.bedtool.BedTool.seq" title="pybedtools.bedtool.BedTool.seq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seq</span></code></a>(loc, fasta)</p></td>
-<td><p>Return just the sequence from a region string or a single location &gt;&gt;&gt; fn = pybedtools.example_filename(‘test.fa’) &gt;&gt;&gt; BedTool.seq(‘chr1:2-10’, fn) ‘GATGAGTCT’ &gt;&gt;&gt; BedTool.seq((‘chr1’, 1, 10), fn) ‘GATGAGTCT’</p></td>
+<td><p>Return just the sequence from a region string or a single location &gt;&gt;&gt; fn = pybedtools.example_filename('test.fa') &gt;&gt;&gt; BedTool.seq('chr1:2-10', fn) 'GATGAGTCT' &gt;&gt;&gt; BedTool.seq(('chr1', 1, 10), fn) 'GATGAGTCT'</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.sequence.html#pybedtools.bedtool.BedTool.sequence" title="pybedtools.bedtool.BedTool.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">getfasta</span></code>.</p></td>
@@ -353,7 +354,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <td><p>Split each feature using a user-defined function.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splitbed</span></code>(*args, **kwargs)</p></td>
-<td><p>Wraps ‘bedtools split’.</p></td>
+<td><p>Wraps 'bedtools split'.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.subtract.html#pybedtools.bedtool.BedTool.subtract" title="pybedtools.bedtool.BedTool.subtract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subtract</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">subtract</span></code>.</p></td>
@@ -364,8 +365,8 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tabix_contigs</span></code>()</p></td>
 <td><p>Returns a list of contigs from the tabix index.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.tabix_intervals.html#pybedtools.bedtool.BedTool.tabix_intervals" title="pybedtools.bedtool.BedTool.tabix_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tabix_intervals</span></code></a>(interval_or_string[, …])</p></td>
-<td><p>Retrieve all intervals within coordinates from a “tabixed” BedTool.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.bedtool.BedTool.tabix_intervals.html#pybedtools.bedtool.BedTool.tabix_intervals" title="pybedtools.bedtool.BedTool.tabix_intervals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tabix_intervals</span></code></a>(interval_or_string[, ...])</p></td>
+<td><p>Retrieve all intervals within coordinates from a &quot;tabixed&quot; BedTool.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code>(*args, **kwargs)</p></td>
 <td><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">tag</span></code>.</p></td>
@@ -425,7 +426,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
 </table>
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -478,7 +479,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -523,7 +524,7 @@ spaces as TABs and write to tempfile, treating whatever you pass as
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
