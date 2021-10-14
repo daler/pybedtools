@@ -298,7 +298,7 @@ if __name__ == "__main__":
         setup_requires=[],
         install_requires=['six', 'pysam'],
         classifiers=[
-            'Development Status :: 4 - Beta',
+            'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
             'License :: OSI Approved :: GNU General Public License (GPL)',
             'Topic :: Scientific/Engineering :: Bio-Informatics',
