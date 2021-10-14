@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import tempfile
 from textwrap import dedent
 import shutil

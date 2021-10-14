@@ -4,7 +4,6 @@ Interface between pybedtools and the R package VennDiagram.
 Rather than depend on the user to have rpy2 installed, this simply writes an
 R script that can be edited and tweaked by the user before being run in R.
 """
-from __future__ import print_function
 import os
 import string
 import pybedtools
