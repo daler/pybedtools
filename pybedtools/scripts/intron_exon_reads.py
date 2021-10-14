@@ -7,7 +7,6 @@ multiple CPUs.
 Prints a tab-separated file containing class (exon, intron, both) and number of
 reads in each class.
 """
-from __future__ import print_function
 import pybedtools
 import argparse
 import os

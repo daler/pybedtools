@@ -1,4 +1,3 @@
-from __future__ import print_function
 import pybedtools
 import gzip
 import os, difflib, sys

@@ -72,14 +72,7 @@ if ! conda env list | grep -q $no_cy; then
         REQS=$TMPREQS
     fi
 
-    # genomepy>=0.8 not available for py27
-    TMPOPTREQS=$(tempfile)
-    grep -v genomepy optional-requirements.txt > $TMPOPTREQS
-    if [[ "$PY_VERSION" == "2.7" ]]; then
-        OPTREQS=$TMPOPTREQS
-    else
-        OPTREQS=optional-requirements.txt
-    fi
+    OPTREQS=optional-requirements.txt
 
     conda create -n $no_cy -y \
         --channel conda-forge \
@@ -115,8 +108,5 @@ pytest -v pybedtools/test/genomepy_integration.py
 log "copying over docs directory from repo"
 cp -r $TMP/docs .
 
-# numpydoc is not supported in py27, so we can't run doctests.
-if [[ "$PY_VERSION" != "2.7" ]]; then
-    log "sphinx doctests"
-    (cd docs && make clean doctest)
-fi
+log "sphinx doctests"
+(cd docs && make clean doctest)
