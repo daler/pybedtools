@@ -560,7 +560,7 @@ def test_issue_217():
 
     assert x.name == "feature1"
 
-    # Previously the directly-created Interval object retuned None for a name.
+    # Previously the directly-created Interval object returned None for a name.
     assert y.name == "feature1"
 
     assert z.name == "feature1"

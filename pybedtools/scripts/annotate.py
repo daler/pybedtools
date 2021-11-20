@@ -120,7 +120,7 @@ def add_xstream(a, b, dist, updown, report_distance=False):
 
 def main():
     """
-    annotate a file with the neearest features in another.
+    annotate a file with the nearest features in another.
     """
     p = argparse.ArgumentParser(description=__doc__, prog=sys.argv[0])
     p.add_argument("-a", dest="a", help="file to annotate")
