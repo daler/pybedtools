@@ -676,8 +676,8 @@ cpdef Interval create_interval_from_list(list fields):
     elif isdigit(fields[1]) and not isdigit(fields[3]) and len(fields) >= 8:
         pyb._bed = new BED(
             _cppstr(fields[0]),
+            int(fields[1]) - 1,
             int(fields[1]),
-            int(fields[1]) + 1,
             _cppstr(fields[2]),
             _cppstr(fields[5]),
             _cppstr('.'),
