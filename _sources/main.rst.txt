@@ -26,7 +26,7 @@ environments.
 
 Required
 ++++++++
-:Python_: version 2.7 or greater (Python 3 is supported). If you're setting up
+:Python_: version 3.6 or greater (Python 3 is supported). If you're setting up
           Python for the first time, the `Anaconda Python distribution
           <http://continuum.io/downloads>`_ is highly recommended.
 
