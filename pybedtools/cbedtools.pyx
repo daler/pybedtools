@@ -245,6 +245,7 @@ cdef class Interval:
     def __init__(self, chrom, start, end, name=".", score=".", strand=".", otherfields=None):
         if otherfields is None:
             otherfields = []
+        otherfields = [_cppstr(i) for i in otherfields]
         self._bed = new BED(
             _cppstr(chrom), start, end, _cppstr(name), _cppstr(score),
             _cppstr(strand), otherfields)
@@ -256,7 +257,7 @@ cdef class Interval:
         #self._bed.score = _cppstr(score)
         #self._bed.strand = _cppstr(strand)
         fields = [_cppstr(chrom), _cppstr(str(start)), _cppstr(str(end)), _cppstr(name), _cppstr(score), _cppstr(strand)]
-        fields.extend([_cppstr(i) for i in otherfields])
+        fields.extend(otherfields)
         self._bed.fields = fields
         self._attrs = None
 
