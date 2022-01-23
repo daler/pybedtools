@@ -816,3 +816,21 @@ def test_issue_333():
 
     # Previously would raise EmptyDataError:
     a.to_dataframe()
+
+
+def test_issue_343():
+    def shift_bed(f, shift):
+        f.start += shift
+        f.stop += shift
+        return f
+
+    a = pybedtools.example_bedtool('a.bed')
+
+    # The fix was to ensure that BedTool.remove_invalid() is always working
+    # with a file-based BedTool (whcih means calling .saveas() if needed)
+    (
+        a
+        .each(shift_bed, -200)
+        .remove_invalid()
+        .sort()
+    )

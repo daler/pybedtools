@@ -1647,7 +1647,8 @@ class BedTool(object):
         if isinstance(self.fn, six.string_types):
             i = IntervalIterator(open(self.fn, "r"))
         else:
-            i = IntervalIterator(self.fn)
+            tmp = self.saveas()
+            i = IntervalIterator(open(tmp.fn, "r"))
 
         def _generator():
             while True:
