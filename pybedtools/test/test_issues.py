@@ -845,3 +845,7 @@ def test_issue_345():
 
     # assert " ".join(z._cmds) == f'intersectBed -filenames -b {b.fn} {c.fn} -a {a.fn} -C'
     assert " ".join(z._cmds) == f'intersectBed -a {a.fn} -filenames -b {b.fn} {c.fn} -C'
+
+
+def test_issue_348():
+    i = pybedtools.Interval('chr1', 1, 100, 'feature1', '.', '.', otherfields=['f1'])
