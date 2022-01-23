@@ -848,3 +848,12 @@ def test_issue_345():
 
 def test_issue_348():
     i = pybedtools.Interval('chr1', 1, 100, 'feature1', '.', '.', otherfields=['f1'])
+
+
+def test_issue_355():
+    vcf = pybedtools.example_bedtool('v.vcf')
+    for line in open(vcf.fn):
+        if not line.startswith('#'):
+            break
+    assert line.split('\t')[1] == '14'
+    assert vcf[0].start == 13
