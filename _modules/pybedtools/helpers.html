@@ -458,6 +458,7 @@
                 <span class="s2">&quot;is filename (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                 <span class="n">tmpfn</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="n">cmds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">cmds</span><span class="p">))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;helpers.call_bedtools(): cmds=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">))</span>
             <span class="n">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmpfn</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>

@@ -142,6 +142,7 @@
     <span class="n">genome_if</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">genome_ok_if</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">does_not_return_bedtool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">arg_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Do-it-all wrapper, to be used as a decorator.</span>
@@ -208,6 +209,10 @@
 <span class="sd">    and `kwargs` are passed verbatim from the wrapped method call. Some</span>
 <span class="sd">    examples of methods that use this are jaccard, reldist, fisher, and split</span>
 <span class="sd">    methods.</span>
+
+<span class="sd">    *arg_order*, if not None, is a sorted list of arguments. This is used by</span>
+<span class="sd">    handle_kwargs() to deal with things like issues 81 and 345, where some</span>
+<span class="sd">    BEDTools programs are sensitive to argument order.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># NOTE: We are calling each BEDTools program to get its help and adding</span>
@@ -390,7 +395,9 @@
 
             <span class="c1"># At runtime, this will parse the kwargs, convert streams to</span>
             <span class="c1"># tempfiles if needed, and return all the goodies</span>
-            <span class="n">cmds</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">stdin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_kwargs</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="n">prog</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">cmds</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">stdin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_kwargs</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="n">prog</span><span class="p">,</span>
+                                                  <span class="n">arg_order</span><span class="o">=</span><span class="n">arg_order</span><span class="p">,</span>
+                                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># Decide whether the output is BAM format or not.</span>
             <span class="n">result_is_bam</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1451,12 +1458,15 @@
                     <span class="n">out_</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">fn</span>
 
-    <span class="k">def</span> <span class="nf">handle_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prog</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prog</span><span class="p">,</span> <span class="n">arg_order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handle most cases of BEDTool program calls, but leave the specifics</span>
 <span class="sd">        up to individual methods.</span>
 
 <span class="sd">        *prog* is a BEDTools program name, e.g., &#39;intersectBed&#39;.</span>
+
+<span class="sd">        *arg_order* lists any arguments that are sensitive to order. Everything</span>
+<span class="sd">        else will be reverse-sorted.</span>
 
 <span class="sd">        *kwargs* are passed directly from the calling method (like</span>
 <span class="sd">        self.intersect).</span>
@@ -1579,7 +1589,17 @@
         <span class="c1"># Parse the kwargs into BEDTools-ready args</span>
         <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="n">prog</span><span class="p">]</span>
 
-        <span class="c1"># FIXME: the reverse-sort is a temp fix for issue #81.</span>
+        <span class="c1"># arg_order mechanism added to fix #345</span>
+        <span class="k">if</span> <span class="n">arg_order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arg_order</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arg_order</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+                <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">arg</span><span class="p">)</span>
+                <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="c1"># The reverse-sort is a temp fix for issue #81</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
@@ -1883,7 +1903,8 @@
     <span class="n">bedtobam</span> <span class="o">=</span> <span class="n">to_bam</span>
 
 <div class="viewcode-block" id="BedTool.intersect"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.intersect.html#pybedtools.bedtool.BedTool.intersect">[docs]</a>    <span class="nd">@_log_to_history</span>
-    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;intersectBed&quot;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s2">&quot;abam&quot;</span><span class="p">,</span> <span class="n">nonbam</span><span class="o">=</span><span class="s2">&quot;bed&quot;</span><span class="p">)</span>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;intersectBed&quot;</span><span class="p">,</span> <span class="n">implicit</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">bam</span><span class="o">=</span><span class="s2">&quot;abam&quot;</span><span class="p">,</span>
+            <span class="n">nonbam</span><span class="o">=</span><span class="s2">&quot;bed&quot;</span><span class="p">,</span> <span class="n">arg_order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;abam&quot;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools intersect`.</span>
@@ -2493,7 +2514,7 @@
     <span class="n">unionbedg</span> <span class="o">=</span> <span class="n">union_bedgraphs</span>
 
 <div class="viewcode-block" id="BedTool.window_maker"><a class="viewcode-back" href="../../autodocs/pybedtools.bedtool.BedTool.window_maker.html#pybedtools.bedtool.BedTool.window_maker">[docs]</a>    <span class="nd">@_log_to_history</span>
-    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;windowMaker&quot;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">genome_none_if</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">],</span> <span class="n">other</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+    <span class="nd">@_wraps</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;windowMaker&quot;</span><span class="p">,</span> <span class="n">uses_genome</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">genome_none_if</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">],</span> <span class="n">other</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">arg_order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;w&quot;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">window_maker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps `bedtools makewindows`.</span>
