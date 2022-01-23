@@ -109,6 +109,7 @@ def _wraps(
     genome_if=None,
     genome_ok_if=None,
     does_not_return_bedtool=None,
+    arg_order=None,
 ):
     """
     Do-it-all wrapper, to be used as a decorator.
@@ -175,6 +176,10 @@ def _wraps(
     and `kwargs` are passed verbatim from the wrapped method call. Some
     examples of methods that use this are jaccard, reldist, fisher, and split
     methods.
+
+    *arg_order*, if not None, is a sorted list of arguments. This is used by
+    handle_kwargs() to deal with things like issues 81 and 345, where some
+    BEDTools programs are sensitive to argument order.
     """
 
     # NOTE: We are calling each BEDTools program to get its help and adding
@@ -357,7 +362,9 @@ def _wraps(
 
             # At runtime, this will parse the kwargs, convert streams to
             # tempfiles if needed, and return all the goodies
-            cmds, tmp, stdin = self.handle_kwargs(prog=prog, **kwargs)
+            cmds, tmp, stdin = self.handle_kwargs(prog=prog,
+                                                  arg_order=arg_order,
+                                                  **kwargs)
 
             # Decide whether the output is BAM format or not.
             result_is_bam = False
@@ -1418,12 +1425,15 @@ class BedTool(object):
                     out_.write(str(i))
         return fn
 
-    def handle_kwargs(self, prog, **kwargs):
+    def handle_kwargs(self, prog, arg_order, **kwargs):
         """
         Handle most cases of BEDTool program calls, but leave the specifics
         up to individual methods.
 
         *prog* is a BEDTools program name, e.g., 'intersectBed'.
+
+        *arg_order* lists any arguments that are sensitive to order. Everything
+        else will be reverse-sorted.
 
         *kwargs* are passed directly from the calling method (like
         self.intersect).
@@ -1546,7 +1556,17 @@ class BedTool(object):
         # Parse the kwargs into BEDTools-ready args
         cmds = [prog]
 
-        # FIXME: the reverse-sort is a temp fix for issue #81.
+        # arg_order mechanism added to fix #345
+        if arg_order is None:
+            arg_order = []
+
+        for arg in arg_order:
+            if arg in kwargs:
+                val = kwargs.pop(arg)
+                cmds.append("-" + arg)
+                cmds.append(val)
+
+        # The reverse-sort is a temp fix for issue #81
         for key, value in sorted(list(kwargs.items()), reverse=True):
             if isinstance(value, bool):
                 if value:
@@ -1850,7 +1870,8 @@ class BedTool(object):
     bedtobam = to_bam
 
     @_log_to_history
-    @_wraps(prog="intersectBed", implicit="a", other="b", bam="abam", nonbam="bed")
+    @_wraps(prog="intersectBed", implicit="a", other="b", bam="abam",
+            nonbam="bed", arg_order=["a", "abam"])
     def intersect(self):
         """
         Wraps `bedtools intersect`.
@@ -2460,7 +2481,7 @@ class BedTool(object):
     unionbedg = union_bedgraphs
 
     @_log_to_history
-    @_wraps(prog="windowMaker", uses_genome=True, genome_none_if=["b"], other="b")
+    @_wraps(prog="windowMaker", uses_genome=True, genome_none_if=["b"], other="b", arg_order=["w"])
     def window_maker(self):
         """
         Wraps `bedtools makewindows`.

@@ -425,6 +425,7 @@ def call_bedtools(
                 "is filename (%s)",
                 tmpfn,
             )
+            cmds = list(map(str, cmds))
             logger.debug("helpers.call_bedtools(): cmds=%s", " ".join(cmds))
             outfile = open(tmpfn, "wb")
             p = subprocess.Popen(

@@ -834,3 +834,14 @@ def test_issue_343():
         .remove_invalid()
         .sort()
     )
+
+
+def test_issue_345():
+    a = pybedtools.example_bedtool('a.bed')
+    b = pybedtools.example_bedtool('b.bed')
+    c = pybedtools.example_bedtool('c.gff')
+
+    z = a.intersect(b=[b.fn,c.fn], C=True, filenames=True)
+
+    # assert " ".join(z._cmds) == f'intersectBed -filenames -b {b.fn} {c.fn} -a {a.fn} -C'
+    assert " ".join(z._cmds) == f'intersectBed -a {a.fn} -filenames -b {b.fn} {c.fn} -C'
