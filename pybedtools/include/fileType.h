@@ -7,7 +7,7 @@
   University of Virginia
   aaronquinlan@gmail.com
 
-  Licensed under the GNU General Public License 2.0 license.
+  Licensed under the MIT license (as of Jan 2022)
 ******************************************************************************/
 #ifndef FILETYPE_H
 #define FILETYPE_H

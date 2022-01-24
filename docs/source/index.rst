@@ -12,8 +12,9 @@
 
 
 
-`pybedtools` is released under the GPLv2 license; see LICENSE.txt for more
-info.
+As of 2022, `pybedtools` is released under the MIT license; see LICENSE.txt for
+more info.
+
 
 .. note::
 
