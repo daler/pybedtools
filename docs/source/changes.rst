@@ -3,6 +3,35 @@
 Changelog
 =========
 
+Changes in v0.9
+---------------
+
+2022-01-23
+
+The biggest change is that pybedtools is now under the MIT license, following
+the lead of BEDTools itself.
+
+Bugfixes:
+
+* Bugfix: `Interval` objects representing VCF lines now have their `start`
+  attribute correctly zero-based, as indicated in the docs and consistent with
+  other 1-based formats. See `#355 <https://github.com/daler/pybedtools/issues/355>`_.
+* Bugfix: Manually creating `Interval` objects using the `otherfields` argument
+  now correctly converts to C++ strings. See `#348
+  <https://github.com/daler/pybedtools/issues/348>`_.
+* Bugfix: Workaround for `BedTool.intersect` which in some versions of BEDTools
+  requires a specific order of arguments. Fixes `#345
+  <https://github.com/daler/pybedtools/issues/345>`_ and also is a better way
+  of addressing `#81 <https://github.com/daler/pybedtools/issues/81>`_.
+
+Code cleanup:
+
+* Removed some remnants of Python 2.7 support (thanks @DavidCain)
+* Updates to setup.py classifiers to better reflect state of code (thanks @DavidCain)
+* Sorted filenames in setup.py to improve reproducibility of build (thanks @lamby)
+* Tests converted to run on GitHub Actions (see `#339
+  <https://github.com/daler/pybedtools/pull/339>`_).
+
 Changes in v0.8.2
 -----------------
 
