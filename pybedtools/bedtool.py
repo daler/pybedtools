@@ -338,20 +338,6 @@ def _wraps(
             if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
 
-            # TODO: should this be implemented as a generic function that can
-            # be passed in for a each tool to check kwargs? Currently this is
-            # the only check I can think of.
-            if prog in ("intersect", "intersectBed"):
-                if (
-                    isinstance(kwargs["b"], list)
-                    and len(kwargs["b"]) > 510
-                    and all([isinstance(i, str) for i in kwargs["b"]])
-                ):
-                    raise pybedtoolsError(
-                        "BEDTools intersect does not support > 510 filenames for -b "
-                        "argument. Consider passing these as BedTool objects instead"
-                    )
-
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
             # make a tempfile for 'fo' if no 'fo' was explicitly specified by
