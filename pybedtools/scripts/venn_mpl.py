@@ -18,7 +18,7 @@ import os
 import pybedtools
 
 
-def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
+def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None, dpi=300):
     """
     *a*, *b*, and *c* are filenames to BED-like files.
 
@@ -30,6 +30,8 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
 
     *labels* is a list of labels to use for each of the files; by default the
     labels are ['a','b','c']
+    
+    *dpi* is the dpi setting passed to matplotlib savefig
     """
     try:
         import matplotlib.pyplot as plt
@@ -117,7 +119,7 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
 
     ax.legend(loc="best")
 
-    fig.savefig(outfn)
+    fig.savefig(outfn, dpi=dpi)
 
     plt.close(fig)
 
