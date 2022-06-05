@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Intervals &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="intervals">
-<span id="id1"></span><h1>Intervals<a class="headerlink" href="#intervals" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Intervals<a class="headerlink" href="#intervals" title="Permalink to this heading">¶</a></h1>
 <p>An <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> object is how <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> represents a line in a BED,
 GFF, GTF, or VCF file in a uniform fashion.  This section will describe
 some useful features of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects.</p>
@@ -52,7 +53,7 @@ Probably the most convenient way is by indexing a <code class="xref py py-class 
 </pre></div>
 </div>
 <section id="common-interval-attributes">
-<h2>Common <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> attributes<a class="headerlink" href="#common-interval-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Common <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> attributes<a class="headerlink" href="#common-interval-attributes" title="Permalink to this heading">¶</a></h2>
 <p>Printing a feature converts it into the original line from the file:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
 <span class="go">chr1        1       100     feature1        0       +</span>
@@ -144,7 +145,7 @@ string – but only under Python 2.</p>
 <p>This illustrates that default values are the string “<code class="file docutils literal notranslate"><span class="pre">.</span></code>”.</p>
 </section>
 <section id="indexing-into-interval-objects">
-<h2>Indexing into <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects<a class="headerlink" href="#indexing-into-interval-objects" title="Permalink to this headline">¶</a></h2>
+<h2>Indexing into <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects<a class="headerlink" href="#indexing-into-interval-objects" title="Permalink to this heading">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects can also be indexed by position into the original
 line (like a list) or indexed by name of attribute (like a dictionary).</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
@@ -166,7 +167,7 @@ line (like a list) or indexed by name of attribute (like a dictionary).</p>
 </div>
 </section>
 <section id="fields">
-<h2>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h2>
+<h2>Fields<a class="headerlink" href="#fields" title="Permalink to this heading">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> objects have a <code class="xref py py-attr docutils literal notranslate"><span class="pre">Interval.fields</span></code> attribute that
 contains the original line split into a list of strings.  When an integer
 index is used on the <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> (for example, <code class="file docutils literal notranslate"><span class="pre">feature[3]</span></code>), it is
@@ -180,7 +181,7 @@ the <code class="file docutils literal notranslate"><span class="pre">fields</sp
 </div>
 </section>
 <section id="bed-is-0-based-others-are-1-based">
-<span id="zero-based-coords"></span><h2>BED is 0-based, others are 1-based<a class="headerlink" href="#bed-is-0-based-others-are-1-based" title="Permalink to this headline">¶</a></h2>
+<span id="zero-based-coords"></span><h2>BED is 0-based, others are 1-based<a class="headerlink" href="#bed-is-0-based-others-are-1-based" title="Permalink to this heading">¶</a></h2>
 <p>One troublesome part about working with multiple formats is that BED files
 have a different coordinate system than GFF/GTF/VCF/ files.</p>
 <ul class="simple">
@@ -218,7 +219,7 @@ BED coords.</p></li>
 </li>
 </ul>
 <section id="worked-example">
-<h3>Worked example<a class="headerlink" href="#worked-example" title="Permalink to this headline">¶</a></h3>
+<h3>Worked example<a class="headerlink" href="#worked-example" title="Permalink to this heading">¶</a></h3>
 <p>To illustrate and confirm this functionality, let’s create a GFF feature and
 a BED feature from scratch and compare them.</p>
 <p>First, let’s create a GFF <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> from scratch:</p>
@@ -302,7 +303,7 @@ every time:</p>
 </section>
 </section>
 <section id="gff-features-have-access-to-attributes">
-<h2>GFF features have access to attributes<a class="headerlink" href="#gff-features-have-access-to-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>GFF features have access to attributes<a class="headerlink" href="#gff-features-have-access-to-attributes" title="Permalink to this heading">¶</a></h2>
 <p>GFF and GTF files have lots of useful information in their attributes field
 (the last field in each line).  These attributes can be accessed with the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Interval.attrs</span></code> attribute, which acts like a dictionary.  For speed,
@@ -399,7 +400,7 @@ in the next section.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -439,7 +440,7 @@ in the next section.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

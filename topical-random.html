@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Randomization &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="randomization">
-<h1>Randomization<a class="headerlink" href="#randomization" title="Permalink to this headline">¶</a></h1>
+<h1>Randomization<a class="headerlink" href="#randomization" title="Permalink to this heading">¶</a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> provides some basic functionality for assigning some
 significance value to the overlap between two BEDfiles.</p>
 <p>The strategy is to randomly shuffle a file many times, each time doing an
@@ -48,7 +49,7 @@ distribution to get a score.</p>
 brute force randomizations, and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> which compiles
 and reports the results from the former method.</p>
 <section id="example-workflow">
-<h2>Example workflow<a class="headerlink" href="#example-workflow" title="Permalink to this headline">¶</a></h2>
+<h2>Example workflow<a class="headerlink" href="#example-workflow" title="Permalink to this heading">¶</a></h2>
 <p>As a somewhat trivial example, we’ll intersect the example <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code> with
 <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>, taking care to set some options that will let it run in a
 determinisitic way so that these tests will run.</p>
@@ -105,52 +106,52 @@ in a dictionary.</p>
 <p>The keys to this results dictionary are as follows (some are redundant,
 I’ve found these keys useful for writing out to file):</p>
 <dl class="field-list simple">
-<dt class="field-odd">iterations</dt>
+<dt class="field-odd">iterations<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the number of iterations we specified</p>
 </dd>
-<dt class="field-even">actual</dt>
+<dt class="field-even">actual<span class="colon">:</span></dt>
 <dd class="field-even"><p>the number of intersections between then un-shuffled <code class="file docutils literal notranslate"><span class="pre">a</span></code> and <code class="file docutils literal notranslate"><span class="pre">b</span></code></p>
 </dd>
-<dt class="field-odd">file_a</dt>
+<dt class="field-odd">file_a<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the filename of <code class="file docutils literal notranslate"><span class="pre">a</span></code></p>
 </dd>
-<dt class="field-even">file_b</dt>
+<dt class="field-even">file_b<span class="colon">:</span></dt>
 <dd class="field-even"><p>the filename of <code class="file docutils literal notranslate"><span class="pre">b</span></code></p>
 </dd>
-<dt class="field-odd">&lt;file_a&gt;</dt>
+<dt class="field-odd">&lt;file_a&gt;<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the key is actully the filename of <code class="file docutils literal notranslate"><span class="pre">a</span></code>, and the value is the number of
 features in <code class="file docutils literal notranslate"><span class="pre">a</span></code></p>
 </dd>
-<dt class="field-even">&lt;file_b&gt;</dt>
+<dt class="field-even">&lt;file_b&gt;<span class="colon">:</span></dt>
 <dd class="field-even"><p>the key is actually the filename of <code class="file docutils literal notranslate"><span class="pre">b</span></code> and the value is the number of
 features in <code class="file docutils literal notranslate"><span class="pre">b</span></code></p>
 </dd>
-<dt class="field-odd">self</dt>
+<dt class="field-odd">self<span class="colon">:</span></dt>
 <dd class="field-odd"><p>number of features in <code class="file docutils literal notranslate"><span class="pre">a</span></code> (or “self”; same value as for &lt;file_a&gt;)</p>
 </dd>
-<dt class="field-even">other</dt>
+<dt class="field-even">other<span class="colon">:</span></dt>
 <dd class="field-even"><p>number of features in <code class="file docutils literal notranslate"><span class="pre">b</span></code> (or “other”; same value as for &lt;file_b&gt;)</p>
 </dd>
-<dt class="field-odd">frac randomized above actual</dt>
+<dt class="field-odd">frac randomized above actual<span class="colon">:</span></dt>
 <dd class="field-odd"><p>fraction of iterations that had counts above the actual count</p>
 </dd>
-<dt class="field-even">frac randomized below actual</dt>
+<dt class="field-even">frac randomized below actual<span class="colon">:</span></dt>
 <dd class="field-even"><p>fraction of iterations that had counts below the actual count</p>
 </dd>
-<dt class="field-odd">median randomized</dt>
+<dt class="field-odd">median randomized<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the median of the distribution of randomized intersections</p>
 </dd>
-<dt class="field-even">normalized</dt>
+<dt class="field-even">normalized<span class="colon">:</span></dt>
 <dd class="field-even"><p>the actual count divided by the median; can be considered as a score</p>
 </dd>
-<dt class="field-odd">percentile</dt>
+<dt class="field-odd">percentile<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the percentile of actual within the distribution of randomized
 intersections; can be considered an empirical p-value</p>
 </dd>
-<dt class="field-even">upper 97.5th</dt>
+<dt class="field-even">upper 97.5th<span class="colon">:</span></dt>
 <dd class="field-even"><p>the 97.5th percentile of the randomized distribution</p>
 </dd>
-<dt class="field-odd">lower 2.5th</dt>
+<dt class="field-odd">lower 2.5th<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the 2.5th percentile of the randomized distribution</p>
 </dd>
 </dl>
@@ -170,7 +171,7 @@ intersections; can be considered an empirical p-value</p>
 statistical testing are very welcome!</p>
 </section>
 <section id="other-statistics">
-<h2>Other statistics<a class="headerlink" href="#other-statistics" title="Permalink to this headline">¶</a></h2>
+<h2>Other statistics<a class="headerlink" href="#other-statistics" title="Permalink to this heading">¶</a></h2>
 <p>In practice, a comparison between two sets of features (say, two transcription
 factors) with 1000 randomizations will have an empirical p-value of &lt; 0.001.
 That is, out of all the randomizations performed,  every single one had fewer
@@ -267,7 +268,7 @@ actual-divided-by-median approach could be tried here as well.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -307,7 +308,7 @@ actual-divided-by-median approach could be tried here as well.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

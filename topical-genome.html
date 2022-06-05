@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Specifying genomes &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="specifying-genomes">
-<span id="genomes"></span><h1>Specifying genomes<a class="headerlink" href="#specifying-genomes" title="Permalink to this headline">¶</a></h1>
+<span id="genomes"></span><h1>Specifying genomes<a class="headerlink" href="#specifying-genomes" title="Permalink to this heading">¶</a></h1>
 <p>This section illustrates the use of genome files for use with BEDTools
 programs that need to know chromosome limits to prevent out-of-range
 coordinates.</p>
@@ -55,7 +56,7 @@ follows (use whatever is most convenient):</p>
 </ul>
 <p>Below are examples of each.</p>
 <section id="as-a-file">
-<h2>As a file<a class="headerlink" href="#as-a-file" title="Permalink to this headline">¶</a></h2>
+<h2>As a file<a class="headerlink" href="#as-a-file" title="Permalink to this heading">¶</a></h2>
 <p>This is the typical way of using BEDTools programs, by specifying an existing genome
 file with <code class="file docutils literal notranslate"><span class="pre">g</span></code>:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -64,7 +65,7 @@ file with <code class="file docutils literal notranslate"><span class="pre">g</s
 </div>
 </section>
 <section id="as-a-string">
-<h2>As a string<a class="headerlink" href="#as-a-string" title="Permalink to this headline">¶</a></h2>
+<h2>As a string<a class="headerlink" href="#as-a-string" title="Permalink to this heading">¶</a></h2>
 <p>This is probably the most convenient way of specifying a genome.  If the
 genome exists in the genome registry it will be used directly.  Alternatively,
 if you have <a href="#id1"><span class="problematic" id="id2">`genomepy&lt;https://github.com/vanheeringen-lab/genomepy/&gt;`_</span></a>
@@ -78,7 +79,7 @@ will be interpreted as a filename:</p>
 </div>
 </section>
 <section id="as-a-dictionary">
-<h2>As a dictionary<a class="headerlink" href="#as-a-dictionary" title="Permalink to this headline">¶</a></h2>
+<h2>As a dictionary<a class="headerlink" href="#as-a-dictionary" title="Permalink to this heading">¶</a></h2>
 <p>This is a good way of providing custom coordinates; either <code class="file docutils literal notranslate"><span class="pre">g</span></code> or <code class="file docutils literal notranslate"><span class="pre">genome</span></code>
 will accept a dictionary:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chr1&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)})</span>
@@ -92,7 +93,7 @@ will accept a dictionary:</p>
 </div>
 </section>
 <section id="converting-to-a-file">
-<h2>Converting to a file<a class="headerlink" href="#converting-to-a-file" title="Permalink to this headline">¶</a></h2>
+<h2>Converting to a file<a class="headerlink" href="#converting-to-a-file" title="Permalink to this heading">¶</a></h2>
 <p>Since BEDTools programs operate on files, the fastest choice will be to
 use an existing file.  While the time to convert a dictionary to a file is
 extremely small, over 1000’s of files (e.g., for Monte Carlo simulations),
@@ -187,7 +188,7 @@ will create a file from a dictionary or string:</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -227,7 +228,7 @@ will create a file from a dictionary or string:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

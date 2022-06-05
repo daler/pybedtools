@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Installation &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,11 +35,11 @@
           <div class="body" role="main">
             
   <section id="installation">
-<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> is a Python package that wraps BEDTools, so you’ll need both
 installed.</p>
 <section id="install-via-conda">
-<span id="condainstall"></span><h2>Install via <code class="file docutils literal notranslate"><span class="pre">conda</span></code><a class="headerlink" href="#install-via-conda" title="Permalink to this headline">¶</a></h2>
+<span id="condainstall"></span><h2>Install via <code class="file docutils literal notranslate"><span class="pre">conda</span></code><a class="headerlink" href="#install-via-conda" title="Permalink to this heading">¶</a></h2>
 <p>This is by far the easiest option.  If you’re usng the <a class="reference external" href="http://continuum.io/downloads">Anaconda Python
 distribution</a> on Linux, then the following
 will install <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>:</p>
@@ -52,20 +53,20 @@ will install <code class="xref py py-mod docutils literal notranslate"><span cla
 <p>Otherwise, read on for installation on other platforms and in other
 environments.</p>
 <section id="required">
-<h3>Required<a class="headerlink" href="#required" title="Permalink to this headline">¶</a></h3>
+<h3>Required<a class="headerlink" href="#required" title="Permalink to this heading">¶</a></h3>
 <dl class="field-list simple">
-<dt class="field-odd"><a class="reference external" href="http://www.python.org/">Python</a></dt>
+<dt class="field-odd"><a class="reference external" href="http://www.python.org/">Python</a><span class="colon">:</span></dt>
 <dd class="field-odd"><p>version 3.6 or greater (Python 3 is supported). If you’re setting up
 Python for the first time, the <a class="reference external" href="http://continuum.io/downloads">Anaconda Python distribution</a> is highly recommended.</p>
 </dd>
-<dt class="field-even"><a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a></dt>
+<dt class="field-even"><a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a><span class="colon">:</span></dt>
 <dd class="field-even"><p>The version is not important, but later versions will have more features so
 it’s a good idea to get the latest.  Follow the instructions at
 <a class="reference external" href="https://github.com/arq5x/bedtools2">https://github.com/arq5x/bedtools2</a> to install, and make sure the programs
 are on your path. That is, you should be able to call <code class="file docutils literal notranslate"><span class="pre">bedtools</span></code> from
 any directory</p>
 </dd>
-<dt class="field-odd">A C/C++ compiler</dt>
+<dt class="field-odd">A C/C++ compiler<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>OSX:</strong> Install Xcode from <a class="reference external" href="http://developer.apple.com/xcode/">http://developer.apple.com/xcode/</a></p></li>
 <li><p><strong>Linux:</strong> <code class="file docutils literal notranslate"><span class="pre">gcc</span></code>, usually already installed; on Ubuntu, install with <code class="file docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span>
@@ -77,10 +78,10 @@ untested. Windows is not supported.</p></li>
 </dl>
 </section>
 <section id="optional">
-<h3>Optional<a class="headerlink" href="#optional" title="Permalink to this headline">¶</a></h3>
+<h3>Optional<a class="headerlink" href="#optional" title="Permalink to this heading">¶</a></h3>
 <p>The following external tools are <strong>optional</strong>:</p>
 <dl class="field-list simple">
-<dt class="field-odd"><a class="reference external" href="http://samtools.sourceforge.net/tabix.shtml">Tabix</a> [<a class="reference external" href="http://sourceforge.net/projects/samtools/files/">download page</a>]</dt>
+<dt class="field-odd"><a class="reference external" href="http://samtools.sourceforge.net/tabix.shtml">Tabix</a> [<a class="reference external" href="http://sourceforge.net/projects/samtools/files/">download page</a>]<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Required for fast, random access to BED/GFF/GTF/VCF files by providing
 a chrom:start-stop coordinate.  Similar to the above, you should be able to
 call <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> from any directory.</p>
@@ -89,13 +90,13 @@ call <code class="file docutils literal notranslate"><span class="pre">tabix</sp
 </section>
 </section>
 <section id="installing-pybedtools">
-<h2>Installing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code><a class="headerlink" href="#installing-pybedtools" title="Permalink to this headline">¶</a></h2>
+<h2>Installing <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code><a class="headerlink" href="#installing-pybedtools" title="Permalink to this heading">¶</a></h2>
 <section id="install-latest-release-via-conda-recommended">
-<h3>Install latest release via <code class="file docutils literal notranslate"><span class="pre">conda</span></code> (recommended)<a class="headerlink" href="#install-latest-release-via-conda-recommended" title="Permalink to this headline">¶</a></h3>
+<h3>Install latest release via <code class="file docutils literal notranslate"><span class="pre">conda</span></code> (recommended)<a class="headerlink" href="#install-latest-release-via-conda-recommended" title="Permalink to this heading">¶</a></h3>
 <p>See <a class="reference internal" href="#condainstall"><span class="std std-ref">Install via conda</span></a> section above.</p>
 </section>
 <section id="install-latest-release-using-pip">
-<h3>Install latest release using <code class="file docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#install-latest-release-using-pip" title="Permalink to this headline">¶</a></h3>
+<h3>Install latest release using <code class="file docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#install-latest-release-using-pip" title="Permalink to this heading">¶</a></h3>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> is on PyPI, so you can install via <code class="file docutils literal notranslate"><span class="pre">pip</span></code> like most Python
 packages. Depending on your Python installation, this may require admin
 rights:</p>
@@ -104,7 +105,7 @@ rights:</p>
 </div>
 </section>
 <section id="install-development-version-via-github">
-<h3>Install development version via github<a class="headerlink" href="#install-development-version-via-github" title="Permalink to this headline">¶</a></h3>
+<h3>Install development version via github<a class="headerlink" href="#install-development-version-via-github" title="Permalink to this heading">¶</a></h3>
 <p>Assumptions:</p>
 <ol class="arabic simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">git</span></code> is installed</p></li>
@@ -135,7 +136,7 @@ source files have been changed, run:</p>
 </section>
 </section>
 <section id="quick-test">
-<h2>Quick test<a class="headerlink" href="#quick-test" title="Permalink to this headline">¶</a></h2>
+<h2>Quick test<a class="headerlink" href="#quick-test" title="Permalink to this heading">¶</a></h2>
 <p>Paste the following into a new file called <code class="file docutils literal notranslate"><span class="pre">mytest.py</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -152,7 +153,7 @@ source files have been changed, run:</p>
 </section>
 </section>
 <section id="running-tests-compiling-docs">
-<h1>Running tests, compiling docs<a class="headerlink" href="#running-tests-compiling-docs" title="Permalink to this headline">¶</a></h1>
+<h1>Running tests, compiling docs<a class="headerlink" href="#running-tests-compiling-docs" title="Permalink to this heading">¶</a></h1>
 <p>There are several modes of testing described below, and in each mode both unit
 tests and doctests can be run.</p>
 <p>The following instructions assume that you have a working copy of the
@@ -163,7 +164,7 @@ e.g., by running:</p>
 </pre></div>
 </div>
 <section id="test-current-installation">
-<h2>Test current installation<a class="headerlink" href="#test-current-installation" title="Permalink to this headline">¶</a></h2>
+<h2>Test current installation<a class="headerlink" href="#test-current-installation" title="Permalink to this heading">¶</a></h2>
 <p>To test within the existing installation, install the additional packages for
 testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="o">--</span><span class="n">channel</span> <span class="n">bioconda</span> \
@@ -182,7 +183,7 @@ testing:</p>
 </div>
 </section>
 <section id="test-within-isolated-conda-environments">
-<h2>Test within isolated conda environments<a class="headerlink" href="#test-within-isolated-conda-environments" title="Permalink to this headline">¶</a></h2>
+<h2>Test within isolated conda environments<a class="headerlink" href="#test-within-isolated-conda-environments" title="Permalink to this heading">¶</a></h2>
 <p>Run the <code class="file docutils literal notranslate"><span class="pre">condatest.sh</span></code> script in the top-level dir of the repo. This script
 creates a new isolated conda environment and runs both unit tests and doctests.</p>
 <p>To run tests under Python 2:</p>
@@ -195,7 +196,7 @@ creates a new isolated conda environment and runs both unit tests and doctests.<
 </div>
 </section>
 <section id="compile-docs">
-<h2>Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this headline">¶</a></h2>
+<h2>Compile docs<a class="headerlink" href="#compile-docs" title="Permalink to this heading">¶</a></h2>
 <p>To compile the docs, from the top-level <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> directory:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">cd</span> <span class="n">docs</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">html</span><span class="p">)</span>
 </pre></div>
@@ -203,7 +204,7 @@ creates a new isolated conda environment and runs both unit tests and doctests.<
 <p>Then point a browser to <code class="file docutils literal notranslate"><span class="pre">docs/build/html/index.html</span></code>.</p>
 </section>
 <section id="contributing">
-<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">¶</a></h2>
 <p>Any and all contributions are welcome.  Here’s how to contribute:</p>
 <ol class="arabic simple">
 <li><p>Fork the <a class="reference external" href="http://github.com/daler/pybedtools">pybedtools repository</a> on
@@ -279,7 +280,7 @@ the commit and I can integrate them later)</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -318,7 +319,7 @@ the commit and I can integrate them later)</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

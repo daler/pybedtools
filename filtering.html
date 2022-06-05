@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Filtering &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="filtering">
-<span id="id1"></span><h1>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Filtering<a class="headerlink" href="#filtering" title="Permalink to this heading">¶</a></h1>
 <p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> method lets you pass in a function that accepts an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code> as its first argument and returns True for False.  This
 allows you to perform “grep”-like operations on <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects.  For
@@ -85,7 +86,7 @@ a ready-to-use <code class="xref py py-class docutils literal notranslate"><span
 </pre></div>
 </div>
 <section id="fast-filtering-functions-in-cython">
-<h2>Fast filtering functions in Cython<a class="headerlink" href="#fast-filtering-functions-in-cython" title="Permalink to this headline">¶</a></h2>
+<h2>Fast filtering functions in Cython<a class="headerlink" href="#fast-filtering-functions-in-cython" title="Permalink to this heading">¶</a></h2>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">featurefuncs</span></code> module contains some ready-made functions written
 in Cython that will be faster than pure Python equivalents.  For example,
 there are <code class="xref py py-func docutils literal notranslate"><span class="pre">greater_than()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">less_than()</span></code> functions, which are
@@ -173,7 +174,7 @@ about 70% faster.  In IPython:</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -213,7 +214,7 @@ about 70% faster.  In IPython:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

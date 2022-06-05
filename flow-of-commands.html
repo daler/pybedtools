@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Under the hood &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="under-the-hood">
-<h1>Under the hood<a class="headerlink" href="#under-the-hood" title="Permalink to this headline">¶</a></h1>
+<h1>Under the hood<a class="headerlink" href="#under-the-hood" title="Permalink to this heading">¶</a></h1>
 <p>This section documents some details about what happens when a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>
 object is created and exactly what happens when a BEDTools command is called.
 It’s mostly useful for developers or for debugging.</p>
@@ -45,12 +46,12 @@ It’s mostly useful for developers or for debugging.</p>
 <li><p>iterator of Interval objects</p></li>
 </ul>
 <section id="iterator-protocol">
-<h2>Iterator “protocol”<a class="headerlink" href="#iterator-protocol" title="Permalink to this headline">¶</a></h2>
+<h2>Iterator “protocol”<a class="headerlink" href="#iterator-protocol" title="Permalink to this heading">¶</a></h2>
 <p>BedTool objects yield an Interval object on each <code class="file docutils literal notranslate"><span class="pre">next()</span></code> call.  Where this
 Interval comes from depends on how the BedTool was created and what format the
 underlying data are in, as follows.</p>
 <section id="filename-based">
-<h3>Filename-based<a class="headerlink" href="#filename-based" title="Permalink to this headline">¶</a></h3>
+<h3>Filename-based<a class="headerlink" href="#filename-based" title="Permalink to this heading">¶</a></h3>
 <p>If BED/GTF/GFF/VCF format, then use an <code class="file docutils literal notranslate"><span class="pre">IntervalFile</span></code> object for Cython/C++
 speed.</p>
 <p>If SAM format, then use an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>.  This is a Cython object that
@@ -62,7 +63,7 @@ objects.</p>
 <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code> from subprocess.PIPE similar to SAM format.</p>
 </section>
 <section id="open-file-based">
-<h3>Open file-based<a class="headerlink" href="#open-file-based" title="Permalink to this headline">¶</a></h3>
+<h3>Open file-based<a class="headerlink" href="#open-file-based" title="Permalink to this heading">¶</a></h3>
 <p>All formats are passed to an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>, which reads one line at
 a time and yields an <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> object.</p>
 <p>If it’s a BAM file (specifically, a detected bgzip stream), then it’s actually
@@ -70,7 +71,7 @@ first sent to the stdin of a <code class="file docutils literal notranslate"><sp
 subprocess.PIPE from that Popen’s stdout is sent to an <code class="file docutils literal notranslate"><span class="pre">IntervalIterator</span></code>.</p>
 </section>
 <section id="iterator-or-generator-based">
-<h3>Iterator or generator-based<a class="headerlink" href="#iterator-or-generator-based" title="Permalink to this headline">¶</a></h3>
+<h3>Iterator or generator-based<a class="headerlink" href="#iterator-or-generator-based" title="Permalink to this heading">¶</a></h3>
 <p>If it’s neither of the above, then the assumption is that it’s already an
 iterable of <code class="file docutils literal notranslate"><span class="pre">Interval</span></code> objects.  This is the case if a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> is created
 with something like:</p>
@@ -86,7 +87,7 @@ have a generator-based BedTool.</p>
 </section>
 </section>
 <section id="calling-bedtools-programs">
-<h2>Calling BEDTools programs<a class="headerlink" href="#calling-bedtools-programs" title="Permalink to this headline">¶</a></h2>
+<h2>Calling BEDTools programs<a class="headerlink" href="#calling-bedtools-programs" title="Permalink to this heading">¶</a></h2>
 <p>Depending on the type of BedTool (filename, open file, or iterator), the method
 of calling BEDTools programs differs.</p>
 <p>In all cases, BEDTools commands are called via a <code class="file docutils literal notranslate"><span class="pre">subprocess.Popen</span></code> call
@@ -107,7 +108,7 @@ open-file based (which is what subprocess.PIPE acts like).</p>
 <p>Specifically, here is the information flow of stdin/stdout for various
 interconversions of BedTool types … .</p>
 <dl class="field-list simple">
-<dt class="field-odd">filename -&gt; filename</dt>
+<dt class="field-odd">filename -&gt; filename<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=False</span></code>.</p>
 <ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: <code class="file docutils literal notranslate"><span class="pre">None</span></code> (the filenames are provided in the BEDTools command)</p></li>
@@ -115,7 +116,7 @@ interconversions of BedTool types … .</p>
 <li><p>new BedTool: filename-based BedTool pointing to the tempfile’s filename</p></li>
 </ul>
 </dd>
-<dt class="field-even">filename -&gt; open file object</dt>
+<dt class="field-even">filename -&gt; open file object<span class="colon">:</span></dt>
 <dd class="field-even"><p>The calling BedTool is filename-based and <code class="file docutils literal notranslate"><span class="pre">stream=True</span></code> is requested.</p>
 <ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">stdin</span></code>: None (provided in the cmds)</p></li>
@@ -124,7 +125,7 @@ interconversions of BedTool types … .</p>
 next line in subprocess.PIPE</p></li>
 </ul>
 </dd>
-<dt class="field-odd">open file object -&gt; filename</dt>
+<dt class="field-odd">open file object -&gt; filename<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The calling BedTool is from, e.g., subprocess.PIPE and there’s
 a saveas() call to “render” to file.</p>
 <ul class="simple">
@@ -134,7 +135,7 @@ supplied filename</p></li>
 <li><p>new BedTool: filename-based BedTool</p></li>
 </ul>
 </dd>
-<dt class="field-even">open file object -&gt; iterator</dt>
+<dt class="field-even">open file object -&gt; iterator<span class="colon">:</span></dt>
 <dd class="field-even"><p>The calling BedTool is usually based on subprocess.PIPE, and the output
 will <em>also</em> come from subprocess.PIPE.</p>
 <ul class="simple">
@@ -212,7 +213,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -252,7 +253,7 @@ will <em>also</em> come from subprocess.PIPE.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Three brief examples &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="three-brief-examples">
-<span id="examples"></span><h1>Three brief examples<a class="headerlink" href="#three-brief-examples" title="Permalink to this headline">¶</a></h1>
+<span id="examples"></span><h1>Three brief examples<a class="headerlink" href="#three-brief-examples" title="Permalink to this heading">¶</a></h1>
 <p>Here are three examples to show typical usage of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code>.  More
 info can be found in the docstrings of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> methods and in the
 <a class="reference internal" href="tutorial-contents.html#tutorial"><span class="std std-ref">Tutorial Contents</span></a>.</p>
@@ -58,7 +59,7 @@ for the format (1-based for GFF; 0-based for BED).</p></li>
 </ul>
 </div>
 <section id="example-1-save-a-bed-file-of-intersections-with-track-line">
-<h2>Example 1: Save a BED file of intersections, with track line<a class="headerlink" href="#example-1-save-a-bed-file-of-intersections-with-track-line" title="Permalink to this headline">¶</a></h2>
+<h2>Example 1: Save a BED file of intersections, with track line<a class="headerlink" href="#example-1-save-a-bed-file-of-intersections-with-track-line" title="Permalink to this heading">¶</a></h2>
 <p>This example saves a new BED file of intersections between your files <code class="file docutils literal notranslate"><span class="pre">mydata/snps.bed</span></code> and
 <code class="file docutils literal notranslate"><span class="pre">mydata/exons.bed</span></code>, adding a track line to the output:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pybedtools</span>
@@ -68,7 +69,7 @@ for the format (1-based for GFF; 0-based for BED).</p></li>
 </div>
 </section>
 <section id="example-2-intersections-for-a-3-way-venn-diagram">
-<h2>Example 2: Intersections for a 3-way Venn diagram<a class="headerlink" href="#example-2-intersections-for-a-3-way-venn-diagram" title="Permalink to this headline">¶</a></h2>
+<h2>Example 2: Intersections for a 3-way Venn diagram<a class="headerlink" href="#example-2-intersections-for-a-3-way-venn-diagram" title="Permalink to this heading">¶</a></h2>
 <p>This example gets values for a 3-way Venn diagram of overlaps.  This
 demonstrates operator overloading of <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> objects.  It assumes that
 you have the files <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code>, <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>, and <code class="file docutils literal notranslate"><span class="pre">c.bed</span></code> in your current working
@@ -96,7 +97,7 @@ Charts API respectively.  Also see the <a class="reference internal" href="autod
 module for a flexible interface to the VennDiagram <code class="file docutils literal notranslate"><span class="pre">R</span></code> package.</p>
 </section>
 <section id="example-3-count-reads-in-introns-and-exons-in-parallel">
-<span id="third-example"></span><h2>Example 3: Count reads in introns and exons, in parallel<a class="headerlink" href="#example-3-count-reads-in-introns-and-exons-in-parallel" title="Permalink to this headline">¶</a></h2>
+<span id="third-example"></span><h2>Example 3: Count reads in introns and exons, in parallel<a class="headerlink" href="#example-3-count-reads-in-introns-and-exons-in-parallel" title="Permalink to this heading">¶</a></h2>
 <p>This example shows how to count the number of reads in introns and exons in
 parallel. It is somewhat more involved, but illustrates several additional
 features of <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> such as:</p>
@@ -163,7 +164,7 @@ features of <code class="xref py py-mod docutils literal notranslate"><span clas
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -202,7 +203,7 @@ features of <code class="xref py py-mod docutils literal notranslate"><span clas
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

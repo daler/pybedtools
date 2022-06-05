@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Using the history and tags &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="using-the-history-and-tags">
-<span id="working-with-history"></span><h1>Using the history and tags<a class="headerlink" href="#using-the-history-and-tags" title="Permalink to this headline">¶</a></h1>
+<span id="working-with-history"></span><h1>Using the history and tags<a class="headerlink" href="#using-the-history-and-tags" title="Permalink to this heading">¶</a></h1>
 <p><a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> makes it very easy to do rather complex genomic algebra.  Sometimes
 when you’re doing some exploratory work, you’d like to rewind back to a
 previous step, or clean up temporary files that have been left on disk over the
@@ -137,7 +138,7 @@ situtation, but the ability to backtrack and have a record of what you’ve
 done can sometimes be helpful.</p>
 </section>
 <section id="deleting-temp-files-specific-to-a-single-bedtool">
-<h1>Deleting temp files specific to a single <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#deleting-temp-files-specific-to-a-single-bedtool" title="Permalink to this headline">¶</a></h1>
+<h1>Deleting temp files specific to a single <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#deleting-temp-files-specific-to-a-single-bedtool" title="Permalink to this heading">¶</a></h1>
 <p>You can delete temp files that have been created over the history of a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> with <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.delete_temporary_history()</span></code>.  This method
 will inspect the history, figure out which items point to files in the temp dir
@@ -222,7 +223,7 @@ the prompt.</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -262,7 +263,7 @@ the prompt.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

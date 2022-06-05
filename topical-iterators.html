@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Using BedTool objects as iterators/generators &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,7 +35,7 @@
           <div class="body" role="main">
             
   <section id="using-bedtool-objects-as-iterators-generators">
-<span id="bedtools-as-iterators"></span><h1>Using BedTool objects as iterators/generators<a class="headerlink" href="#using-bedtool-objects-as-iterators-generators" title="Permalink to this headline">¶</a></h1>
+<span id="bedtools-as-iterators"></span><h1>Using BedTool objects as iterators/generators<a class="headerlink" href="#using-bedtool-objects-as-iterators-generators" title="Permalink to this heading">¶</a></h1>
 <p>Typically, <code class="xref py py-mod docutils literal notranslate"><span class="pre">BedTool</span></code> objects are used somewhat like handles to individual
 files on disk that contain BED lines.  To save disk space, <code class="xref py py-mod docutils literal notranslate"><span class="pre">BedTool</span></code>
 objects also have the ability to “stream”, much like piping in Unix.  That
@@ -122,7 +123,7 @@ work and it requires an additional dependency.</p>
 </div></blockquote>
 </div>
 <section id="creating-a-bedtool-from-an-iterable">
-<h2>Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> from an iterable<a class="headerlink" href="#creating-a-bedtool-from-an-iterable" title="Permalink to this headline">¶</a></h2>
+<h2>Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> from an iterable<a class="headerlink" href="#creating-a-bedtool-from-an-iterable" title="Permalink to this heading">¶</a></h2>
 <p>You can create a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> on the fly from a generator or iterator – in
 fact, this is what the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> method does for you:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -153,7 +154,7 @@ not defined:</p>
 </div>
 </section>
 <section id="indexing-a-bedtool">
-<h2>Indexing a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#indexing-a-bedtool" title="Permalink to this headline">¶</a></h2>
+<h2>Indexing a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#indexing-a-bedtool" title="Permalink to this heading">¶</a></h2>
 <p>In some cases it may be useful to index into a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object.  We can
 use standard list slice syntax, and get an iterable of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code>
 objects as a result.  This iterable can in turn be used to create a new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instance:</p>
@@ -242,7 +243,7 @@ objects as a result.  This iterable can in turn be used to create a new <code cl
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -282,7 +283,7 @@ objects as a result.  This iterable can in turn be used to create a new <code cl
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
