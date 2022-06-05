@@ -17,8 +17,7 @@ import sys
 import os
 import pybedtools
 
-
-def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
+def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None, by_length=False):
     """
     *a*, *b*, and *c* are filenames to BED-like files.
 
@@ -30,6 +29,9 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
 
     *labels* is a list of labels to use for each of the files; by default the
     labels are ['a','b','c']
+
+    *by_length* if True, then instead of plotting number of intervals, plot combined
+    lengths of intervals
     """
     try:
         import matplotlib.pyplot as plt
@@ -44,6 +46,9 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
     a = pybedtools.BedTool(a)
     b = pybedtools.BedTool(b)
     c = pybedtools.BedTool(c)
+    count_features = lambda x:x.count()
+    if by_length:
+        count_features = lambda x:x.total_coverage()
 
     if colors is None:
         colors = ["r", "b", "g"]
@@ -89,31 +94,31 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None):
     kwargs = dict(horizontalalignment="center")
 
     # Unique to A
-    ax.text(center - 2 * offset, center + offset, str((a - b - c).count()), **kwargs)
+    ax.text(center - 2 * offset, center + offset, str(count_features(a - b - c)), **kwargs)
 
     # Unique to B
-    ax.text(center + 2 * offset, center + offset, str((b - a - c).count()), **kwargs)
+    ax.text(center + 2 * offset, center + offset, str(count_features(b - a - c)), **kwargs)
 
     # Unique to C
-    ax.text(center, center - 2 * offset, str((c - a - b).count()), **kwargs)
+    ax.text(center, center - 2 * offset, str(count_features(c - a - b)), **kwargs)
 
     # A and B not C
     ax.text(
-        center, center + 2 * offset - 0.5 * offset, str((a + b - c).count()), **kwargs
+        center, center + 2 * offset - 0.5 * offset, str(count_features(a + b - c)), **kwargs
     )
 
     # A and C not B
     ax.text(
-        center - 1.2 * offset, center - 0.5 * offset, str((a + c - b).count()), **kwargs
+        center - 1.2 * offset, center - 0.5 * offset, str(count_features(a + c - b)), **kwargs
     )
 
     # B and C not A
     ax.text(
-        center + 1.2 * offset, center - 0.5 * offset, str((b + c - a).count()), **kwargs
+        center + 1.2 * offset, center - 0.5 * offset, str(count_features(b + c - a)), **kwargs
     )
 
     # all
-    ax.text(center, center, str((a + b + c).count()), **kwargs)
+    ax.text(center, center, str(count_features(a + b + c)), **kwargs)
 
     ax.legend(loc="best")
 
