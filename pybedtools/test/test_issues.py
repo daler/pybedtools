@@ -752,7 +752,7 @@ def test_issue_303():
     x = a.intersect(b, wao=True, filenames=True)
 
     # Try different cutoffs, providing filenames rather than BedTool objects:
-    for n in [64, 256, 510]:
+    for n in [64, 256, 510, 1025, 10000]:
         b2 = [i.fn for i in b[:n]]
         try:
             y = a.intersect(b2)
@@ -857,3 +857,7 @@ def test_issue_355():
             break
     assert line.split('\t')[1] == '14'
     assert vcf[0].start == 13
+
+
+def test_issue_365():
+    a = pybedtools.example_bedtool('example.narrowPeak')
