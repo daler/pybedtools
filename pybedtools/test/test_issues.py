@@ -733,14 +733,14 @@ def test_issue_258():
 
 def test_issue_303():
     # Issue 303 describes hitting a cap of 253 -b files. Locally I hit a limit
-    # at 510, and observe the same on travis-ci.
+    # at 510 on Linux and observe the same on travis-ci. On macOS it's 256.
     #
     # The fix was to check the args in bedtool._wraps, and raise an exception
-    # if there's more than 510 filenames provided. Note that it works fine with
-    # many BedTool objects.
+    # if there's more than supported filenames provided. Note that it works
+    # fine with many BedTool objects.
 
     ulimit = subprocess.run(
-        ['ulimit', '-n'], capture_output=True, universal_newlines=True
+        ['/bin/bash', '-c', "ulimit -n"], capture_output=True, universal_newlines=True
     )
     ulimit = int(ulimit.stdout)
 
