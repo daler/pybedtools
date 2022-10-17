@@ -736,8 +736,13 @@ def test_issue_303():
     # at 510, and observe the same on travis-ci.
     #
     # The fix was to check the args in bedtool._wraps, and raise an exception
-    # if there's more than 510 filenames provided. Note that it works find with
+    # if there's more than 510 filenames provided. Note that it works fine with
     # many BedTool objects.
+
+    ulimit = subprocess.run(
+        ['ulimit', '-n'], capture_output=True, universal_newlines=True
+    )
+    ulimit = int(ulimit.stdout)
 
     b = []
     for i in range(1000):
@@ -753,6 +758,9 @@ def test_issue_303():
 
     # Try different cutoffs, providing filenames rather than BedTool objects:
     for n in [64, 256, 510, 1025, 10000]:
+        if n >= ulimit:
+            print('ulimit of', ulimit, 'reached; stopping')
+            break
         b2 = [i.fn for i in b[:n]]
         try:
             y = a.intersect(b2)
@@ -764,7 +772,7 @@ def test_issue_303():
 
     # Otherwise, too many filenames should raise a pybedtoolsError as detected
     # by the _wraps() function.
-    with pytest.raises(pybedtools.helpers.pybedtoolsError):
+    with pytest.raises(pybedtools.helpers.BEDToolsError):
         y = a.intersect([i.fn for i in b])
 
 
