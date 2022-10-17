@@ -17,7 +17,7 @@ import sys
 import os
 import pybedtools
 
-def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None, by_length=False):
+def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None, by_length=False, dpi=300):
     """
     *a*, *b*, and *c* are filenames to BED-like files.
 
@@ -32,6 +32,8 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None, by_length=False
 
     *by_length* if True, then instead of plotting number of intervals, plot combined
     lengths of intervals
+
+    *dpi* is the dpi setting passed to matplotlib savefig
     """
     try:
         import matplotlib.pyplot as plt
