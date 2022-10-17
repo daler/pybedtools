@@ -743,6 +743,7 @@ def test_issue_303():
         ['/bin/bash', '-c', "ulimit -n"], capture_output=True, universal_newlines=True
     )
     ulimit = int(ulimit.stdout)
+    print(ulimit)
 
     b = []
     for i in range(1000):
