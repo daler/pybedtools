@@ -746,7 +746,7 @@ def test_issue_303():
     print(ulimit)
 
     b = []
-    for i in range(1000):
+    for i in range(ulimit + 1):
         b.append(
             pybedtools.BedTool(
                 "chr1\t{0}\t{1}\tb{0}".format(i, i + 1), from_string=True
@@ -758,7 +758,7 @@ def test_issue_303():
     x = a.intersect(b, wao=True, filenames=True)
 
     # Try different cutoffs, providing filenames rather than BedTool objects:
-    for n in [64, 256, 510, 1025, 10000]:
+    for n in [64, 256, 510, 1025, ulimit]:
         if n >= ulimit:
             print('ulimit of', ulimit, 'reached; stopping')
             break
@@ -766,7 +766,7 @@ def test_issue_303():
         try:
             y = a.intersect(b2)
 
-        # If running on a system that supports <510 filenames, we'll get
+        # If running on a system that supports <n filenames, we'll get
         # a BEDToolsError, so catch that and report here
         except pybedtools.helpers.BEDToolsError:
             raise ValueError("Hit a limit at {0} files".format(n))
