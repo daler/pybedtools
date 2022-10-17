@@ -868,4 +868,8 @@ def test_issue_355():
 
 
 def test_issue_365():
+    # confirming that narrowPeak works; #365 may be due to spaces rather than
+    # tabs in user's original file or maybe copying from UCSC
     a = pybedtools.example_bedtool('example.narrowPeak')
+    a[0]
+
