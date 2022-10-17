@@ -746,7 +746,7 @@ def test_issue_303():
     print(ulimit)
 
     b = []
-    for i in range(ulimit + 1):
+    for i in range(ulimit):
         b.append(
             pybedtools.BedTool(
                 "chr1\t{0}\t{1}\tb{0}".format(i, i + 1), from_string=True
