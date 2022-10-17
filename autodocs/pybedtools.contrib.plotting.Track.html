@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>pybedtools.contrib.plotting.Track &#8212; pybedtools 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -14,6 +14,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.contrib.plotting.TrackCollection" href="pybedtools.contrib.plotting.TrackCollection.html" />
@@ -235,38 +236,44 @@ functions for event handling, e.g.:</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_lw</span></code>()</p></td>
 <td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_linewidth</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset_transform</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mouseover</span></code>()</p></td>
+<td><p>Return whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset_transform</span></code>()</p></td>
 <td><p>Return the <code class="file docutils literal notranslate"><span class="pre">.Transform</span></code> instance used by this artist offset.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offsets</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offsets</span></code>()</p></td>
 <td><p>Return the offsets for the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_paths</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_paths</span></code>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code>()</p></td>
 <td><p>Return the picking behavior of the artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pickradius</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pickradius</span></code>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code>()</p></td>
 <td><p>Return whether the artist is to be rasterized.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sizes</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sizes</span></code>()</p></td>
 <td><p>Return the sizes ('areas') of the elements in the collection.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code>()</p></td>
 <td><p>Return the sketch parameters for the artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code>()</p></td>
 <td><p>Return the snap setting.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tightbbox</span></code>(renderer)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tightbbox</span></code>([renderer])</p></td>
 <td><p>Like <code class="file docutils literal notranslate"><span class="pre">.Artist.get_window_extent</span></code>, but includes any clipping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transOffset</span></code>()</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">get_offset_transform</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code>()</p></td>
 <td><p>Return the <code class="file docutils literal notranslate"><span class="pre">.Transform</span></code> instance used by this artist.</p></td>
@@ -286,7 +293,7 @@ functions for event handling, e.g.:</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible</span></code>()</p></td>
 <td><p>Return the visibility.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code>(renderer)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code>([renderer])</p></td>
 <td><p>Get the artist's bounding box in display space.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_xlims</span></code>(ax)</p></td>
@@ -421,38 +428,44 @@ functions for event handling, e.g.:</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lw</span></code>(lw)</p></td>
 <td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_linewidth</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_norm</span></code>(norm)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mouseover</span></code>(mouseover)</p></td>
+<td><p>Set whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_norm</span></code>(norm)</p></td>
 <td><p>Set the normalization instance.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offset_transform</span></code>(transOffset)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offset_transform</span></code>(offset_transform)</p></td>
 <td><p>Set the artist offset transform.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offsets</span></code>(offsets)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offsets</span></code>(offsets)</p></td>
 <td><p>Set the offsets for the collection.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code>(path_effects)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code>(path_effects)</p></td>
 <td><p>Set the path effects.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_paths</span></code>(verts[, closed])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_paths</span></code>(verts[, closed])</p></td>
 <td><p>Set the vertices of the polygons.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code>(picker)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code>(picker)</p></td>
 <td><p>Define the picking behavior of the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_pickradius</span></code>(pr)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_pickradius</span></code>(pickradius)</p></td>
 <td><p>Set the pick radius used for containment tests.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code>(rasterized)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code>(rasterized)</p></td>
 <td><p>Force rasterized (bitmap) drawing for vector graphics output.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sizes</span></code>(sizes[, dpi])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sizes</span></code>(sizes[, dpi])</p></td>
 <td><p>Set the sizes of each member of the collection.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code>([scale, length, randomness])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code>([scale, length, randomness])</p></td>
 <td><p>Set the sketch parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code>(snap)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code>(snap)</p></td>
 <td><p>Set the snapping behavior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transOffset</span></code>(offset_transform)</p></td>
+<td><p>Alias for <code class="file docutils literal notranslate"><span class="pre">set_offset_transform</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code>(t)</p></td>
 <td><p>Set the artist transform.</p></td>
@@ -506,7 +519,7 @@ functions for event handling, e.g.:</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mouseover</span></code></p></td>
-<td><p>If this property is set to <em>True</em>, the artist will be queried for custom context information when the mouse cursor moves over it.</p></td>
+<td><p>Return whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></p></td>
 <td><p></p></td>
@@ -622,7 +635,7 @@ functions for event handling, e.g.:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

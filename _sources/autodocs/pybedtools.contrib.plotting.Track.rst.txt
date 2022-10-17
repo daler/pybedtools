@@ -57,6 +57,7 @@
       ~Track.get_linewidths
       ~Track.get_ls
       ~Track.get_lw
+      ~Track.get_mouseover
       ~Track.get_offset_transform
       ~Track.get_offsets
       ~Track.get_path_effects
@@ -68,6 +69,7 @@
       ~Track.get_sketch_params
       ~Track.get_snap
       ~Track.get_tightbbox
+      ~Track.get_transOffset
       ~Track.get_transform
       ~Track.get_transformed_clip_path_and_affine
       ~Track.get_transforms
@@ -119,6 +121,7 @@
       ~Track.set_linewidths
       ~Track.set_ls
       ~Track.set_lw
+      ~Track.set_mouseover
       ~Track.set_norm
       ~Track.set_offset_transform
       ~Track.set_offsets
@@ -130,6 +133,7 @@
       ~Track.set_sizes
       ~Track.set_sketch_params
       ~Track.set_snap
+      ~Track.set_transOffset
       ~Track.set_transform
       ~Track.set_url
       ~Track.set_urls
