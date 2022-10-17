@@ -122,7 +122,7 @@ def venn_mpl(a, b, c, colors=None, outfn="out.png", labels=None, by_length=False
 
     ax.legend(loc="best")
 
-    fig.savefig(outfn)
+    fig.savefig(outfn, dpi=dpi)
 
     plt.close(fig)
 
