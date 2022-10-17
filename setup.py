@@ -290,7 +290,7 @@ if __name__ == "__main__":
         ext_modules=extensions,
         maintainer_email='ryan.dale@nih.gov',
         description='Wrapper around BEDTools for bioinformatics work',
-        license='GPLv2',
+        license='MIT',
         url='https://github.com/daler/pybedtools',
         download_url='',
         long_description=README,
@@ -300,7 +300,7 @@ if __name__ == "__main__":
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
-            'License :: OSI Approved :: GNU General Public License (GPL)',
+            'License :: OSI Approved :: MIT License',
             'Topic :: Scientific/Engineering :: Bio-Informatics',
             'Programming Language :: Python',
             'Programming Language :: Python :: 3',
