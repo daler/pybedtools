@@ -857,3 +857,34 @@ def test_issue_355():
             break
     assert line.split('\t')[1] == '14'
     assert vcf[0].start == 13
+
+def test_genome_dict_sort():
+    genome = {
+        "chr1": (0, 5000),
+        "chr9": (0, 5000),
+        "chr12": (0, 5000),
+    }
+
+    # example taken from BedTool.sort() doctest
+    bed = pybedtools.BedTool(
+        """
+        chr9 300 400
+        chr1 100 200
+        chr1 1 50
+        chr12 1 100
+        chr9 500 600
+        """,
+        from_string=True,
+    )
+
+    result = bed.sort(genome=genome)
+
+    assert result == fix(
+        """
+        chr1	1	50
+        chr1	100	200
+        chr9	300	400
+        chr9	500	600
+        chr12	1	100
+        """
+    ), result

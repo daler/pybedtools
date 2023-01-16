@@ -2130,7 +2130,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog="sortBed", implicit="i")
+    @_wraps(prog="sortBed", implicit="i", uses_genome=True, genome_if=["g"])
     def sort(self):
         """
         Wraps `bedtools sort`.
