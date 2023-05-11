@@ -2,6 +2,7 @@ cython
 matplotlib
 numpydoc
 pandas
+polars
 pyyaml
 sphinx
 pysam

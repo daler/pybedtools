@@ -30,6 +30,7 @@ RUN conda install -c daler \
     numpydoc \
     pip \
     pandas \
+    polars \
     pyyaml \
     sphinx \
     pysam

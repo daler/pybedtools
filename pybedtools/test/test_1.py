@@ -2041,3 +2041,88 @@ def test_new_head():
     # however, printing should still complain:
     with pytest.raises(pybedtools.cbedtools.MalformedBedLineError):
         print(a)
+
+
+def test_from_polars_dataframe():
+    try:
+        import polars
+    except ImportError:
+        pytest.xfail("polars not installed; skipping test")
+
+    a = pybedtools.example_bedtool("a.bed")
+
+    results = a.to_polars_dataframe()
+    assert results[0, "name"] == "feature1"
+    assert list(results.columns) == ["chrom", "start", "end", "name", "score", "strand"]
+    assert results[3, "strand"] == "+"
+
+    # reverse should work, too:
+    df = a.to_polars_dataframe()
+    a2 = pybedtools.BedTool.from_polars_dataframe(df)
+    assert a2 == a
+
+    # try converting only part of the dataframe to a BedTool
+    a3 = pybedtools.BedTool.from_polars_dataframe(
+        df.filter(polars.col("start") < 100).select(["chrom", "start", "end", "name"])
+    )
+    assert a3 == fix(
+        """
+        chr1    1   100 feature1
+        """
+    ), str(a3)
+
+    d = pybedtools.example_bedtool("d.gff")
+    results = d.to_polars_dataframe()
+    assert list(results.columns) == [
+        "seqname",
+        "source",
+        "feature",
+        "start",
+        "end",
+        "score",
+        "strand",
+        "frame",
+        "attributes",
+    ]
+    assert results[0, "seqname"] == "chr1"
+    assert results[4, "attributes"] == "ID=rRNA1;"
+
+    # get a gff file with too many fields...
+    x = pybedtools.example_bedtool("c.gff")
+    x = x.intersect(x, c=True)
+    with warnings.catch_warnings(record=True) as w:
+        # trigger the warning
+        x.to_polars_dataframe()
+        # assert a few things
+        assert len(w) == 1
+        assert issubclass(w[-1].category, UserWarning)
+        assert str(w[-1].message).startswith("Default names for filetype")
+
+    names = [
+        "seqname",
+        "source",
+        "feature",
+        "start",
+        "end",
+        "score",
+        "strand",
+        "frame",
+        "attributes",
+        "count",
+    ]
+    results = x.to_polars_dataframe(new_columns=names)
+    assert list(results.columns) == [
+        "seqname",
+        "source",
+        "feature",
+        "start",
+        "end",
+        "score",
+        "strand",
+        "frame",
+        "attributes",
+        "count",
+    ]
+    assert results[0, "seqname"] == "chr1"
+    assert results[13, "count"] == 3
+
