@@ -52,24 +52,26 @@ jobs:
       #
       # Tests below will operate in this newly-installed directory.
       run: |
-        eval "$(conda shell.bash hook)"
-        conda install mamba -y --channel conda-forge
-        mamba create -y -p ./test-env \
-          --channel conda-forge \
-          --channel bioconda python=${{ matrix.python-version }} \
-          --file requirements.txt \
-          --file test-requirements.txt \
-          --file optional-requirements.txt
-        conda activate ./test-env
 
-        mkdir -p /tmp/pybedtools-uncompressed
-        cd /tmp/pybedtools-uncompressed
-        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
-        cd pybedtools-*
-        pip install -e .
-        python -c 'import pybedtools; print(pybedtools.__file__)'
-        ls *
+        if ${{ matrix.python-version }} != "3.11"; then
+          eval "$(conda shell.bash hook)"
+          conda install mamba -y --channel conda-forge
+          mamba create -y -p ./test-env \
+            --channel conda-forge \
+            --channel bioconda python=${{ matrix.python-version }} \
+            --file requirements.txt \
+            --file test-requirements.txt \
+            --file optional-requirements.txt
+          conda activate ./test-env
 
+          mkdir -p /tmp/pybedtools-uncompressed
+          cd /tmp/pybedtools-uncompressed
+          tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
+          cd pybedtools-*
+          pip install -e .
+          python -c 'import pybedtools; print(pybedtools.__file__)'
+          ls *
+        fi
 
     - name: tests
       # Run pytest and sphinx doctests
