@@ -733,38 +733,55 @@ def test_issue_258():
 
 def test_issue_303():
     # Issue 303 describes hitting a cap of 253 -b files. Locally I hit a limit
-    # at 510, and observe the same on travis-ci.
+    # at 510 on Linux and observe the same on travis-ci. On macOS it's 256.
     #
     # The fix was to check the args in bedtool._wraps, and raise an exception
-    # if there's more than 510 filenames provided. Note that it works find with
-    # many BedTool objects.
+    # if there's more than supported filenames provided. Note that it works
+    # fine with many BedTool objects.
+
+    ulimit = subprocess.run(
+        ['/bin/bash', '-c', "ulimit -n"], capture_output=True, universal_newlines=True
+    )
+    ulimit = int(ulimit.stdout)
+    print(ulimit)
 
     b = []
-    for i in range(1000):
+    current_prefix = pybedtools.settings.tempfile_prefix
+    pybedtools.settings.tempfile_prefix = "/tmp/p"
+    for i in range(ulimit):
         b.append(
             pybedtools.BedTool(
                 "chr1\t{0}\t{1}\tb{0}".format(i, i + 1), from_string=True
             )
         )
+    pybedtools.settings.tempfile_prefix = current_prefix
     a = pybedtools.example_bedtool("a.bed")
 
     # Use many BedTool objects; this works
     x = a.intersect(b, wao=True, filenames=True)
 
-    # Try different cutoffs, providing filenames rather than BedTool objects:
+    # Try different cutoffs, providing filenames rather than BedTool objects.
+    # Note that on some systems this will hit `ARG_MAX` of the system before it
+    # hits the ulimit.
+    #
+    # Rather than find (and push) the limits of whatever system this test is
+    # running on, for now use 510 as a reasonable test for "many".
     for n in [64, 256, 510]:
+        if n >= ulimit:
+            print('ulimit of', ulimit, 'reached; stopping')
+            break
         b2 = [i.fn for i in b[:n]]
         try:
             y = a.intersect(b2)
 
-        # If running on a system that supports <510 filenames, we'll get
+        # If running on a system that supports <n filenames, we'll get
         # a BEDToolsError, so catch that and report here
-        except pybedtools.helpers.BEDToolsError:
+        except (pybedtools.helpers.BEDToolsError, OSError):
             raise ValueError("Hit a limit at {0} files".format(n))
 
     # Otherwise, too many filenames should raise a pybedtoolsError as detected
     # by the _wraps() function.
-    with pytest.raises(pybedtools.helpers.pybedtoolsError):
+    with pytest.raises(pybedtools.helpers.BEDToolsError):
         y = a.intersect([i.fn for i in b])
 
 
@@ -857,3 +874,11 @@ def test_issue_355():
             break
     assert line.split('\t')[1] == '14'
     assert vcf[0].start == 13
+
+
+def test_issue_365():
+    # confirming that narrowPeak works; #365 may be due to spaces rather than
+    # tabs in user's original file or maybe copying from UCSC
+    a = pybedtools.example_bedtool('example.narrowPeak')
+    a[0]
+

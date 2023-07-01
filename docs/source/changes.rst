@@ -3,6 +3,19 @@
 Changelog
 =========
 
+Changes in v0.9.1
+-----------------
+
+2022-10-17
+
+* Updated setup.py to correctly reflect the MIT license change elsewhere (`#374
+  <https://github.com/daler/pybedtools/issues/374>`, thanks @hyandell)
+*  Support plotting lengths of intervals and custom DPI (`#367
+   <https://github.com/daler/pybedtools/issues/367>`, `#366
+   <https://github.com/daler/pybedtools/issues/366>`), thanks @yunfeiguo)
+* Remove outdated hard-coded check for 510 files in ``intersect`` and instead
+  defer to local machine's ``ulimit``
+
 Changes in v0.9
 ---------------
 
