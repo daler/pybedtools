@@ -5,7 +5,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
       # This only requires Cython, no other dependencies.
       run: |
         eval "$(conda shell.bash hook)"
-        conda create -p ./cython-env -y cython
+        conda create -p ./cython-env -y cython python=${{ matrix.python-version }}
         conda activate ./cython-env
         python setup.py clean cythonize sdist
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
@@ -53,13 +53,34 @@ jobs:
       # Tests below will operate in this newly-installed directory.
       run: |
         eval "$(conda shell.bash hook)"
-        conda create -y -p ./test-env \
-          --channel conda-forge \
-          --channel bioconda python=${{ matrix.python-version }} \
-          --file requirements.txt \
-          --file test-requirements.txt \
-          --file optional-requirements.txt
-        conda activate ./test-env
+        conda install mamba python=${{ matrix.python-version }} -y --channel conda-forge
+
+        if [ ${{ matrix.python-version }} != "3.11" ]; then
+          mamba create -y -p ./test-env \
+            --channel conda-forge \
+            --channel bioconda python=${{ matrix.python-version }} \
+            --file requirements.txt \
+            --file test-requirements.txt \
+            --file optional-requirements.txt
+          conda activate ./test-env
+        else
+          # Only install bedtools; let pip take care of the rest for 3.11 until
+          # bioconda catches up.
+          #
+          # We still install the test requirements though, and the optional
+          # requirements except for genomepy which is in bioconda.
+          grep -v "genomepy" optional-requirements.txt > optional-requirements-3.11.txt
+          mamba create -y -p ./test-env \
+            --channel conda-forge \
+            --channel bioconda \
+            bedtools \
+            python=${{ matrix.python-version }} \
+            --file test-requirements.txt \
+            --file optional-requirements-3.11.txt
+          conda activate ./test-env
+          pip install genomepy
+
+        fi
 
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
@@ -69,12 +90,11 @@ jobs:
         python -c 'import pybedtools; print(pybedtools.__file__)'
         ls *
 
-
     - name: tests
       # Run pytest and sphinx doctests
       run: |
-        eval "$(conda shell.bash hook)"
         cd $WORKDIR
+        eval "$(conda shell.bash hook)"
         conda activate ./test-env
 
         # Move to extracted tarball dir, see above notes
@@ -89,29 +109,31 @@ jobs:
       # Build docs and commit to gh-pages branch. Note that no push happens
       # unless we're on the master branch
       run: |
-        eval "$(conda shell.bash hook)"
-        conda activate ./test-env
+        if [ ${{ matrix.python-version }} != "3.11" ]; then
+          eval "$(conda shell.bash hook)"
+          conda activate ./test-env
 
-        # Move to extracted tarball dir, see above notes
-        cd /tmp/pybedtools-uncompressed/pybedtools-*
-        (cd docs && make html)
+          # Move to extracted tarball dir, see above notes
+          cd /tmp/pybedtools-uncompressed/pybedtools-*
+          (cd docs && make html)
 
-        git clone \
-          --single-branch \
-          --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
-          /tmp/docs
+          git clone \
+            --single-branch \
+            --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
+            /tmp/docs
 
-        rm -rf /tmp/docs/*
-        cp -r docs/build/html/* /tmp/docs
-        touch /tmp/docs/.nojekyll
-        cd /tmp/docs
-        git add .
-        if git diff --cached --quiet; then
-          echo "no changes, nothing to commit"
-        else
-          git commit -m 'update docs'
+          rm -rf /tmp/docs/*
+          cp -r docs/build/html/* /tmp/docs
+          touch /tmp/docs/.nojekyll
+          cd /tmp/docs
+          git add .
+          if git diff --cached --quiet; then
+            echo "no changes, nothing to commit"
+          else
+            git commit -m 'update docs'
+          fi
+          cd $WORKDIR
         fi
-        cd $WORKDIR
 
 
     - name: docs artifact
