@@ -773,7 +773,7 @@ def test_issue_303():
 
         # If running on a system that supports <n filenames, we'll get
         # a BEDToolsError, so catch that and report here
-        except pybedtools.helpers.BEDToolsError:
+        except (pybedtools.helpers.BEDToolsError, OSError):
             raise ValueError("Hit a limit at {0} files".format(n))
 
     # Otherwise, too many filenames should raise a pybedtoolsError as detected
