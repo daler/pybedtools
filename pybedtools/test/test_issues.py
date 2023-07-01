@@ -757,8 +757,13 @@ def test_issue_303():
     # Use many BedTool objects; this works
     x = a.intersect(b, wao=True, filenames=True)
 
-    # Try different cutoffs, providing filenames rather than BedTool objects:
-    for n in [64, 256, 510, 1025, ulimit]:
+    # Try different cutoffs, providing filenames rather than BedTool objects.
+    # Note that on some systems this will hit `ARG_MAX` of the system before it
+    # hits the ulimit.
+    #
+    # Rather than find (and push) the limits of whatever system this test is
+    # running on, for now use 510 as a reasonable test for "many".
+    for n in [64, 256, 510]:
         if n >= ulimit:
             print('ulimit of', ulimit, 'reached; stopping')
             break
