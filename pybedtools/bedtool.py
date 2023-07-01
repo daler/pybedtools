@@ -2712,9 +2712,11 @@ class BedTool(object):
 
         if not hasattr(self, "seqfn"):
             raise ValueError("Use .sequence(fasta) to get the sequence first")
+
         with open(fn, "w") as fout:
             with open(self.seqfn) as seqfile:
                 fout.write(seqfile.read())
+
         new_bedtool = BedTool(self.fn)
         new_bedtool.seqfn = fn
         return new_bedtool
