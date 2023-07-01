@@ -65,11 +65,15 @@ jobs:
           conda activate ./test-env
         else
           # Only install bedtools; let pip take care of the rest for 3.11 until
-          # bioconda catches up
+          # bioconda catches up.
+          #
+          # We still install the test requirements though
           mamba create -y -p ./test-env \
             --channel conda-forge \
             --channel bioconda \
-            bedtools python=${{ matrix.python-version }}
+            bedtools \
+            python=${{ matrix.python-version }} \
+            --file test-requirements.txt
         fi
 
         mkdir -p /tmp/pybedtools-uncompressed
