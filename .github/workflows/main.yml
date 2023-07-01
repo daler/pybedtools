@@ -71,6 +71,7 @@ jobs:
             --channel conda-forge \
             --channel bioconda \
             bedtools \
+            matplotlib \
             python=${{ matrix.python-version }} \
             --file test-requirements.txt
         fi
