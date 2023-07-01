@@ -746,12 +746,15 @@ def test_issue_303():
     print(ulimit)
 
     b = []
+    current_prefix = pybedtools.settings.tempfile_prefix
+    pybedtools.settings.tempfile_prefix = "/tmp/p"
     for i in range(ulimit):
         b.append(
             pybedtools.BedTool(
                 "chr1\t{0}\t{1}\tb{0}".format(i, i + 1), from_string=True
             )
         )
+    pybedtools.settings.tempfile_prefix = current_prefix
     a = pybedtools.example_bedtool("a.bed")
 
     # Use many BedTool objects; this works
