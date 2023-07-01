@@ -62,21 +62,26 @@ jobs:
             --file requirements.txt \
             --file test-requirements.txt \
             --file optional-requirements.txt
+          conda activate ./test-env
         else
           # Only install bedtools; let pip take care of the rest for 3.11 until
           # bioconda catches up.
           #
-          # We still install the test requirements though
+          # We still install the test requirements though, and the optional
+          # requirements except for genomepy which is in bioconda.
+          grep -v "genomepy" optional-requirements.txt > optional-requirements-3.11.txt
           mamba create -y -p ./test-env \
             --channel conda-forge \
             --channel bioconda \
             bedtools \
-            matplotlib \
             python=${{ matrix.python-version }} \
-            --file test-requirements.txt
+            --file test-requirements.txt \
+            --file optional-requirements-3.11.txt
+          conda activate ./test-env
+          pip install genomepy
+
         fi
 
-        conda activate ./test-env
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
         tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
