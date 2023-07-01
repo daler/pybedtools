@@ -1,6 +1,7 @@
 bedtools
 genomepy>=0.8
 matplotlib
+pandas
 ucsc-bigwigtobedgraph
 ucsc-bedgraphtobigwig
 ucsc-wigtobigwig
