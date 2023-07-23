@@ -2306,8 +2306,8 @@ class BedTool(object):
         chr1	0	1
         chr1	500	900
         chr1	950	249250621
-        chr10	0	135534747
-        chr11	0	135006516
+        chr2	0	243199373
+        chr3	0	198022430
         """
 
     @_log_to_history
