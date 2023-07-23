@@ -6,8 +6,10 @@ Changelog
 Changes in v0.9.1
 -----------------
 
-2022-10-17
+2023-07-23
 
+* Dropping support for Python 3.6 and 3.7
+* Respect sorting of chromsize files (thanks @mgperry)
 * Updated setup.py to correctly reflect the MIT license change elsewhere (`#374
   <https://github.com/daler/pybedtools/issues/374>`, thanks @hyandell)
 *  Support plotting lengths of intervals and custom DPI (`#367
