@@ -140,7 +140,7 @@ def test_chromsizes():
 
         # make sure the tempfile version works, too
         fn = pybedtools.chromsizes_to_file(hg17, fn=None)
-        expected = "chr1\t245522847\n"
+        expected = "chr10\t135413628\n"
         results = open(fn).readline()
         print(results)
         assert expected == results
