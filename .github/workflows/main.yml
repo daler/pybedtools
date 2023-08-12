@@ -90,11 +90,7 @@ jobs:
 
         fi
 
-        mkdir -p /tmp/pybedtools-uncompressed
-        cd /tmp/pybedtools-uncompressed
-        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
-        cd pybedtools-*
-        pip install -e .
+        pip install $WORKDIR/dist/pybedtools-*.tar.gz
         python -c 'import pybedtools; print(pybedtools.__file__)'
         ls *
 
