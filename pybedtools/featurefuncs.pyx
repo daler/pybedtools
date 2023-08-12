@@ -1,3 +1,4 @@
+# cython: language_level=2
 # distutils: language = c++
 from cbedtools cimport Interval
 from cbedtools import create_interval_from_list

@@ -325,4 +325,5 @@ if __name__ == "__main__":
                       'src': ['src/*'],
                       },
         include_package_data=True,
+        language_level=2,
     )
