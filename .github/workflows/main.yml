@@ -92,7 +92,9 @@ jobs:
 
         pip install $WORKDIR/dist/pybedtools-*.tar.gz
 
-        (cd .. && python -c 'import pybedtools; print(pybedtools.__file__)')
+        # Trying import in the same directory will complain that cbedtools
+        # can't be imported
+        (cd / && python -c 'import pybedtools; print(pybedtools.__file__)')
 
     - name: tests
       # Run pytest and sphinx doctests
@@ -101,8 +103,11 @@ jobs:
         eval "$(conda shell.bash hook)"
         conda activate ./test-env
 
-        # Move to extracted tarball dir, see above notes
-        cd /tmp/pybedtools-uncompressed/pybedtools-*
+        # Extract the package tarball built above, and use that for running the tests.
+        mkdir -p /tmp/pybedtools-uncompressed
+        cd /tmp/pybedtools-uncompressed
+        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
+        cd pybedtools-*
         pytest -v --doctest-modules
         pytest -v pybedtools/test/genomepy_integration.py
         cp -r $WORKDIR/docs .
