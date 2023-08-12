@@ -91,8 +91,8 @@ jobs:
         fi
 
         pip install $WORKDIR/dist/pybedtools-*.tar.gz
-        python -c 'import pybedtools; print(pybedtools.__file__)'
-        ls *
+
+        (cd .. && python -c 'import pybedtools; print(pybedtools.__file__)')
 
     - name: tests
       # Run pytest and sphinx doctests
