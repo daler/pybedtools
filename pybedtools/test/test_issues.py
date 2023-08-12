@@ -913,3 +913,9 @@ def test_issue_365():
     # tabs in user's original file or maybe copying from UCSC
     a = pybedtools.example_bedtool('example.narrowPeak')
     a[0]
+
+def test_issue_390():
+    # Previously raised AttributeError: 'numpy.int64' object has no attribute 'isdigit'
+    # Fix was to include np.int64 as an integer type in cbedtools.pyx.
+    import numpy as np
+    pybedtools.BedTool([['chr1', np.int64(1), np.int64(2)]])

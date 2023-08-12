@@ -16,6 +16,7 @@
 
 from cpython.version cimport PY_MAJOR_VERSION
 from libcpp.string cimport string
+import numpy as np
 
 # Python byte strings automatically coerce to/from C++ strings.
 
@@ -24,7 +25,7 @@ cdef _cppstr(s):
     #
     # C++ uses bytestrings. PY2 strings need no conversion; bare PY3 strings
     # are unicode and so must be encoded to bytestring.
-    if isinstance(s, int):
+    if isinstance(s, integer_types):
         s = str(s)
     if isinstance(s, unicode):
         s = s.encode('UTF-8')
@@ -37,9 +38,9 @@ cdef _pystr(string s):
     return s.decode('UTF-8', 'strict')
 
 if PY_MAJOR_VERSION < 3:
-    integer_types = (int, long)
+    integer_types = (int, long, np.int64)
 else:
-    integer_types = (int,)
+    integer_types = (int, np.int64)
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
