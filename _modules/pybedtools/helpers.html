@@ -1,19 +1,15 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pybedtools.helpers &#8212; pybedtools 0.9.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <title>pybedtools.helpers &#8212; pybedtools 0.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=bfb94e3c"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -65,7 +61,7 @@
 
 
 <div class="viewcode-block" id="set_bedtools_path"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.set_bedtools_path.html#pybedtools.helpers.set_bedtools_path">[docs]</a><span class="k">def</span> <span class="nf">set_bedtools_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Explicitly set path to `BEDTools` installation dir.</span>
 
 <span class="sd">    If BEDTools is not available on your system path, specify the path to the</span>
@@ -81,7 +77,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_bedtools_path</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the currently-set path to bedtools</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">paths</span>
@@ -90,7 +86,7 @@
 
 
 <span class="k">def</span> <span class="nf">set_R_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Explicitly set path to `R` installation dir.</span>
 
 <span class="sd">    If R is not available on the path, then it can be explicitly</span>
@@ -104,7 +100,7 @@
 
 
 <span class="k">def</span> <span class="nf">_check_for_bedtools</span><span class="p">(</span><span class="n">force_check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks installation as well as version (based on whether or not &quot;bedtools</span>
 <span class="sd">    intersect&quot; works, or just &quot;intersectBed&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -177,7 +173,7 @@
 
 
 <span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for this module&#39;s exceptions&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for this module&#39;s exceptions&quot;&quot;&quot;</span>
 
     <span class="k">pass</span>
 
@@ -211,7 +207,7 @@
 
 
 <span class="k">def</span> <span class="nf">isBGZIP</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a filename to see if it&#39;s a BGZIPed file or not.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
@@ -237,7 +233,7 @@
 
 
 <span class="k">def</span> <span class="nf">isBAM</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if the file is both BGZIPed and the compressed contents have</span>
 <span class="sd">    start with the magic number `BAM\\x01`, or if the file is CRAM format (see</span>
 <span class="sd">    isCRAM()).</span>
@@ -253,7 +249,7 @@
 
 
 <span class="k">def</span> <span class="nf">isCRAM</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if the file starts with the bytes for the characters &quot;CRAM&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">in_</span><span class="p">:</span>
@@ -262,7 +258,7 @@
 
 
 <span class="k">def</span> <span class="nf">find_tagged</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the bedtool object with tagged with *tag*.  Useful for tracking</span>
 <span class="sd">    down bedtools you made previously.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -293,7 +289,7 @@
 
 
 <div class="viewcode-block" id="set_tempdir"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.set_tempdir.html#pybedtools.helpers.set_tempdir">[docs]</a><span class="k">def</span> <span class="nf">set_tempdir</span><span class="p">(</span><span class="n">tempdir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set the directory for temp files.</span>
 
 <span class="sd">    Useful for clusters that use a /scratch partition rather than a /tmp dir.</span>
@@ -308,14 +304,14 @@
 
 
 <div class="viewcode-block" id="get_tempdir"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.get_tempdir.html#pybedtools.helpers.get_tempdir">[docs]</a><span class="k">def</span> <span class="nf">get_tempdir</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the current tempdir for the module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="cleanup"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.cleanup.html#pybedtools.helpers.cleanup">[docs]</a><span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes all temp files from the current session (or optionally *all* \</span>
 <span class="sd">            sessions)</span>
 
@@ -359,7 +355,7 @@
     <span class="n">decode_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">encode_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use subprocess.Popen to call BEDTools and catch any errors.</span>
 
 <span class="sd">    Output goes to *tmpfn*, or, if None, output stays in subprocess.PIPE and</span>
@@ -528,7 +524,7 @@
 
 
 <span class="k">def</span> <span class="nf">_check_sequence_stderr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If stderr created by fastaFromBed starts with &#39;index file&#39;, then don&#39;t</span>
 <span class="sd">    consider it an error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -551,7 +547,7 @@
     <span class="n">debug</span><span class="p">,</span>
     <span class="n">_orig_processes</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function that list-ifies the output from randomintersection, s.t.</span>
 <span class="sd">    it can be pickled across a multiprocess Pool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -570,7 +566,7 @@
 
 
 <span class="k">def</span> <span class="nf">close_or_delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single function that can be used to get rid of a BedTool, whether it&#39;s a</span>
 <span class="sd">    streaming or file-based version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -596,7 +592,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="n">coord_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    (?P&lt;chrom&gt;.+):</span>
 <span class="sd">    (?P&lt;start&gt;\d+)-</span>
 <span class="sd">    (?P&lt;stop&gt;\d+)</span>
@@ -606,7 +602,7 @@
 
 
 <span class="k">def</span> <span class="nf">string_to_interval</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert string of the form &quot;chrom:start-stop&quot; or &quot;chrom:start-stop[strand]&quot;</span>
 <span class="sd">    to an interval.</span>
 
@@ -636,7 +632,7 @@
 
 <span class="k">class</span> <span class="nc">FisherOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        fisher returns text results like::</span>
 
 <span class="sd">            # Contingency Table</span>
@@ -686,7 +682,7 @@
 
 <span class="k">class</span> <span class="nc">SplitOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles output from bedtools split, which sends a report of files to</span>
 <span class="sd">        stdout. This class parses that list into something more convenient to</span>
 <span class="sd">        use within pybedtools.</span>
@@ -741,7 +737,7 @@
     <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">host_url</span><span class="o">=</span><span class="s2">&quot;genome-mysql.cse.ucsc.edu&quot;</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download chrom size info for *genome* from UCSC and returns the dictionary.</span>
 
 <span class="sd">    Parameters</span>
@@ -834,7 +830,7 @@
 
 
 <div class="viewcode-block" id="chromsizes_to_file"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.chromsizes_to_file.html#pybedtools.helpers.chromsizes_to_file">[docs]</a><span class="k">def</span> <span class="nf">chromsizes_to_file</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a *chromsizes* dictionary to a file.  If *fn* is None, then a</span>
 <span class="sd">    tempfile is created (which can be deleted with pybedtools.cleanup()).</span>
 
@@ -850,7 +846,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">chrom_sizes</span> <span class="o">=</span> <span class="n">chromsizes</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="p">)</span>
     <span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">bounds</span> <span class="ow">in</span> <span class="n">chrom_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">chrom</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="n">fout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -860,7 +856,7 @@
 <span class="k">def</span> <span class="nf">get_chromsizes_from_genomepy</span><span class="p">(</span>
     <span class="n">genome</span><span class="p">,</span> <span class="n">saveas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get chrom size info for *genome* from genomepy, if genomepy is installed.</span>
 
 <span class="sd">    Parameters</span>
@@ -894,7 +890,7 @@
 
 
 <div class="viewcode-block" id="chromsizes"><a class="viewcode-back" href="../../autodocs/pybedtools.helpers.chromsizes.html#pybedtools.helpers.chromsizes">[docs]</a><span class="k">def</span> <span class="nf">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Looks for a *genome* already included in the genome registry; if not found</span>
 <span class="sd">    it first tries to look it up via genomepy. If genomepy is not installed, or</span>
 <span class="sd">    if this lookup fails then it looks it up on UCSC.  Returns the dictionary of </span>
@@ -938,7 +934,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_includes</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a list of include directories with BEDTools headers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
@@ -1019,7 +1015,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.helpers</a></li> 
@@ -1031,8 +1027,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

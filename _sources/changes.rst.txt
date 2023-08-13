@@ -3,6 +3,26 @@
 Changelog
 =========
 
+Changes in v0.9.1
+-----------------
+
+2023-07-23
+
+* Dropping support for Python 3.6 and 3.7
+* Respect sorting of chromsize files (thanks @mgperry)
+* Updated setup.py to correctly reflect the MIT license change elsewhere (`#374
+  <https://github.com/daler/pybedtools/issues/374>`, thanks @hyandell)
+*  Support plotting lengths of intervals and custom DPI (`#367
+   <https://github.com/daler/pybedtools/issues/367>`, `#366
+   <https://github.com/daler/pybedtools/issues/366>`), thanks @yunfeiguo)
+* Remove outdated hard-coded check for 510 files in ``intersect`` and instead
+  defer to local machine's ``ulimit``
+* Enabling building/installing on Python 3.11 (thanks @daz10000)
+* Allow np.int64 start/stop positions to be used when creating Interval objects (`#390 <https://github.com/daler/pybedtools/issues/390>`)
+* properly close filehandles in .save_seq (thanks @PeterRobots)
+* include minimal pyproject.toml file (thanks @afg1)
+
+
 Changes in v0.9
 ---------------
 

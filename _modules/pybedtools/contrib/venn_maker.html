@@ -1,19 +1,15 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pybedtools.contrib.venn_maker &#8212; pybedtools 0.9.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
-    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
+    <title>pybedtools.contrib.venn_maker &#8212; pybedtools 0.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=bfb94e3c"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -52,7 +48,7 @@
 <span class="c1"># Note that the closing parentheses is missing -- that&#39;s so the user can add</span>
 <span class="c1"># kwargs from the calling function</span>
 <span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">library(VennDiagram)</span>
 <span class="sd">venn.diagram(</span>
 <span class="sd">    x=$x,</span>
@@ -63,7 +59,7 @@
 
 
 <span class="k">def</span> <span class="nf">_list_to_R_syntax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert items in `x` to a string, and replace tabs with pipes in Interval</span>
 <span class="sd">    string representations.  Put everything into an R vector and return as one</span>
 <span class="sd">    big string.</span>
@@ -77,7 +73,7 @@
 
 
 <span class="k">def</span> <span class="nf">_dict_to_R_named_list</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calls _list_to_R_syntax for each item.  Returns one big string.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
@@ -87,7 +83,7 @@
 
 
 <span class="k">def</span> <span class="nf">truncator</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a feature of any format into a BED3 format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">create_interval_from_list</span><span class="p">(</span>
@@ -96,7 +92,7 @@
 
 
 <div class="viewcode-block" id="cleaned_intersect"><a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.venn_maker.cleaned_intersect.html#pybedtools.contrib.venn_maker.cleaned_intersect">[docs]</a><span class="k">def</span> <span class="nf">cleaned_intersect</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform interval intersections such that the end products have identical \</span>
 <span class="sd">    features for overlapping intervals.</span>
 
@@ -202,7 +198,7 @@
     <span class="n">additional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a list of interval files, write an R script to create a Venn \</span>
 <span class="sd">    diagram of overlaps (and optionally run it).</span>
 
@@ -359,7 +355,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.venn_maker</a></li> 
@@ -371,8 +367,8 @@
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

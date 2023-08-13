@@ -1,20 +1,16 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools.contrib.plotting.Track &#8212; pybedtools 0.9.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <title>pybedtools.contrib.plotting.Track &#8212; pybedtools 0.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bfb94e3c"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.contrib.plotting.TrackCollection" href="pybedtools.contrib.plotting.TrackCollection.html" />
@@ -79,7 +75,7 @@ the new Track’s <code class="file docutils literal notranslate"><span class="p
 contains the BedTool it was created from – so you can write callback
 functions for event handling, e.g.:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    prints the feature&#39;s line when clicked in the plot</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">coll</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">artist</span>
@@ -492,16 +488,19 @@ functions for event handling, e.g.:</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zorder</span></code>(level)</p></td>
 <td><p>Set the zorder for the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_rgba</span></code>(x[, alpha, bytes, norm])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">span_where</span></code>(x, ymin, ymax, where, **kwargs)</p></td>
+<td><p>[<em>Deprecated</em>] Return a <code class="file docutils literal notranslate"><span class="pre">.BrokenBarHCollection</span></code> that plots horizontal bars from over the regions in <em>x</em> where <em>where</em> is True.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_rgba</span></code>(x[, alpha, bytes, norm])</p></td>
 <td><p>Return a normalized rgba array corresponding to <em>x</em>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>(props)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>(props)</p></td>
 <td><p>Update this artist's properties from the dict <em>props</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code>(other)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code>(other)</p></td>
 <td><p>Copy properties from other to self.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_scalarmappable</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_scalarmappable</span></code>()</p></td>
 <td><p>Update colors from the scalar mappable array, if any.</p></td>
 </tr>
 </tbody>
@@ -512,26 +511,26 @@ functions for event handling, e.g.:</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes</span></code></p></td>
 <td><p>The <code class="file docutils literal notranslate"><span class="pre">~.axes.Axes</span></code> instance the artist resides in, or <em>None</em>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">callbacksSM</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">midpoint</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">midpoint</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mouseover</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mouseover</span></code></p></td>
 <td><p>Return whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stale</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stale</span></code></p></td>
 <td><p>Whether the artist is 'stale' and needs to be re-drawn for the output to match the internal state of the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sticky_edges</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sticky_edges</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> sticky edge lists for autoscaling.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zorder</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zorder</span></code></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">colorbar</span></code></p></td>
+<td><p>The last colorbar associated with this ScalarMappable.</p></td>
 </tr>
 </tbody>
 </table>
@@ -624,7 +623,7 @@ functions for event handling, e.g.:</p>
         <li class="right" >
           <a href="pybedtools.parallel.parallel_apply.html" title="pybedtools.parallel.parallel_apply"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.plotting.Track</a></li> 
       </ul>
@@ -635,8 +634,8 @@ functions for event handling, e.g.:</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.contrib.plotting.Track.rst.txt"

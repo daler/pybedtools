@@ -1,20 +1,16 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools Reference &#8212; pybedtools 0.9.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>pybedtools Reference &#8212; pybedtools 0.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bfb94e3c"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool" href="autodocs/pybedtools.bedtool.BedTool.html" />
@@ -259,52 +255,52 @@ on the fly.</p>
 that can be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code>:</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.three_prime.html#pybedtools.featurefuncs.three_prime" title="pybedtools.featurefuncs.three_prime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.three_prime</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.three_prime.html#pybedtools.featurefuncs.three_prime" title="pybedtools.featurefuncs.three_prime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.three_prime</span></code></a>(feature)</p></td>
 <td><p>Returns the 3'-most coordinate, plus <code class="file docutils literal notranslate"><span class="pre">upstream</span></code> and <code class="file docutils literal notranslate"><span class="pre">downstream</span></code> bp; adds the string <code class="file docutils literal notranslate"><span class="pre">add_to_name</span></code> to the feature's name if provided (e.g., &quot;_polyA_site&quot;)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.five_prime.html#pybedtools.featurefuncs.five_prime" title="pybedtools.featurefuncs.five_prime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.five_prime</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.five_prime.html#pybedtools.featurefuncs.five_prime" title="pybedtools.featurefuncs.five_prime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.five_prime</span></code></a>(feature)</p></td>
 <td><p>Returns the 5'-most coordinate, plus <code class="file docutils literal notranslate"><span class="pre">upstream</span></code> and <code class="file docutils literal notranslate"><span class="pre">downstream</span></code> bp; adds the string <code class="file docutils literal notranslate"><span class="pre">add_to_name</span></code> to the feature's name if provided (e.g., &quot;_TSS&quot;)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.TSS.html#pybedtools.featurefuncs.TSS" title="pybedtools.featurefuncs.TSS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.TSS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.TSS.html#pybedtools.featurefuncs.TSS" title="pybedtools.featurefuncs.TSS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.TSS</span></code></a>(feature[, ...])</p></td>
 <td><p>Alias for five_prime.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.extend_fields.html#pybedtools.featurefuncs.extend_fields" title="pybedtools.featurefuncs.extend_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.extend_fields</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.extend_fields.html#pybedtools.featurefuncs.extend_fields" title="pybedtools.featurefuncs.extend_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.extend_fields</span></code></a>(feature, n)</p></td>
 <td><p>Pads the fields of the feature with &quot;.&quot; to a total length of <code class="file docutils literal notranslate"><span class="pre">n</span></code> fields,</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.center.html#pybedtools.featurefuncs.center" title="pybedtools.featurefuncs.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.center</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.center.html#pybedtools.featurefuncs.center" title="pybedtools.featurefuncs.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.center</span></code></a>(feature[, width])</p></td>
 <td><p>Return the <em>width</em> bp from the center of a feature.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.midpoint.html#pybedtools.featurefuncs.midpoint" title="pybedtools.featurefuncs.midpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.midpoint</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.midpoint.html#pybedtools.featurefuncs.midpoint" title="pybedtools.featurefuncs.midpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.midpoint</span></code></a>(feature)</p></td>
 <td><p>Specialized version of <code class="file docutils literal notranslate"><span class="pre">center()</span></code> that just returns the single-bp midpoint</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.normalized_to_length.html#pybedtools.featurefuncs.normalized_to_length" title="pybedtools.featurefuncs.normalized_to_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.normalized_to_length</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.normalized_to_length.html#pybedtools.featurefuncs.normalized_to_length" title="pybedtools.featurefuncs.normalized_to_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.normalized_to_length</span></code></a>(feature)</p></td>
 <td><p>Normalizes the value at feature[idx] to the feature's length, in kb.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.rename.html#pybedtools.featurefuncs.rename" title="pybedtools.featurefuncs.rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.rename</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.rename.html#pybedtools.featurefuncs.rename" title="pybedtools.featurefuncs.rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.rename</span></code></a>(feature, name)</p></td>
 <td><p>Forces a rename of all features, e.g., for renaming everything in a file 'exon'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.greater_than.html#pybedtools.featurefuncs.greater_than" title="pybedtools.featurefuncs.greater_than"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.greater_than</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.greater_than.html#pybedtools.featurefuncs.greater_than" title="pybedtools.featurefuncs.greater_than"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.greater_than</span></code></a>(feature)</p></td>
 <td><p>Return True if feature length &gt; <em>size</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.less_than.html#pybedtools.featurefuncs.less_than" title="pybedtools.featurefuncs.less_than"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.less_than</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.less_than.html#pybedtools.featurefuncs.less_than" title="pybedtools.featurefuncs.less_than"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.less_than</span></code></a>(feature[, ...])</p></td>
 <td><p>Return True if feature length &lt; <em>size</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.normalized_to_length.html#pybedtools.featurefuncs.normalized_to_length" title="pybedtools.featurefuncs.normalized_to_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.normalized_to_length</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.normalized_to_length.html#pybedtools.featurefuncs.normalized_to_length" title="pybedtools.featurefuncs.normalized_to_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.normalized_to_length</span></code></a>(feature)</p></td>
 <td><p>Normalizes the value at feature[idx] to the feature's length, in kb.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.rename.html#pybedtools.featurefuncs.rename" title="pybedtools.featurefuncs.rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.rename</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.rename.html#pybedtools.featurefuncs.rename" title="pybedtools.featurefuncs.rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.rename</span></code></a>(feature, name)</p></td>
 <td><p>Forces a rename of all features, e.g., for renaming everything in a file 'exon'</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.bedgraph_scale.html#pybedtools.featurefuncs.bedgraph_scale" title="pybedtools.featurefuncs.bedgraph_scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.bedgraph_scale</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.bedgraph_scale.html#pybedtools.featurefuncs.bedgraph_scale" title="pybedtools.featurefuncs.bedgraph_scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.bedgraph_scale</span></code></a>(...)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.add_color.html#pybedtools.featurefuncs.add_color" title="pybedtools.featurefuncs.add_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.add_color</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.add_color.html#pybedtools.featurefuncs.add_color" title="pybedtools.featurefuncs.add_color"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.add_color</span></code></a>(feature, ...)</p></td>
 <td><p>Signature:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.gff2bed.html#pybedtools.featurefuncs.gff2bed" title="pybedtools.featurefuncs.gff2bed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.gff2bed</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pybedtools.featurefuncs.gff2bed.html#pybedtools.featurefuncs.gff2bed" title="pybedtools.featurefuncs.gff2bed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.gff2bed</span></code></a>(feature[, ...])</p></td>
 <td><p>Signature:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.bed2gff.html#pybedtools.featurefuncs.bed2gff" title="pybedtools.featurefuncs.bed2gff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.bed2gff</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pybedtools.featurefuncs.bed2gff.html#pybedtools.featurefuncs.bed2gff" title="pybedtools.featurefuncs.bed2gff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.featurefuncs.bed2gff</span></code></a>(feature)</p></td>
 <td><p>Signature:</p></td>
 </tr>
 </tbody>
@@ -490,7 +486,7 @@ a genomic interval, written in Cython for speed.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="autodocs/pybedtools.cbedtools.Interval.html#pybedtools.cbedtools.Interval" title="pybedtools.cbedtools.Interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.cbedtools.Interval</span></code></a></p></td>
 <td><p>Class to represent a genomic interval.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="autodocs/pybedtools.cbedtools.create_interval_from_list.html#pybedtools.cbedtools.create_interval_from_list" title="pybedtools.cbedtools.create_interval_from_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.cbedtools.create_interval_from_list</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="autodocs/pybedtools.cbedtools.create_interval_from_list.html#pybedtools.cbedtools.create_interval_from_list" title="pybedtools.cbedtools.create_interval_from_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pybedtools.cbedtools.create_interval_from_list</span></code></a>(fields)</p></td>
 <td><p>Create an Interval object from a list of strings.</p></td>
 </tr>
 </tbody>
@@ -744,7 +740,7 @@ its source for more details.</p>
         <li class="right" >
           <a href="scripts.html" title="Scripts"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li> 
       </ul>
     </div>
@@ -754,8 +750,8 @@ its source for more details.</p>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/autodoc_source.rst.txt"

@@ -1,20 +1,16 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools documentation &#8212; pybedtools 0.9.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>pybedtools documentation &#8212; pybedtools 0.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bfb94e3c"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="main.html" />
@@ -81,17 +77,17 @@ requires knowledge in Perl, bash, and awk.  The run time is identical to the
 <span class="nv">genes</span><span class="o">=</span>hg19.gff
 <span class="nv">intergenic_snps</span><span class="o">=</span>/tmp/intergenic_snps
 
-<span class="nv">snp_fields</span><span class="o">=</span><span class="sb">`</span>zcat <span class="nv">$snps</span> <span class="p">|</span> awk <span class="s1">&#39;(NR == 2){print NF; exit;}&#39;</span><span class="sb">`</span>
+<span class="nv">snp_fields</span><span class="o">=</span><span class="sb">`</span>zcat<span class="w"> </span><span class="nv">$snps</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;(NR == 2){print NF; exit;}&#39;</span><span class="sb">`</span>
 <span class="nv">gene_fields</span><span class="o">=</span><span class="m">9</span>
-<span class="nv">distance_field</span><span class="o">=</span><span class="k">$((</span><span class="nv">$gene_fields</span> <span class="o">+</span> <span class="nv">$snp_fields</span> <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+<span class="nv">distance_field</span><span class="o">=</span><span class="k">$((</span><span class="nv">$gene_fields</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nv">$snp_fields</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1</span><span class="k">))</span>
 
-intersectBed -a <span class="nv">$snps</span> -b <span class="nv">$genes</span> -v &gt; <span class="nv">$intergenic_snps</span>
+intersectBed<span class="w"> </span>-a<span class="w"> </span><span class="nv">$snps</span><span class="w"> </span>-b<span class="w"> </span><span class="nv">$genes</span><span class="w"> </span>-v<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$intergenic_snps</span>
 
-closestBed -a <span class="nv">$genes</span> -b <span class="nv">$intergenic_snps</span> -d <span class="se">\</span>
-<span class="p">|</span> awk <span class="s1">&#39;($&#39;</span><span class="nv">$distance_field</span><span class="s1">&#39; &lt; 5000){print $9;}&#39;</span> <span class="se">\</span>
-<span class="p">|</span> perl -ne <span class="s1">&#39;m/[ID|Name|gene_id]=(.*?);/; print &quot;$1\n&quot;&#39;</span>
+closestBed<span class="w"> </span>-a<span class="w"> </span><span class="nv">$genes</span><span class="w"> </span>-b<span class="w"> </span><span class="nv">$intergenic_snps</span><span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;($&#39;</span><span class="nv">$distance_field</span><span class="s1">&#39; &lt; 5000){print $9;}&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="p">|</span><span class="w"> </span>perl<span class="w"> </span>-ne<span class="w"> </span><span class="s1">&#39;m/[ID|Name|gene_id]=(.*?);/; print &quot;$1\n&quot;&#39;</span>
 
-rm <span class="nv">$intergenic_snps</span>
+rm<span class="w"> </span><span class="nv">$intergenic_snps</span>
 </pre></div>
 </div>
 <p>See the <a class="reference external" href="http://daler.github.io/pybedtools/sh-comparison.html">Shell script comparison</a> in the docs
@@ -200,6 +196,7 @@ get a feel for the package.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-9-1">Changes in v0.9.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-9">Changes in v0.9</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-8-2">Changes in v0.8.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changes.html#changes-in-v0-8-1">Changes in v0.8.1</a></li>
@@ -312,7 +309,7 @@ get a feel for the package.</p></li>
         <li class="right" >
           <a href="main.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pybedtools 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">pybedtools 0.9.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href=""><code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> documentation</a></li> 
       </ul>
     </div>
@@ -322,8 +319,8 @@ get a feel for the package.</p></li>
       &copy;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/index.rst.txt"
