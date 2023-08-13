@@ -77,7 +77,7 @@ import distutils.log
 
 MAJ = 0
 MIN = 9
-REV = 0
+REV = 1
 VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
 
 
@@ -296,7 +296,7 @@ if __name__ == "__main__":
         long_description=README,
         zip_safe=False,
         setup_requires=[],
-        install_requires=['six', 'pysam'],
+        install_requires=['six', 'pysam', 'numpy'],
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
@@ -325,4 +325,5 @@ if __name__ == "__main__":
                       'src': ['src/*'],
                       },
         include_package_data=True,
+        language_level=2,
     )

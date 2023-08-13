@@ -338,20 +338,6 @@ def _wraps(
             if check_for_genome:
                 kwargs = self.check_genome(**kwargs)
 
-            # TODO: should this be implemented as a generic function that can
-            # be passed in for a each tool to check kwargs? Currently this is
-            # the only check I can think of.
-            if prog in ("intersect", "intersectBed"):
-                if (
-                    isinstance(kwargs["b"], list)
-                    and len(kwargs["b"]) > 510
-                    and all([isinstance(i, str) for i in kwargs["b"]])
-                ):
-                    raise pybedtoolsError(
-                        "BEDTools intersect does not support > 510 filenames for -b "
-                        "argument. Consider passing these as BedTool objects instead"
-                    )
-
             # For sequence methods, we may need to make a tempfile that will
             # hold the resulting sequence.  For example, fastaFromBed needs to
             # make a tempfile for 'fo' if no 'fo' was explicitly specified by
@@ -2130,7 +2116,7 @@ class BedTool(object):
         """
 
     @_log_to_history
-    @_wraps(prog="sortBed", implicit="i")
+    @_wraps(prog="sortBed", implicit="i", uses_genome=True, genome_if=["g", "genome"])
     def sort(self):
         """
         Wraps `bedtools sort`.
@@ -2320,8 +2306,8 @@ class BedTool(object):
         chr1	0	1
         chr1	500	900
         chr1	950	249250621
-        chr10	0	135534747
-        chr11	0	135006516
+        chr2	0	243199373
+        chr3	0	198022430
         """
 
     @_log_to_history
@@ -2726,9 +2712,11 @@ class BedTool(object):
 
         if not hasattr(self, "seqfn"):
             raise ValueError("Use .sequence(fasta) to get the sequence first")
-        fout = open(fn, "w")
-        fout.write(open(self.seqfn).read())
-        fout.close()
+
+        with open(fn, "w") as fout:
+            with open(self.seqfn) as seqfile:
+                fout.write(seqfile.read())
+
         new_bedtool = BedTool(self.fn)
         new_bedtool.seqfn = fn
         return new_bedtool

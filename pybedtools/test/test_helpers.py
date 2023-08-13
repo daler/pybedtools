@@ -133,14 +133,14 @@ def test_chromsizes():
         assert hg17["chr1"] == (0, 245522847)
 
         fn = pybedtools.chromsizes_to_file(hg17, fn="hg17.genome")
-        expected = "chr1\t245522847\n"
+        expected = "chr10\t135413628\n"
         results = open(fn).readline()
         print(results)
         assert expected == results
 
         # make sure the tempfile version works, too
         fn = pybedtools.chromsizes_to_file(hg17, fn=None)
-        expected = "chr1\t245522847\n"
+        expected = "chr10\t135413628\n"
         results = open(fn).readline()
         print(results)
         assert expected == results

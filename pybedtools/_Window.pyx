@@ -1,4 +1,5 @@
 # cython: profile=True
+# cython: language_level=2
 
 import os
 from collections import deque

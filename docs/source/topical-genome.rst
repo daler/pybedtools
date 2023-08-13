@@ -98,20 +98,18 @@ will create a file from a dictionary or string:
     'dm3.genome'
     >>> print(open('dm3.genome').read())
     chr2L	23011544
-    chr2LHet	368872
     chr2R	21146708
-    chr2RHet	3288761
     chr3L	24543557
-    chr3LHet	2555491
     chr3R	27905053
-    chr3RHet	2517507
     chr4	1351857
+    chrX	22422827
+    chr2LHet	368872
+    chr2RHet	3288761
+    chr3LHet	2555491
+    chr3RHet	2517507
     chrM	19517
     chrU	10049037
     chrUextra	29004656
-    chrX	22422827
     chrXHet	204112
     chrYHet	347038
     <BLANKLINE>
-
-

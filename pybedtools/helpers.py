@@ -815,7 +815,7 @@ def chromsizes_to_file(chrom_sizes, fn=None):
     if isinstance(chrom_sizes, str):
         chrom_sizes = chromsizes(chrom_sizes)
     fout = open(fn, "wt")
-    for chrom, bounds in sorted(chrom_sizes.items()):
+    for chrom, bounds in chrom_sizes.items():
         line = chrom + "\t" + str(bounds[1]) + "\n"
         fout.write(line)
     fout.close()
