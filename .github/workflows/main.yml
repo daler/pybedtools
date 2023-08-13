@@ -90,7 +90,11 @@ jobs:
 
         fi
         conda activate ./test-env
-        pip install -e $WORKDIR/dist/pybedtools-*.tar.gz
+
+        mkdir -p /tmp/pybedtools-uncompressed
+        cd /tmp/pybedtools-uncompressed
+        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
+        pip install -e /tmp/pybedtools-uncompressed/pybedtools-*
 
         # Trying import in the same directory will complain that cbedtools
         # can't be imported
@@ -104,10 +108,7 @@ jobs:
         conda activate ./test-env
 
         # Extract the package tarball built above, and use that for running the tests.
-        mkdir -p /tmp/pybedtools-uncompressed
-        cd /tmp/pybedtools-uncompressed
-        tar -xf $WORKDIR/dist/pybedtools-*.tar.gz
-        cd pybedtools-*
+        cd pybedtools-uncompressed/pybedtools-*
         pytest -v --doctest-modules
         pytest -v pybedtools/test/genomepy_integration.py
         cp -r $WORKDIR/docs .
