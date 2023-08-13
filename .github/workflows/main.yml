@@ -108,7 +108,7 @@ jobs:
         conda activate ./test-env
 
         # Extract the package tarball built above, and use that for running the tests.
-        cd pybedtools-uncompressed/pybedtools-*
+        cd /tmp/pybedtools-uncompressed/pybedtools-*
         pytest -v --doctest-modules
         pytest -v pybedtools/test/genomepy_integration.py
         cp -r $WORKDIR/docs .
