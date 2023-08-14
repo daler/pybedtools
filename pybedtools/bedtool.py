@@ -630,6 +630,47 @@ class BedTool(object):
                 )
         return BedTool(fn)
 
+    @classmethod
+    def from_polars_dataframe(
+        self,
+        polars_df,
+        outfile=None,
+        separator="\t",
+        has_header=False,
+        **kwargs
+    ):
+        """
+        Creates a BedTool from a polars.DataFrame.
+
+        If `outfile` is None, a temporary file will be used. Otherwise it can
+        be a specific filename or an open file handle. Additional kwargs will
+        be passed to `polars.DataFrame.write_csv`.
+
+        The fields of the resulting BedTool will match the order of columns in
+        the dataframe.
+        """
+        try:
+            import polars
+        except ImportError:
+            raise ImportError("polars must be installed to use dataframes")
+        if outfile is None:
+            outfile = self._tmp()
+        default_kwargs = dict(separator=separator, has_header=has_header)
+        default_kwargs.update(kwargs)
+        polars_df.write_csv(outfile, **default_kwargs)
+
+        if isinstance(outfile, six.string_types):
+            fn = outfile
+        else:
+            try:
+                fn = outfile.name
+            except AttributeError:
+                raise ValueError(
+                    "`outfile` is not a string and doesn't have a `name` attribute. "
+                    "Unable to determine filename."
+                )
+        return BedTool(fn)
+
     def split(self, func, *args, **kwargs):
         """
         Split each feature using a user-defined function.
@@ -3703,6 +3744,54 @@ class BedTool(object):
         else:
             return pandas.DataFrame()
         
+    def to_polars_dataframe(self, disable_auto_names=False, *args, **kwargs):
+        """
+        Create a polars.DataFrame, passing args and kwargs to polars.read_csv
+        The separator kwarg `separator` is given a tab `\\t` value by default.
+
+        Parameters
+        ----------
+        disable_auto_names : bool
+            By default, the created dataframe fills in column names
+            automatically according to the detected filetype (e.g., "chrom",
+            "start", "end" for a BED3 file). Set this argument to True to
+            disable this behavior.
+        """
+        # Complain if BAM or if not a file
+        if self._isbam:
+            raise ValueError("BAM not supported for converting to DataFrame")
+        if not isinstance(self.fn, six.string_types):
+            raise ValueError("use .saveas() to make sure self.fn is a file")
+
+        try:
+            import polars
+        except ImportError:
+            raise ImportError("polars must be installed to convert to polars.DataFrame")
+        # Otherwise we're good:
+        names = kwargs.get("new_columns", None)
+        if names is None and not disable_auto_names:
+            try:
+                _names = settings._column_names[self.file_type][: self.field_count()]
+                if len(_names) < self.field_count():
+                    warn(
+                        "Default names for filetype %s are:\n%s\nbut file has "
+                        "%s fields; you can supply custom names with the "
+                        "`names` kwarg" % (self.file_type, _names, self.field_count())
+                    )
+                    _names = None
+            except KeyError:
+                _names = None
+            kwargs["new_columns"] = _names
+
+        has_header = kwargs.get("has_header", False)
+        if disable_auto_names:
+            has_header = True
+        kwargs["has_header"] = has_header
+        if os.path.isfile(self.fn) and os.path.getsize(self.fn) > 0:
+            return polars.read_csv(self.fn, *args, separator="\t", **kwargs)
+        else:
+            return polars.DataFrame()
+
     def tail(self, lines=10, as_string=False):
         """
         Like `head`, but prints last 10 lines of the file by default.

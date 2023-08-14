@@ -11,6 +11,7 @@ Tutorial Contents
     create-a-bedtool-tutorial
     intersections
     save-results
+    dataframe
     default-arguments
     piping
     intervals
