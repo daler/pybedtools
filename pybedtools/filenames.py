@@ -3,7 +3,6 @@ Provides access to example files and keeps track of all temp files created
 during a Python session.
 """
 import os
-import six
 
 TEMPFILES = []
 
@@ -24,8 +23,6 @@ def example_filename(fn):
     fn = os.path.join(data_dir(), fn)
     if not os.path.exists(fn):
         msg = "%s does not exist" % fn
-        if six.PY2:
-            raise ValueError(msg)
         raise FileNotFoundError(msg)
     return fn
 
