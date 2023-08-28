@@ -13,8 +13,6 @@
 #   Cython uses the `str` type as whatever the native Python version uses as
 #   str.
 
-
-from cpython.version cimport PY_MAJOR_VERSION
 from libcpp.string cimport string
 import numpy as np
 
@@ -37,10 +35,8 @@ cdef _pystr(string s):
     # Always returns unicode.
     return s.decode('UTF-8', 'strict')
 
-if PY_MAJOR_VERSION < 3:
-    integer_types = (int, long, np.int64)
-else:
-    integer_types = (int, np.int64)
+integer_types = (int, long, np.int64)
+
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
