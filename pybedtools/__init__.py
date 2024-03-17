@@ -3,8 +3,8 @@ import sys
 import subprocess
 import tempfile
 import logging
-from six.moves import urllib
-from six.moves import copyreg
+import copyreg
+
 from .cbedtools import (
     Interval,
     IntervalFile,
@@ -128,7 +128,7 @@ def load_path_config(fn):
                 pass
 
     if isinstance(fn, str):
-        from six.moves import configparser
+        import configparser
 
         c = configparser.SafeConfigParser()
         c.read(fn)

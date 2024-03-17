@@ -1,6 +1,4 @@
-import os
 import subprocess
-import six
 import pybedtools
 
 
@@ -30,9 +28,9 @@ def bigbed(
 
     Assumes that a recent version of bedToBigBed from UCSC is on the path.
     """
-    if isinstance(x, six.string_types):
+    if isinstance(x, str):
         x = pybedtools.BedTool(x)
-    if not isinstance(x.fn, six.string_types):
+    if not isinstance(x.fn, str):
         x = x.saveas()
     chromsizes = pybedtools.chromsizes_to_file(pybedtools.chromsizes(genome))
     if bedtype is None:

@@ -89,7 +89,7 @@ BIN getBin(CHRPOS start, CHRPOS end) {
     start >>= _binFirstShift;
     end   >>= _binFirstShift;
     
-    for (register short i = 0; i < _binLevels; ++i) {
+    for (short i = 0; i < _binLevels; ++i) {
         if (start == end) return _binOffsetsExtended[i] + start;
         start >>= _binNextShift;
         end   >>= _binNextShift;

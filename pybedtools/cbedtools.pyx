@@ -13,8 +13,6 @@
 #   Cython uses the `str` type as whatever the native Python version uses as
 #   str.
 
-
-from cpython.version cimport PY_MAJOR_VERSION
 from libcpp.string cimport string
 import numpy as np
 
@@ -37,10 +35,8 @@ cdef _pystr(string s):
     # Always returns unicode.
     return s.decode('UTF-8', 'strict')
 
-if PY_MAJOR_VERSION < 3:
-    integer_types = (int, long, np.int64)
-else:
-    integer_types = (int, np.int64)
+integer_types = (int, long, np.int64)
+
 
 """
     bedtools.pyx: A Cython wrapper for the BEDTools BedFile class
@@ -52,7 +48,6 @@ else:
 """
 from cython.operator cimport dereference as deref
 import sys
-import six
 import subprocess
 from collections import defaultdict
 
@@ -846,7 +841,7 @@ cdef class IntervalFile:
     def file_type(self):
         if not self.intervalFile_ptr._typeIsKnown:
             try:
-                a = six.advance_iterator(iter(self))
+                a = next(iter(self))
                 file_type = _pystr(self.intervalFile_ptr.file_type)
                 self.intervalFile_ptr.Close()
                 return file_type

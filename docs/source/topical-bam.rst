@@ -86,8 +86,7 @@ there is some additional complexity here due to supporting Python 2 and
     >>> bam_results[0].start
     9329
 
-    >>> import six
-    >>> isinstance(bam_results[0][3], six.string_types)
+    >>> isinstance(bam_results[0][3], str)
     True
 
     >>> print(bam_results[0][3])

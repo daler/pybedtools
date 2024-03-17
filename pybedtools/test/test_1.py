@@ -1,13 +1,6 @@
 import pybedtools
-import gzip
 import os, difflib, sys
-from textwrap import dedent
-from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
-import six
-import pysam
-from six.moves import socketserver
-from six.moves import BaseHTTPServer
 import pytest
 
 import threading
@@ -325,7 +318,7 @@ def test_malformed():
     a_i = iter(a)
 
     # first feature is OK
-    print(six.advance_iterator(a_i))
+    print(next(a_i))
 
     # but next one is not and should raise exception
     with pytest.raises(pybedtools.MalformedBedLineError):
@@ -709,8 +702,8 @@ def test_bedtool_creation():
     a = pybedtools.example_bedtool("a.bed")
     b = pybedtools.BedTool(a)
     assert b.fn == a.fn
-    e = FileNotFoundError if six.PY3 else ValueError
-    with pytest.raises(e):
+
+    with pytest.raises(FileNotFoundError):
         pybedtools.BedTool("nonexistend.bed")
 
     # note that *s* has both tabs and spaces....

@@ -12,7 +12,8 @@ The values in the diagram assume:
 import argparse
 import sys
 import pybedtools
-from six.moves import urllib
+import urllib
+
 
 
 def venn_gchart(a, b, c=None, colors=None, labels=None, size="300x300"):

@@ -1,4 +1,3 @@
-from six.moves import builtins
 import os
 import sys
 import pytest
