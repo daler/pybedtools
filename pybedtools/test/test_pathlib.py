@@ -1,8 +1,6 @@
 import os
 import pathlib
 
-import six
-
 import pybedtools
 import pytest
 
@@ -25,9 +23,5 @@ def test_pathlib_derived():
 def test_pathlib_nonexistent_file():
     fn = os.path.join(pybedtools.filenames.data_dir(), "this_file_is_missing")
     path = pathlib.Path(fn)
-    if six.PY2:
-        with pytest.raises(ValueError):
-            pybedtools.BedTool(path)
-    else:
-        with pytest.raises(FileNotFoundError):
-            pybedtools.BedTool(path)
+    with pytest.raises(FileNotFoundError):
+        pybedtools.BedTool(path)

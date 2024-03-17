@@ -5,7 +5,6 @@ import yaml
 import os
 import gzip
 import pybedtools
-from .tfuncs import setup_module, teardown_module
 
 yamltestdesc = ["test_cases.yaml"]
 
