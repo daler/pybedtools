@@ -3,6 +3,7 @@ import sys
 import os
 from .tfuncs import testdir, test_tempdir
 import pytest
+from pathlib import Path
 
 
 def fix(x):
@@ -40,10 +41,11 @@ def test_cleanup():
 
     # make a fake tempfile, not created during this pybedtools session
     pybedtools.cleanup()
-
-    testfn = os.path.join(test_tempdir, "pybedtools.TESTING.tmp")
-    os.system("touch %s" % testfn)
+    testfn = Path(test_tempdir) / "pybedtools.TESTING.tmp"
+    testfn.parent.mkdir(parents=True, exist_ok=True)
+    testfn.touch()
     assert os.path.exists(testfn)
+    pybedtools.set_tempdir(test_tempdir)
 
     # make some temp files
     a = pybedtools.BedTool(os.path.join(testdir, "data", "a.bed"))
