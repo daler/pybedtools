@@ -8,7 +8,7 @@ setting the bedtools path.
 import pybedtools
 from pybedtools import bedtool
 from . import settings
-from imp import reload
+from importlib import reload
 
 
 def _set_bedtools_path(path=""):
