@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 from textwrap import dedent
+from pathlib import Path
 import pytest
 import psutil
 
@@ -912,3 +913,10 @@ def test_issue_390():
     # Fix was to include np.int64 as an integer type in cbedtools.pyx.
     import numpy as np
     pybedtools.BedTool([['chr1', np.int64(1), np.int64(2)]])
+
+def test_issue_405():
+    a = Path(pybedtools.example_filename('a.bed'))
+    b = Path(pybedtools.example_filename('b.bed'))
+    a = pybedtools.BedTool(a)
+    a.cat(b)
+

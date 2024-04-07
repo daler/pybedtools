@@ -13,6 +13,7 @@ import multiprocessing
 import gzip
 import pysam
 from warnings import warn
+from pathlib import Path
 
 from .helpers import (
     get_tempdir,
@@ -3213,7 +3214,7 @@ class BedTool(object):
         assert len(others) > 0, "You must specify at least one other bedfile!"
         other_beds = []
         for other in others:
-            if isinstance(other, str):
+            if isinstance(other, (str, Path)):
                 other = BedTool(other)
             else:
                 assert isinstance(
