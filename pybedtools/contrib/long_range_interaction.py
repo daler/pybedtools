@@ -366,7 +366,7 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
             interval = pybedtools.create_interval_from_list(f[7 + extra :])
             return [f[6 + extra], interval.name]
 
-        names1 = set((tuple, map(get_name_hits, end1_hits)))
+        names1 = set(map(tuple, map(get_name_hits, end1_hits)))
         names2 = set(map(tuple, map(get_name_hits, end2_hits)))
 
         for cis, others in [(names1, names2), (names2, names1)]:
