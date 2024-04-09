@@ -16,7 +16,7 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
 
     - name: git setup
@@ -134,7 +134,7 @@ jobs:
 
     - name: docs artifact
       # Upload built docs as an artifact for inspection, even on PRs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: docs
         path: /tmp/docs
