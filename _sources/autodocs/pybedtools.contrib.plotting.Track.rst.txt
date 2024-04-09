@@ -24,9 +24,12 @@
       ~Track.draw
       ~Track.findobj
       ~Track.format_cursor_data
+      ~Track.get_aa
       ~Track.get_agg_filter
       ~Track.get_alpha
       ~Track.get_animated
+      ~Track.get_antialiased
+      ~Track.get_antialiaseds
       ~Track.get_array
       ~Track.get_capstyle
       ~Track.get_children

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Specifying genomes &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>Specifying genomes &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Randomization" href="topical-random.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,7 +33,7 @@
           <div class="body" role="main">
             
   <section id="specifying-genomes">
-<span id="genomes"></span><h1>Specifying genomes<a class="headerlink" href="#specifying-genomes" title="Permalink to this heading">¶</a></h1>
+<span id="genomes"></span><h1>Specifying genomes<a class="headerlink" href="#specifying-genomes" title="Link to this heading">¶</a></h1>
 <p>This section illustrates the use of genome files for use with BEDTools
 programs that need to know chromosome limits to prevent out-of-range
 coordinates.</p>
@@ -53,7 +54,7 @@ follows (use whatever is most convenient):</p>
 </ul>
 <p>Below are examples of each.</p>
 <section id="as-a-file">
-<h2>As a file<a class="headerlink" href="#as-a-file" title="Permalink to this heading">¶</a></h2>
+<h2>As a file<a class="headerlink" href="#as-a-file" title="Link to this heading">¶</a></h2>
 <p>This is the typical way of using BEDTools programs, by specifying an existing genome
 file with <code class="file docutils literal notranslate"><span class="pre">g</span></code>:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -62,7 +63,7 @@ file with <code class="file docutils literal notranslate"><span class="pre">g</s
 </div>
 </section>
 <section id="as-a-string">
-<h2>As a string<a class="headerlink" href="#as-a-string" title="Permalink to this heading">¶</a></h2>
+<h2>As a string<a class="headerlink" href="#as-a-string" title="Link to this heading">¶</a></h2>
 <p>This is probably the most convenient way of specifying a genome.  If the
 genome exists in the genome registry it will be used directly.  Alternatively,
 if you have <a href="#id1"><span class="problematic" id="id2">`genomepy&lt;https://github.com/vanheeringen-lab/genomepy/&gt;`_</span></a>
@@ -76,7 +77,7 @@ will be interpreted as a filename:</p>
 </div>
 </section>
 <section id="as-a-dictionary">
-<h2>As a dictionary<a class="headerlink" href="#as-a-dictionary" title="Permalink to this heading">¶</a></h2>
+<h2>As a dictionary<a class="headerlink" href="#as-a-dictionary" title="Link to this heading">¶</a></h2>
 <p>This is a good way of providing custom coordinates; either <code class="file docutils literal notranslate"><span class="pre">g</span></code> or <code class="file docutils literal notranslate"><span class="pre">genome</span></code>
 will accept a dictionary:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chr1&#39;</span><span class="p">:(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)})</span>
@@ -90,7 +91,7 @@ will accept a dictionary:</p>
 </div>
 </section>
 <section id="converting-to-a-file">
-<h2>Converting to a file<a class="headerlink" href="#converting-to-a-file" title="Permalink to this heading">¶</a></h2>
+<h2>Converting to a file<a class="headerlink" href="#converting-to-a-file" title="Link to this heading">¶</a></h2>
 <p>Since BEDTools programs operate on files, the fastest choice will be to
 use an existing file.  While the time to convert a dictionary to a file is
 extremely small, over 1000’s of files (e.g., for Monte Carlo simulations),
@@ -214,7 +215,7 @@ will create a file from a dictionary or string:</p>
         <li class="right" >
           <a href="topical-bam-semantics.html" title="Notes on BAM file semantics"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Specifying genomes</a></li> 
       </ul>
@@ -222,11 +223,11 @@ will create a file from a dictionary or string:</p>
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/topical-genome.rst.txt"

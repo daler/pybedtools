@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools.bedtool.BedTool.sequence &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>pybedtools.bedtool.BedTool.sequence &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=82662543"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.mask_fasta" href="pybedtools.bedtool.BedTool.mask_fasta.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,10 +33,10 @@
           <div class="body" role="main">
             
   <section id="pybedtools-bedtool-bedtool-sequence">
-<h1>pybedtools.bedtool.BedTool.sequence<a class="headerlink" href="#pybedtools-bedtool-bedtool-sequence" title="Permalink to this heading">¶</a></h1>
+<h1>pybedtools.bedtool.BedTool.sequence<a class="headerlink" href="#pybedtools-bedtool-bedtool-sequence" title="Link to this heading">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="pybedtools.bedtool.BedTool.sequence">
-<span class="sig-prename descclassname"><span class="pre">BedTool.</span></span><span class="sig-name descname"><span class="pre">sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.sequence" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">BedTool.</span></span><span class="sig-name descname"><span class="pre">sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.sequence" title="Link to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">getfasta</span></code>.</p>
 <p><em>fi</em> is passed in by the user; <em>bed</em> is automatically passed in as the
@@ -61,7 +62,7 @@ that points to the new fasta file.</p>
 is implicitly passed as the <code class="file docutils literal notranslate"><span class="pre">-bed</span></code> argument to <code class="file docutils literal notranslate"><span class="pre">fastaFromBed</span></code></p>
 <p><strong>Original BEDTools help:</strong>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">getfasta</span> <span class="p">(</span><span class="n">aka</span> <span class="n">fastaFromBed</span><span class="p">)</span>
-<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="mf">.31.0</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="mf">.31.1</span>
 <span class="n">Summary</span><span class="p">:</span> <span class="n">Extract</span> <span class="n">DNA</span> <span class="n">sequences</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">fasta</span> <span class="n">file</span> <span class="n">based</span> <span class="n">on</span> <span class="n">feature</span> <span class="n">coordinates</span><span class="o">.</span>
 
 <span class="n">Usage</span><span class="p">:</span>   <span class="n">bedtools</span> <span class="n">getfasta</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">fi</span> <span class="o">&lt;</span><span class="n">fasta</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">bed</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">/</span><span class="n">gff</span><span class="o">/</span><span class="n">vcf</span><span class="o">&gt;</span>
@@ -176,7 +177,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.bam_to_fastq.html" title="pybedtools.bedtool.BedTool.bam_to_fastq"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.sequence</a></li> 
       </ul>
@@ -184,11 +185,11 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.sequence.rst.txt"

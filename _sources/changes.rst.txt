@@ -3,6 +3,17 @@
 Changelog
 =========
 
+Changes in v0.10.1
+------------------
+
+2024-04-09
+
+* Remove last traces of Python 2.7 support by removing ``six`` dependency (thanks Valentyn Bezshapkin)
+* Support building on later C++ toolchains (thanks Cameron Smith)
+* Support ``pathlib.Path`` in ``BedTool.cat()`` (fixes #405)
+* Improvements to testing: add tests for Python 3.12, more explicity setup/teardown
+
+
 Changes in v0.9.1
 -----------------
 

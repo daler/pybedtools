@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changelog &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>Changelog &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions" href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -31,9 +32,19 @@
           <div class="body" role="main">
             
   <section id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">¶</a></h1>
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="changes-in-v0-10-1">
+<h2>Changes in v0.10.1<a class="headerlink" href="#changes-in-v0-10-1" title="Link to this heading">¶</a></h2>
+<p>2024-04-09</p>
+<ul class="simple">
+<li><p>Remove last traces of Python 2.7 support by removing <code class="docutils literal notranslate"><span class="pre">six</span></code> dependency (thanks Valentyn Bezshapkin)</p></li>
+<li><p>Support building on later C++ toolchains (thanks Cameron Smith)</p></li>
+<li><p>Support <code class="docutils literal notranslate"><span class="pre">pathlib.Path</span></code> in <code class="docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> (fixes #405)</p></li>
+<li><p>Improvements to testing: add tests for Python 3.12, more explicity setup/teardown</p></li>
+</ul>
+</section>
 <section id="changes-in-v0-9-1">
-<h2>Changes in v0.9.1<a class="headerlink" href="#changes-in-v0-9-1" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.9.1<a class="headerlink" href="#changes-in-v0-9-1" title="Link to this heading">¶</a></h2>
 <p>2023-07-23</p>
 <ul class="simple">
 <li><p>Dropping support for Python 3.6 and 3.7</p></li>
@@ -52,7 +63,7 @@ defer to local machine’s <code class="docutils literal notranslate"><span clas
 </ul>
 </section>
 <section id="changes-in-v0-9">
-<h2>Changes in v0.9<a class="headerlink" href="#changes-in-v0-9" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.9<a class="headerlink" href="#changes-in-v0-9" title="Link to this heading">¶</a></h2>
 <p>2022-01-23</p>
 <p>The biggest change is that pybedtools is now under the MIT license, following
 the lead of BEDTools itself.</p>
@@ -76,7 +87,7 @@ of addressing <a class="reference external" href="https://github.com/daler/pybed
 </ul>
 </section>
 <section id="changes-in-v0-8-2">
-<h2>Changes in v0.8.2<a class="headerlink" href="#changes-in-v0-8-2" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.8.2<a class="headerlink" href="#changes-in-v0-8-2" title="Link to this heading">¶</a></h2>
 <p>2021-03-13: Minor updates</p>
 <ul class="simple">
 <li><p>Removed scripts directory from installed version. These are still available
@@ -94,7 +105,7 @@ help retrieve chromsizes files for less commonly used assemblies (thanks
 </ul>
 </section>
 <section id="changes-in-v0-8-1">
-<h2>Changes in v0.8.1<a class="headerlink" href="#changes-in-v0-8-1" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.8.1<a class="headerlink" href="#changes-in-v0-8-1" title="Link to this heading">¶</a></h2>
 <p>2019-12-27: This version has minor updates and bugfixes:</p>
 <ul class="simple">
 <li><p>Bugfix: Fixes to <code class="file docutils literal notranslate"><span class="pre">pbt_plotting_example.py</span></code> (thanks Steffen Möllera &#64;smoe)</p></li>
@@ -116,7 +127,7 @@ than 510 files (<a class="reference external" href="https://github.com/daler/pyb
 </ul>
 </section>
 <section id="changes-in-v0-8-0">
-<h2>Changes in v0.8.0<a class="headerlink" href="#changes-in-v0-8-0" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.8.0<a class="headerlink" href="#changes-in-v0-8-0" title="Link to this heading">¶</a></h2>
 <p>This version further improves testing, improves the way C++ files are included
 in the package, and fixes many long-standing bugs.</p>
 <ul class="simple">
@@ -174,7 +185,7 @@ raises ValueError (<a class="reference external" href="https://github.com/daler/
 </ul>
 </section>
 <section id="changes-in-v0-7-10">
-<h2>Changes in v0.7.10<a class="headerlink" href="#changes-in-v0-7-10" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.10<a class="headerlink" href="#changes-in-v0-7-10" title="Link to this heading">¶</a></h2>
 <p>Various bug fixes and some minor feature additions:</p>
 <ul class="simple">
 <li><p>Support for comma-separated lists for <code class="file docutils literal notranslate"><span class="pre">mapBed</span></code> (thanks Chuan-Sheng Foo)</p></li>
@@ -191,7 +202,7 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 </ul>
 </section>
 <section id="changes-in-v0-7-9">
-<h2>Changes in v0.7.9<a class="headerlink" href="#changes-in-v0-7-9" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.9<a class="headerlink" href="#changes-in-v0-7-9" title="Link to this heading">¶</a></h2>
 <p>Minor bugfix release:</p>
 <ul class="simple">
 <li><p>add <code class="file docutils literal notranslate"><span class="pre">contrib.bigwig.bigwigtobedgraph</span></code> (thanks Justin Fear)</p></li>
@@ -203,7 +214,7 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 </ul>
 </section>
 <section id="changes-in-v0-7-8">
-<h2>Changes in v0.7.8<a class="headerlink" href="#changes-in-v0-7-8" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.8<a class="headerlink" href="#changes-in-v0-7-8" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Be more careful about BAM vs bgzipped files (#168)</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">BedTool.bgzip</span></code> now preserves the header when sorting</p></li>
@@ -214,7 +225,7 @@ parameters (<a class="reference external" href="https://github.com/daler/pybedto
 </ul>
 </section>
 <section id="changes-in-v0-7-7">
-<h2>Changes in v0.7.7<a class="headerlink" href="#changes-in-v0-7-7" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.7<a class="headerlink" href="#changes-in-v0-7-7" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Chromsizes for dm6 and mm10 assemblies added to <code class="file docutils literal notranslate"><span class="pre">genome_registry</span></code></p></li>
 <li><p>Better Python 3 compatibility in the <code class="file docutils literal notranslate"><span class="pre">long_range_interaction</span></code> module</p></li>
@@ -224,14 +235,14 @@ have a unique ID in their name field.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-7-6">
-<h2>Changes in v0.7.6<a class="headerlink" href="#changes-in-v0-7-6" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.6<a class="headerlink" href="#changes-in-v0-7-6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>New module <code class="file docutils literal notranslate"><span class="pre">pybedtools.contrib.long_range_interaction</span></code> for working with
 HiC-like data.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-7-5">
-<h2>Changes in v0.7.5<a class="headerlink" href="#changes-in-v0-7-5" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.5<a class="headerlink" href="#changes-in-v0-7-5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>When using tabix-indexed files, <code class="file docutils literal notranslate"><span class="pre">tabix</span></code> and <code class="file docutils literal notranslate"><span class="pre">bgzip</span></code> are no longer required to
 be installed separately. Only <code class="file docutils literal notranslate"><span class="pre">pysam</span></code> is needed.</p></li>
@@ -247,7 +258,7 @@ always assumed to be intervals.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-7-4">
-<h2>Changes in v0.7.4<a class="headerlink" href="#changes-in-v0-7-4" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.4<a class="headerlink" href="#changes-in-v0-7-4" title="Link to this heading">¶</a></h2>
 <p>Bugfix release.</p>
 <ul class="simple">
 <li><p>fix <a class="reference external" href="https://github.com/daler/pybedtools/issues/147">#147</a> so that warnings
@@ -258,7 +269,7 @@ are simply passed to the user without raising exceptions</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-7-1">
-<h2>Changes in v0.7.1<a class="headerlink" href="#changes-in-v0-7-1" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.1<a class="headerlink" href="#changes-in-v0-7-1" title="Link to this heading">¶</a></h2>
 <p>This is largely a bugfix release with the following changes:</p>
 <ul class="simple">
 <li><p>fix for some BAM headers (thanks Gabriel Platt)</p></li>
@@ -268,7 +279,7 @@ and Dan Halligan)</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-7-0">
-<h2>Changes in v0.7.0<a class="headerlink" href="#changes-in-v0-7-0" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.7.0<a class="headerlink" href="#changes-in-v0-7-0" title="Link to this heading">¶</a></h2>
 <p>This release reflects a major upgrade in the underlying code in order to
 support both Python 2 and Python 3 using the same code. Aside from trivial
 things like converting print statements to functions and using <code class="file docutils literal notranslate"><span class="pre">next()</span></code> instead
@@ -279,7 +290,7 @@ work.</p>
 previous tests pass</em> so to the end user should not notice any differences
 except those noted below.</p>
 <section id="strings-from-interval-fields-are-unicode">
-<h3>Strings from Interval fields are unicode<a class="headerlink" href="#strings-from-interval-fields-are-unicode" title="Permalink to this heading">¶</a></h3>
+<h3>Strings from Interval fields are unicode<a class="headerlink" href="#strings-from-interval-fields-are-unicode" title="Link to this heading">¶</a></h3>
 <p>For consistency between Python 2 and 3, all strings from Interval objects are
 now unicode. That is, in Python 2, previously we would get this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -295,7 +306,7 @@ now unicode. That is, in Python 2, previously we would get this:</p>
 </div>
 </section>
 <section id="samtools-no-longer-a-dependency">
-<h3>samtools no longer a dependency<a class="headerlink" href="#samtools-no-longer-a-dependency" title="Permalink to this heading">¶</a></h3>
+<h3>samtools no longer a dependency<a class="headerlink" href="#samtools-no-longer-a-dependency" title="Link to this heading">¶</a></h3>
 <p>The dependency for samtools has been removed, which simplifies the installation
 process. Instead, <code class="file docutils literal notranslate"><span class="pre">pysam</span></code> is used for handling BAM files.</p>
 <p>In order for existing tests to pass, <code class="file docutils literal notranslate"><span class="pre">pysam.AlignedSegment</span></code> objects are
@@ -307,13 +318,13 @@ objects directly, but for now you can use the <code class="file docutils literal
 attribute to access the underlying <code class="file docutils literal notranslate"><span class="pre">pysam.AlignmentFile</span></code></p>
 </section>
 <section id="cython-no-longer-a-dependency">
-<h3>Cython no longer a dependency<a class="headerlink" href="#cython-no-longer-a-dependency" title="Permalink to this heading">¶</a></h3>
+<h3>Cython no longer a dependency<a class="headerlink" href="#cython-no-longer-a-dependency" title="Link to this heading">¶</a></h3>
 <p>The Cythonized <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> files are now shipped with the <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code>
 distribution, so Cython is no longer a requirement for installation.</p>
 <p>You will however need to have Cython installed if you’re developing pybedtools.</p>
 </section>
 <section id="remote-bam-support-clarification">
-<h3>Remote BAM support clarification<a class="headerlink" href="#remote-bam-support-clarification" title="Permalink to this heading">¶</a></h3>
+<h3>Remote BAM support clarification<a class="headerlink" href="#remote-bam-support-clarification" title="Link to this heading">¶</a></h3>
 <p>Previously, <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> was able to support remote BAMs by loosely wrapping
 samtools, but BAM files still needed to be fully downloaded to disk before
 using with BEDTools. This was done automatically, but through an inefficient
@@ -323,7 +334,7 @@ on disk for use with BEDTools. But now this needs to be explicitly done by the
 user, which should result in better performance.</p>
 </section>
 <section id="iterating-over-intervals">
-<h3>Iterating over intervals<a class="headerlink" href="#iterating-over-intervals" title="Permalink to this heading">¶</a></h3>
+<h3>Iterating over intervals<a class="headerlink" href="#iterating-over-intervals" title="Link to this heading">¶</a></h3>
 <p>Previously, when iterating over a <code class="file docutils literal notranslate"><span class="pre">BedTool</span></code> object, different machinery would
 be invoked depending on whether the BedTool was pointing to a file (a
 cbedtools.IntervalFile would be invoked), to another iterator of Interval
@@ -333,19 +344,19 @@ objects, or to a stream like from the stdout of a BEDTools call
 performance optimization.</p>
 </section>
 <section id="gzip-support">
-<h3>gzip support<a class="headerlink" href="#gzip-support" title="Permalink to this heading">¶</a></h3>
+<h3>gzip support<a class="headerlink" href="#gzip-support" title="Link to this heading">¶</a></h3>
 <p>Thanks to Saulius Lukauskas, gzip handling is now improved, and calling
 <code class="file docutils literal notranslate"><span class="pre">BedTool.saveas()</span></code> with a <code class="file docutils literal notranslate"><span class="pre">.gz</span></code> extension on the filename will automatically
 compress the output.</p>
 </section>
 <section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h3>
+<h3>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h3>
 <p>In the github repo there is a <code class="file docutils literal notranslate"><span class="pre">docker</span></code> directory containing Dockerfiles to set
 up isolated testing environments. These Dockerfiles also demonstrate how to set
 up a complete environment starting from a base Ubuntu install.</p>
 </section>
 <section id="tests">
-<h3>Tests<a class="headerlink" href="#tests" title="Permalink to this heading">¶</a></h3>
+<h3>Tests<a class="headerlink" href="#tests" title="Link to this heading">¶</a></h3>
 <p>All tests from v0.6.9 (which was Python 2 only) have been made Python 2/3
 compatible and all previous tests pass.</p>
 <p>If you have docker installed, from the top level directory, you can run the
@@ -359,7 +370,7 @@ depedencies, export the parent directory to the container, and run the test
 suite.</p>
 </section>
 <section id="conda-packages">
-<h3>Conda packages<a class="headerlink" href="#conda-packages" title="Permalink to this heading">¶</a></h3>
+<h3>Conda packages<a class="headerlink" href="#conda-packages" title="Link to this heading">¶</a></h3>
 <p>You can now install the latest versions of tabix, bedtools, pysam, and
 pybedtools from conda, dramatically speeding up installation time. These
 mechanisms are used for automated testing as well (see the <code class="docutils literal notranslate"><span class="pre">condatest.sh</span></code>
@@ -382,7 +393,7 @@ the <code class="file docutils literal notranslate"><span class="pre">conda</spa
 </section>
 </section>
 <section id="changes-in-v0-6-9">
-<h2>Changes in v0.6.9<a class="headerlink" href="#changes-in-v0-6-9" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.9<a class="headerlink" href="#changes-in-v0-6-9" title="Link to this heading">¶</a></h2>
 <p>Minor bug fix release.</p>
 <ul class="simple">
 <li><p>improved the automatic field name handling when converting an interval file to
@@ -396,12 +407,12 @@ Alexey Sergushichev)</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6-8">
-<h2>Changes in v0.6.8<a class="headerlink" href="#changes-in-v0-6-8" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.8<a class="headerlink" href="#changes-in-v0-6-8" title="Link to this heading">¶</a></h2>
 <p>Bugfix: Thanks to Gabriel Pratt, <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> is no longer plagued by open filehandles
 in the C code causing the notorious “Too many files open” error.</p>
 </section>
 <section id="changes-in-v0-6-7">
-<h2>Changes in v0.6.7<a class="headerlink" href="#changes-in-v0-6-7" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.7<a class="headerlink" href="#changes-in-v0-6-7" title="Link to this heading">¶</a></h2>
 <p>Now compatible with BEDTools v2.21.0.</p>
 <p>The one exception is that the new <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">intersect</span></code> functionality that
 allows multiple <code class="file docutils literal notranslate"><span class="pre">-b</span></code> files is not yet implemented in <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code>.</p>
@@ -430,7 +441,7 @@ same coordinates.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6-6">
-<h2>Changes in v0.6.6<a class="headerlink" href="#changes-in-v0-6-6" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.6<a class="headerlink" href="#changes-in-v0-6-6" title="Link to this heading">¶</a></h2>
 <p>This is a compatibility release, updated for BEDTools v2.20.0.</p>
 <p>There is one API change that affects the behavior of overloaded operators (that
 is, using <code class="file docutils literal notranslate"><span class="pre">+</span></code> and <code class="file docutils literal notranslate"><span class="pre">-</span></code> with BedTool objects) when one of the BedTool objects
@@ -461,7 +472,7 @@ make more logical sense:</p>
 </div></blockquote>
 </section>
 <section id="changes-in-v0-6-5">
-<h2>Changes in v0.6.5<a class="headerlink" href="#changes-in-v0-6-5" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.5<a class="headerlink" href="#changes-in-v0-6-5" title="Link to this heading">¶</a></h2>
 <p>This is a minor bug-fix release:</p>
 <ul class="simple">
 <li><p>Fix for BedTool.all_hits() and any_hits() which will now show hits for
@@ -472,7 +483,7 @@ been created for it.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6-4">
-<h2>Changes in v0.6.4<a class="headerlink" href="#changes-in-v0-6-4" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.4<a class="headerlink" href="#changes-in-v0-6-4" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Full integration with BEDTools v2.18.  This includes some compatibility fixes
 for the new buffered output capabilities of BEDTool <code class="file docutils literal notranslate"><span class="pre">intersect</span></code> and wrapping
@@ -485,7 +496,7 @@ BEDTools v2.18+.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6-3">
-<h2>Changes in v0.6.3<a class="headerlink" href="#changes-in-v0-6-3" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.3<a class="headerlink" href="#changes-in-v0-6-3" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>New <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools.parallel</span></code> module for working with many operations in
 parallel.  See the docs for <a class="reference internal" href="autodocs/pybedtools.parallel.parallel_apply.html#pybedtools.parallel.parallel_apply" title="pybedtools.parallel.parallel_apply"><code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.parallel.parallel_apply()</span></code></a> for
@@ -525,7 +536,7 @@ changes to source code.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6-2">
-<h2>Changes in v0.6.2<a class="headerlink" href="#changes-in-v0-6-2" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.2<a class="headerlink" href="#changes-in-v0-6-2" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Wrapped new tools available in BEDTools 2.17: <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.jaccard()</span></code> and
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.reldist()</span></code> wrap the new <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">jaccard</span></code> and <code class="file docutils literal notranslate"><span class="pre">bedtools</span>
@@ -577,7 +588,7 @@ logs….</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6-1">
-<h2>Changes in v0.6.1<a class="headerlink" href="#changes-in-v0-6-1" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6.1<a class="headerlink" href="#changes-in-v0-6-1" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>New <a class="reference internal" href="autodocs/pybedtools.contrib.plotting.Track.html#pybedtools.contrib.plotting.Track" title="pybedtools.contrib.plotting.Track"><code class="xref py py-class docutils literal notranslate"><span class="pre">pybedtools.contrib.plotting.Track</span></code></a> class allows plotting of
 features with matplotlib.  The <code class="file docutils literal notranslate"><span class="pre">Track</span></code> class subclasses
@@ -596,7 +607,7 @@ the default temp dir</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-6">
-<h2>Changes in v0.6<a class="headerlink" href="#changes-in-v0-6" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.6<a class="headerlink" href="#changes-in-v0-6" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Overhaul in online documentation to hopefully make functionality easier to
 find and/or discover.  See <a class="reference internal" href="autodoc_source.html#pybedtools-reference"><span class="std std-ref">pybedtools Reference</span></a> for summary tables of
@@ -678,7 +689,7 @@ make Attribute class properly dict-like (thanks Libor Mořkovský)</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-5-5">
-<h2>Changes in v0.5.5<a class="headerlink" href="#changes-in-v0-5-5" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.5.5<a class="headerlink" href="#changes-in-v0-5-5" title="Link to this heading">¶</a></h2>
 <ul>
 <li><p>Use <code class="file docutils literal notranslate"><span class="pre">additional_args</span></code> kwarg to pass arguments verbatim to the underlying
 BEDTools programs.  This is necessary for arguments like
@@ -707,7 +718,7 @@ for parallel code.</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-5">
-<h2>Changes in v0.5<a class="headerlink" href="#changes-in-v0-5" title="Permalink to this heading">¶</a></h2>
+<h2>Changes in v0.5<a class="headerlink" href="#changes-in-v0-5" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>support for running random intersections in parallel.  See
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomstats()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.randomintersection()</span></code> (thanks,
@@ -762,6 +773,7 @@ where to save output – no more moving tempfiles</p></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-10-1">Changes in v0.10.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-9-1">Changes in v0.9.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-9">Changes in v0.9</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-8-2">Changes in v0.8.2</a></li>
@@ -835,18 +847,18 @@ where to save output – no more moving tempfiles</p></li>
         <li class="right" >
           <a href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Changelog</a></li> 
       </ul>
     </div>
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/changes.rst.txt"

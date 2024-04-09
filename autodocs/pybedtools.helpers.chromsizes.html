@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools.helpers.chromsizes &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>pybedtools.helpers.chromsizes &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=82662543"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.helpers.chromsizes_to_file" href="pybedtools.helpers.chromsizes_to_file.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,13 +33,13 @@
           <div class="body" role="main">
             
   <section id="pybedtools-helpers-chromsizes">
-<h1>pybedtools.helpers.chromsizes<a class="headerlink" href="#pybedtools-helpers-chromsizes" title="Permalink to this heading">¶</a></h1>
+<h1>pybedtools.helpers.chromsizes<a class="headerlink" href="#pybedtools-helpers-chromsizes" title="Link to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pybedtools.helpers.chromsizes">
-<span class="sig-prename descclassname"><span class="pre">pybedtools.helpers.</span></span><span class="sig-name descname"><span class="pre">chromsizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genome</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/helpers.html#chromsizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.helpers.chromsizes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pybedtools.helpers.</span></span><span class="sig-name descname"><span class="pre">chromsizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genome</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/helpers.html#chromsizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.helpers.chromsizes" title="Link to this definition">¶</a></dt>
 <dd><p>Looks for a <em>genome</em> already included in the genome registry; if not found
 it first tries to look it up via genomepy. If genomepy is not installed, or
-if this lookup fails then it looks it up on UCSC.  Returns the dictionary of 
+if this lookup fails then it looks it up on UCSC.  Returns the dictionary of
 chromsize tuples where each tuple has (start,stop).</p>
 <p>Chromsizes are described as (start, stop) tuples to allow randomization
 within specified regions; e. g., you can make a chromsizes dictionary that
@@ -153,7 +154,7 @@ represents the extent of a tiling array.</p>
         <li class="right" >
           <a href="pybedtools.helpers.get_chromsizes_from_ucsc.html" title="pybedtools.helpers.get_chromsizes_from_ucsc"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.helpers.chromsizes</a></li> 
       </ul>
@@ -161,11 +162,11 @@ represents the extent of a tiling array.</p>
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.helpers.chromsizes.rst.txt"

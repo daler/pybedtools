@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>FAQs &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>FAQs &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Scripts" href="scripts.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,13 +33,13 @@
           <div class="body" role="main">
             
   <section id="faqs">
-<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this heading">¶</a></h1>
+<h1>FAQs<a class="headerlink" href="#faqs" title="Link to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>More detailed answers to these questions can often be found on the <a class="reference external" href="https://github.com/daler/pybedtools/issues/">Issues</a> page.</p>
 </div>
 <section id="does-pybedtools-have-a-simple-reader-writer-for-bed-files">
-<h2>“Does pybedtools have a simple reader/writer for BED files?”<a class="headerlink" href="#does-pybedtools-have-a-simple-reader-writer-for-bed-files" title="Permalink to this heading">¶</a></h2>
+<h2>“Does pybedtools have a simple reader/writer for BED files?”<a class="headerlink" href="#does-pybedtools-have-a-simple-reader-writer-for-bed-files" title="Link to this heading">¶</a></h2>
 <p>While <code class="file docutils literal notranslate"><span class="pre">pybedtools</span></code> designed to work with BEDTools, the reading/writing/parsing
 function can be easily used for other things.</p>
 <p>Simply iterating over a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object will parse each line into
@@ -81,7 +82,7 @@ from the iterator and then save it:</p>
 <p>See <a class="reference internal" href="save-results.html#saveresults"><span class="std std-ref">Saving the results</span></a> for more on saving the results.</p>
 </section>
 <section id="can-i-create-a-bedtool-object-from-an-existing-list">
-<h2>“Can I create a BedTool object from an existing list?”<a class="headerlink" href="#can-i-create-a-bedtool-object-from-an-existing-list" title="Permalink to this heading">¶</a></h2>
+<h2>“Can I create a BedTool object from an existing list?”<a class="headerlink" href="#can-i-create-a-bedtool-object-from-an-existing-list" title="Link to this heading">¶</a></h2>
 <p>Sure, the <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> constructor will figure it out:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
@@ -93,7 +94,7 @@ from the iterator and then save it:</p>
 </div>
 </section>
 <section id="i-m-getting-an-empty-bedtool">
-<h2>“I’m getting an empty BedTool”<a class="headerlink" href="#i-m-getting-an-empty-bedtool" title="Permalink to this heading">¶</a></h2>
+<h2>“I’m getting an empty BedTool”<a class="headerlink" href="#i-m-getting-an-empty-bedtool" title="Link to this heading">¶</a></h2>
 <p>Check to make sure you’re not consuming a BedTool generator.  Note that
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.each()</span></code> will return a generator BedTool
 object. Keep in mind that checking the length of a generator BedTool will
@@ -111,21 +112,21 @@ automatically cleaned up tempfile:</p>
 </div>
 </section>
 <section id="i-m-getting-a-malformedbedlineerror">
-<h2>“I’m getting a MalformedBedLineError”<a class="headerlink" href="#i-m-getting-a-malformedbedlineerror" title="Permalink to this heading">¶</a></h2>
+<h2>“I’m getting a MalformedBedLineError”<a class="headerlink" href="#i-m-getting-a-malformedbedlineerror" title="Link to this heading">¶</a></h2>
 <p>This error can be raised by BEDTools itself.  Typical reasons are that start
 &gt; end, or the fields are not tab-delimited.</p>
 <p>You can try the <code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.remove_invalid()</span></code> function to clean up your
 file, or manually edit the offending lines.</p>
 </section>
 <section id="i-get-a-segfault-when-iterating-over-a-bedtool-object">
-<h2>“I get a segfault when iterating over a BedTool object”<a class="headerlink" href="#i-get-a-segfault-when-iterating-over-a-bedtool-object" title="Permalink to this heading">¶</a></h2>
+<h2>“I get a segfault when iterating over a BedTool object”<a class="headerlink" href="#i-get-a-segfault-when-iterating-over-a-bedtool-object" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://github.com/daler/pybedtools/issues/88">Issue #88</a> which
 addresses this issue – in summary, Cython’s handling of iterators works
 unexpectedly.  It’s best to call the <code class="file docutils literal notranslate"><span class="pre">next()</span></code> method explicitly when doing
 complex manipulations on an iterating <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>.</p>
 </section>
 <section id="can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence">
-<h2>“Can I add extra information to FASTA headers when using BedTool.sequence()?”<a class="headerlink" href="#can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence" title="Permalink to this heading">¶</a></h2>
+<h2>“Can I add extra information to FASTA headers when using BedTool.sequence()?”<a class="headerlink" href="#can-i-add-extra-information-to-fasta-headers-when-using-bedtool-sequence" title="Link to this heading">¶</a></h2>
 <p>Since BEDTools adds the feature name to the FASTA header, you can manipulate
 the feature name on the fly with a custom modifier function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fields2name</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -141,7 +142,7 @@ the feature name on the fly with a custom modifier function:</p>
 </div>
 </section>
 <section id="too-many-files-open-error">
-<h2>“Too many files open” error<a class="headerlink" href="#too-many-files-open-error" title="Permalink to this heading">¶</a></h2>
+<h2>“Too many files open” error<a class="headerlink" href="#too-many-files-open-error" title="Link to this heading">¶</a></h2>
 <p>Sometimes you may get the error:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Too</span> <span class="n">many</span> <span class="n">files</span> <span class="nb">open</span> <span class="o">--</span> <span class="n">please</span> <span class="n">submit</span> <span class="n">a</span> <span class="n">bug</span> <span class="n">report</span> <span class="n">so</span> <span class="n">that</span> <span class="n">this</span> <span class="n">can</span> <span class="n">be</span> <span class="n">fixed</span>
 </pre></div>
@@ -291,18 +292,18 @@ total).</p>
         <li class="right" >
           <a href="flow-of-commands.html" title="Under the hood"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">FAQs</a></li> 
       </ul>
     </div>
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/FAQs.rst.txt"

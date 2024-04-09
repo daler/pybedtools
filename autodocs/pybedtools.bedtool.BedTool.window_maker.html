@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools.bedtool.BedTool.window_maker &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>pybedtools.bedtool.BedTool.window_maker &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=12dfc556" />
+    <script src="../_static/documentation_options.js?v=82662543"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.groupby" href="pybedtools.bedtool.BedTool.groupby.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,10 +33,10 @@
           <div class="body" role="main">
             
   <section id="pybedtools-bedtool-bedtool-window-maker">
-<h1>pybedtools.bedtool.BedTool.window_maker<a class="headerlink" href="#pybedtools-bedtool-bedtool-window-maker" title="Permalink to this heading">¶</a></h1>
+<h1>pybedtools.bedtool.BedTool.window_maker<a class="headerlink" href="#pybedtools-bedtool-bedtool-window-maker" title="Link to this heading">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="pybedtools.bedtool.BedTool.window_maker">
-<span class="sig-prename descclassname"><span class="pre">BedTool.</span></span><span class="sig-name descname"><span class="pre">window_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.window_maker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.window_maker" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">BedTool.</span></span><span class="sig-name descname"><span class="pre">window_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pybedtools/bedtool.html#BedTool.window_maker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pybedtools.bedtool.BedTool.window_maker" title="Link to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">makewindows</span></code>.</p>
 </div></blockquote>
@@ -49,169 +50,169 @@ a separate file.  The <code class="file docutils literal notranslate"><span clas
 <code class="file docutils literal notranslate"><span class="pre">pybedtools.chromsizes</span></code>, so see that method for more
 details.</p>
 <p><strong>Original BEDTools help:</strong>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Tool: bedtools makewindows
-Version: v2.31.0
-Summary: Makes adjacent or sliding windows across a genome or BED file.
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span> <span class="n">bedtools</span> <span class="n">makewindows</span>
+<span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="mf">.31.1</span>
+<span class="n">Summary</span><span class="p">:</span> <span class="n">Makes</span> <span class="n">adjacent</span> <span class="ow">or</span> <span class="n">sliding</span> <span class="n">windows</span> <span class="n">across</span> <span class="n">a</span> <span class="n">genome</span> <span class="ow">or</span> <span class="n">BED</span> <span class="n">file</span><span class="o">.</span>
 
-Usage: bedtools makewindows [OPTIONS] [-g &lt;genome&gt; OR -b &lt;bed&gt;]
- [ -w &lt;window**size&gt; OR -n &lt;number of windows&gt; ]
+<span class="n">Usage</span><span class="p">:</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="o">&lt;</span><span class="n">genome</span><span class="o">&gt;</span> <span class="n">OR</span> <span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">&gt;</span><span class="p">]</span>
+ <span class="p">[</span> <span class="o">-</span><span class="n">w</span> <span class="o">&lt;</span><span class="n">window</span><span class="o">**</span><span class="n">size</span><span class="o">&gt;</span> <span class="n">OR</span> <span class="o">-</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">number</span> <span class="n">of</span> <span class="n">windows</span><span class="o">&gt;</span> <span class="p">]</span>
 
-Input Options: 
-        -g &lt;genome&gt;
-                Genome file size (see notes below).
-                Windows will be created for each chromosome in the file.
+<span class="n">Input</span> <span class="n">Options</span><span class="p">:</span> 
+        <span class="o">-</span><span class="n">g</span> <span class="o">&lt;</span><span class="n">genome</span><span class="o">&gt;</span>
+                <span class="n">Genome</span> <span class="n">file</span> <span class="n">size</span> <span class="p">(</span><span class="n">see</span> <span class="n">notes</span> <span class="n">below</span><span class="p">)</span><span class="o">.</span>
+                <span class="n">Windows</span> <span class="n">will</span> <span class="n">be</span> <span class="n">created</span> <span class="k">for</span> <span class="n">each</span> <span class="n">chromosome</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">file</span><span class="o">.</span>
 
-        -b &lt;bed&gt;
-                BED file (with chrom,start,end fields).
-                Windows will be created for each interval in the file.
+        <span class="o">-</span><span class="n">b</span> <span class="o">&lt;</span><span class="n">bed</span><span class="o">&gt;</span>
+                <span class="n">BED</span> <span class="n">file</span> <span class="p">(</span><span class="k">with</span> <span class="n">chrom</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">end</span> <span class="n">fields</span><span class="p">)</span><span class="o">.</span>
+                <span class="n">Windows</span> <span class="n">will</span> <span class="n">be</span> <span class="n">created</span> <span class="k">for</span> <span class="n">each</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">file</span><span class="o">.</span>
 
-Windows Output Options: 
-        -w &lt;window**size&gt;
-                Divide each input interval (either a chromosome or a BED interval)
-                to fixed-sized windows (i.e. same number of nucleotide in each window).
-                Can be combined with -s &lt;step**size&gt;
+<span class="n">Windows</span> <span class="n">Output</span> <span class="n">Options</span><span class="p">:</span> 
+        <span class="o">-</span><span class="n">w</span> <span class="o">&lt;</span><span class="n">window</span><span class="o">**</span><span class="n">size</span><span class="o">&gt;</span>
+                <span class="n">Divide</span> <span class="n">each</span> <span class="nb">input</span> <span class="n">interval</span> <span class="p">(</span><span class="n">either</span> <span class="n">a</span> <span class="n">chromosome</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">BED</span> <span class="n">interval</span><span class="p">)</span>
+                <span class="n">to</span> <span class="n">fixed</span><span class="o">-</span><span class="n">sized</span> <span class="n">windows</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">same</span> <span class="n">number</span> <span class="n">of</span> <span class="n">nucleotide</span> <span class="ow">in</span> <span class="n">each</span> <span class="n">window</span><span class="p">)</span><span class="o">.</span>
+                <span class="n">Can</span> <span class="n">be</span> <span class="n">combined</span> <span class="k">with</span> <span class="o">-</span><span class="n">s</span> <span class="o">&lt;</span><span class="n">step</span><span class="o">**</span><span class="n">size</span><span class="o">&gt;</span>
 
-        -s &lt;step**size&gt;
-                Step size: i.e., how many base pairs to step before
-                creating a new window. Used to create &quot;sliding&quot; windows.
-                - Defaults to window size (non-sliding windows).
+        <span class="o">-</span><span class="n">s</span> <span class="o">&lt;</span><span class="n">step</span><span class="o">**</span><span class="n">size</span><span class="o">&gt;</span>
+                <span class="n">Step</span> <span class="n">size</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="p">,</span> <span class="n">how</span> <span class="n">many</span> <span class="n">base</span> <span class="n">pairs</span> <span class="n">to</span> <span class="n">step</span> <span class="n">before</span>
+                <span class="n">creating</span> <span class="n">a</span> <span class="n">new</span> <span class="n">window</span><span class="o">.</span> <span class="n">Used</span> <span class="n">to</span> <span class="n">create</span> <span class="s2">&quot;sliding&quot;</span> <span class="n">windows</span><span class="o">.</span>
+                <span class="o">-</span> <span class="n">Defaults</span> <span class="n">to</span> <span class="n">window</span> <span class="n">size</span> <span class="p">(</span><span class="n">non</span><span class="o">-</span><span class="n">sliding</span> <span class="n">windows</span><span class="p">)</span><span class="o">.</span>
 
-        -n &lt;number**of**windows&gt;
-                Divide each input interval (either a chromosome or a BED interval)
-                to fixed number of windows (i.e. same number of windows, with
-                varying window sizes).
+        <span class="o">-</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">number</span><span class="o">**</span><span class="n">of</span><span class="o">**</span><span class="n">windows</span><span class="o">&gt;</span>
+                <span class="n">Divide</span> <span class="n">each</span> <span class="nb">input</span> <span class="n">interval</span> <span class="p">(</span><span class="n">either</span> <span class="n">a</span> <span class="n">chromosome</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">BED</span> <span class="n">interval</span><span class="p">)</span>
+                <span class="n">to</span> <span class="n">fixed</span> <span class="n">number</span> <span class="n">of</span> <span class="n">windows</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">same</span> <span class="n">number</span> <span class="n">of</span> <span class="n">windows</span><span class="p">,</span> <span class="k">with</span>
+                <span class="n">varying</span> <span class="n">window</span> <span class="n">sizes</span><span class="p">)</span><span class="o">.</span>
 
-        -reverse
-                 Reverse numbering of windows in the output, i.e. report 
-                 windows in decreasing order
+        <span class="o">-</span><span class="n">reverse</span>
+                 <span class="n">Reverse</span> <span class="n">numbering</span> <span class="n">of</span> <span class="n">windows</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">output</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">report</span> 
+                 <span class="n">windows</span> <span class="ow">in</span> <span class="n">decreasing</span> <span class="n">order</span>
 
-ID Naming Options: 
-        -i src|winnum|srcwinnum
-                The default output is 3 columns: chrom, start, end .
-                With this option, a name column will be added.
-                 &quot;-i src&quot; - use the source interval&#39;s name.
-                 &quot;-i winnum&quot; - use the window number as the ID (e.g. 1,2,3,4...).
-                 &quot;-i srcwinnum&quot; - use the source interval&#39;s name with the window number.
-                See below for usage examples.
+<span class="n">ID</span> <span class="n">Naming</span> <span class="n">Options</span><span class="p">:</span> 
+        <span class="o">-</span><span class="n">i</span> <span class="n">src</span><span class="o">|</span><span class="n">winnum</span><span class="o">|</span><span class="n">srcwinnum</span>
+                <span class="n">The</span> <span class="n">default</span> <span class="n">output</span> <span class="ow">is</span> <span class="mi">3</span> <span class="n">columns</span><span class="p">:</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">.</span>
+                <span class="n">With</span> <span class="n">this</span> <span class="n">option</span><span class="p">,</span> <span class="n">a</span> <span class="n">name</span> <span class="n">column</span> <span class="n">will</span> <span class="n">be</span> <span class="n">added</span><span class="o">.</span>
+                 <span class="s2">&quot;-i src&quot;</span> <span class="o">-</span> <span class="n">use</span> <span class="n">the</span> <span class="n">source</span> <span class="n">interval</span><span class="s1">&#39;s name.</span>
+                 <span class="s2">&quot;-i winnum&quot;</span> <span class="o">-</span> <span class="n">use</span> <span class="n">the</span> <span class="n">window</span> <span class="n">number</span> <span class="k">as</span> <span class="n">the</span> <span class="n">ID</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mf">4.</span><span class="o">..</span><span class="p">)</span><span class="o">.</span>
+                 <span class="s2">&quot;-i srcwinnum&quot;</span> <span class="o">-</span> <span class="n">use</span> <span class="n">the</span> <span class="n">source</span> <span class="n">interval</span><span class="s1">&#39;s name with the window number.</span>
+                <span class="n">See</span> <span class="n">below</span> <span class="k">for</span> <span class="n">usage</span> <span class="n">examples</span><span class="o">.</span>
 
-Notes: 
-        (1) The genome file should tab delimited and structured as follows:
-         &lt;chromName&gt;&lt;TAB&gt;&lt;chromSize&gt;
+<span class="n">Notes</span><span class="p">:</span> 
+        <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">The</span> <span class="n">genome</span> <span class="n">file</span> <span class="n">should</span> <span class="n">tab</span> <span class="n">delimited</span> <span class="ow">and</span> <span class="n">structured</span> <span class="k">as</span> <span class="n">follows</span><span class="p">:</span>
+         <span class="o">&lt;</span><span class="n">chromName</span><span class="o">&gt;&lt;</span><span class="n">TAB</span><span class="o">&gt;&lt;</span><span class="n">chromSize</span><span class="o">&gt;</span>
 
-        For example, Human (hg19):
-        chr1    249250621
-        chr2    243199373
-        ...
-        chr18**gl000207**random 4262
+        <span class="n">For</span> <span class="n">example</span><span class="p">,</span> <span class="n">Human</span> <span class="p">(</span><span class="n">hg19</span><span class="p">):</span>
+        <span class="n">chr1</span>    <span class="mi">249250621</span>
+        <span class="n">chr2</span>    <span class="mi">243199373</span>
+        <span class="o">...</span>
+        <span class="n">chr18</span><span class="o">**</span><span class="n">gl000207</span><span class="o">**</span><span class="n">random</span> <span class="mi">4262</span>
 
-Tip 1. Use samtools faidx to create a genome file from a FASTA: 
-        One can the samtools faidx command to index a FASTA file.
-        The resulting .fai index is suitable as a genome file, 
-        as bedtools will only look at the first two, relevant columns
-        of the .fai file.
+<span class="n">Tip</span> <span class="mf">1.</span> <span class="n">Use</span> <span class="n">samtools</span> <span class="n">faidx</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span> <span class="n">genome</span> <span class="n">file</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">FASTA</span><span class="p">:</span> 
+        <span class="n">One</span> <span class="n">can</span> <span class="n">the</span> <span class="n">samtools</span> <span class="n">faidx</span> <span class="n">command</span> <span class="n">to</span> <span class="n">index</span> <span class="n">a</span> <span class="n">FASTA</span> <span class="n">file</span><span class="o">.</span>
+        <span class="n">The</span> <span class="n">resulting</span> <span class="o">.</span><span class="n">fai</span> <span class="n">index</span> <span class="ow">is</span> <span class="n">suitable</span> <span class="k">as</span> <span class="n">a</span> <span class="n">genome</span> <span class="n">file</span><span class="p">,</span> 
+        <span class="k">as</span> <span class="n">bedtools</span> <span class="n">will</span> <span class="n">only</span> <span class="n">look</span> <span class="n">at</span> <span class="n">the</span> <span class="n">first</span> <span class="n">two</span><span class="p">,</span> <span class="n">relevant</span> <span class="n">columns</span>
+        <span class="n">of</span> <span class="n">the</span> <span class="o">.</span><span class="n">fai</span> <span class="n">file</span><span class="o">.</span>
 
-        For example:
-        samtools faidx GRCh38.fa
-        bedtools makewindows -w 100 -g GRCh38.fa.fai
+        <span class="n">For</span> <span class="n">example</span><span class="p">:</span>
+        <span class="n">samtools</span> <span class="n">faidx</span> <span class="n">GRCh38</span><span class="o">.</span><span class="n">fa</span>
+        <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">w</span> <span class="mi">100</span> <span class="o">-</span><span class="n">g</span> <span class="n">GRCh38</span><span class="o">.</span><span class="n">fa</span><span class="o">.</span><span class="n">fai</span>
 
-Tip 2. Use UCSC Table Browser to create a genome file: 
-        One can use the UCSC Genome Browser&#39;s MySQL database to extract
-        chromosome sizes. For example, H. sapiens:
+<span class="n">Tip</span> <span class="mf">2.</span> <span class="n">Use</span> <span class="n">UCSC</span> <span class="n">Table</span> <span class="n">Browser</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span> <span class="n">genome</span> <span class="n">file</span><span class="p">:</span> 
+        <span class="n">One</span> <span class="n">can</span> <span class="n">use</span> <span class="n">the</span> <span class="n">UCSC</span> <span class="n">Genome</span> <span class="n">Browser</span><span class="s1">&#39;s MySQL database to extract</span>
+        <span class="n">chromosome</span> <span class="n">sizes</span><span class="o">.</span> <span class="n">For</span> <span class="n">example</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span> <span class="n">sapiens</span><span class="p">:</span>
 
-        mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -e \
-        &quot;select chrom, size from hg19.chromInfo&quot;  &gt; hg19.genome
+        <span class="n">mysql</span> <span class="o">--</span><span class="n">user</span><span class="o">=</span><span class="n">genome</span> <span class="o">--</span><span class="n">host</span><span class="o">=</span><span class="n">genome</span><span class="o">-</span><span class="n">mysql</span><span class="o">.</span><span class="n">cse</span><span class="o">.</span><span class="n">ucsc</span><span class="o">.</span><span class="n">edu</span> <span class="o">-</span><span class="n">A</span> <span class="o">-</span><span class="n">e</span> \
+        <span class="s2">&quot;select chrom, size from hg19.chromInfo&quot;</span>  <span class="o">&gt;</span> <span class="n">hg19</span><span class="o">.</span><span class="n">genome</span>
 
-Examples: 
- # Divide the human genome into windows of 1MB:
- $ bedtools makewindows -g hg19.txt -w 1000000
- chr1 0 1000000
- chr1 1000000 2000000
- chr1 2000000 3000000
- chr1 3000000 4000000
- chr1 4000000 5000000
- ...
+<span class="n">Examples</span><span class="p">:</span> 
+ <span class="c1"># Divide the human genome into windows of 1MB:</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">g</span> <span class="n">hg19</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1000000</span>
+ <span class="n">chr1</span> <span class="mi">0</span> <span class="mi">1000000</span>
+ <span class="n">chr1</span> <span class="mi">1000000</span> <span class="mi">2000000</span>
+ <span class="n">chr1</span> <span class="mi">2000000</span> <span class="mi">3000000</span>
+ <span class="n">chr1</span> <span class="mi">3000000</span> <span class="mi">4000000</span>
+ <span class="n">chr1</span> <span class="mi">4000000</span> <span class="mi">5000000</span>
+ <span class="o">...</span>
 
- # Divide the human genome into sliding (=overlapping) windows of 1MB, with 500KB overlap:
- $ bedtools makewindows -g hg19.txt -w 1000000 -s 500000
- chr1 0 1000000
- chr1 500000 1500000
- chr1 1000000 2000000
- chr1 1500000 2500000
- chr1 2000000 3000000
- ...
+ <span class="c1"># Divide the human genome into sliding (=overlapping) windows of 1MB, with 500KB overlap:</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">g</span> <span class="n">hg19</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">w</span> <span class="mi">1000000</span> <span class="o">-</span><span class="n">s</span> <span class="mi">500000</span>
+ <span class="n">chr1</span> <span class="mi">0</span> <span class="mi">1000000</span>
+ <span class="n">chr1</span> <span class="mi">500000</span> <span class="mi">1500000</span>
+ <span class="n">chr1</span> <span class="mi">1000000</span> <span class="mi">2000000</span>
+ <span class="n">chr1</span> <span class="mi">1500000</span> <span class="mi">2500000</span>
+ <span class="n">chr1</span> <span class="mi">2000000</span> <span class="mi">3000000</span>
+ <span class="o">...</span>
 
- # Divide each chromosome in human genome to 1000 windows of equal size:
- $ bedtools makewindows -g hg19.txt -n 1000
- chr1 0 249251
- chr1 249251 498502
- chr1 498502 747753
- chr1 747753 997004
- chr1 997004 1246255
- ...
+ <span class="c1"># Divide each chromosome in human genome to 1000 windows of equal size:</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">g</span> <span class="n">hg19</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">n</span> <span class="mi">1000</span>
+ <span class="n">chr1</span> <span class="mi">0</span> <span class="mi">249251</span>
+ <span class="n">chr1</span> <span class="mi">249251</span> <span class="mi">498502</span>
+ <span class="n">chr1</span> <span class="mi">498502</span> <span class="mi">747753</span>
+ <span class="n">chr1</span> <span class="mi">747753</span> <span class="mi">997004</span>
+ <span class="n">chr1</span> <span class="mi">997004</span> <span class="mi">1246255</span>
+ <span class="o">...</span>
 
- # Divide each interval in the given BED file into 10 equal-sized windows:
- $ cat input.bed
- chr5 60000 70000
- chr5 73000 90000
- chr5 100000 101000
- $ bedtools makewindows -b input.bed -n 10
- chr5 60000 61000
- chr5 61000 62000
- chr5 62000 63000
- chr5 63000 64000
- chr5 64000 65000
- ...
+ <span class="c1"># Divide each interval in the given BED file into 10 equal-sized windows:</span>
+ <span class="err">$</span> <span class="n">cat</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span>
+ <span class="n">chr5</span> <span class="mi">60000</span> <span class="mi">70000</span>
+ <span class="n">chr5</span> <span class="mi">73000</span> <span class="mi">90000</span>
+ <span class="n">chr5</span> <span class="mi">100000</span> <span class="mi">101000</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">b</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span> <span class="o">-</span><span class="n">n</span> <span class="mi">10</span>
+ <span class="n">chr5</span> <span class="mi">60000</span> <span class="mi">61000</span>
+ <span class="n">chr5</span> <span class="mi">61000</span> <span class="mi">62000</span>
+ <span class="n">chr5</span> <span class="mi">62000</span> <span class="mi">63000</span>
+ <span class="n">chr5</span> <span class="mi">63000</span> <span class="mi">64000</span>
+ <span class="n">chr5</span> <span class="mi">64000</span> <span class="mi">65000</span>
+ <span class="o">...</span>
 
- # Add a name column, based on the window number: 
- $ cat input.bed
- chr5  60000  70000 AAA
- chr5  73000  90000 BBB
- chr5 100000 101000 CCC
- $ bedtools makewindows -b input.bed -n 3 -i winnum
- chr5        60000   63334   1
- chr5        63334   66668   2
- chr5        66668   70000   3
- chr5        73000   78667   1
- chr5        78667   84334   2
- chr5        84334   90000   3
- chr5        100000  100334  1
- chr5        100334  100668  2
- chr5        100668  101000  3
- ...
+ <span class="c1"># Add a name column, based on the window number: </span>
+ <span class="err">$</span> <span class="n">cat</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span>
+ <span class="n">chr5</span>  <span class="mi">60000</span>  <span class="mi">70000</span> <span class="n">AAA</span>
+ <span class="n">chr5</span>  <span class="mi">73000</span>  <span class="mi">90000</span> <span class="n">BBB</span>
+ <span class="n">chr5</span> <span class="mi">100000</span> <span class="mi">101000</span> <span class="n">CCC</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">b</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span> <span class="o">-</span><span class="n">n</span> <span class="mi">3</span> <span class="o">-</span><span class="n">i</span> <span class="n">winnum</span>
+ <span class="n">chr5</span>        <span class="mi">60000</span>   <span class="mi">63334</span>   <span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">63334</span>   <span class="mi">66668</span>   <span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">66668</span>   <span class="mi">70000</span>   <span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">73000</span>   <span class="mi">78667</span>   <span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">78667</span>   <span class="mi">84334</span>   <span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">84334</span>   <span class="mi">90000</span>   <span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">100000</span>  <span class="mi">100334</span>  <span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">100334</span>  <span class="mi">100668</span>  <span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">100668</span>  <span class="mi">101000</span>  <span class="mi">3</span>
+ <span class="o">...</span>
 
- # Reverse window numbers: 
- $ cat input.bed
- chr5  60000  70000 AAA
- chr5  73000  90000 BBB
- chr5 100000 101000 CCC
- $ bedtools makewindows -b input.bed -n 3 -i winnum -reverse
- chr5        60000   63334   3
- chr5        63334   66668   2
- chr5        66668   70000   1
- chr5        73000   78667   3
- chr5        78667   84334   2
- chr5        84334   90000   1
- chr5        100000  100334  3
- chr5        100334  100668  2
- chr5        100668  101000  1
- ...
+ <span class="c1"># Reverse window numbers: </span>
+ <span class="err">$</span> <span class="n">cat</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span>
+ <span class="n">chr5</span>  <span class="mi">60000</span>  <span class="mi">70000</span> <span class="n">AAA</span>
+ <span class="n">chr5</span>  <span class="mi">73000</span>  <span class="mi">90000</span> <span class="n">BBB</span>
+ <span class="n">chr5</span> <span class="mi">100000</span> <span class="mi">101000</span> <span class="n">CCC</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">b</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span> <span class="o">-</span><span class="n">n</span> <span class="mi">3</span> <span class="o">-</span><span class="n">i</span> <span class="n">winnum</span> <span class="o">-</span><span class="n">reverse</span>
+ <span class="n">chr5</span>        <span class="mi">60000</span>   <span class="mi">63334</span>   <span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">63334</span>   <span class="mi">66668</span>   <span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">66668</span>   <span class="mi">70000</span>   <span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">73000</span>   <span class="mi">78667</span>   <span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">78667</span>   <span class="mi">84334</span>   <span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">84334</span>   <span class="mi">90000</span>   <span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">100000</span>  <span class="mi">100334</span>  <span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">100334</span>  <span class="mi">100668</span>  <span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">100668</span>  <span class="mi">101000</span>  <span class="mi">1</span>
+ <span class="o">...</span>
 
- # Add a name column, based on the source ID + window number: 
- $ cat input.bed
- chr5  60000  70000 AAA
- chr5  73000  90000 BBB
- chr5 100000 101000 CCC
- $ bedtools makewindows -b input.bed -n 3 -i srcwinnum
- chr5        60000   63334   AAA**1
- chr5        63334   66668   AAA**2
- chr5        66668   70000   AAA**3
- chr5        73000   78667   BBB**1
- chr5        78667   84334   BBB**2
- chr5        84334   90000   BBB**3
- chr5        100000  100334  CCC**1
- chr5        100334  100668  CCC**2
- chr5        100668  101000  CCC**3
- ...
+ <span class="c1"># Add a name column, based on the source ID + window number: </span>
+ <span class="err">$</span> <span class="n">cat</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span>
+ <span class="n">chr5</span>  <span class="mi">60000</span>  <span class="mi">70000</span> <span class="n">AAA</span>
+ <span class="n">chr5</span>  <span class="mi">73000</span>  <span class="mi">90000</span> <span class="n">BBB</span>
+ <span class="n">chr5</span> <span class="mi">100000</span> <span class="mi">101000</span> <span class="n">CCC</span>
+ <span class="err">$</span> <span class="n">bedtools</span> <span class="n">makewindows</span> <span class="o">-</span><span class="n">b</span> <span class="nb">input</span><span class="o">.</span><span class="n">bed</span> <span class="o">-</span><span class="n">n</span> <span class="mi">3</span> <span class="o">-</span><span class="n">i</span> <span class="n">srcwinnum</span>
+ <span class="n">chr5</span>        <span class="mi">60000</span>   <span class="mi">63334</span>   <span class="n">AAA</span><span class="o">**</span><span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">63334</span>   <span class="mi">66668</span>   <span class="n">AAA</span><span class="o">**</span><span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">66668</span>   <span class="mi">70000</span>   <span class="n">AAA</span><span class="o">**</span><span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">73000</span>   <span class="mi">78667</span>   <span class="n">BBB</span><span class="o">**</span><span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">78667</span>   <span class="mi">84334</span>   <span class="n">BBB</span><span class="o">**</span><span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">84334</span>   <span class="mi">90000</span>   <span class="n">BBB</span><span class="o">**</span><span class="mi">3</span>
+ <span class="n">chr5</span>        <span class="mi">100000</span>  <span class="mi">100334</span>  <span class="n">CCC</span><span class="o">**</span><span class="mi">1</span>
+ <span class="n">chr5</span>        <span class="mi">100334</span>  <span class="mi">100668</span>  <span class="n">CCC</span><span class="o">**</span><span class="mi">2</span>
+ <span class="n">chr5</span>        <span class="mi">100668</span>  <span class="mi">101000</span>  <span class="n">CCC</span><span class="o">**</span><span class="mi">3</span>
+ <span class="o">...</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -303,7 +304,7 @@ Examples:
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.igv.html" title="pybedtools.bedtool.BedTool.igv"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.window_maker</a></li> 
       </ul>
@@ -311,11 +312,11 @@ Examples:
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="../_sources/autodocs/pybedtools.bedtool.BedTool.window_maker.rst.txt"

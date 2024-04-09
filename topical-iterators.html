@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using BedTool objects as iterators/generators &#8212; pybedtools 0.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=039e1c02" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bfb94e3c"></script>
+    <title>Using BedTool objects as iterators/generators &#8212; pybedtools 0.10.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Low-level operations" href="topical-low-level-ops.html" />
@@ -18,8 +18,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -32,7 +33,7 @@
           <div class="body" role="main">
             
   <section id="using-bedtool-objects-as-iterators-generators">
-<span id="bedtools-as-iterators"></span><h1>Using BedTool objects as iterators/generators<a class="headerlink" href="#using-bedtool-objects-as-iterators-generators" title="Permalink to this heading">¶</a></h1>
+<span id="bedtools-as-iterators"></span><h1>Using BedTool objects as iterators/generators<a class="headerlink" href="#using-bedtool-objects-as-iterators-generators" title="Link to this heading">¶</a></h1>
 <p>Typically, <code class="xref py py-mod docutils literal notranslate"><span class="pre">BedTool</span></code> objects are used somewhat like handles to individual
 files on disk that contain BED lines.  To save disk space, <code class="xref py py-mod docutils literal notranslate"><span class="pre">BedTool</span></code>
 objects also have the ability to “stream”, much like piping in Unix.  That
@@ -120,7 +121,7 @@ work and it requires an additional dependency.</p>
 </div></blockquote>
 </div>
 <section id="creating-a-bedtool-from-an-iterable">
-<h2>Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> from an iterable<a class="headerlink" href="#creating-a-bedtool-from-an-iterable" title="Permalink to this heading">¶</a></h2>
+<h2>Creating a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> from an iterable<a class="headerlink" href="#creating-a-bedtool-from-an-iterable" title="Link to this heading">¶</a></h2>
 <p>You can create a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> on the fly from a generator or iterator – in
 fact, this is what the <code class="xref py py-meth docutils literal notranslate"><span class="pre">BedTool.filter()</span></code> method does for you:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
@@ -151,7 +152,7 @@ not defined:</p>
 </div>
 </section>
 <section id="indexing-a-bedtool">
-<h2>Indexing a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#indexing-a-bedtool" title="Permalink to this heading">¶</a></h2>
+<h2>Indexing a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code><a class="headerlink" href="#indexing-a-bedtool" title="Link to this heading">¶</a></h2>
 <p>In some cases it may be useful to index into a <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> object.  We can
 use standard list slice syntax, and get an iterable of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code>
 objects as a result.  This iterable can in turn be used to create a new <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instance:</p>
@@ -269,7 +270,7 @@ objects as a result.  This iterable can in turn be used to create a new <code cl
         <li class="right" >
           <a href="topical-saving.html" title="Saving BedTool results"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Using BedTool objects as iterators/generators</a></li> 
       </ul>
@@ -277,11 +278,11 @@ objects as a result.  This iterable can in turn be used to create a new <code cl
 
 
     <div class="footer">
-      &copy;2010-2015, Ryan Dale.
+      &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
       <a href="_sources/topical-iterators.rst.txt"
