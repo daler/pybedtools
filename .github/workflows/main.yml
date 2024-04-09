@@ -106,31 +106,29 @@ jobs:
       # Build docs and commit to gh-pages branch. Note that no push happens
       # unless we're on the master branch
       run: |
-        if [ ${{ matrix.python-version }} != "3.11" ]; then
-          eval "$(conda shell.bash hook)"
-          conda activate ./test-env
+        eval "$(conda shell.bash hook)"
+        conda activate ./test-env
 
-          # Move to extracted tarball dir, see above notes
-          cd /tmp/pybedtools-uncompressed/pybedtools-*
-          (cd docs && make html)
+        # Move to extracted tarball dir, see above notes
+        cd /tmp/pybedtools-uncompressed/pybedtools-*
+        (cd docs && make html)
 
-          git clone \
-            --single-branch \
-            --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
-            /tmp/docs
+        git clone \
+          --single-branch \
+          --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
+          /tmp/docs
 
-          rm -rf /tmp/docs/*
-          cp -r docs/build/html/* /tmp/docs
-          touch /tmp/docs/.nojekyll
-          cd /tmp/docs
-          git add .
-          if git diff --cached --quiet; then
-            echo "no changes, nothing to commit"
-          else
-            git commit -m 'update docs'
-          fi
-          cd $WORKDIR
+        rm -rf /tmp/docs/*
+        cp -r docs/build/html/* /tmp/docs
+        touch /tmp/docs/.nojekyll
+        cd /tmp/docs
+        git add .
+        if git diff --cached --quiet; then
+          echo "no changes, nothing to commit"
+        else
+          git commit -m 'update docs'
         fi
+        cd $WORKDIR
 
 
     - name: docs artifact
@@ -143,7 +141,7 @@ jobs:
 
     - name: push docs to gh-pages branch
       # Push docs to gh-pages if this test is running on master branch
-      if: ${{ (github.ref == 'refs/heads/master') && (matrix.python-version == 3.8) }}
+      if: ${{ (github.ref == 'refs/heads/master') && (matrix.python-version == 3.10) }}
       run: |
         cd /tmp/docs
         git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" gh-pages
