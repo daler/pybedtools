@@ -76,8 +76,8 @@ import distutils.log
 
 
 MAJ = 0
-MIN = 9
-REV = 1
+MIN = 10
+REV = 0
 VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
 
 
