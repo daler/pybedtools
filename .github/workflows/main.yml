@@ -66,14 +66,16 @@ jobs:
         # Only install non-python dependencies (like bedtools & ucsc tools);
         # let pip take care of the rest.
         grep -Ev "genomepy|matplotlib" optional-requirements.txt > optional-requirements-conda.txt
+        grep -E "genomepy|matplotlib" optional-requirements.txt > optional-requirements-python.txt
         mamba create -y -p ./test-env \
           --channel conda-forge \
           --channel bioconda \
           bedtools \
           python=${{ matrix.python-version }} \
           --file optional-requirements-conda.txt
+
         conda activate ./test-env
-        pip install -r test-requirements.txt
+        pip install -r test-requirements.txt -r optional-requirements-python.txt
 
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
