@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 from textwrap import dedent
-import six
+from pathlib import Path
 import pytest
 import psutil
 
@@ -255,12 +255,6 @@ def test_issue_147():
 def test_issue_154():
     regions = [("chr2", int(1), int(2), "tag")]
     pybedtools.BedTool(regions)
-
-    # ensure longs are OK as start/stop. In Python3 everything is long, so only
-    # try the following on PY2
-    if six.PY2:
-        regions = [("chr2", long(1), long(2), "tag")]
-        pybedtools.BedTool(regions)
 
 
 def test_issue_151():
@@ -875,7 +869,7 @@ def test_issue_355():
     assert line.split('\t')[1] == '14'
     assert vcf[0].start == 13
 
-    
+
 def test_genome_dict_sort():
     genome = {
         "chr1": (0, 5000),
@@ -919,3 +913,10 @@ def test_issue_390():
     # Fix was to include np.int64 as an integer type in cbedtools.pyx.
     import numpy as np
     pybedtools.BedTool([['chr1', np.int64(1), np.int64(2)]])
+
+def test_issue_405():
+    a = Path(pybedtools.example_filename('a.bed'))
+    b = Path(pybedtools.example_filename('b.bed'))
+    a = pybedtools.BedTool(a)
+    a.cat(b)
+

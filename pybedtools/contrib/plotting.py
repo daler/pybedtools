@@ -5,7 +5,6 @@ from matplotlib import collections
 from matplotlib import pyplot as plt
 import numpy as np
 import pybedtools
-import six
 
 
 class Track(collections.PolyCollection):
@@ -85,7 +84,7 @@ class Track(collections.PolyCollection):
         >>> limits = ax.axis('tight')
         """
         if isinstance(features, pybedtools.BedTool) and isinstance(
-            features.fn, six.string_types
+            features.fn, str
         ):
             self.features = features
         else:
@@ -211,10 +210,10 @@ class BinaryHeatmap(object):
         _bts = []
         for bt in bts:
             if isinstance(bt, pybedtools.BedTool):
-                if not isinstance(bt.fn, six.string_types):
+                if not isinstance(bt.fn, str):
                     bt = bt.saveas()
                 _bts.append(bt.fn)
-            elif isinstance(bt, six.string_types):
+            elif isinstance(bt, str):
                 _bts.append(bt)
 
         # Do the multi-intersection.
@@ -476,7 +475,7 @@ class BedToolsDemo(TrackCollection):
         config = [list(i) for i in config]
         if data_path:
             for conf in config:
-                if not isinstance(conf[0], six.string_types):
+                if not isinstance(conf[0], str):
                     raise ValueError(
                         "data_path was specified, so you need "
                         "filenames in the config"

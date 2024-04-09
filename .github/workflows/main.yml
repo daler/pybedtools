@@ -13,10 +13,10 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
 
     - name: git setup
@@ -63,33 +63,19 @@ jobs:
         eval "$(conda shell.bash hook)"
         conda install mamba python=${{ matrix.python-version }} -y --channel conda-forge
 
-        if [ ${{ matrix.python-version }} != "3.11" ]; then
-          mamba create -y -p ./test-env \
-            --channel conda-forge \
-            --channel bioconda python=${{ matrix.python-version }} \
-            --file requirements.txt \
-            --file test-requirements.txt \
-            --file optional-requirements.txt
-          conda activate ./test-env
-        else
-          # Only install bedtools; let pip take care of the rest for 3.11 until
-          # bioconda catches up.
-          #
-          # We still install the test requirements though, and the optional
-          # requirements except for genomepy which is in bioconda.
-          grep -v "genomepy" optional-requirements.txt > optional-requirements-3.11.txt
-          mamba create -y -p ./test-env \
-            --channel conda-forge \
-            --channel bioconda \
-            bedtools \
-            python=${{ matrix.python-version }} \
-            --file test-requirements.txt \
-            --file optional-requirements-3.11.txt
-          conda activate ./test-env
-          pip install genomepy
+        # Only install non-python dependencies (like bedtools & ucsc tools);
+        # let pip take care of the rest.
+        grep -Ev "genomepy|matplotlib" optional-requirements.txt > optional-requirements-conda.txt
+        grep -E "genomepy|matplotlib" optional-requirements.txt > optional-requirements-python.txt
+        mamba create -y -p ./test-env \
+          --channel conda-forge \
+          --channel bioconda \
+          bedtools \
+          python=${{ matrix.python-version }} \
+          --file optional-requirements-conda.txt
 
-        fi
         conda activate ./test-env
+        pip install -r test-requirements.txt -r optional-requirements-python.txt
 
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
@@ -116,6 +102,7 @@ jobs:
 
 
     - name: build-docs
+      if: ${{ (matrix.python-version == 3.10) }}
       # Build docs and commit to gh-pages branch. Note that no push happens
       # unless we're on the master branch
       run: |
@@ -148,7 +135,7 @@ jobs:
 
     - name: docs artifact
       # Upload built docs as an artifact for inspection, even on PRs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: docs
         path: /tmp/docs

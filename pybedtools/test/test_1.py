@@ -1,32 +1,24 @@
 import pybedtools
-import gzip
 import os, difflib, sys
-from textwrap import dedent
-from pybedtools.helpers import BEDToolsError
 from pybedtools import featurefuncs
-import six
-import pysam
-from six.moves import socketserver
-from six.moves import BaseHTTPServer
 import pytest
 
 import threading
 import warnings
+from .tfuncs import test_tempdir
 
-testdir = os.path.dirname(__file__)
-tempdir = os.path.join(os.path.abspath(testdir), "tmp")
 unwriteable = "unwriteable"
 
 
 def setup_module():
-    if not os.path.exists(tempdir):
-        os.system("mkdir -p %s" % tempdir)
-    pybedtools.set_tempdir(tempdir)
+    if not os.path.exists(test_tempdir):
+        os.system("mkdir -p %s" % test_tempdir)
+    pybedtools.set_tempdir(test_tempdir)
 
 
 def teardown_module():
-    if os.path.exists(tempdir):
-        os.system("rm -r %s" % tempdir)
+    if os.path.exists(test_tempdir):
+        os.system("rm -r %s" % test_tempdir)
     pybedtools.cleanup()
 
 
@@ -75,7 +67,7 @@ def cleanup_unwriteable():
     """
     if os.path.exists(unwriteable):
         os.system("rm -rf %s" % unwriteable)
-    pybedtools.set_tempdir(tempdir)
+    pybedtools.set_tempdir(test_tempdir)
 
 
 def test_interval_index():
@@ -325,7 +317,7 @@ def test_malformed():
     a_i = iter(a)
 
     # first feature is OK
-    print(six.advance_iterator(a_i))
+    print(next(a_i))
 
     # but next one is not and should raise exception
     with pytest.raises(pybedtools.MalformedBedLineError):
@@ -511,7 +503,7 @@ def test_sequence():
     For example, the first 100 bases of a chromosome are defined as
     chromStart=0, chromEnd=100, and span the bases numbered 0-99. """
 
-    fi = os.path.join(testdir, "test.fasta")
+    fi = os.path.join(test_tempdir, "test.fasta")
 
     s = """
     chrX 9  16 . . +
@@ -709,8 +701,8 @@ def test_bedtool_creation():
     a = pybedtools.example_bedtool("a.bed")
     b = pybedtools.BedTool(a)
     assert b.fn == a.fn
-    e = FileNotFoundError if six.PY3 else ValueError
-    with pytest.raises(e):
+
+    with pytest.raises(FileNotFoundError):
         pybedtools.BedTool("nonexistend.bed")
 
     # note that *s* has both tabs and spaces....

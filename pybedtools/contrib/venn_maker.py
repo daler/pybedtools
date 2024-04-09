@@ -7,7 +7,6 @@ R script that can be edited and tweaked by the user before being run in R.
 import os
 import string
 import pybedtools
-import six
 from pybedtools import helpers
 import subprocess
 from collections import OrderedDict

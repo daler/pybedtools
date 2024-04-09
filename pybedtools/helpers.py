@@ -3,21 +3,19 @@ import os
 import gzip
 import tempfile
 import subprocess
-import random
-import string
 import glob
 import struct
 import atexit
-import six
-import pysam
 import re
-from six.moves import urllib
+import urllib
+import urllib.error
+import urllib.request
 
 try:  # Use genomepy to determine chrom sizes if it is installed
     import genomepy
 except ImportError:
     pass
-from . import cbedtools
+
 from . import settings
 from . import filenames
 from . import genome_registry
@@ -266,8 +264,6 @@ def set_tempdir(tempdir):
     """
     if not os.path.exists(tempdir):
         errstr = "The tempdir you specified, %s, does not exist" % tempdir
-        if six.PY2:
-            raise ValueError(errstr)
         raise FileNotFoundError(errstr)
     tempfile.tempdir = tempdir
 
@@ -540,7 +536,7 @@ def close_or_delete(*args):
     streaming or file-based version.
     """
     for x in args:
-        if isinstance(x.fn, six.string_types):
+        if isinstance(x.fn, str):
             os.unlink(x.fn)
         elif hasattr(x.fn, "close"):
             x.fn.close()
@@ -579,7 +575,7 @@ def string_to_interval(s):
 
     If it's already an interval, then return it as-is.
     """
-    if isinstance(s, six.string_types):
+    if isinstance(s, str):
         m = coord_re.search(s)
         if m.group("strand"):
             return create_interval_from_list(
@@ -862,7 +858,7 @@ def chromsizes(genome):
     """
     Looks for a *genome* already included in the genome registry; if not found
     it first tries to look it up via genomepy. If genomepy is not installed, or
-    if this lookup fails then it looks it up on UCSC.  Returns the dictionary of 
+    if this lookup fails then it looks it up on UCSC.  Returns the dictionary of
     chromsize tuples where each tuple has (start,stop).
 
     Chromsizes are described as (start, stop) tuples to allow randomization

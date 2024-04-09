@@ -10,10 +10,10 @@ import string
 import pprint
 from itertools import islice
 import multiprocessing
-import six
 import gzip
 import pysam
 from warnings import warn
+from pathlib import Path
 
 from .helpers import (
     get_tempdir,
@@ -53,7 +53,7 @@ def _jaccard_output_to_dict(s, **kwargs):
     jaccard method doesn't return an interval file, rather, it returns a short
     summary of results.  Here, we simply parse it into a dict for convenience.
     """
-    if isinstance(s, six.string_types):
+    if isinstance(s, str):
         _s = open(s).read()
     elif hasattr(s, "next") or hasattr(s, "__next__"):
         _s = "".join([i for i in s])
@@ -78,11 +78,11 @@ def _reldist_output_handler(s, **kwargs):
     """
     if "detail" in kwargs:
         return BedTool(s)
-    if isinstance(s, six.string_types):
+    if isinstance(s, str):
         iterable = open(s)
     if hasattr(s, "next"):
         iterable = s
-    header = six.advance_iterator(iterable).split()
+    header = next(iterable).split()
     results = {}
     for h in header:
         results[h] = []
@@ -370,7 +370,7 @@ def _wraps(
             # keep the nonbam arg passed into the original _wraps() decorator
             # in scope.
             if nonbam is not None and nonbam != "ALL":
-                if isinstance(nonbam, six.string_types):
+                if isinstance(nonbam, str):
                     _nonbam = [nonbam]
                 else:
                     _nonbam = nonbam
@@ -503,14 +503,12 @@ class BedTool(object):
                 fn = fn.fn
 
             # from_string=False, so assume it's a filename
-            elif isinstance(fn, six.string_types):
+            elif isinstance(fn, str):
                 if remote:
                     self._isbam = True
                 else:
                     if not os.path.exists(fn):
                         msg = 'File "%s" does not exist' % fn
-                        if six.PY2:
-                            raise ValueError(msg)
                         raise FileNotFoundError(msg)
                     self._isbam = isBAM(fn)
 
@@ -618,7 +616,7 @@ class BedTool(object):
         default_kwargs.update(kwargs)
         df.to_csv(outfile, **default_kwargs)
 
-        if isinstance(outfile, six.string_types):
+        if isinstance(outfile, str):
             fn = outfile
         else:
             try:
@@ -670,7 +668,7 @@ class BedTool(object):
         if isinstance(genome, dict):
             chromdict = genome
         else:
-            assert isinstance(genome, six.string_types)
+            assert isinstance(genome, str)
             chromdict = helpers.chromsizes(genome)
 
         tmp = self._tmp()
@@ -792,7 +790,7 @@ class BedTool(object):
         pointing to a BGZIPed file with a .tbi file in the same dir.
         """
         if (
-            isinstance(self.fn, six.string_types)
+            isinstance(self.fn, str)
             and isBGZIP(self.fn)
             and os.path.exists(self.fn + ".tbi")
         ):
@@ -820,7 +818,7 @@ class BedTool(object):
             force_arg = ""
 
         # It may already be BGZIPed...
-        if isinstance(self.fn, six.string_types) and not force:
+        if isinstance(self.fn, str) and not force:
             if isBGZIP(self.fn):
                 return self.fn
 
@@ -1104,7 +1102,7 @@ class BedTool(object):
         >>> print(a.file_type)
         bed
         """
-        if not isinstance(self.fn, six.string_types):
+        if not isinstance(self.fn, str):
             raise ValueError(
                 "Checking file_type not supported for "
                 "non-file BedTools. Use .saveas() to "
@@ -1114,7 +1112,7 @@ class BedTool(object):
             self._file_type = "bam"
         else:
             try:
-                self._file_type = six.advance_iterator(iter(self)).file_type
+                self._file_type = next(iter(self)).file_type
             except StopIteration:
                 self._file_type = "empty"
 
@@ -1177,7 +1175,7 @@ class BedTool(object):
             return BAM(self.fn)
 
         # Plain ol' filename
-        if isinstance(self.fn, six.string_types):
+        if isinstance(self.fn, str):
             if not os.path.exists(self.fn):
                 raise BedToolsFileError("{0} does not exist".format(self.fn))
             if isGZIP(self.fn):
@@ -1192,13 +1190,13 @@ class BedTool(object):
 
     @property
     def intervals(self):
-        if isinstance(self.fn, six.string_types):
+        if isinstance(self.fn, str):
             return IntervalFile(self.fn)
         else:
             raise ValueError("Please convert to a file-based BedTool using saveas")
 
     def __repr__(self):
-        if isinstance(self.fn, six.string_types):
+        if isinstance(self.fn, str):
             if os.path.exists(self.fn) or self.remote:
                 return "<BedTool(%s)>" % self.fn
             else:
@@ -1224,11 +1222,11 @@ class BedTool(object):
         return self.count()
 
     def __eq__(self, other):
-        if isinstance(other, six.string_types):
+        if isinstance(other, str):
             other_str = other
         elif isinstance(other, BedTool):
-            if not isinstance(self.fn, six.string_types) or not isinstance(
-                other.fn, six.string_types
+            if not isinstance(self.fn, str) or not isinstance(
+                other.fn, str
             ):
                 raise NotImplementedError(
                     "Testing equality only supported for"
@@ -1290,7 +1288,7 @@ class BedTool(object):
         <BLANKLINE>
 
         """
-        if not isinstance(self.fn, six.string_types):
+        if not isinstance(self.fn, str):
             raise NotImplementedError(
                 "head() not supported for non file-based BedTools"
             )
@@ -1329,7 +1327,7 @@ class BedTool(object):
             (0, 249250621)
 
         """
-        if isinstance(chromsizes, six.string_types):
+        if isinstance(chromsizes, str):
             self.chromsizes = pybedtools.chromsizes(chromsizes)
         elif isinstance(chromsizes, dict):
             self.chromsizes = chromsizes
@@ -1393,7 +1391,7 @@ class BedTool(object):
 
         # If we're just working with filename-based BedTool objects, just copy
         # the files directly
-        if isinstance(iterable, BedTool) and isinstance(iterable.fn, six.string_types):
+        if isinstance(iterable, BedTool) and isinstance(iterable.fn, str):
             with out_open_func(fn, "wt") as out_:
                 if sys.version_info > (3,0):
                     in_ = in_open_func(iterable.fn, "rt", errors="ignore")
@@ -1464,7 +1462,7 @@ class BedTool(object):
                 instream1 = instream1.fn
 
             # Filename? No pipe, just provide the file
-            if isinstance(instream1, six.string_types):
+            if isinstance(instream1, str):
                 kwargs[inarg1] = instream1
                 stdin = None
 
@@ -1494,7 +1492,7 @@ class BedTool(object):
                 instream2 = instream2.fn
 
             # Filename
-            if isinstance(instream2, six.string_types):
+            if isinstance(instream2, str):
                 kwargs[inarg2] = instream2
 
             # If it's a list of strings, then we need to figure out if it's
@@ -1511,7 +1509,7 @@ class BedTool(object):
             # left to the user.
             #
             elif isinstance(instream2, (list, tuple)) and isinstance(
-                instream2[0], six.string_types
+                instream2[0], str
             ):
                 try:
                     _ = create_interval_from_list(instream2[0].split("\t"))
@@ -1627,8 +1625,6 @@ class BedTool(object):
 
         if not os.path.exists(kwargs["g"]):
             msg = 'Genome file "%s" does not exist' % (kwargs["g"])
-            if six.PY2:
-                raise ValueError(msg)
             raise FileNotFoundError(msg)
 
         return kwargs
@@ -1650,7 +1646,7 @@ class BedTool(object):
 
         # If it's a file-based BedTool -- which is likely, if we're trying to
         # remove invalid features -- then we need to parse it line by line.
-        if isinstance(self.fn, six.string_types):
+        if isinstance(self.fn, str):
             i = IntervalIterator(open(self.fn, "r"))
         else:
             tmp = self.saveas()
@@ -1697,7 +1693,7 @@ class BedTool(object):
         if not isinstance(interval, Interval):
             raise ValueError("Need an Interval instance")
         fn = self.fn
-        if not isinstance(fn, six.string_types):
+        if not isinstance(fn, str):
             fn = self.saveas().fn
         if self._isbam:
             fn = self.bam_to_bed().fn
@@ -1725,7 +1721,7 @@ class BedTool(object):
         if not isinstance(interval, Interval):
             raise ValueError("Need an Interval instance")
         fn = self.fn
-        if not isinstance(fn, six.string_types):
+        if not isinstance(fn, str):
             fn = self.saveas().fn
         if self._isbam:
             fn = self.bam_to_bed().fn
@@ -1753,7 +1749,7 @@ class BedTool(object):
         if not isinstance(interval, Interval):
             raise ValueError("Need an Interval instance")
         fn = self.fn
-        if not isinstance(fn, six.string_types):
+        if not isinstance(fn, str):
             fn = self.saveas().fn
         if self._isbam:
             fn = self.bam_to_bed().fn
@@ -1913,7 +1909,7 @@ class BedTool(object):
         >>> BedTool.seq(('chr1', 1, 10), fn)
         'GATGAGTCT'
         """
-        if isinstance(loc, six.string_types):
+        if isinstance(loc, str):
             chrom, start_end = loc.split(":")
             start, end = list(map(int, start_end.split("-")))
             start -= 1
@@ -2807,7 +2803,7 @@ class BedTool(object):
             pct = (np.mean(a_len[idx]) / n) * 100.0
             return pct
 
-        if isinstance(other, six.string_types):
+        if isinstance(other, str):
             other = BedTool(other)
         else:
             assert isinstance(
@@ -3218,7 +3214,7 @@ class BedTool(object):
         assert len(others) > 0, "You must specify at least one other bedfile!"
         other_beds = []
         for other in others:
-            if isinstance(other, six.string_types):
+            if isinstance(other, (str, Path)):
                 other = BedTool(other)
             else:
                 assert isinstance(
@@ -3345,7 +3341,7 @@ class BedTool(object):
             else:
                 compressed = False
 
-        in_compressed = isinstance(self.fn, six.string_types) and isGZIP(self.fn)
+        in_compressed = isinstance(self.fn, str) and isGZIP(self.fn)
 
         fn = self._collapse(
             self,
@@ -3376,7 +3372,7 @@ class BedTool(object):
         >>> b == a_contents
         True
         """
-        if not isinstance(self.fn, six.string_types):
+        if not isinstance(self.fn, str):
             fn = self._collapse(self, fn=fn)
         else:
             shutil.move(self.fn, fn)
@@ -3393,7 +3389,7 @@ class BedTool(object):
         ----------
 
         n : int
-            Number of features to return. Only one of `n` or `f` can be provided. 
+            Number of features to return. Only one of `n` or `f` can be provided.
 
         f : float, 0 <= f <= 1
             Fraction of features to return. Cannot be provided with `n`.
@@ -3510,7 +3506,7 @@ class BedTool(object):
         """
         Returns an IntervalFile of this BedTool for low-level interface.
         """
-        if not isinstance(self.fn, six.string_types):
+        if not isinstance(self.fn, str):
             fn = self._collapse(self.fn)
         else:
             fn = self.fn
@@ -3675,7 +3671,7 @@ class BedTool(object):
         # Complain if BAM or if not a file
         if self._isbam:
             raise ValueError("BAM not supported for converting to DataFrame")
-        if not isinstance(self.fn, six.string_types):
+        if not isinstance(self.fn, str):
             raise ValueError("use .saveas() to make sure self.fn is a file")
 
         try:
@@ -3702,7 +3698,7 @@ class BedTool(object):
             return pandas.read_csv(self.fn, *args, sep="\t", **kwargs)
         else:
             return pandas.DataFrame()
-        
+
     def tail(self, lines=10, as_string=False):
         """
         Like `head`, but prints last 10 lines of the file by default.
@@ -3714,7 +3710,7 @@ class BedTool(object):
         """
         if self._isbam:
             raise ValueError("tail() not yet implemented for BAM files")
-        if not isinstance(self.fn, six.string_types):
+        if not isinstance(self.fn, str):
             raise ValueError(
                 "tail() not implemented for non-file-based "
                 "BedTool objects.  Please use saveas() first."
@@ -3753,7 +3749,7 @@ class BAM(object):
         The pysam.Samfile can be accessed via the .pysam_bamfile attribute.
         """
         self.stream = stream
-        if not isinstance(self.stream, six.string_types):
+        if not isinstance(self.stream, str):
             raise ValueError("Only files are supported, not streams")
         self.pysam_bamfile = pysam.Samfile(self.stream)
 
@@ -3864,10 +3860,8 @@ class HistoryStep(object):
         try:
             self.method = method._name
         except AttributeError:
-            if six.PY3:
                 self.method = method.__name__
-            else:
-                self.method = method.func_name
+
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
@@ -3881,7 +3875,7 @@ class HistoryStep(object):
         """
         if isinstance(arg, pybedtools.BedTool):
             arg = arg.fn
-        if isinstance(arg, six.string_types):
+        if isinstance(arg, str):
             arg = '"%s"' % arg
         return arg
 
@@ -3918,8 +3912,6 @@ def example_bedtool(fn):
     fn = os.path.join(filenames.data_dir(), fn)
     if not os.path.exists(fn):
         msg = "%s does not exist" % fn
-        if six.PY2:
-            raise ValueError(msg)
         raise FileNotFoundError(msg)
     return BedTool(fn)
 

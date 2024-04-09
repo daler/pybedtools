@@ -1,9 +1,5 @@
-import os
 import sys
 import itertools
-import six
-import time
-import pysam
 import pybedtools
 
 
@@ -232,9 +228,7 @@ def tag_bedpe(bedpe, queries, verbose=False):
     grouped_end2 = itertools.groupby(end2_hits, lambda f: f[3])
 
     def gen():
-        for (label1, group1), (label2, group2) in six.moves.zip(
-            grouped_end1, grouped_end2
-        ):
+        for (label1, group1), (label2, group2) in zip(grouped_end1, grouped_end2):
             assert label1 == label2
             yield label1, group1, group2
 
@@ -372,8 +366,8 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
             interval = pybedtools.create_interval_from_list(f[7 + extra :])
             return [f[6 + extra], interval.name]
 
-        names1 = set(six.moves.map(tuple, six.moves.map(get_name_hits, end1_hits)))
-        names2 = set(six.moves.map(tuple, six.moves.map(get_name_hits, end2_hits)))
+        names1 = set(map(tuple, map(get_name_hits, end1_hits)))
+        names2 = set(map(tuple, map(get_name_hits, end2_hits)))
 
         for cis, others in [(names1, names2), (names2, names1)]:
             for target in cis:

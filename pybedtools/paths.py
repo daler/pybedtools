@@ -8,15 +8,15 @@ setting the bedtools path.
 import pybedtools
 from pybedtools import bedtool
 from . import settings
-from six.moves import reload_module
+from importlib import reload
 
 
 def _set_bedtools_path(path=""):
     old_path = settings._bedtools_path
     settings._bedtools_path = path
     if old_path != path:
-        reload_module(bedtool)
-        reload_module(pybedtools)
+        reload(bedtool)
+        reload(pybedtools)
         return True
 
 
