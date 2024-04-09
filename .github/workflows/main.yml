@@ -63,33 +63,17 @@ jobs:
         eval "$(conda shell.bash hook)"
         conda install mamba python=${{ matrix.python-version }} -y --channel conda-forge
 
-        if [ ${{ matrix.python-version }} != "3.11" ]; then
-          mamba create -y -p ./test-env \
-            --channel conda-forge \
-            --channel bioconda python=${{ matrix.python-version }} \
-            --file requirements.txt \
-            --file test-requirements.txt \
-            --file optional-requirements.txt
-          conda activate ./test-env
-        else
-          # Only install bedtools; let pip take care of the rest for 3.11 until
-          # bioconda catches up.
-          #
-          # We still install the test requirements though, and the optional
-          # requirements except for genomepy which is in bioconda.
-          grep -v "genomepy" optional-requirements.txt > optional-requirements-3.11.txt
-          mamba create -y -p ./test-env \
-            --channel conda-forge \
-            --channel bioconda \
-            bedtools \
-            python=${{ matrix.python-version }} \
-            --file test-requirements.txt \
-            --file optional-requirements-3.11.txt
-          conda activate ./test-env
-          pip install genomepy
-
-        fi
+        # Only install non-python dependencies (like bedtools & ucsc tools);
+        # let pip take care of the rest.
+        grep -Ev "genomepy|matplotlib" optional-requirements.txt > optional-requirements-conda.txt
+        mamba create -y -p ./test-env \
+          --channel conda-forge \
+          --channel bioconda \
+          bedtools \
+          python=${{ matrix.python-version }} \
+          --file optional-requirements-conda.txt
         conda activate ./test-env
+        pip install -r test-requirements.txt
 
         mkdir -p /tmp/pybedtools-uncompressed
         cd /tmp/pybedtools-uncompressed
