@@ -700,7 +700,11 @@ class BedTool(object):
         # tabix expects 1-based coords, but BEDTools works with
         # zero-based. pybedtools and pysam also work with zero-based. So we can
         # pass zero-based directly to the pysam tabix interface.
-        tbx = pysam.TabixFile(self.fn)
+        try:
+            tbx = pysam.TabixFile(self.fn)
+        except OSError:
+            # if the file is indexed using csi, we need to specify the path for index
+            tbx = pysam.TabixFile(self.fn, index=self.fn+".csi")
 
         # If an interval is passed, use its coordinates directly
         if isinstance(interval_or_string, Interval):
@@ -749,10 +753,14 @@ class BedTool(object):
                 "-- please use the .tabix() method"
             )
 
-        tbx = pysam.TabixFile(self.fn)
+        try:
+            tbx = pysam.TabixFile(self.fn)
+        except OSError:
+            # if the file is indexed using csi, we need to specify the path for index
+            tbx = pysam.TabixFile(self.fn, index=self.fn+".csi")
         return tbx.contigs
 
-    def tabix(self, in_place=True, force=False, is_sorted=False):
+    def tabix(self, in_place=True, force=False, is_sorted=False, use_csi=False):
         """
         Prepare a BedTool for use with Tabix.
 
@@ -773,6 +781,10 @@ class BedTool(object):
         is_sorted : bool
             If True (default is False), then assume the file is already sorted
             so that BedTool.bgzip() doesn't have to do that work.
+
+        use_csi : bool
+            If True (default is False), then generate csi instead of tbi index.
+            This can be useful when working with chromosomes larger than 512 Mbp, such as barley
         """
         # Return quickly if nothing to do
         if self._tabixed() and not force:
@@ -781,18 +793,18 @@ class BedTool(object):
         # Make sure it's BGZIPed
         fn = self.bgzip(in_place=in_place, force=force)
 
-        pysam.tabix_index(fn, force=force, preset=self.file_type)
+        pysam.tabix_index(fn, force=force, preset=self.file_type, csi=use_csi)
         return BedTool(fn)
 
     def _tabixed(self):
         """
         Verifies that we're working with a tabixed file: a string filename
-        pointing to a BGZIPed file with a .tbi file in the same dir.
+        pointing to a BGZIPed file with a .tbi or .csi file in the same dir.
         """
         if (
             isinstance(self.fn, str)
             and isBGZIP(self.fn)
-            and os.path.exists(self.fn + ".tbi")
+            and (os.path.exists(self.fn + ".tbi") or os.path.exists(self.fn + ".csi"))
         ):
             return True
 
