@@ -178,6 +178,12 @@ def test_tabix_intervals():
     assert len(a.tabix_intervals("chr1")) == 1
 
 
+def test_tabix_contigs_csi():
+    a = pybedtools.example_bedtool("a.bed")
+    a = a.tabix(force=True, use_csi=True)
+    assert a.tabix_contigs() == ["chr1"]
+
+
 # ----------------------------------------------------------------------------
 # Streaming and non-file BedTool tests
 # ----------------------------------------------------------------------------
