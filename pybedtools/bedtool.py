@@ -783,7 +783,7 @@ class BedTool(object):
             so that BedTool.bgzip() doesn't have to do that work.
 
         use_csi : bool
-            If True (default is False), then generate csi instead of tbi index.
+            If True (default is False), then generate a csi instead of tbi index.
             This can be useful when working with chromosomes larger than 512 Mbp, such as barley
         """
         # Return quickly if nothing to do
