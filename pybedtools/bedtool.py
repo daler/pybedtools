@@ -13,6 +13,7 @@ import multiprocessing
 import gzip
 import pysam
 from warnings import warn
+import pathlib
 from pathlib import Path
 
 from .helpers import (
@@ -495,7 +496,7 @@ class BedTool(object):
 
         else:
             # if fn is a Path object, we have to use its string representation
-            if "pathlib.PurePath" in str(type(fn).__mro__):
+            if isinstance(fn, pathlib.PurePath):
                 fn = str(fn)
 
             # our work is already done
