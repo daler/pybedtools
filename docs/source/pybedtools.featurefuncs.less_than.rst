@@ -1,5 +1,5 @@
-pybedtools.featurefuncs.less_than
-=================================
+﻿pybedtools.featurefuncs.less\_than
+==================================
 
 .. currentmodule:: pybedtools.featurefuncs
 

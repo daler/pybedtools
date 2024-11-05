@@ -1,4 +1,4 @@
-pybedtools.contrib.plotting.Track
+﻿pybedtools.contrib.plotting.Track
 =================================
 
 .. currentmodule:: pybedtools.contrib.plotting
@@ -41,20 +41,25 @@ pybedtools.contrib.plotting.Track
       ~Track.get_cursor_data
       ~Track.get_dashes
       ~Track.get_datalim
+      ~Track.get_ec
       ~Track.get_edgecolor
       ~Track.get_edgecolors
       ~Track.get_facecolor
       ~Track.get_facecolors
+      ~Track.get_fc
       ~Track.get_figure
       ~Track.get_fill
       ~Track.get_gid
       ~Track.get_hatch
+      ~Track.get_in_layout
       ~Track.get_joinstyle
       ~Track.get_label
       ~Track.get_linestyle
       ~Track.get_linestyles
       ~Track.get_linewidth
       ~Track.get_linewidths
+      ~Track.get_ls
+      ~Track.get_lw
       ~Track.get_offset_position
       ~Track.get_offset_transform
       ~Track.get_offsets
@@ -66,6 +71,7 @@ pybedtools.contrib.plotting.Track
       ~Track.get_sizes
       ~Track.get_sketch_params
       ~Track.get_snap
+      ~Track.get_tightbbox
       ~Track.get_transform
       ~Track.get_transformed_clip_path_and_affine
       ~Track.get_transforms
@@ -76,8 +82,6 @@ pybedtools.contrib.plotting.Track
       ~Track.get_xlims
       ~Track.get_zorder
       ~Track.have_units
-      ~Track.hitlist
-      ~Track.is_figure_set
       ~Track.is_transform_set
       ~Track.pchanged
       ~Track.pick
@@ -86,6 +90,7 @@ pybedtools.contrib.plotting.Track
       ~Track.remove
       ~Track.remove_callback
       ~Track.set
+      ~Track.set_aa
       ~Track.set_agg_filter
       ~Track.set_alpha
       ~Track.set_animated
@@ -101,19 +106,23 @@ pybedtools.contrib.plotting.Track
       ~Track.set_color
       ~Track.set_contains
       ~Track.set_dashes
+      ~Track.set_ec
       ~Track.set_edgecolor
       ~Track.set_edgecolors
       ~Track.set_facecolor
       ~Track.set_facecolors
+      ~Track.set_fc
       ~Track.set_figure
       ~Track.set_gid
       ~Track.set_hatch
+      ~Track.set_in_layout
       ~Track.set_joinstyle
       ~Track.set_label
       ~Track.set_linestyle
       ~Track.set_linestyles
       ~Track.set_linewidth
       ~Track.set_linewidths
+      ~Track.set_ls
       ~Track.set_lw
       ~Track.set_norm
       ~Track.set_offset_position
@@ -146,12 +155,12 @@ pybedtools.contrib.plotting.Track
 
    .. autosummary::
    
-      ~Track.aname
       ~Track.axes
       ~Track.midpoint
       ~Track.mouseover
       ~Track.stale
       ~Track.sticky_edges
+      ~Track.update_dict
       ~Track.zorder
    
    
