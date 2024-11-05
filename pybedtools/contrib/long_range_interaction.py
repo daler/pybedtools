@@ -120,7 +120,7 @@ def tag_bedpe(bedpe, queries, verbose=False):
     >>> queries = OrderedDict()
     >>> queries['tss'] = tsses
     >>> queries['pk'] = peaks
-    >>> iterator, n, extra = tag_bedpe(bedpe, queries)
+    >>> iterator, n, extra = pybedtools.contrib.long_range_interaction.tag_bedpe(bedpe, queries)
     >>> print(n)
     2
     >>> print(extra)
@@ -280,7 +280,7 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     >>> queries = OrderedDict()
     >>> queries['tss'] = tsses
     >>> queries['pk'] = peaks
-    >>> iterator, n, extra = tag_bedpe(bedpe, queries)
+    >>> iterator, n, extra = pybedtools.contrib.long_range_interaction.tag_bedpe(bedpe, queries)
     >>> for (label, group1, group2) in iterator:
     ...    group1 = sorted(group1, key=lambda x: str(x))
     ...    group2 = sorted(group2, key=lambda x: str(x))
@@ -303,8 +303,8 @@ def cis_trans_interactions(iterator, n, extra, verbose=True):
     and that they are also connected to gene3:
 
     >>> import pandas; pandas.set_option('display.max_columns', 10)
-    >>> iterator, n, extra = tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
-    >>> df =  cis_trans_interactions(iterator, n, extra)
+    >>> iterator, n, extra = pybedtools.contrib.long_range_interaction.tag_bedpe(bedpe, {'tss': tsses, 'pk': peaks})
+    >>> df =  pybedtools.contrib.long_range_interaction.cis_trans_interactions(iterator, n, extra)
     >>> print(df.sort_values(list(df.columns)).reset_index(drop=True))
       target_label target_name cis_label cis_name distal_label distal_name  label
     0           pk       peak1       tss    gene1            .           .  pair2

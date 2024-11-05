@@ -2,14 +2,11 @@
 Overview
 --------
 
-.. image:: https://travis-ci.org/daler/pybedtools.png?branch=master
-    :target: https://travis-ci.org/daler/pybedtools
-
 .. image:: https://badge.fury.io/py/pybedtools.svg?style=flat
-    :target: http://badge.fury.io/py/pybedtools
+    :target: https://badge.fury.io/py/pybedtools
 
 .. image:: https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg
-    :target: http://bioconda.github.io
+    :target: https://bioconda.github.io
 
 The `BEDTools suite of programs <http://bedtools.readthedocs.org/>`_ is widely
 used for genomic interval manipulation or "genome algebra".  `pybedtools` wraps
@@ -17,7 +14,9 @@ and extends BEDTools and offers feature-level manipulations from within
 Python.
 
 See full online documentation, including installation instructions, at
-http://daler.github.io/pybedtools/.
+https://daler.github.io/pybedtools/.
+
+The GitHub repo is at https://github.com/daler/pybedtools.
 
 Why `pybedtools`?
 -----------------

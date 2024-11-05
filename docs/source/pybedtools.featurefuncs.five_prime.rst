@@ -1,5 +1,5 @@
-pybedtools.featurefuncs.five_prime
-==================================
+﻿pybedtools.featurefuncs.five\_prime
+===================================
 
 .. currentmodule:: pybedtools.featurefuncs
 
