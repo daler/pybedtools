@@ -4,11 +4,6 @@
 .. automodule:: pybedtools.contrib.venn_maker
 
    
-   
-   
-
-   
-   
    .. rubric:: Functions
 
    .. autosummary::
@@ -17,15 +12,3 @@
       truncator
       venn_maker
    
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

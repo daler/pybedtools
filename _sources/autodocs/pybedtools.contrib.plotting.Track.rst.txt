@@ -144,7 +144,6 @@
       ~Track.set_verts_and_codes
       ~Track.set_visible
       ~Track.set_zorder
-      ~Track.span_where
       ~Track.to_rgba
       ~Track.update
       ~Track.update_from
