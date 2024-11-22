@@ -15,21 +15,20 @@
    
       ~Track.__init__
       ~Track.add_callback
+      ~Track.add_checker
       ~Track.autoscale
       ~Track.autoscale_None
       ~Track.changed
+      ~Track.check_update
       ~Track.contains
       ~Track.convert_xunits
       ~Track.convert_yunits
       ~Track.draw
       ~Track.findobj
       ~Track.format_cursor_data
-      ~Track.get_aa
       ~Track.get_agg_filter
       ~Track.get_alpha
       ~Track.get_animated
-      ~Track.get_antialiased
-      ~Track.get_antialiaseds
       ~Track.get_array
       ~Track.get_capstyle
       ~Track.get_children
@@ -38,6 +37,7 @@
       ~Track.get_clip_on
       ~Track.get_clip_path
       ~Track.get_cmap
+      ~Track.get_contains
       ~Track.get_cursor_data
       ~Track.get_dashes
       ~Track.get_datalim
@@ -60,7 +60,7 @@
       ~Track.get_linewidths
       ~Track.get_ls
       ~Track.get_lw
-      ~Track.get_mouseover
+      ~Track.get_offset_position
       ~Track.get_offset_transform
       ~Track.get_offsets
       ~Track.get_path_effects
@@ -72,7 +72,6 @@
       ~Track.get_sketch_params
       ~Track.get_snap
       ~Track.get_tightbbox
-      ~Track.get_transOffset
       ~Track.get_transform
       ~Track.get_transformed_clip_path_and_affine
       ~Track.get_transforms
@@ -105,6 +104,7 @@
       ~Track.set_clip_path
       ~Track.set_cmap
       ~Track.set_color
+      ~Track.set_contains
       ~Track.set_dashes
       ~Track.set_ec
       ~Track.set_edgecolor
@@ -124,9 +124,8 @@
       ~Track.set_linewidths
       ~Track.set_ls
       ~Track.set_lw
-      ~Track.set_mouseover
       ~Track.set_norm
-      ~Track.set_offset_transform
+      ~Track.set_offset_position
       ~Track.set_offsets
       ~Track.set_path_effects
       ~Track.set_paths
@@ -136,7 +135,6 @@
       ~Track.set_sizes
       ~Track.set_sketch_params
       ~Track.set_snap
-      ~Track.set_transOffset
       ~Track.set_transform
       ~Track.set_url
       ~Track.set_urls
@@ -160,10 +158,9 @@
       ~Track.axes
       ~Track.midpoint
       ~Track.mouseover
-      ~Track.norm
       ~Track.stale
       ~Track.sticky_edges
+      ~Track.update_dict
       ~Track.zorder
-      ~Track.colorbar
    
    
