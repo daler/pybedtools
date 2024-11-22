@@ -3,6 +3,7 @@ import tempfile
 from textwrap import dedent
 import shutil
 import subprocess
+import operator
 import os
 import sys
 import random
@@ -16,7 +17,6 @@ import pysam
 from warnings import warn
 import pathlib
 from pathlib import Path
-
 
 from .helpers import (
     get_tempdir,
@@ -45,20 +45,16 @@ import pybedtools
 from . import settings
 from . import filenames
 
-
-
 if TYPE_CHECKING:
     import pandas as pd
     import matplotlib.colors as mcolors
-
-
 
 _implicit_registry = {}
 _other_registry = {}
 _bam_registry = {}
 
 
-def _jaccard_output_to_dict(s:str|object, **kwargs) -> dict:
+def _jaccard_output_to_dict(s, **kwargs) -> dict:
     """
     jaccard method doesn't return an interval file, rather, it returns a short
     summary of results.  Here, we simply parse it into a dict for convenience.
@@ -203,7 +199,7 @@ def _wraps(
     # Call the program with -h to get help, which prints to stderr.
     try:
         p = subprocess.Popen(
-            [arg for arg in helpers._version_2_15_plus_names(prog) if arg is not None] + ["-h"],
+            helpers._version_2_15_plus_names(prog) + ["-h"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
@@ -294,10 +290,7 @@ def _wraps(
             # to be "other" (e.g., `-b` for intersectBed)
             if len(args) > 0:
                 assert len(args) == 1
-                if other is None:
-                    kwargs["other"] = args[0]
-                else:
-                    kwargs[other] = args[0]
+                kwargs[other] = args[0]
 
             # Add the implicit values to kwargs.  If the current BedTool is
             # BAM, it will automatically be passed to the appropriate
@@ -412,7 +405,6 @@ def _wraps(
             # Post-hoc editing of the BedTool -- for example, this is used for
             # the sequence methods to add a `seqfn` attribute to the resulting
             # BedTool.
-            result = None
             if add_to_bedtool is not None:
                 for kw, attr in list(add_to_bedtool.items()):
                     if kw == "stdout":
@@ -424,11 +416,10 @@ def _wraps(
             else:
                 result = BedTool(stream)
 
-            if result:
-                result._isbam = result_is_bam
-                result._cmds = cmds
-                del kwargs
-                return result
+            result._isbam = result_is_bam
+            result._cmds = cmds
+            del kwargs
+            return result
 
         # Now add the edited docstring (original Python docstring plus BEDTools
         # help) to the newly created method above
@@ -514,15 +505,12 @@ class BedTool(object):
             fout.close()
 
         else:
-
-            if fn is None:
-                fn = self._tmp()
             # if fn is a Path object, we have to use its string representation
-            elif isinstance(fn, pathlib.PurePath):
+            if isinstance(fn, pathlib.PurePath):
                 fn = str(fn)
 
             # our work is already done
-            elif isinstance(fn, BedTool):
+            if isinstance(fn, BedTool):
                 fn = fn.fn
 
             # from_string=False, so assume it's a filename
@@ -593,12 +581,13 @@ class BedTool(object):
             # (fixes #73)
             elif isinstance(fn, (list, tuple)):
                 fn = BedTool(iter(fn)).saveas().fn
+
             # Otherwise assume iterator, say an open file as from
             # subprocess.PIPE
             else:
                 fn = fn
 
-        self.fn: str = cast(str,fn)
+        self.fn = fn
         tag = "".join([random.choice(string.ascii_lowercase) for _ in range(8)])
         self._tag = tag
         _tags[tag] = self
@@ -1087,25 +1076,25 @@ class BedTool(object):
                     if e.start >= g.start and e.end <= g.end
                 ]
 
-                for i, exon in enumerate(exons):
-                    exon: pybedtools.Interval
+                for i, exon_instance in enumerate(exons):
+                    exon_instance: pybedtools.Interval
                     # 5' utr between gene start and first intron
-                    if i == 0 and exon.start > g.start:
+                    if i == 0 and exon_instance.start > g.start:
                         utr = {"+": "utr5", "-": "utr3"}[g.strand]
                         print(
                             "%s\t%i\t%i\t%s\t%s\t%s"
-                            % (g.chrom, g.start, exon.start, g.name, utr, g.strand),
+                            % (g.chrom, g.start, exon_instance.start, g.name, utr, g.strand),
                             file=fh,
                         )
-                    elif i == len(exons) - 1 and exon.end < g.end:
+                    elif i == len(exons) - 1 and exon_instance.end < g.end:
                         utr = {"+": "utr3", "-": "utr5"}[g.strand]
                         print(
                             "%s\t%i\t%i\t%s\t%s\t%s"
-                            % (g.chrom, exon.end, g.end, g.name, utr, g.strand),
+                            % (g.chrom, exon_instance.end, g.end, g.name, utr, g.strand),
                             file=fh,
                         )
                     elif i != len(exons) - 1:
-                        istart = exon.end
+                        istart = exon_instance.end
                         iend = exons[i + 1].start
                         print(
                             "%s\t%i\t%i\t%s\tintron\t%s"
@@ -2766,7 +2755,7 @@ class BedTool(object):
         ...     os.unlink('example.fa')
         """
 
-        if not hasattr(self, "seqfn"):
+        if self.seqfn is None:
             raise ValueError("Use .sequence(fasta) to get the sequence first")
 
         with open(fn, "w") as fout:
@@ -3834,7 +3823,7 @@ class BedTool(object):
 
 
 class BAM(object):
-    def __init__(self, stream:str):
+    def __init__(self, stream):
         """
         Wraps pysam.Samfile so that it yields pybedtools.Interval objects when
         iterated over.
@@ -3967,11 +3956,11 @@ class HistoryStep(object):
         """
         Wrap strings in quotes and convert bedtool instances to filenames.
         """
-        if isinstance(arg, str):
-            return '"%s"' % arg
         if isinstance(arg, BedTool):
-            return '"%s"' % str(arg.fn)
-
+            arg = arg.fn
+        if isinstance(arg, str):
+            arg = '"%s"' % arg
+        return arg
 
     def __repr__(self):
         # Still not sure whether to use pybedtools.bedtool() or bedtool()
@@ -3998,7 +3987,7 @@ class HistoryStep(object):
         return s
 
 
-def example_bedtool(fn: str):
+def example_bedtool(fn):
     """
     Return a bedtool using a bed file from the pybedtools examples directory.
     Use :func:`list_example_files` to see a list of files that are included.
