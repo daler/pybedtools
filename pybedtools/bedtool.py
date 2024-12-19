@@ -626,7 +626,6 @@ class BedTool(object):
             raise ImportError("pandas must be installed to use dataframes")
         if outfile is None:
             outfile = cls._tmp()
-            
         df.to_csv(outfile, sep=sep, header=header, na_rep=na_rep, index=index)
 
         if isinstance(outfile, str):
@@ -1298,7 +1297,7 @@ class BedTool(object):
                 result = pybedtools.BedTool("", from_string=True)
         if result is None:
             raise ValueError("Subtraction operation failed.")
-    
+
         return result
 
     def head(self, n: int = 10, as_string: bool = False):
@@ -1944,7 +1943,7 @@ class BedTool(object):
 
         loc = BedTool("%s\t%i\t%i" % (chrom, start, end), from_string=True)
         lseq = loc.sequence(fi=fasta)
-        return "".join([l.rstrip() for l in open(lseq.seqfn, "r") if l[0] != ">"])  
+        return "".join([l.rstrip() for l in open(lseq.seqfn, "r") if l[0] != ">"])
 
     @_log_to_history
     @_wraps(
@@ -2530,7 +2529,7 @@ class BedTool(object):
 
     @_log_to_history
     @_wraps(prog="bedToIgv", implicit="i", add_to_bedtool={"stdout": "igv_script"})
-    def igv(self, *args, **kwargs) -> BedTool: # type: ignore    
+    def igv(self, *args, **kwargs) -> BedTool: # type: ignore
         """
         Wraps `bedtools igv`.
 
@@ -2930,7 +2929,7 @@ class BedTool(object):
         return self.parallel_apply(*args, **kwargs)
 
     def parallel_apply(
-        self, 
+        self,
         iterations: int,
         func: Callable,
         func_args: Iterable,
@@ -3649,7 +3648,7 @@ class BedTool(object):
         # This gets the space between features in self.
         c = self.each(midpoint).complement(**g_dict)
 
-        mid_other = other.each(midpoint).saveas() 
+        mid_other = other.each(midpoint).saveas()
 
         hits = c.intersect(other, wao=True, stream=True) # TODO: should this be other or mid_other?
         for i in hits:
@@ -3948,7 +3947,7 @@ class HistoryStep(object):
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
-        tag = "".join(random.choice(string.ascii_lowercase) for _ in range(8)) # TODO: remove this? 
+        tag = "".join(random.choice(string.ascii_lowercase) for _ in range(8)) # TODO: remove this?
         self.parent_tag = parent_tag
         self.result_tag = result_tag
 
