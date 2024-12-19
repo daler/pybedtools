@@ -626,7 +626,9 @@ class BedTool(object):
             raise ImportError("pandas must be installed to use dataframes")
         if outfile is None:
             outfile = cls._tmp()
-        df.to_csv(outfile, sep=sep, header=header, na_rep=na_rep, index=index)
+        default_kwargs = dict(sep=sep, header=header, na_rep=na_rep, index=index)
+        default_kwargs.update(kwargs)
+        df.to_csv(outfile, **default_kwargs)
 
         if isinstance(outfile, str):
             fn = outfile
