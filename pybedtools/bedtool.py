@@ -1661,7 +1661,6 @@ class BedTool(object):
 
         """
         tmp = self._tmp()
-        fout = open(tmp, "w")  # TODO: why is this necessary?
 
         # If it's a file-based BedTool -- which is likely, if we're trying to
         # remove invalid features -- then we need to parse it line by line.
@@ -1836,9 +1835,6 @@ class BedTool(object):
                 SQ.append(dict(SN=k, LN=int(v)))
                 ref_ids[k] = i
                 text_header.append("@SQ\tSN:{0}\tLN:{1}".format(k, v))
-
-            # Here's the pysam-formatted header
-            header = {"HD": {"VN": "1.0"}, "SQ": SQ}  # TODO: this is not used ... why is it here?
 
             # And the text-format header
             text_header = "\n".join(text_header) + "\n"
@@ -3290,9 +3286,6 @@ class BedTool(object):
         # if filetypes and field counts are the same, don't truncate
         if not force_truncate:
             try:
-                a_type = self.file_type # TODO: why are these defined as they are not used?
-
-                files = [self] + other_beds # TODO: why are these defined as they are not used?
                 filetypes = set(
                     [self.file_type] + [i.file_type for i in other_beds]
                 ).difference(["empty"])
@@ -3641,8 +3634,6 @@ class BedTool(object):
         # This gets the space between features in self.
         c = self.each(midpoint).complement(**g_dict)
 
-        mid_other = other.each(midpoint).saveas()
-
         hits = c.intersect(other, wao=True, stream=True) # TODO: should this be other or mid_other?
         for i in hits:
             yield float(i[-1]) / len(i)
@@ -3940,7 +3931,6 @@ class HistoryStep(object):
         self.args = args
         self.kwargs = kwargs
         self.fn = bedtool_instance.fn
-        tag = "".join(random.choice(string.ascii_lowercase) for _ in range(8)) # TODO: remove this?
         self.parent_tag = parent_tag
         self.result_tag = result_tag
 
