@@ -826,12 +826,6 @@ class BedTool(object):
 
         `force` will overwrite without asking.
         """
-        # TODO: Why is this here?  It's not used in the method.
-        if force:
-            force_arg = "-f"
-        else:
-            force_arg = ""
-
         # It may already be BGZIPed...
         if isinstance(self.fn, str) and not force:
             if isBGZIP(self.fn):
