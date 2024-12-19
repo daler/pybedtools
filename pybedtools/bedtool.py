@@ -788,15 +788,12 @@ class BedTool(object):
             If True (default is False), then assume the file is already sorted
             so that BedTool.bgzip() doesn't have to do that work.
         """
-
-        # TODO: is_sorted is not being  used or even checked on this code!
-
         # Return quickly if nothing to do
         if self._tabixed() and not force:
             return self
 
         # Make sure it's BGZIPed
-        fn = self.bgzip(in_place=in_place, force=force)
+        fn = self.bgzip(in_place=in_place, force=force, is_sorted=is_sorted)
         if self.file_type is not None and self.file_type not in ["bam", "empty"]:
             pysam.tabix_index(fn, force=force, preset=self.file_type)  # type: ignore
         return BedTool(fn)
