@@ -3821,7 +3821,7 @@ class BAM(object):
     def _aligned_segment_to_interval(self, r):
 
         if r.rname >= 0:
-            rname = self.pysam_bamfile.getrname(r.rname) # TODO: getrname method is deprecated the up-to-date method is get_reference_name
+            rname = self.pysam_bamfile.get_reference_name(r.rname)
         else:
             rname = "*"
 
@@ -3829,7 +3829,7 @@ class BAM(object):
             if r.rnext == r.rname:
                 rnext = "="
             else:
-                rnext = self.pysam_bamfile.getrname(r.rnext) # TODO: getrname method is deprecated the up-to-date method is get_reference_name
+                rnext = self.pysam_bamfile.get_reference_name(r.rnext)
         else:
             rnext = "*"
 
