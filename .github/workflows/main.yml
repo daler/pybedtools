@@ -62,13 +62,13 @@ jobs:
       # Tests below will operate in this newly-installed directory.
       run: |
         eval "$(conda shell.bash hook)"
-        conda install mamba python=${{ matrix.python-version }} -y --channel conda-forge
+        conda install python=${{ matrix.python-version }} -y --channel conda-forge
 
         # Only install non-python dependencies (like bedtools & ucsc tools);
         # let pip take care of the rest.
         grep -Ev "genomepy|matplotlib" optional-requirements.txt > optional-requirements-conda.txt
         grep -E "genomepy|matplotlib" optional-requirements.txt > optional-requirements-python.txt
-        mamba create -y -p ./test-env \
+        conda create -y -p ./test-env \
           --channel conda-forge \
           --channel bioconda \
           bedtools \
