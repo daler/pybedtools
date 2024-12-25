@@ -35,10 +35,11 @@ jobs:
     - name: cythonize and pip
       # Convert .pyx files to .cpp and package into sdist tarball.
       #
-      # This only requires Cython, no other dependencies.
+      # This only requires Cython, Python, and g++. Then install the tarball
+      # with pip to make sure it works.
       run: |
         eval "$(conda shell.bash hook)"
-        conda create -p ./cython-env -y "cython>=0.29.30,<3.0" python=${{ matrix.python-version }} numpy
+        conda create -p ./cython-env -y "cython>=0.29.30,<3.0" python=${{ matrix.python-version }} gxx
         conda activate ./cython-env
         python setup.py clean cythonize sdist
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
@@ -61,13 +62,13 @@ jobs:
       # Tests below will operate in this newly-installed directory.
       run: |
         eval "$(conda shell.bash hook)"
-        conda install mamba python=${{ matrix.python-version }} -y --channel conda-forge
+        conda install python=${{ matrix.python-version }} -y --channel conda-forge
 
         # Only install non-python dependencies (like bedtools & ucsc tools);
         # let pip take care of the rest.
         grep -Ev "genomepy|matplotlib" optional-requirements.txt > optional-requirements-conda.txt
         grep -E "genomepy|matplotlib" optional-requirements.txt > optional-requirements-python.txt
-        mamba create -y -p ./test-env \
+        conda create -y -p ./test-env \
           --channel conda-forge \
           --channel bioconda \
           bedtools \
