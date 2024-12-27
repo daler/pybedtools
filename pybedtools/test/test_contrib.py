@@ -7,7 +7,7 @@ import pybedtools
 from pybedtools import Interval
 
 # from pybedtools.contrib import Classifier
-from .tfuncs import setup_module, teardown_module, testdir, test_tempdir, unwriteable
+from .tfuncs import teardown_module
 
 # model for gdc.
 # chr2L, starts at 1 and spacing is 10bp.

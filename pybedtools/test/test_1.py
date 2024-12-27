@@ -1,24 +1,19 @@
 import pybedtools
 import os, difflib, sys
-from pybedtools import featurefuncs
+import tempfile
+import shutil
+from pathlib import Path
+
+from pybedtools import featurefuncs, filenames
 import pytest
 
 import threading
 import warnings
-from .tfuncs import test_tempdir
 
 unwriteable = "unwriteable"
 
 
-def setup_module():
-    if not os.path.exists(test_tempdir):
-        os.system("mkdir -p %s" % test_tempdir)
-    pybedtools.set_tempdir(test_tempdir)
-
-
 def teardown_module():
-    if os.path.exists(test_tempdir):
-        os.system("rm -r %s" % test_tempdir)
     pybedtools.cleanup()
 
 
@@ -67,7 +62,8 @@ def cleanup_unwriteable():
     """
     if os.path.exists(unwriteable):
         os.system("rm -rf %s" % unwriteable)
-    pybedtools.set_tempdir(test_tempdir)
+    tempfile.tempdir = None
+    pybedtools.set_tempdir(tempfile.gettempdir())
 
 
 def test_interval_index():
@@ -132,37 +128,24 @@ def test_tuple_creation():
     assert x[0]["ID"] == "gene1"
 
 
-def test_tabix():
-    try:
-        a = pybedtools.example_bedtool("a.bed")
-        t = a.tabix(force=True)
-        assert t._tabixed()
-        results = t.tabix_intervals("chr1:99-200")
-        results = str(results)
-        print(results)
-        assert results == fix(
-            """
-        chr1	1	100	feature1	0	+
-        chr1	100	200	feature2	0	+
-        chr1	150	500	feature3	0	-"""
-        )
+def test_tabix(tmp_path: Path) -> None:
+    shutil.copy(os.path.join(filenames.data_dir(), "a.bed"), tmp_path)
+    a = pybedtools.BedTool(tmp_path / "a.bed")
+    t = a.tabix(force=True)
+    assert t._tabixed()
+    results = t.tabix_intervals("chr1:99-200")
+    results = str(results)
+    print(results)
+    assert results == fix("""
+    chr1	1	100	feature1	0	+
+    chr1	100	200	feature2	0	+
+    chr1	150	500	feature3	0	-"""
+    )
 
-        assert str(t.tabix_intervals(a[2])) == fix(
-            """
-        chr1	100	200	feature2	0	+
-        chr1	150	500	feature3	0	-"""
-        )
-
-    finally:
-        # clean up
-        fns = [
-            pybedtools.example_filename("a.bed.gz"),
-            pybedtools.example_filename("a.bed.gz.tbi"),
-        ]
-        for fn in fns:
-            if os.path.exists(fn):
-                os.unlink(fn)
-
+    assert str(t.tabix_intervals(a[2])) == fix("""
+    chr1	100	200	feature2	0	+
+    chr1	150	500	feature3	0	-"""
+    )
 
 def test_tabix_intervals():
     a = pybedtools.BedTool("chr1 25 30", from_string=True).tabix()
@@ -503,6 +486,7 @@ def test_sequence():
     For example, the first 100 bases of a chromosome are defined as
     chromStart=0, chromEnd=100, and span the bases numbered 0-99. """
 
+    test_tempdir = os.path.abspath(tempfile.gettempdir())
     fi = os.path.join(test_tempdir, "test.fasta")
 
     s = """
