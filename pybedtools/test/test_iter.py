@@ -5,17 +5,8 @@ import yaml
 import os
 import gzip
 import pybedtools
-from .tfuncs import test_tempdir
-
-def setup_module():
-    if not os.path.exists(test_tempdir):
-        os.system("mkdir -p %s" % test_tempdir)
-    pybedtools.set_tempdir(test_tempdir)
-
 
 def teardown_module():
-    if os.path.exists(test_tempdir):
-        os.system("rm -r %s" % test_tempdir)
     pybedtools.cleanup()
 
 yamltestdesc = ["test_cases.yaml"]
