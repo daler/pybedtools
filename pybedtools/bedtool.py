@@ -439,6 +439,42 @@ def _wraps(
     return decorator
 
 
+def _log_to_history(method: Callable):
+    """
+    Decorator to add a method and its kwargs to the history.
+
+    Assumes that you only add this decorator to bedtool instances that
+    return other bedtool instances
+    """
+
+    def decorated(self, *args, **kwargs):
+
+        # this calls the actual method in the first place; *result* is
+        # whatever you get back
+        result = method(self, *args, **kwargs)
+
+        # add appropriate tags
+        parent_tag = self._tag
+        result_tag = result._tag
+
+        history_step = HistoryStep(
+            method, args, kwargs, self, parent_tag, result_tag
+        )
+
+        # only add the current history to the new bedtool if there's
+        # something to add
+        if len(self.history) > 0:
+            result.history.append(self.history)
+
+        # but either way, add this history step to the result.
+        result.history.append(history_step)
+
+        return result
+
+    decorated.__doc__ = method.__doc__
+    return decorated
+
+
 class BedTool(object):
     TEMPFILES = filenames.TEMPFILES
 
@@ -900,43 +936,6 @@ class BedTool(object):
         for fn in to_delete:
             os.unlink(fn)
         return
-
-    @staticmethod
-    def _log_to_history(method: Callable):
-        """
-        Decorator to add a method and its kwargs to the history.
-
-        Assumes that you only add this decorator to bedtool instances that
-        return other bedtool instances
-        """
-
-        def decorated(self, *args, **kwargs):
-
-            # this calls the actual method in the first place; *result* is
-            # whatever you get back
-            result = method(self, *args, **kwargs)
-
-            # add appropriate tags
-            parent_tag = self._tag
-            result_tag = result._tag
-
-            # log the sucka
-            history_step = HistoryStep(
-                method, args, kwargs, self, parent_tag, result_tag
-            )
-
-            # only add the current history to the new bedtool if there's
-            # something to add
-            if len(self.history) > 0:
-                result.history.append(self.history)
-
-            # but either way, add this history step to the result.
-            result.history.append(history_step)
-
-            return result
-
-        decorated.__doc__ = method.__doc__
-        return decorated
 
     def filter(self, func: Callable, *args, **kwargs) -> BedTool:
         """
