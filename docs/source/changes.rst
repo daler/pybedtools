@@ -3,6 +3,15 @@
 Changelog
 =========
 
+Changes in v0.11.0
+------------------
+
+2025-01-02
+
+* Add type hints and clean up code in general (big thanks to @duartemolha)
+* Fix post-installation tests in Debian package (thanks @mr-c)
+* Remove Python 3.8 support which reached end-of-life 2024-10-07.
+
 Changes in v0.10.1
 ------------------
 
@@ -11,8 +20,7 @@ Changes in v0.10.1
 * Remove last traces of Python 2.7 support by removing ``six`` dependency (thanks Valentyn Bezshapkin)
 * Support building on later C++ toolchains (thanks Cameron Smith)
 * Support ``pathlib.Path`` in ``BedTool.cat()`` (fixes #405)
-* Improvements to testing: add tests for Python 3.12, more explicity setup/teardown
-
+* Improvements to testing: add tests for Python 3.12, more explicit setup/teardown
 
 Changes in v0.9.1
 -----------------

@@ -13,7 +13,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -30,15 +30,19 @@ jobs:
         echo "BRANCH=${GITHUB_REF##*/}" >> $GITHUB_ENV
         echo "WORKDIR=$(pwd)" >> $GITHUB_ENV
 
-
+    - name: install miniforge
+      run: |
+        wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+        bash Miniforge3.sh -b -p "${HOME}/conda"
 
     - name: cythonize and pip
       # Convert .pyx files to .cpp and package into sdist tarball.
       #
-      # This only requires Cython, no other dependencies.
+      # This only requires Cython, Python, and g++. Then install the tarball
+      # with pip to make sure it works.
       run: |
-        eval "$(conda shell.bash hook)"
-        conda create -p ./cython-env -y cython python=${{ matrix.python-version }} numpy
+        source "${HOME}/conda/etc/profile.d/conda.sh"
+        conda create -p ./cython-env -y "cython>=0.29.30,<3.0" python=${{ matrix.python-version }} gxx zlib --channel conda-forge
         conda activate ./cython-env
         python setup.py clean cythonize sdist
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
@@ -60,14 +64,14 @@ jobs:
       #
       # Tests below will operate in this newly-installed directory.
       run: |
-        eval "$(conda shell.bash hook)"
-        conda install mamba python=${{ matrix.python-version }} -y --channel conda-forge
+        source "${HOME}/conda/etc/profile.d/conda.sh"
+        conda install python=${{ matrix.python-version }} -y --channel conda-forge
 
         # Only install non-python dependencies (like bedtools & ucsc tools);
         # let pip take care of the rest.
         grep -Ev "genomepy|matplotlib" optional-requirements.txt > optional-requirements-conda.txt
         grep -E "genomepy|matplotlib" optional-requirements.txt > optional-requirements-python.txt
-        mamba create -y -p ./test-env \
+        conda create -y -p ./test-env \
           --channel conda-forge \
           --channel bioconda \
           bedtools \
@@ -90,7 +94,7 @@ jobs:
       # Run pytest and sphinx doctests
       run: |
         cd $WORKDIR
-        eval "$(conda shell.bash hook)"
+        source "${HOME}/conda/etc/profile.d/conda.sh"
         conda activate ./test-env
 
         # Extract the package tarball built above, and use that for running the tests.
@@ -106,7 +110,7 @@ jobs:
       # Build docs and commit to gh-pages branch. Note that no push happens
       # unless we're on the master branch
       run: |
-        eval "$(conda shell.bash hook)"
+        source "${HOME}/conda/etc/profile.d/conda.sh"
         conda activate ./test-env
 
         # Move to extracted tarball dir, see above notes
