@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changelog &#8212; pybedtools 0.10.0 documentation</title>
+    <title>Changelog &#8212; pybedtools 0.11.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=82662543"></script>
+    <script src="_static/documentation_options.js?v=f3b36f1a"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -34,6 +34,15 @@
             
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="changes-in-v0-11-0">
+<h2>Changes in v0.11.0<a class="headerlink" href="#changes-in-v0-11-0" title="Link to this heading">¶</a></h2>
+<p>2025-01-02</p>
+<ul class="simple">
+<li><p>Add type hints and clean up code in general (big thanks to &#64;duartemolha)</p></li>
+<li><p>Fix post-installation tests in Debian package (thanks &#64;mr-c)</p></li>
+<li><p>Remove Python 3.8 support which reached end-of-life 2024-10-07.</p></li>
+</ul>
+</section>
 <section id="changes-in-v0-10-1">
 <h2>Changes in v0.10.1<a class="headerlink" href="#changes-in-v0-10-1" title="Link to this heading">¶</a></h2>
 <p>2024-04-09</p>
@@ -41,7 +50,7 @@
 <li><p>Remove last traces of Python 2.7 support by removing <code class="docutils literal notranslate"><span class="pre">six</span></code> dependency (thanks Valentyn Bezshapkin)</p></li>
 <li><p>Support building on later C++ toolchains (thanks Cameron Smith)</p></li>
 <li><p>Support <code class="docutils literal notranslate"><span class="pre">pathlib.Path</span></code> in <code class="docutils literal notranslate"><span class="pre">BedTool.cat()</span></code> (fixes #405)</p></li>
-<li><p>Improvements to testing: add tests for Python 3.12, more explicity setup/teardown</p></li>
+<li><p>Improvements to testing: add tests for Python 3.12, more explicit setup/teardown</p></li>
 </ul>
 </section>
 <section id="changes-in-v0-9-1">
@@ -783,6 +792,7 @@ where to save output – no more moving tempfiles</p></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc_source.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-11-0">Changes in v0.11.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-10-1">Changes in v0.10.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-9-1">Changes in v0.9.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#changes-in-v0-9">Changes in v0.9</a></li>
@@ -847,7 +857,7 @@ where to save output – no more moving tempfiles</p></li>
         <li class="right" >
           <a href="autodocs/pybedtools.contrib.long_range_interaction.cis_trans_interactions.html" title="pybedtools.contrib.long_range_interaction.cis_trans_interactions"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.11.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Changelog</a></li> 
       </ul>
     </div>
