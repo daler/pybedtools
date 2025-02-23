@@ -1460,6 +1460,11 @@ class BedTool(object):
             "mapBed": ",",
         }
         stdin = None
+   
+        # If anything in kwargs is a pathlib Path, convert to string here.
+        for k, v in kwargs.items():
+            if isinstance(v, pathlib.PurePath):
+                kwargs[k] = str(v)
 
         # -----------------------------------------------------------------
         # Decide how to send instream1 to BEDTools.  If there's no implicit
