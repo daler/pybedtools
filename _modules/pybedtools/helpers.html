@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pybedtools.helpers &#8212; pybedtools 0.11.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <script src="../../_static/documentation_options.js?v=f3b36f1a"></script>
@@ -31,29 +31,29 @@
           <div class="body" role="main">
             
   <h1>Source code for pybedtools.helpers</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">gzip</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">struct</span>
-<span class="kn">import</span> <span class="nn">atexit</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">urllib</span>
-<span class="kn">import</span> <span class="nn">urllib.error</span>
-<span class="kn">import</span> <span class="nn">urllib.request</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.error</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
 
 <span class="k">try</span><span class="p">:</span>  <span class="c1"># Use genomepy to determine chrom sizes if it is installed</span>
-    <span class="kn">import</span> <span class="nn">genomepy</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">genomepy</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">settings</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">filenames</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">genome_registry</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.cbedtools</span> <span class="kn">import</span> <span class="n">create_interval_from_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">filenames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">genome_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.cbedtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_interval_from_list</span>
 
 <span class="n">BUFSIZE</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
@@ -62,7 +62,7 @@
 
 <div class="viewcode-block" id="set_bedtools_path">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.set_bedtools_path.html#pybedtools.helpers.set_bedtools_path">[docs]</a>
-<span class="k">def</span> <span class="nf">set_bedtools_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_bedtools_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Explicitly set path to `BEDTools` installation dir.</span>
 
@@ -73,22 +73,22 @@
 <span class="sd">    To reset and use the default system path, call this function with no</span>
 <span class="sd">    arguments or use path=&quot;&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">paths</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">paths</span>
 
     <span class="n">paths</span><span class="o">.</span><span class="n">_set_bedtools_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">get_bedtools_path</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_bedtools_path</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the currently-set path to bedtools</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">paths</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">paths</span>
 
     <span class="k">return</span> <span class="n">paths</span><span class="o">.</span><span class="n">_get_bedtools_path</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">set_R_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_R_path</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Explicitly set path to `R` installation dir.</span>
 
@@ -97,12 +97,12 @@
 
 <span class="sd">    Use path=&quot;&quot; to reset to default system path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">paths</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">paths</span>
 
     <span class="n">paths</span><span class="o">.</span><span class="n">_set_R_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_check_for_bedtools</span><span class="p">(</span><span class="n">force_check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_for_bedtools</span><span class="p">(</span><span class="n">force_check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">override</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks installation as well as version (based on whether or not &quot;bedtools</span>
 <span class="sd">    intersect&quot; works, or just &quot;intersectBed&quot;)</span>
@@ -159,7 +159,7 @@
             <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_check_for_R</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_for_R</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
             <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_R_path</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">),</span> <span class="s2">&quot;--version&quot;</span><span class="p">],</span>
@@ -175,22 +175,22 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please install R and ensure it is on your path </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">add_msg</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for this module&#39;s exceptions&quot;&quot;&quot;</span>
 
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">pybedtoolsError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">pybedtoolsError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">BEDToolsError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BEDToolsError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Command was:</span><span class="se">\n\n\t</span><span class="s2">&quot;</span>
             <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span>
@@ -201,7 +201,7 @@
         <span class="k">return</span> <span class="n">m</span>
 
 
-<span class="k">def</span> <span class="nf">isGZIP</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isGZIP</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b\x08</span><span class="s2">&quot;</span><span class="p">:</span>
@@ -209,7 +209,7 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">isBGZIP</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isBGZIP</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a filename to see if it&#39;s a BGZIPed file or not.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -235,7 +235,7 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">isBAM</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isBAM</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if the file is both BGZIPed and the compressed contents have</span>
 <span class="sd">    start with the magic number `BAM\\x01`, or if the file is CRAM format (see</span>
@@ -251,7 +251,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
 
-<span class="k">def</span> <span class="nf">isCRAM</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isCRAM</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if the file starts with the bytes for the characters &quot;CRAM&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -260,7 +260,7 @@
             <span class="k">return</span> <span class="kc">True</span>
 
 
-<span class="k">def</span> <span class="nf">find_tagged</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_tagged</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the bedtool object with tagged with *tag*.  Useful for tracking</span>
 <span class="sd">    down bedtools you made previously.</span>
@@ -274,7 +274,7 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;tag &quot;</span><span class="si">%s</span><span class="s1">&quot; not found&#39;</span> <span class="o">%</span> <span class="n">tag</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_flatten_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_flatten_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">nested</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">while</span> <span class="n">nested</span><span class="p">:</span>
         <span class="n">check_again</span> <span class="o">=</span> <span class="kc">False</span>
@@ -293,7 +293,7 @@
 
 <div class="viewcode-block" id="set_tempdir">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.set_tempdir.html#pybedtools.helpers.set_tempdir">[docs]</a>
-<span class="k">def</span> <span class="nf">set_tempdir</span><span class="p">(</span><span class="n">tempdir</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_tempdir</span><span class="p">(</span><span class="n">tempdir</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set the directory for temp files.</span>
 
@@ -309,7 +309,7 @@
 
 <div class="viewcode-block" id="get_tempdir">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.get_tempdir.html#pybedtools.helpers.get_tempdir">[docs]</a>
-<span class="k">def</span> <span class="nf">get_tempdir</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tempdir</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the current tempdir for the module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -319,7 +319,7 @@
 
 <div class="viewcode-block" id="cleanup">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.cleanup.html#pybedtools.helpers.cleanup">[docs]</a>
-<span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes all temp files from the current session (or optionally *all* \</span>
 <span class="sd">            sessions)</span>
@@ -343,7 +343,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_version_2_15_plus_names</span><span class="p">(</span><span class="n">prog_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_version_2_15_plus_names</span><span class="p">(</span><span class="n">prog_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">_bedtools_installed</span><span class="p">:</span>
         <span class="n">_check_for_bedtools</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">_v_2_15_plus</span><span class="p">:</span>
@@ -357,7 +357,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">_bedtools_path</span><span class="p">,</span> <span class="s2">&quot;bedtools&quot;</span><span class="p">),</span> <span class="n">prog_name</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">call_bedtools</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_bedtools</span><span class="p">(</span>
     <span class="n">cmds</span><span class="p">,</span>
     <span class="n">tmpfn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">stdin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -533,7 +533,7 @@
     <span class="k">return</span> <span class="n">output</span>
 
 
-<span class="k">def</span> <span class="nf">_check_sequence_stderr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_sequence_stderr</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If stderr created by fastaFromBed starts with &#39;index file&#39;, then don&#39;t</span>
 <span class="sd">    consider it an error.</span>
@@ -547,7 +547,7 @@
     <span class="k">return</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">_call_randomintersect</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_call_randomintersect</span><span class="p">(</span>
     <span class="n">_self</span><span class="p">,</span>
     <span class="n">other</span><span class="p">,</span>
     <span class="n">iterations</span><span class="p">,</span>
@@ -575,7 +575,7 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">close_or_delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">close_or_delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single function that can be used to get rid of a BedTool, whether it&#39;s a</span>
 <span class="sd">    streaming or file-based version.</span>
@@ -589,7 +589,7 @@
             <span class="n">x</span><span class="o">.</span><span class="n">fn</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="ne">StopIteration</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">n_open_fds</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">n_open_fds</span><span class="p">():</span>
     <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
     <span class="n">procs</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;lsof&quot;</span><span class="p">,</span> <span class="s2">&quot;-w&quot;</span><span class="p">,</span> <span class="s2">&quot;-Ff&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">pid</span><span class="p">)])</span>
     <span class="n">nprocs</span> <span class="o">=</span> <span class="mi">0</span>
@@ -599,7 +599,7 @@
     <span class="k">return</span> <span class="n">nprocs</span>
 
 
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
 <span class="n">coord_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -611,7 +611,7 @@
 <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">string_to_interval</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">string_to_interval</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert string of the form &quot;chrom:start-stop&quot; or &quot;chrom:start-stop[strand]&quot;</span>
 <span class="sd">    to an interval.</span>
@@ -640,8 +640,8 @@
     <span class="k">return</span> <span class="n">s</span>
 
 
-<span class="k">class</span> <span class="nc">FisherOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FisherOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        fisher returns text results like::</span>
 
@@ -683,15 +683,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">two_tail</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">two_tail</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ratio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> at </span><span class="si">%s</span><span class="s2">&gt;</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SplitOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SplitOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handles output from bedtools split, which sends a report of files to</span>
 <span class="sd">        stdout. This class parses that list into something more convenient to</span>
@@ -700,7 +700,7 @@
 <span class="sd">        Most useful is probably the .bedtools attribute, which is a list of</span>
 <span class="sd">        BedTool objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.bedtool</span> <span class="kn">import</span> <span class="n">BedTool</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.bedtool</span><span class="w"> </span><span class="kn">import</span> <span class="n">BedTool</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -730,7 +730,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">bedtools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BedTool</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
 
-<span class="k">def</span> <span class="nf">internet_on</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">internet_on</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s2">&quot;http://genome.ucsc.edu&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -741,7 +741,7 @@
 
 <div class="viewcode-block" id="get_chromsizes_from_ucsc">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.get_chromsizes_from_ucsc.html#pybedtools.helpers.get_chromsizes_from_ucsc">[docs]</a>
-<span class="k">def</span> <span class="nf">get_chromsizes_from_ucsc</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_chromsizes_from_ucsc</span><span class="p">(</span>
     <span class="n">genome</span><span class="p">,</span>
     <span class="n">saveas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">mysql</span><span class="o">=</span><span class="s2">&quot;mysql&quot;</span><span class="p">,</span>
@@ -844,7 +844,7 @@
 
 <div class="viewcode-block" id="chromsizes_to_file">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.chromsizes_to_file.html#pybedtools.helpers.chromsizes_to_file">[docs]</a>
-<span class="k">def</span> <span class="nf">chromsizes_to_file</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">chromsizes_to_file</span><span class="p">(</span><span class="n">chrom_sizes</span><span class="p">,</span> <span class="n">fn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a *chromsizes* dictionary to a file.  If *fn* is None, then a</span>
 <span class="sd">    tempfile is created (which can be deleted with pybedtools.cleanup()).</span>
@@ -869,7 +869,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">get_chromsizes_from_genomepy</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_chromsizes_from_genomepy</span><span class="p">(</span>
     <span class="n">genome</span><span class="p">,</span> <span class="n">saveas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -907,7 +907,7 @@
 
 <div class="viewcode-block" id="chromsizes">
 <a class="viewcode-back" href="../../autodocs/pybedtools.helpers.chromsizes.html#pybedtools.helpers.chromsizes">[docs]</a>
-<span class="k">def</span> <span class="nf">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Looks for a *genome* already included in the genome registry; if not found</span>
 <span class="sd">    it first tries to look it up via genomepy. If genomepy is not installed, or</span>
@@ -952,7 +952,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">get_includes</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_includes</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a list of include directories with BEDTools headers</span>
 <span class="sd">    &quot;&quot;&quot;</span>

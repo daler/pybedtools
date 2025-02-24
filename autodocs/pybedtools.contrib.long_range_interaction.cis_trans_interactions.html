@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>pybedtools.contrib.long_range_interaction.cis_trans_interactions &#8212; pybedtools 0.11.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
     <script src="../_static/documentation_options.js?v=f3b36f1a"></script>
@@ -74,7 +74,7 @@ a gene1-gene2 interaction and a gene1-gene3 interaction:</p>
 <span class="n">peaks</span>   <span class="mi">1</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span><span class="p">[</span><span class="s1">&#39;tss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsses</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queries</span><span class="p">[</span><span class="s1">&#39;pk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">peaks</span>
@@ -100,7 +100,7 @@ interaction evidence has its own line. The first line shows that pair1 has
 gene1 and peak1 in the same fragment, and that they are connected to gene2.
 The second line shows again that gene1 and peak1 are in the same fragmet
 and that they are also connected to gene3:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span><span class="p">;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="p">;</span> <span class="n">pandas</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">long_range_interaction</span><span class="o">.</span><span class="n">tag_bedpe</span><span class="p">(</span><span class="n">bedpe</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;tss&#39;</span><span class="p">:</span> <span class="n">tsses</span><span class="p">,</span> <span class="s1">&#39;pk&#39;</span><span class="p">:</span> <span class="n">peaks</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span>  <span class="n">pybedtools</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">long_range_interaction</span><span class="o">.</span><span class="n">cis_trans_interactions</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">extra</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>

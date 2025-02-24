@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Filtering &#8212; pybedtools 0.11.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <script src="_static/documentation_options.js?v=f3b36f1a"></script>
@@ -49,7 +49,7 @@ that are more than 100 bp long:</p>
 <p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">filter()</span></code> method will pass its <code class="file docutils literal notranslate"><span class="pre">*args</span></code> and <code class="file docutils literal notranslate"><span class="pre">**kwargs</span></code> to the function
 provided.  So here is a more generic case, where the function is defined once
 and different arguments are passed in for filtering on different lengths:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">len_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">len_filter</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="s2">&quot;Returns True if feature is longer than L&quot;</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">L</span>
 </pre></div>
@@ -90,12 +90,12 @@ a ready-to-use <code class="xref py py-class docutils literal notranslate"><span
 in Cython that will be faster than pure Python equivalents.  For example,
 there are <code class="xref py py-func docutils literal notranslate"><span class="pre">greater_than()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">less_than()</span></code> functions, which are
 about 70% faster.  In IPython:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pybedtools.featurefuncs</span> <span class="kn">import</span> <span class="n">greater_than</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybedtools.featurefuncs</span><span class="w"> </span><span class="kn">import</span> <span class="n">greater_than</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">310456</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">L</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">L</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># The %timeit command is from IPython, and won&#39;t work</span>

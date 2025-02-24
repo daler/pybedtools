@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Changelog &#8212; pybedtools 0.11.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <script src="_static/documentation_options.js?v=f3b36f1a"></script>
@@ -705,7 +705,7 @@ make Attribute class properly dict-like (thanks Libor Mořkovský)</p></li>
 BEDTools programs.  This is necessary for arguments like
 <code class="file docutils literal notranslate"><span class="pre">genomeCoverageBed</span></code>’s <code class="file docutils literal notranslate"><span class="pre">-5</span></code> argument, since <code class="file docutils literal notranslate"><span class="pre">5=True</span></code> is not a valid Python
 expression.  For example, you can use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pybedtools</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pybedtools</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
 <span class="n">a</span><span class="o">.</span><span class="n">genome_coverage</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strand</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="s1">&#39;-5&#39;</span><span class="p">)</span>
 </pre></div>

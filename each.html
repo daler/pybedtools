@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Each &#8212; pybedtools 0.11.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <script src="_static/documentation_options.js?v=f3b36f1a"></script>
@@ -55,7 +55,7 @@ as calculated above and divide by the number of bases in that feature.  We
 can also supply an optional scalar, like 0.001, to get the results in
 “number of intersections per kb”.  We then insert that value into the score
 field of the feature.  Here’s the function:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">normalize_count</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">scalar</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">normalize_count</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">scalar</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
 <span class="gp">... </span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="gp">... </span><span class="sd">    assume feature&#39;s last field is the count</span>
 <span class="gp">... </span><span class="sd">    &quot;&quot;&quot;</span>
