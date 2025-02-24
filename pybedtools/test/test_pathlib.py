@@ -25,3 +25,16 @@ def test_pathlib_nonexistent_file():
     path = pathlib.Path(fn)
     with pytest.raises(FileNotFoundError):
         pybedtools.BedTool(path)
+
+
+def test_pathlib_on_methods():
+    # Above functions test the creation of BedTool from Path objects; here we
+    # test arbitrary methods to test that Path objs are converted to str when
+    # composing the relevant command.
+    fn_a = os.path.join(pybedtools.filenames.data_dir(), "a.bed")
+    fn_b = os.path.join(pybedtools.filenames.data_dir(), "b.bed")
+    p_a = pathlib.Path(fn_a)
+    p_b = pathlib.Path(fn_b)
+    bt = pybedtools.BedTool(fn_a)
+    res = bt.intersect(p_b)
+
