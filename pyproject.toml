@@ -1,3 +1,13 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel", "Cython>=0.29.30,<3.0"]
+requires = ["setuptools>=61.0", "wheel", "Cython>=3.0"]
 build-backend = "setuptools.build_meta:__legacy__"
+
+[project]
+name = "pybedtools"
+dynamic = ["version", "maintainers", "license", "classifiers", "readme"]
+description='Wrapper around BEDTools for bioinformatics work'
+dependencies = [
+    "numpy",
+    "pysam",
+    "pandas"
+]
