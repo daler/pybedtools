@@ -26,7 +26,6 @@ Cython source code.
 """
 
 try:
-    from Cython.Build import build_ext as cython_build_ext
     from Cython.Build import cythonize
     HAVE_CYTHON = True
 except ImportError:
@@ -261,7 +260,6 @@ cmdclass = {
 }
 
 if USE_CYTHON:
-    cmdclass['build_ext'] = cython_build_ext
     cmdclass['cythonize'] = Cythonize
 else:
     cmdclass['build_ext'] = InformativeBuildExt
