@@ -42,7 +42,7 @@ jobs:
       # with pip to make sure it works.
       run: |
         source "${HOME}/conda/etc/profile.d/conda.sh"
-        conda create -p ./cython-env -y "cython>3.0" python=${{ matrix.python-version }} gxx zlib --channel conda-forge
+        conda create -p ./cython-env -y "cython>3.0" python=${{ matrix.python-version }} gxx zlib setuptools --channel conda-forge
         conda activate ./cython-env
         python setup.py clean cythonize sdist
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
