@@ -3,6 +3,16 @@
 Changelog
 =========
 
+Changes in v0.12.0
+------------------
+
+2025-03-14
+
+* Allow ``pathlib.Path`` objects to be used in arbitrary ``BedTool``  methods.
+  Previously, only ``BedTool`` creation supported ``Path`` (fixes #421)
+* Add support for Python 3.13, thanks to @theAeon Andrew Robbins (fixes #422)
+
+
 Changes in v0.11.0
 ------------------
 
