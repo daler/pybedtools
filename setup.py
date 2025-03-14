@@ -289,7 +289,6 @@ if __name__ == "__main__":
         long_description=README,
         zip_safe=False,
         setup_requires=[],
-        install_requires=['pysam', 'numpy'],
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
