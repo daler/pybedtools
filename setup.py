@@ -26,7 +26,6 @@ Cython source code.
 """
 
 try:
-    from Cython.Build import build_ext as cython_build_ext
     from Cython.Build import cythonize
     HAVE_CYTHON = True
 except ImportError:
@@ -52,12 +51,7 @@ if USE_CYTHON and not HAVE_CYTHON:
 # Try bootstrapping setuptools if it doesn't exist. This is for using the
 # `develop` command, which is very useful for in-place development work.
 try:
-    import pkg_resources
-    try:
-        pkg_resources.require("setuptools>=0.6c5")
-    except pkg_resources.VersionConflict:
-        from ez_setup import use_setuptools
-        use_setuptools(version="0.6c5")
+    import setuptools
     from setuptools import setup, Command
 except ImportError:
     sys.exit(
@@ -68,15 +62,15 @@ except ImportError:
 curdir = os.path.abspath(os.path.dirname(__file__))
 
 # These imports need to be here; setuptools needs to be imported first.
-from distutils.extension import Extension  # noqa: E402
-from distutils.command.build import build  # noqa: E402
-from distutils.command.build_ext import build_ext  # noqa: E402
-from distutils.command.sdist import sdist  # noqa: E402
-import distutils.log
-
+from setuptools.extension import Extension  # noqa: E402
+from setuptools.command.build import build  # noqa: E402
+from setuptools.command.build_ext import build_ext  # noqa: E402
+from setuptools.command.sdist import sdist  # noqa: E402
+import setuptools.logging
+setuptools.logging.configure()
 
 MAJ = 0
-MIN = 11
+MIN = 12
 REV = 0
 VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
 
@@ -209,7 +203,7 @@ class InformativeBuildExt(build_ext):
                         ''')
                 self.announce(
                     "Trying to generate the following missing files:\n%s" % "\n".join(missing_src),
-                    level=distutils.log.INFO)
+                    level=0)
                 for src in missing_src:
                     assert src in ext.sources
                     (root, extn) = os.path.splitext(src)
@@ -266,7 +260,6 @@ cmdclass = {
 }
 
 if USE_CYTHON:
-    cmdclass['build_ext'] = cython_build_ext
     cmdclass['cythonize'] = Cythonize
 else:
     cmdclass['build_ext'] = InformativeBuildExt
@@ -296,7 +289,6 @@ if __name__ == "__main__":
         long_description=README,
         zip_safe=False,
         setup_requires=[],
-        install_requires=['pysam', 'numpy'],
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
@@ -324,6 +316,5 @@ if __name__ == "__main__":
                                      "*.h"],
                       'src': ['src/*'],
                       },
-        include_package_data=True,
-        language_level=2,
+        include_package_data=True
     )
