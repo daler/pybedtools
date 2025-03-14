@@ -11,3 +11,5 @@ dependencies = [
     "pysam",
     "pandas"
 ]
+[tool.pytest.ini_options]
+testpaths = ["pybedtools"]
