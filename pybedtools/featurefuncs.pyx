@@ -1,7 +1,7 @@
 # cython: language_level=2
 # distutils: language = c++
 from cbedtools cimport Interval
-from cbedtools import create_interval_from_list
+from pybedtools.cbedtools import create_interval_from_list
 
 
 cpdef extend_fields(Interval feature, int n):
