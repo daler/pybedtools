@@ -84,7 +84,9 @@ Code cleanup:
 Changes in v0.8.2
 -----------------
 
-2021-03-13: Minor updates
+2021-03-13
+
+Minor updates
 
 * Removed scripts directory from installed version. These are still available
   in the GitHub repo, but were causing import issues with Python 3.9 and were
@@ -106,7 +108,9 @@ Changes in v0.8.2
 Changes in v0.8.1
 -----------------
 
-2019-12-27: This version has minor updates and bugfixes:
+2019-12-27
+
+This version has minor updates and bugfixes:
 
 * Bugfix: Fixes to `pbt_plotting_example.py` (thanks Steffen Möllera @smoe)
 * Bugfix: Using `BedTool.saveas()` when a BedTool already points to a compressed file
@@ -131,6 +135,9 @@ Changes in v0.8.1
 
 Changes in v0.8.0
 -----------------
+
+2018-11-28
+
 This version further improves testing, improves the way C++ files are included
 in the package, and fixes many long-standing bugs.
 
@@ -199,6 +206,9 @@ in the package, and fixes many long-standing bugs.
 
 Changes in v0.7.10
 ------------------
+
+2017-05-31
+
 Various bug fixes and some minor feature additions:
 
 * Support for comma-separated lists for `mapBed` (thanks Chuan-Sheng Foo)
@@ -216,6 +226,9 @@ Various bug fixes and some minor feature additions:
 
 Changes in v0.7.9
 -----------------
+
+2017-01-25
+
 Minor bugfix release:
 
 * add `contrib.bigwig.bigwigtobedgraph` (thanks Justin Fear)
@@ -227,6 +240,9 @@ Minor bugfix release:
 
 Changes in v0.7.8
 -----------------
+
+2016-07-13
+
 * Be more careful about BAM vs bgzipped files (#168)
 * `BedTool.bgzip` now preserves the header when sorting
 * In Python 3, parsed BEDTools help string is decoded properly
@@ -236,6 +252,9 @@ Changes in v0.7.8
 
 Changes in v0.7.7
 -----------------
+
+2016-03-11
+
 * Chromsizes for dm6 and mm10 assemblies added to `genome_registry`
 * Better Python 3 compatibility in the `long_range_interaction` module
 * New `featurefuncs.UniqueID` class, useful for ensuring all features in a file
@@ -244,11 +263,17 @@ Changes in v0.7.7
 
 Changes in v0.7.6
 -----------------
+
+2016-02-01
+
 * New module `pybedtools.contrib.long_range_interaction` for working with
   HiC-like data.
 
 Changes in v0.7.5
 -----------------
+
+2016-01-25
+
 * When using tabix-indexed files, `tabix` and `bgzip` are no longer required to
   be installed separately. Only `pysam` is needed.
 
@@ -264,6 +289,9 @@ Changes in v0.7.5
 
 Changes in v0.7.4
 -----------------
+
+2015-10-30
+
 Bugfix release.
 
 - fix `#147 <https://github.com/daler/pybedtools/issues/147>`_ so that warnings
@@ -275,6 +303,9 @@ Bugfix release.
 
 Changes in v0.7.1
 -----------------
+
+2015-09-28
+
 This is largely a bugfix release with the following changes:
 
 - fix for some BAM headers (thanks Gabriel Platt)
@@ -285,6 +316,9 @@ This is largely a bugfix release with the following changes:
 
 Changes in v0.7.0
 -----------------
+
+2015-09-21
+
 This release reflects a major upgrade in the underlying code in order to
 support both Python 2 and Python 3 using the same code. Aside from trivial
 things like converting print statements to functions and using `next()` instead
@@ -408,6 +442,9 @@ so::
 
 Changes in v0.6.9
 -----------------
+
+2014-12-11
+
 Minor bug fix release.
 
 * improved the automatic field name handling when converting an interval file to
@@ -422,11 +459,16 @@ Minor bug fix release.
 Changes in v0.6.8
 -----------------
 
+2014-10-08
+
 Bugfix: Thanks to Gabriel Pratt, `pybedtools` is no longer plagued by open filehandles
 in the C code causing the notorious "Too many files open" error.
 
 Changes in v0.6.7
 -----------------
+
+2014-06-01
+
 Now compatible with BEDTools v2.21.0.
 
 The one exception is that the new `bedtools intersect` functionality that
@@ -466,6 +508,9 @@ Minor bug fixes:
 
 Changes in v0.6.6
 -----------------
+
+2014-05-23
+
 This is a compatibility release, updated for BEDTools v2.20.0.
 
 There is one API change that affects the behavior of overloaded operators (that
@@ -494,6 +539,9 @@ make more logical sense:
 
 Changes in v0.6.5
 -----------------
+
+2014-04-24
+
 This is a minor bug-fix release:
 
 * Fix for BedTool.all_hits() and any_hits() which will now show hits for
@@ -506,6 +554,8 @@ This is a minor bug-fix release:
 
 Changes in v0.6.4
 -----------------
+
+2014-01-08
 
 * Full integration with BEDTools v2.18.  This includes some compatibility fixes
   for the new buffered output capabilities of BEDTool `intersect` and wrapping
@@ -523,6 +573,8 @@ Changes in v0.6.4
 
 Changes in v0.6.3
 -----------------
+
+2013-12-16
 
 * New :mod:`pybedtools.parallel` module for working with many operations in
   parallel.  See the docs for :func:`pybedtools.parallel.parallel_apply` for
@@ -581,6 +633,8 @@ Changes in v0.6.3
 
 Changes in v0.6.2
 -----------------
+
+2012-11-05
 
 * Wrapped new tools available in BEDTools 2.17: :meth:`BedTool.jaccard` and
   :meth:`BedTool.reldist` wrap the new `bedtools jaccard` and `bedtools
@@ -649,6 +703,9 @@ Changes in v0.6.2
 
 Changes in v0.6.1
 -----------------
+
+2012-05-25
+
 * New :class:`pybedtools.contrib.plotting.Track` class allows plotting of
   features with matplotlib.  The `Track` class subclasses
   `matplotlib.collections.PolyCollection`, making it rather fast for 1000s of
@@ -672,6 +729,9 @@ Changes in v0.6.1
 
 Changes in v0.6
 ---------------
+
+2012-03-13
+
 * Overhaul in online documentation to hopefully make functionality easier to
   find and/or discover.  See :ref:`pybedtools reference` for summary tables of
   the different parts of :mod:`pybedtools`; each entry is linked to further
@@ -761,6 +821,9 @@ Changes in v0.6
 
 Changes in v0.5.5
 -----------------
+
+2011-09-17
+
 * Use `additional_args` kwarg to pass arguments verbatim to the underlying
   BEDTools programs.  This is necessary for arguments like
   `genomeCoverageBed`'s `-5` argument, since `5=True` is not a valid Python
@@ -790,6 +853,9 @@ Changes in v0.5.5
 
 Changes in v0.5
 ---------------
+
+2011-05-03
+
 * support for running random intersections in parallel.  See
   :meth:`BedTool.randomstats` and :meth:`BedTool.randomintersection` (thanks,
   Jake Biesinger)
