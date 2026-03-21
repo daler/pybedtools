@@ -23,12 +23,19 @@
 #include <unistd.h>
 #include <sstream>
 
+#if !defined(S_ISREG) && defined(_S_IFMT) && defined(_S_IFREG)
+#define S_ISREG(m) (((m) & _S_IFMT) == _S_IFREG)
+#endif
+#if !defined(S_ISDIR) && defined(_S_IFMT) && defined(_S_IFDIR)
+#define S_ISDIR(m) (((m) & _S_IFMT) == _S_IFDIR)
+#endif
+
 using namespace std;
 
 /*****************************************************************************
-  Convenience functions to detect whether a given file is 
+  Convenience functions to detect whether a given file is
   "regular" and/or "gzipped".
-  
+
   Kindly contributed by Assaf Gordon.
 ******************************************************************************/
 string string_error(int errnum);
