@@ -1,0 +1,3 @@
+numpy
+pandas
+pysam @ "git+https://github.com/theAeon/pysam.git@pysam-mingw"
