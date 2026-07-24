@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
   pull_request:
     types:
       - opened
@@ -13,7 +15,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -48,6 +50,12 @@ jobs:
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
         conda deactivate
 
+    - name: upload sdist
+      if: ${{ matrix.python-version == '3.12' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: sdist
+        path: dist/pybedtools-*.tar.gz
 
     - name: conda env and install locally
       # Set up conda and install pybedtools into that env
@@ -150,3 +158,56 @@ jobs:
         cd /tmp/docs
         git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" gh-pages
         cd $WORKDIR
+
+
+  build-wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cibw_archs: "x86_64"
+          - os: ubuntu-24.04-arm
+            cibw_archs: "aarch64"
+          - os: macos-latest
+            cibw_archs: "arm64 x86_64"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_SKIP: "*-win*"
+          CIBW_BEFORE_BUILD: "pip install 'cython>3.0' && python setup.py cythonize"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+
+  publish:
+    needs: [build-and-test, build-wheels]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    environment: pypi
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist/
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
