@@ -125,17 +125,29 @@ jobs:
         cd /tmp/pybedtools-uncompressed/pybedtools-*
         (cd docs && make html)
 
-        git clone \
-          --single-branch \
-          --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
-          /tmp/docs
+        REPO_URL="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
+
+        # The gh-pages branch may not exist upstream (e.g. in a fork that has
+        # never published docs); if so, create a new orphan branch to work in.
+        if git ls-remote --exit-code --heads "$REPO_URL" gh-pages > /dev/null 2>&1; then
+          git clone \
+            --single-branch \
+            --branch gh-pages "$REPO_URL" \
+            /tmp/docs
+        else
+          echo "gh-pages branch not found upstream; creating an orphan branch locally"
+          git clone "$REPO_URL" /tmp/docs
+          git -C /tmp/docs checkout --orphan gh-pages
+          git -C /tmp/docs rm -rf --quiet . || true
+        fi
 
         rm -rf /tmp/docs/*
         cp -r docs/build/html/* /tmp/docs
         touch /tmp/docs/.nojekyll
         cd /tmp/docs
         git add .
-        if git diff --cached --quiet; then
+        # with --verify HEAD, if there's no HEAD then we should commit 
+        if git rev-parse --verify HEAD > /dev/null 2>&1 && git diff --cached --quiet; then
           echo "no changes, nothing to commit"
         else
           git commit -m 'update docs'
