@@ -16,6 +16,10 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+        include:   # Used to choose which version of Python to use for docs and for sdist
+          - python-version: "3.12"
+            canonical: true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
@@ -51,7 +55,7 @@ jobs:
         conda deactivate
 
     - name: upload sdist
-      if: ${{ matrix.python-version == '3.12' }}
+      if: matrix.canonical
       uses: actions/upload-artifact@v7
       with:
         name: sdist
@@ -114,7 +118,7 @@ jobs:
 
 
     - name: build-docs
-      if: ${{ (matrix.python-version == 3.10) }}
+      if: matrix.canonical
       # Build docs and commit to gh-pages branch. Note that no push happens
       # unless we're on the master branch
       run: |
@@ -157,6 +161,7 @@ jobs:
 
     - name: docs artifact
       # Upload built docs as an artifact for inspection, even on PRs
+      if: matrix.canonical
       uses: actions/upload-artifact@v7
       with:
         name: docs
@@ -165,7 +170,7 @@ jobs:
 
     - name: push docs to gh-pages branch
       # Push docs to gh-pages if this test is running on master branch
-      if: ${{ (github.ref == 'refs/heads/master') && (matrix.python-version == 3.10) }}
+      if: (github.ref == 'refs/heads/master') && matrix.canonical
       run: |
         cd /tmp/docs
         git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" gh-pages
