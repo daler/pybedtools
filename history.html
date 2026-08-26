@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using the history and tags &#8212; pybedtools 0.12.0 documentation</title>
+    <title>Using the history and tags &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Topical Documentation" href="topical-documentation-contents.html" />
@@ -42,15 +42,15 @@ course of some experimentation.</p>
 <p>To assist this sort of workflow, <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> instances keep track of
 their history in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">BedTool.history</span></code> attribute.  Let’s make an
 example <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code>, <code class="file docutils literal notranslate"><span class="pre">c</span></code>, that has some history:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'a.bed'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'b.bed'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="file docutils literal notranslate"><span class="pre">c</span></code> now has a history which tells you all sorts of useful things (described
 in more detail below):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">c</span><span class="o">.</span><span class="n">history</span>
-<span class="go">[&lt;HistoryStep&gt; bedtool(&quot;/home/ryan/pybedtools/pybedtools/test/a.bed&quot;).intersect(&quot;/home/ryan/pybedtools/pybedtools/test/b.bed&quot;, u=True), parent tag: klkreuay, result tag: egzgnrvj]</span>
+<span class="go">[&lt;HistoryStep&gt; bedtool("/home/ryan/pybedtools/pybedtools/test/a.bed").intersect("/home/ryan/pybedtools/pybedtools/test/b.bed", u=True), parent tag: klkreuay, result tag: egzgnrvj]</span>
 </pre></div>
 </div>
 <p>There are several things to note here.  First, the history describes the full
@@ -68,7 +68,7 @@ to them.  You can get get the <code class="xref py py-class docutils literal not
 <code class="xref py py-func docutils literal notranslate"><span class="pre">pybedtools.find_tagged()</span></code> function. These tags are used to keep track
 of instances during this session.</p>
 <p>So in this case, we could get a reference to the <code class="file docutils literal notranslate"><span class="pre">a</span></code> instance with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">should_be_a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">find_tagged</span><span class="p">(</span><span class="s1">&#39;klkreuay&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">should_be_a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">find_tagged</span><span class="p">(</span><span class="s1">'klkreuay'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here’s confirmation that the parent of the first step of <code class="file docutils literal notranslate"><span class="pre">c</span></code>’s history is
@@ -79,10 +79,10 @@ of instances during this session.</p>
 </pre></div>
 </div>
 <p>Let’s make something with a more complicated history:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'a.bed'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'b.bed'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="s1">&#39;hg19&#39;</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">slop</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="s1">'hg19'</span><span class="p">),</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># this step adds complexity!</span>
@@ -97,27 +97,27 @@ see:</p>
 <span class="go">|   [</span>
 <span class="go">|   |   [</span>
 <span class="go">|   |   |   [</span>
-<span class="go">|   |   |   |&lt;HistoryStep&gt; BedTool(&quot;/usr/local/lib/python2.6/dist-packages/pybedtools/test/data/a.bed&quot;).intersect(</span>
-<span class="go">|   |   |   |                      &quot;/usr/local/lib/python2.6/dist-packages/pybedtools/test/data/b.bed&quot;,</span>
+<span class="go">|   |   |   |&lt;HistoryStep&gt; BedTool("/usr/local/lib/python2.6/dist-packages/pybedtools/test/data/a.bed").intersect(</span>
+<span class="go">|   |   |   |                      "/usr/local/lib/python2.6/dist-packages/pybedtools/test/data/b.bed",</span>
 <span class="go">|   |   |   |                      ),</span>
 <span class="go">|   |   |   |                      parent tag: rzrztxlw,</span>
 <span class="go">|   |   |   |                      result tag: ifbsanqk</span>
 <span class="go">|   |   |   ],</span>
 <span class="go">|   |   |</span>
-<span class="go">|   |   |&lt;HistoryStep&gt; BedTool(&quot;/tmp/pybedtools.BgULVj.tmp&quot;).slop(</span>
-<span class="go">|   |   |                      b=1,genome=&quot;hg19&quot;</span>
+<span class="go">|   |   |&lt;HistoryStep&gt; BedTool("/tmp/pybedtools.BgULVj.tmp").slop(</span>
+<span class="go">|   |   |                      b=1,genome="hg19"</span>
 <span class="go">|   |   |                      ),</span>
 <span class="go">|   |   |                      parent tag: ifbsanqk,</span>
 <span class="go">|   |   |                      result tag: omfrkwjp</span>
 <span class="go">|   |   ],</span>
 <span class="go">|   |</span>
-<span class="go">|   |&lt;HistoryStep&gt; BedTool(&quot;/tmp/pybedtools.SFmbYc.tmp&quot;).merge(),</span>
+<span class="go">|   |&lt;HistoryStep&gt; BedTool("/tmp/pybedtools.SFmbYc.tmp").merge(),</span>
 <span class="go">|   |                      parent tag: omfrkwjp,</span>
 <span class="go">|   |                      result tag: zlwqblvk</span>
 <span class="go">|   ],</span>
 <span class="go">|</span>
-<span class="go">|&lt;HistoryStep&gt; BedTool(&quot;/tmp/pybedtools.wlBiMo.tmp&quot;).subtract(</span>
-<span class="go">|                      &quot;/usr/local/lib/python2.6/dist-packages/pybedtools/test/data/b.bed&quot;,</span>
+<span class="go">|&lt;HistoryStep&gt; BedTool("/tmp/pybedtools.wlBiMo.tmp").subtract(</span>
+<span class="go">|                      "/usr/local/lib/python2.6/dist-packages/pybedtools/test/data/b.bed",</span>
 <span class="go">|                      ),</span>
 <span class="go">|                      parent tag: zlwqblvk,</span>
 <span class="go">|                      result tag: reztxhen</span>
@@ -250,7 +250,7 @@ the prompt.</p>
         <li class="right" >
           <a href="each.html" title="Each"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="tutorial-contents.html" accesskey="U">Tutorial Contents</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Using the history and tags</a></li> 
       </ul>
@@ -261,7 +261,7 @@ the prompt.</p>
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

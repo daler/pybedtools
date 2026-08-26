@@ -52,6 +52,7 @@
       ~Track.get_gid
       ~Track.get_hatch
       ~Track.get_hatch_linewidth
+      ~Track.get_hatchcolor
       ~Track.get_in_layout
       ~Track.get_joinstyle
       ~Track.get_label
@@ -117,6 +118,7 @@
       ~Track.set_gid
       ~Track.set_hatch
       ~Track.set_hatch_linewidth
+      ~Track.set_hatchcolor
       ~Track.set_in_layout
       ~Track.set_joinstyle
       ~Track.set_label

@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pybedtools.contrib.bigbed &#8212; pybedtools 0.12.0 documentation</title>
+    <title>pybedtools.contrib.bigbed &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
-    <script src="../../../_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
@@ -48,7 +48,7 @@
     <span class="n">unc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">tab</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts a BedTool object to a bigBed format and returns the new filename.</span>
 
 <span class="sd">    `x` is a BedTool object</span>
@@ -58,38 +58,38 @@
 <span class="sd">    `output` is the name of the bigBed file to create.</span>
 
 <span class="sd">    Other args are passed to bedToBigBed.  In particular, `bedtype` (which</span>
-<span class="sd">    becomes the &quot;-type=&quot; argument) is automatically handled for you if it is</span>
+<span class="sd">    becomes the "-type=" argument) is automatically handled for you if it is</span>
 <span class="sd">    kept as the default None.</span>
 
 <span class="sd">    Assumes that a recent version of bedToBigBed from UCSC is on the path.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">saveas</span><span class="p">()</span>
     <span class="n">chromsizes</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes</span><span class="p">(</span><span class="n">genome</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">bedtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">bedtype</span> <span class="o">=</span> <span class="s2">&quot;bed</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">x</span><span class="o">.</span><span class="n">field_count</span><span class="p">()</span>
+        <span class="n">bedtype</span> <span class="o">=</span> <span class="s2">"bed</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">x</span><span class="o">.</span><span class="n">field_count</span><span class="p">()</span>
     <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;bedToBigBed&quot;</span><span class="p">,</span>
+        <span class="s2">"bedToBigBed"</span><span class="p">,</span>
         <span class="n">x</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span>
         <span class="n">chromsizes</span><span class="p">,</span>
         <span class="n">output</span><span class="p">,</span>
-        <span class="s2">&quot;-blockSize=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">blockSize</span><span class="p">,</span>
-        <span class="s2">&quot;-itemsPerSlot=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">itemsPerSlot</span><span class="p">,</span>
-        <span class="s2">&quot;-type=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">bedtype</span><span class="p">,</span>
+        <span class="s2">"-blockSize=</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">blockSize</span><span class="p">,</span>
+        <span class="s2">"-itemsPerSlot=</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">itemsPerSlot</span><span class="p">,</span>
+        <span class="s2">"-type=</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">bedtype</span><span class="p">,</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="n">unc</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-unc&quot;</span><span class="p">)</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-unc"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">tab</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-tab&quot;</span><span class="p">)</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-tab"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">_as</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-as=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">_as</span><span class="p">)</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-as=</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">_as</span><span class="p">)</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">cmds</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
     <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;cmds: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">stderr:</span><span class="si">%s</span><span class="se">\n</span><span class="s2">stdout:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">),</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
+            <span class="s2">"cmds: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">stderr:</span><span class="si">%s</span><span class="se">\n</span><span class="s2">stdout:</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">),</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">output</span></div>
@@ -99,15 +99,15 @@
 <div class="viewcode-block" id="bigbed_to_bed">
 <a class="viewcode-back" href="../../../autodocs/pybedtools.contrib.bigbed.bigbed_to_bed.html#pybedtools.contrib.bigbed.bigbed_to_bed">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">bigbed_to_bed</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxItems</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bigBedToBed&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="p">]</span>
+    <span class="n">cmds</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"bigBedToBed"</span><span class="p">,</span> <span class="n">fn</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">chrom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;-chrom&quot;</span><span class="p">,</span> <span class="n">chrom</span><span class="p">])</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"-chrom"</span><span class="p">,</span> <span class="n">chrom</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;-start&quot;</span><span class="p">,</span> <span class="n">start</span><span class="p">])</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"-start"</span><span class="p">,</span> <span class="n">start</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;-end&quot;</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"-end"</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">maxItems</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;-maxItems&quot;</span><span class="p">,</span> <span class="n">maxItems</span><span class="p">])</span>
+        <span class="n">cmds</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"-maxItems"</span><span class="p">,</span> <span class="n">maxItems</span><span class="p">])</span>
 
     <span class="n">outfn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="o">.</span><span class="n">_tmp</span><span class="p">()</span>
     <span class="n">cmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outfn</span><span class="p">)</span>
@@ -116,7 +116,7 @@
     <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;cmds: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">stderr:</span><span class="si">%s</span><span class="se">\n</span><span class="s2">stdout:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">),</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
+            <span class="s2">"cmds: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">stderr:</span><span class="si">%s</span><span class="se">\n</span><span class="s2">stdout:</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmds</span><span class="p">),</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">BedTool</span><span class="p">(</span><span class="n">outfn</span><span class="p">)</span></div>
 
@@ -192,7 +192,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.contrib.bigbed</a></li> 
@@ -204,7 +204,7 @@
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>

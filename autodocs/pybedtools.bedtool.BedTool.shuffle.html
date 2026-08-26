@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools.bedtool.BedTool.shuffle &#8212; pybedtools 0.12.0 documentation</title>
+    <title>pybedtools.bedtool.BedTool.shuffle &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.annotate" href="pybedtools.bedtool.BedTool.annotate.html" />
@@ -41,10 +41,10 @@
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">shuffle</span></code>.</p>
 <p>Example usage:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'a.bed'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># so this test always returns the same results</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s1">&#39;hg19&#39;</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">genome</span><span class="o">=</span><span class="s1">'hg19'</span><span class="p">,</span> <span class="n">chrom</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 <span class="go">chr1    123081365       123081464       feature1        0       +</span>
 <span class="go">chr1    243444570       243444670       feature2        0       +</span>
 <span class="go">chr1    194620241       194620591       feature3        0       -</span>
@@ -109,13 +109,13 @@ details.</p>
                 <span class="ow">in</span> <span class="n">the</span> <span class="n">presence</span> <span class="n">of</span> <span class="o">-</span><span class="n">incl</span> <span class="ow">or</span> <span class="o">-</span><span class="n">excl</span><span class="o">.</span>
                 <span class="n">Default</span> <span class="o">=</span> <span class="mf">1000.</span>
         <span class="o">-</span><span class="n">noOverlapping</span>  
-                <span class="n">Don</span><span class="s1">&#39;t allow shuffled intervals to overlap.</span>
+                <span class="n">Don</span><span class="s1">'t allow shuffled intervals to overlap.</span>
         <span class="o">-</span><span class="n">allowBeyondChromEnd</span>    
                 <span class="n">Allow</span> <span class="n">shuffled</span> <span class="n">intervals</span> <span class="n">to</span> <span class="n">be</span> <span class="n">relocated</span> <span class="n">to</span> <span class="n">a</span> <span class="n">position</span>
                 <span class="ow">in</span> <span class="n">which</span> <span class="n">the</span> <span class="n">entire</span> <span class="n">original</span> <span class="n">interval</span> <span class="n">cannot</span> <span class="n">fit</span> <span class="n">w</span><span class="o">/</span><span class="n">o</span> <span class="n">exceeding</span>
                 <span class="n">the</span> <span class="n">end</span> <span class="n">of</span> <span class="n">the</span> <span class="n">chromosome</span><span class="o">.</span>  <span class="n">In</span> <span class="n">this</span> <span class="n">case</span><span class="p">,</span> <span class="n">the</span> <span class="n">end</span> <span class="n">coordinate</span> <span class="n">of</span> <span class="n">the</span>
-                <span class="n">shuffled</span> <span class="n">interval</span> <span class="n">will</span> <span class="n">be</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">the</span> <span class="n">chromosome</span><span class="s1">&#39;s length.</span>
-                <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">an</span> <span class="n">interval</span><span class="s1">&#39;s original length must be fully-contained</span>
+                <span class="n">shuffled</span> <span class="n">interval</span> <span class="n">will</span> <span class="n">be</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">the</span> <span class="n">chromosome</span><span class="s1">'s length.</span>
+                <span class="n">By</span> <span class="n">default</span><span class="p">,</span> <span class="n">an</span> <span class="n">interval</span><span class="s1">'s original length must be fully-contained</span>
                 <span class="n">within</span> <span class="n">the</span> <span class="n">chromosome</span><span class="o">.</span>
 <span class="n">Notes</span><span class="p">:</span> 
         <span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="n">The</span> <span class="n">genome</span> <span class="n">file</span> <span class="n">should</span> <span class="n">tab</span> <span class="n">delimited</span> <span class="ow">and</span> <span class="n">structured</span> <span class="k">as</span> <span class="n">follows</span><span class="p">:</span>
@@ -138,11 +138,11 @@ details.</p>
         <span class="n">bedtools</span> <span class="n">shift</span> <span class="o">-</span><span class="n">i</span> <span class="n">my</span><span class="o">.</span><span class="n">bed</span> <span class="o">-</span><span class="n">l</span> <span class="mi">100</span> <span class="o">-</span><span class="n">g</span> <span class="n">GRCh38</span><span class="o">.</span><span class="n">fa</span><span class="o">.</span><span class="n">fai</span>
 
 <span class="n">Tip</span> <span class="mf">2.</span> <span class="n">Use</span> <span class="n">UCSC</span> <span class="n">Table</span> <span class="n">Browser</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span> <span class="n">genome</span> <span class="n">file</span><span class="p">:</span> 
-        <span class="n">One</span> <span class="n">can</span> <span class="n">use</span> <span class="n">the</span> <span class="n">UCSC</span> <span class="n">Genome</span> <span class="n">Browser</span><span class="s1">&#39;s MySQL database to extract</span>
+        <span class="n">One</span> <span class="n">can</span> <span class="n">use</span> <span class="n">the</span> <span class="n">UCSC</span> <span class="n">Genome</span> <span class="n">Browser</span><span class="s1">'s MySQL database to extract</span>
         <span class="n">chromosome</span> <span class="n">sizes</span><span class="o">.</span> <span class="n">For</span> <span class="n">example</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span> <span class="n">sapiens</span><span class="p">:</span>
 
         <span class="n">mysql</span> <span class="o">--</span><span class="n">user</span><span class="o">=</span><span class="n">genome</span> <span class="o">--</span><span class="n">host</span><span class="o">=</span><span class="n">genome</span><span class="o">-</span><span class="n">mysql</span><span class="o">.</span><span class="n">cse</span><span class="o">.</span><span class="n">ucsc</span><span class="o">.</span><span class="n">edu</span> <span class="o">-</span><span class="n">A</span> <span class="o">-</span><span class="n">e</span> \
-        <span class="s2">&quot;select chrom, size from hg19.chromInfo&quot;</span>  <span class="o">&gt;</span> <span class="n">hg19</span><span class="o">.</span><span class="n">genome</span>
+        <span class="s2">"select chrom, size from hg19.chromInfo"</span>  <span class="o">&gt;</span> <span class="n">hg19</span><span class="o">.</span><span class="n">genome</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -233,7 +233,7 @@ details.</p>
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.random.html" title="pybedtools.bedtool.BedTool.random"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.shuffle</a></li> 
       </ul>
@@ -244,7 +244,7 @@ details.</p>
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

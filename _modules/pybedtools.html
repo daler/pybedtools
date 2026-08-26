@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pybedtools &#8212; pybedtools 0.12.0 documentation</title>
+    <title>pybedtools &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
    
@@ -70,13 +70,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">ch</span>
 
-<span class="n">example_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a.bed.&quot;</span><span class="p">,</span> <span class="s2">&quot;b.bed&quot;</span><span class="p">,</span> <span class="s2">&quot;test.fa&quot;</span><span class="p">,</span> <span class="s2">&quot;a.bam&quot;</span><span class="p">]</span>
+<span class="n">example_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"a.bed."</span><span class="p">,</span> <span class="s2">"b.bed"</span><span class="p">,</span> <span class="s2">"test.fa"</span><span class="p">,</span> <span class="s2">"a.bam"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="debug_mode">
 <a class="viewcode-back" href="../autodocs/pybedtools.debug_mode.html#pybedtools.debug_mode">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">debug_mode</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Enable debug mode.</span>
 
 <span class="sd">    Use debug_mode(True) to show debug log events in the console and to save</span>
@@ -85,30 +85,30 @@
 
 <span class="sd">    Note that `pybedtools.KEEP_TEMPFILES` will be set as well, so you will need</span>
 <span class="sd">    to clean up the tempfile directory manually after using debug mode.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
         <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
         <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">KEEP_TEMPFILES</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Debug mode enabled.  You may also want to set &quot;</span>
-            <span class="s2">&quot;pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion &quot;</span>
-            <span class="s2">&quot;of files upon exit.&quot;</span>
+            <span class="s2">"Debug mode enabled.  You may also want to set "</span>
+            <span class="s2">"pybedtools.KEEP_TEMPFILES=True to prevent automatic deletion "</span>
+            <span class="s2">"of files upon exit."</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
         <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
         <span class="n">_DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">KEEP_TEMPFILES</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Debug mode disabled&quot;</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Debug mode disabled"</span><span class="p">)</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">check_for_bedtools</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    For backwards compatibility; please use helpers._check_for_bedtools()</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">_check_for_bedtools</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
@@ -126,13 +126,13 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">load_path_config</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    You can use a config file to specify installation paths of various programs</span>
 <span class="sd">    used by pybedtools.  This can be useful for testing, or using different</span>
 <span class="sd">    versions of programs.</span>
 
 <span class="sd">    `fn` is a config file with the following format.  If an entry is blank,</span>
-<span class="sd">    then assume it&#39;s already on the path. All items must be lowercase::</span>
+<span class="sd">    then assume it's already on the path. All items must be lowercase::</span>
 
 <span class="sd">        [paths]</span>
 <span class="sd">        bedtools=/tools/BEDTools/bin</span>
@@ -148,7 +148,7 @@
 
 <span class="sd">    If `fn` is not a string, then assume it is a dictionary of (program,</span>
 <span class="sd">    paths). This is used primarily for testing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">setters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="n">bedtools</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_bedtools_path</span><span class="p">,</span>
         <span class="n">r</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">set_R_path</span><span class="p">,</span>
@@ -169,13 +169,13 @@
 
         <span class="n">c</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">SafeConfigParser</span><span class="p">()</span>
         <span class="n">c</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span> <span class="o">!=</span> <span class="p">[</span><span class="s2">&quot;paths&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span> <span class="o">!=</span> <span class="p">[</span><span class="s2">"paths"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid path config -- must have &quot;</span> <span class="s2">&quot;only one section, [paths].&quot;</span>
+                <span class="s2">"Invalid path config -- must have "</span> <span class="s2">"only one section, [paths]."</span>
             <span class="p">)</span>
         <span class="k">for</span> <span class="n">prog</span><span class="p">,</span> <span class="n">setter</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">setters</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;paths&quot;</span><span class="p">,</span> <span class="n">prog</span><span class="p">)</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"paths"</span><span class="p">,</span> <span class="n">prog</span><span class="p">)</span>
                 <span class="n">setter</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="n">configparser</span><span class="o">.</span><span class="n">NoOptionError</span><span class="p">:</span>
@@ -250,7 +250,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools</a></li> 
       </ul>
@@ -261,7 +261,7 @@
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>

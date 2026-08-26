@@ -4,13 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pybedtools.parallel &#8212; pybedtools 0.12.0 documentation</title>
+    <title>pybedtools.parallel &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
-    <script src="../../_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -48,13 +48,13 @@
     <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">reduce_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given a BedTool object `orig_bedtool`, call its `method` with `args` and</span>
 <span class="sd">    `kwargs` and then call `reduce_func` on the results.</span>
 
 <span class="sd">    See parallel_apply docstring for details</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># note: be careful about cleaning up tempfiles</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">shuffle</span><span class="p">:</span>
@@ -100,23 +100,23 @@
     <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">report_iterations</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Call an arbitrary BedTool method many times in parallel.</span>
 
 <span class="sd">    An example use-case is to generate a null distribution of intersections,</span>
 <span class="sd">    and then compare this to the actual intersections.</span>
 
-<span class="sd">    **Important:** due to a known file handle leak in BedTool.__len__, it&#39;s</span>
+<span class="sd">    **Important:** due to a known file handle leak in BedTool.__len__, it's</span>
 <span class="sd">    best to simply check the number of lines in the file, as in the below</span>
 <span class="sd">    function. This works because BEDTools programs strip any non-interval lines</span>
 <span class="sd">    in the results.</span>
 
 <span class="sd">    &gt;&gt;&gt; # set up example BedTools</span>
-<span class="sd">    &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;a.bed&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; b = pybedtools.example_bedtool(&#39;b.bed&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; a = pybedtools.example_bedtool('a.bed')</span>
+<span class="sd">    &gt;&gt;&gt; b = pybedtools.example_bedtool('b.bed')</span>
 
 <span class="sd">    &gt;&gt;&gt; # Method of `a` to call:</span>
-<span class="sd">    &gt;&gt;&gt; method = &#39;intersect&#39;</span>
+<span class="sd">    &gt;&gt;&gt; method = 'intersect'</span>
 
 <span class="sd">    &gt;&gt;&gt; # Kwargs provided to `a.intersect` each iteration</span>
 <span class="sd">    &gt;&gt;&gt; method_kwargs = dict(b=b, u=True)</span>
@@ -126,11 +126,11 @@
 <span class="sd">    &gt;&gt;&gt; def reduce_func(x):</span>
 <span class="sd">    ...     return sum(1 for _ in open(x.fn))</span>
 
-<span class="sd">    &gt;&gt;&gt; # Create a small artificial genome for this test (generally you&#39;d</span>
-<span class="sd">    &gt;&gt;&gt; # use an assembly name, like &quot;hg19&quot;):</span>
+<span class="sd">    &gt;&gt;&gt; # Create a small artificial genome for this test (generally you'd</span>
+<span class="sd">    &gt;&gt;&gt; # use an assembly name, like "hg19"):</span>
 <span class="sd">    &gt;&gt;&gt; genome = dict(chr1=(0, 1000))</span>
 
-<span class="sd">    &gt;&gt;&gt; # Do 10 iterations using 1 process for this test (generally you&#39;d</span>
+<span class="sd">    &gt;&gt;&gt; # Do 10 iterations using 1 process for this test (generally you'd</span>
 <span class="sd">    &gt;&gt;&gt; # use 1000+ iterations, and as many processes as you have CPUs)</span>
 <span class="sd">    &gt;&gt;&gt; results = pybedtools.parallel.parallel_apply(a, method, genome=genome,</span>
 <span class="sd">    ... method_kwargs=method_kwargs, iterations=10, processes=1,</span>
@@ -150,14 +150,14 @@
 <span class="sd">    before calling its `jaccard` method.</span>
 
 <span class="sd">    &gt;&gt;&gt; from pybedtools.parallel import parallel_apply</span>
-<span class="sd">    &gt;&gt;&gt; a = pybedtools.example_bedtool(&#39;a.bed&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; results = parallel_apply(a, method=&#39;jaccard&#39;, method_args=(b,),</span>
+<span class="sd">    &gt;&gt;&gt; a = pybedtools.example_bedtool('a.bed')</span>
+<span class="sd">    &gt;&gt;&gt; results = parallel_apply(a, method='jaccard', method_args=(b,),</span>
 <span class="sd">    ... genome=genome, iterations=3, processes=1, sort=True, debug=True)</span>
 <span class="sd">    &gt;&gt;&gt; for i in results:</span>
 <span class="sd">    ...     print(sorted(i.items()))</span>
-<span class="sd">    [(&#39;intersection&#39;, 12), (&#39;jaccard&#39;, 0.0171184), (&#39;n_intersections&#39;, 1), (&#39;union&#39;, 701)]</span>
-<span class="sd">    [(&#39;intersection&#39;, 0), (&#39;jaccard&#39;, 0.0), (&#39;n_intersections&#39;, 0), (&#39;union&#39;, 527)]</span>
-<span class="sd">    [(&#39;intersection&#39;, 73), (&#39;jaccard&#39;, 0.137996), (&#39;n_intersections&#39;, 1), (&#39;union&#39;, 529)]</span>
+<span class="sd">    [('intersection', 12), ('jaccard', 0.0171184), ('n_intersections', 1), ('union', 701)]</span>
+<span class="sd">    [('intersection', 0), ('jaccard', 0.0), ('n_intersections', 0), ('union', 527)]</span>
+<span class="sd">    [('intersection', 73), ('jaccard', 0.137996), ('n_intersections', 1), ('union', 529)]</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -174,12 +174,12 @@
 
 <span class="sd">    shuffle : bool</span>
 <span class="sd">        If True, then `orig_bedtool` will be shuffled at each iteration and</span>
-<span class="sd">        that shuffled version&#39;s `method` will be called with `method_args` and</span>
+<span class="sd">        that shuffled version's `method` will be called with `method_args` and</span>
 <span class="sd">        `method_kwargs`.</span>
 
 <span class="sd">    shuffle_kwargs : dict</span>
 <span class="sd">        If `shuffle` is True, these are passed to `orig_bedtool.shuffle()`.</span>
-<span class="sd">        You do not need to pass the genome here; that&#39;s handled separately by</span>
+<span class="sd">        You do not need to pass the genome here; that's handled separately by</span>
 <span class="sd">        the `genome` and `genome_fn` kwargs.</span>
 
 <span class="sd">    iterations : int</span>
@@ -192,7 +192,7 @@
 
 <span class="sd">    genome_fn : str</span>
 <span class="sd">        Mutually exclusive with `genome`; `genome_fn` must be an existing</span>
-<span class="sd">        filename with the chromsizes.  Use the `genome` kwarg instead if you&#39;d</span>
+<span class="sd">        filename with the chromsizes.  Use the `genome` kwarg instead if you'd</span>
 <span class="sd">        rather supply an assembly or dict.</span>
 
 <span class="sd">    reduce_func : callable</span>
@@ -218,24 +218,24 @@
 
 <span class="sd">    report_iterations : bool</span>
 <span class="sd">        If True, then report the number of iterations to stderr.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">shuffle_kwargs</span> <span class="o">=</span> <span class="n">shuffle_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">method_args</span> <span class="o">=</span> <span class="n">method_args</span> <span class="ow">or</span> <span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method_args</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method_args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;method_args must be a list or tuple, got </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">method_args</span><span class="p">)</span>
+            <span class="s2">"method_args must be a list or tuple, got </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">method_args</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="n">method_kwargs</span> <span class="o">=</span> <span class="n">method_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
 
     <span class="k">if</span> <span class="n">genome_fn</span> <span class="ow">and</span> <span class="n">genome</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only of of genome_fn or genome should be provided&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"only of of genome_fn or genome should be provided"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">genome_fn</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">genome</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;shuffle=True, so either genome_fn&quot;</span> <span class="s2">&quot; or genome must be provided&quot;</span>
+                    <span class="s2">"shuffle=True, so either genome_fn"</span> <span class="s2">" or genome must be provided"</span>
                 <span class="p">)</span>
             <span class="n">genome_fn</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">chromsizes_to_file</span><span class="p">(</span><span class="n">genome</span><span class="p">)</span>
 
@@ -253,7 +253,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">add_seed</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">debug</span> <span class="ow">and</span> <span class="n">shuffle</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;shuffle_kwargs&quot;</span><span class="p">][</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"shuffle_kwargs"</span><span class="p">][</span><span class="s2">"seed"</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
         <span class="k">return</span> <span class="n">kwargs</span>
 
     <span class="k">if</span> <span class="n">processes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -273,7 +273,7 @@
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
         <span class="k">yield</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">report_iterations</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\r</span><span class="s2">"</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 
 </pre></div>
@@ -348,7 +348,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../pybedtools.html" accesskey="U">pybedtools</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.parallel</a></li> 
@@ -360,7 +360,7 @@
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>

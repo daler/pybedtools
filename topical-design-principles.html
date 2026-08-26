@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Design principles &#8212; pybedtools 0.12.0 documentation</title>
+    <title>Design principles &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Creating a BedTool" href="topical-create-a-bedtool.html" />
@@ -49,7 +49,7 @@ merging features in <code class="file docutils literal notranslate"><span class=
 in a strand-specific way (<code class="file docutils literal notranslate"><span class="pre">s=True</span></code>):</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybedtools</span><span class="w"> </span><span class="kn">import</span> <span class="n">BedTool</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pybedtools</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">&#39;a.bed&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">BedTool</span><span class="p">(</span><span class="n">pybedtools</span><span class="o">.</span><span class="n">example_filename</span><span class="p">(</span><span class="s1">'a.bed'</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">merged_a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -61,7 +61,7 @@ point to?  You can always check the <code class="xref py py-attr docutils litera
 out:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># what file does `merged_a` point to?</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">merged_a</span><span class="o">.</span><span class="n">fn</span>
-<span class="go">&#39;/tmp/pybedtools.MPPp5f.tmp&#39;</span>
+<span class="go">'/tmp/pybedtools.MPPp5f.tmp'</span>
 </pre></div>
 </div>
 <p>Note that the specific filename will be different for you since it is a
@@ -77,7 +77,7 @@ then the temp files will not be deleted.</p>
 </pre></div>
 </div>
 <p>In the middle of a session, you can force a deletion of all tempfiles created thus far:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Don&#39;t do this yet if you&#39;re following the tutorial!</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Don't do this yet if you're following the tutorial!</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -90,7 +90,7 @@ then the temp files will not be deleted.</p>
 of <code class="file docutils literal notranslate"><span class="pre">pybedtools.get_tempdir()</span></code>.</p>
 <p>If you need to specify a different directory than that used by default by
 Python’s <a class="reference external" href="http://docs.python.org/library/tempfile.html#tempfile.tempdir">tempdir</a> module, then you can set it with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">set_tempdir</span><span class="p">(</span><span class="s1">&#39;/scratch&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pybedtools</span><span class="o">.</span><span class="n">set_tempdir</span><span class="p">(</span><span class="s1">'/scratch'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You’ll need write permissions to this directory, and it needs to already
@@ -140,10 +140,10 @@ file (indicated in the <code class="xref py py-attr docutils literal notranslate
 absolutely explicit.  In fact, the following two versions produce the same
 output:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># The default is to use existing file for input -- no need</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># to specify &quot;i&quot; . . .</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># to specify "i" . . .</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># . . . but you can always be explicit if you&#39;d like</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># . . . but you can always be explicit if you'd like</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result2</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Confirm that the output is identical</span>
@@ -154,7 +154,7 @@ output:</p>
 <p>Methods that have this type of default behavior are indicated by the following text in their docstring:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">note</span><span class="p">::</span>
 
-    <span class="n">For</span> <span class="n">convenience</span><span class="p">,</span> <span class="n">the</span> <span class="n">file</span> <span class="n">this</span> <span class="n">BedTool</span> <span class="nb">object</span> <span class="n">points</span> <span class="n">to</span> <span class="ow">is</span> <span class="n">passed</span> <span class="k">as</span> <span class="s2">&quot;-i&quot;</span>
+    <span class="n">For</span> <span class="n">convenience</span><span class="p">,</span> <span class="n">the</span> <span class="n">file</span> <span class="n">this</span> <span class="n">BedTool</span> <span class="nb">object</span> <span class="n">points</span> <span class="n">to</span> <span class="ow">is</span> <span class="n">passed</span> <span class="k">as</span> <span class="s2">"-i"</span>
 </pre></div>
 </div>
 <p>There are some <a class="reference external" href="http://github.com/arq5x/bedtools">BEDTools</a> programs that accept two BED files as input, like
@@ -162,7 +162,7 @@ output:</p>
 second file with <code class="file docutils literal notranslate"><span class="pre">-b</span></code>.  The default behavior for <code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> is to
 consider the <code class="xref py py-mod docutils literal notranslate"><span class="pre">BedTool</span></code>’s file as <code class="file docutils literal notranslate"><span class="pre">-a</span></code> and the first non-keyword
 argument to the method as <code class="file docutils literal notranslate"><span class="pre">-b</span></code>, like this:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;b.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'b.bed'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result3</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -222,7 +222,7 @@ give you a flavor of this, here is how you would get the merged regions of
 features shared between <code class="file docutils literal notranslate"><span class="pre">a.bed</span></code> (as referred to by the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> <code class="file docutils literal notranslate"><span class="pre">a</span></code> we made previously) and <code class="file docutils literal notranslate"><span class="pre">b.bed</span></code>: (as referred to
 by the <code class="xref py py-class docutils literal notranslate"><span class="pre">BedTool</span></code> <code class="file docutils literal notranslate"><span class="pre">b</span></code>):</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">&#39;shared_merged.bed&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s1">'shared_merged.bed'</span><span class="p">)</span>
 <span class="go">&lt;BedTool(shared_merged.bed)&gt;</span>
 </pre></div>
 </div>
@@ -342,7 +342,7 @@ up-to-date.</p>
         <li class="right" >
           <a href="topical-documentation-contents.html" title="Topical Documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="topical-documentation-contents.html" accesskey="U">Topical Documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Design principles</a></li> 
       </ul>
@@ -353,7 +353,7 @@ up-to-date.</p>
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

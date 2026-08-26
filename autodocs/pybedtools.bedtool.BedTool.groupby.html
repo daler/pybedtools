@@ -5,13 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pybedtools.bedtool.BedTool.groupby &#8212; pybedtools 0.12.0 documentation</title>
+    <title>pybedtools.bedtool.BedTool.groupby &#8212; pybedtools 0.12.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
-    <script src="../_static/documentation_options.js?v=61ccb1f1"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=c5b435e8"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pybedtools.bedtool.BedTool.expand" href="pybedtools.bedtool.BedTool.expand.html" />
@@ -41,11 +41,11 @@
 <dd><blockquote>
 <div><p>Wraps <code class="file docutils literal notranslate"><span class="pre">bedtools</span> <span class="pre">groupby</span></code>.</p>
 <p>Example usage:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.gff&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">&#39;gdc.bed&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'gdc.gff'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">pybedtools</span><span class="o">.</span><span class="n">example_bedtool</span><span class="p">(</span><span class="s1">'gdc.bed'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">g</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">o</span><span class="o">=</span><span class="p">[</span><span class="s1">'sum'</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="go">chr2L   41      70      0</span>
 <span class="go">chr2L   71      130     2</span>
 <span class="go">chr2L   131     170     4</span>
@@ -65,13 +65,13 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Tool</span><span class="p">:</span>    <span class="n">bedtools</span> <span class="n">groupby</span> 
 <span class="n">Version</span><span class="p">:</span> <span class="n">v2</span><span class="mf">.31.1</span>
 <span class="n">Summary</span><span class="p">:</span> <span class="n">Summarizes</span> <span class="n">a</span> <span class="n">dataset</span> <span class="n">column</span> <span class="n">based</span> <span class="n">upon</span>
-         <span class="n">common</span> <span class="n">column</span> <span class="n">groupings</span><span class="o">.</span> <span class="n">Akin</span> <span class="n">to</span> <span class="n">the</span> <span class="n">SQL</span> <span class="s2">&quot;group by&quot;</span> <span class="n">command</span><span class="o">.</span>
+         <span class="n">common</span> <span class="n">column</span> <span class="n">groupings</span><span class="o">.</span> <span class="n">Akin</span> <span class="n">to</span> <span class="n">the</span> <span class="n">SQL</span> <span class="s2">"group by"</span> <span class="n">command</span><span class="o">.</span>
 
 <span class="n">Usage</span><span class="p">:</span>   <span class="n">bedtools</span> <span class="n">groupby</span> <span class="o">-</span><span class="n">g</span> <span class="p">[</span><span class="n">group</span><span class="o">**</span><span class="n">column</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span> <span class="o">-</span><span class="n">c</span> <span class="p">[</span><span class="n">op</span><span class="o">**</span><span class="n">column</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span> <span class="o">-</span><span class="n">o</span> <span class="p">[</span><span class="n">ops</span><span class="p">]</span> 
          <span class="n">cat</span> <span class="p">[</span><span class="n">FILE</span><span class="p">]</span> <span class="o">|</span> <span class="n">bedtools</span> <span class="n">groupby</span> <span class="o">-</span><span class="n">g</span> <span class="p">[</span><span class="n">group</span><span class="o">**</span><span class="n">column</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span> <span class="o">-</span><span class="n">c</span> <span class="p">[</span><span class="n">op</span><span class="o">**</span><span class="n">column</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span> <span class="o">-</span><span class="n">o</span> <span class="p">[</span><span class="n">ops</span><span class="p">]</span> 
 
 <span class="n">Options</span><span class="p">:</span> 
-        <span class="o">-</span><span class="n">i</span>              <span class="n">Input</span> <span class="n">file</span><span class="o">.</span> <span class="n">Assumes</span> <span class="s2">&quot;stdin&quot;</span> <span class="k">if</span> <span class="n">omitted</span><span class="o">.</span>
+        <span class="o">-</span><span class="n">i</span>              <span class="n">Input</span> <span class="n">file</span><span class="o">.</span> <span class="n">Assumes</span> <span class="s2">"stdin"</span> <span class="k">if</span> <span class="n">omitted</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">g</span> <span class="o">-</span><span class="n">grp</span>         <span class="n">Specify</span> <span class="n">the</span> <span class="n">columns</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">based</span><span class="p">)</span> <span class="k">for</span> <span class="n">the</span> <span class="n">grouping</span><span class="o">.</span>
                         <span class="n">The</span> <span class="n">columns</span> <span class="n">must</span> <span class="n">be</span> <span class="n">comma</span> <span class="n">separated</span><span class="o">.</span>
@@ -101,7 +101,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
                 <span class="n">multiple</span> <span class="n">columns</span><span class="p">,</span> <span class="n">that</span> <span class="n">operation</span> <span class="n">will</span> <span class="n">be</span> <span class="n">applied</span> <span class="n">to</span> <span class="nb">all</span> <span class="n">columns</span><span class="o">.</span>
                 <span class="n">Otherwise</span><span class="p">,</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">columns</span> <span class="n">must</span> <span class="n">match</span> <span class="n">the</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">operations</span><span class="p">,</span>
                 <span class="ow">and</span> <span class="n">will</span> <span class="n">be</span> <span class="n">applied</span> <span class="ow">in</span> <span class="n">respective</span> <span class="n">order</span><span class="o">.</span>
-                <span class="n">E</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">&quot;-c 5,4,6 -o sum,mean,count&quot;</span> <span class="n">will</span> <span class="n">give</span> <span class="n">the</span> <span class="nb">sum</span> <span class="n">of</span> <span class="n">column</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="n">E</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">"-c 5,4,6 -o sum,mean,count"</span> <span class="n">will</span> <span class="n">give</span> <span class="n">the</span> <span class="nb">sum</span> <span class="n">of</span> <span class="n">column</span> <span class="mi">5</span><span class="p">,</span>
                 <span class="n">the</span> <span class="n">mean</span> <span class="n">of</span> <span class="n">column</span> <span class="mi">4</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">count</span> <span class="n">of</span> <span class="n">column</span> <span class="mf">6.</span>
                 <span class="n">The</span> <span class="n">order</span> <span class="n">of</span> <span class="n">output</span> <span class="n">columns</span> <span class="n">will</span> <span class="n">match</span> <span class="n">the</span> <span class="n">ordering</span> <span class="n">given</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">command</span><span class="o">.</span>
 
@@ -112,19 +112,19 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
 
         <span class="o">-</span><span class="n">outheader</span>      <span class="n">Print</span> <span class="n">header</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">output</span><span class="p">,</span> <span class="n">detailing</span> <span class="n">the</span> <span class="n">column</span> <span class="n">names</span><span class="o">.</span> 
                         <span class="n">If</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">has</span> <span class="n">headers</span> <span class="p">(</span><span class="o">-</span><span class="n">inheader</span><span class="p">),</span> <span class="n">the</span> <span class="n">output</span> <span class="n">file</span>
-                        <span class="n">will</span> <span class="n">use</span> <span class="n">the</span> <span class="nb">input</span><span class="s1">&#39;s column names.</span>
+                        <span class="n">will</span> <span class="n">use</span> <span class="n">the</span> <span class="nb">input</span><span class="s1">'s column names.</span>
                         <span class="n">If</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">has</span> <span class="n">no</span> <span class="n">headers</span><span class="p">,</span> <span class="n">the</span> <span class="n">output</span> <span class="n">file</span>
-                        <span class="n">will</span> <span class="n">use</span> <span class="s2">&quot;col**1&quot;</span><span class="p">,</span> <span class="s2">&quot;col**2&quot;</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="k">as</span> <span class="n">the</span> <span class="n">column</span> <span class="n">names</span><span class="o">.</span>
+                        <span class="n">will</span> <span class="n">use</span> <span class="s2">"col**1"</span><span class="p">,</span> <span class="s2">"col**2"</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="k">as</span> <span class="n">the</span> <span class="n">column</span> <span class="n">names</span><span class="o">.</span>
 
-        <span class="o">-</span><span class="n">header</span>         <span class="n">same</span> <span class="k">as</span> <span class="s1">&#39;-inheader -outheader&#39;</span>
+        <span class="o">-</span><span class="n">header</span>         <span class="n">same</span> <span class="k">as</span> <span class="s1">'-inheader -outheader'</span>
 
         <span class="o">-</span><span class="n">ignorecase</span>     <span class="n">Group</span> <span class="n">values</span> <span class="n">regardless</span> <span class="n">of</span> <span class="n">upper</span><span class="o">/</span><span class="n">lower</span> <span class="n">case</span><span class="o">.</span>
 
         <span class="o">-</span><span class="n">prec</span>   <span class="n">Sets</span> <span class="n">the</span> <span class="n">decimal</span> <span class="n">precision</span> <span class="k">for</span> <span class="n">output</span> <span class="p">(</span><span class="n">Default</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
 
         <span class="o">-</span><span class="n">delim</span>  <span class="n">Specify</span> <span class="n">a</span> <span class="n">custom</span> <span class="n">delimiter</span> <span class="k">for</span> <span class="n">the</span> <span class="n">collapse</span> <span class="n">operations</span><span class="o">.</span>
-                <span class="o">-</span> <span class="n">Example</span><span class="p">:</span> <span class="o">-</span><span class="n">delim</span> <span class="s2">&quot;|&quot;</span>
-                <span class="o">-</span> <span class="n">Default</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span>
+                <span class="o">-</span> <span class="n">Example</span><span class="p">:</span> <span class="o">-</span><span class="n">delim</span> <span class="s2">"|"</span>
+                <span class="o">-</span> <span class="n">Default</span><span class="p">:</span> <span class="s2">","</span><span class="o">.</span>
 
 <span class="n">Examples</span><span class="p">:</span> 
         <span class="err">$</span> <span class="n">cat</span> <span class="n">ex1</span><span class="o">.</span><span class="n">out</span>
@@ -239,7 +239,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
         <li class="right" >
           <a href="pybedtools.bedtool.BedTool.window_maker.html" title="pybedtools.bedtool.BedTool.window_maker"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.12.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pybedtools 0.12.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../autodoc_source.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pybedtools</span></code> Reference</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pybedtools.bedtool.BedTool.groupby</a></li> 
       </ul>
@@ -250,7 +250,7 @@ is implicitly passed as the <code class="file docutils literal notranslate"><spa
       &#169;2010-2015, Ryan Dale.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
