@@ -8,6 +8,7 @@ from textwrap import dedent
 from pathlib import Path
 import pytest
 import psutil
+import gc
 
 from pybedtools import filenames
 
@@ -61,14 +62,29 @@ def test_issue_81():
 
 def test_issue_118():
     p = psutil.Process(os.getpid())
-    start_fds = p.num_fds()
     a = pybedtools.example_bedtool("a.bed")
     b = pybedtools.example_bedtool("b.bed")
+
+    # p.num_fds() counts anything running on the machine. Recently (Aug 2026),
+    # some GitHub Actions tests failed the start == stop fds because we had
+    # *fewer* fds. This could occur from things outside of pytest that we can't
+    # control cleaning up fds. The big thing we're checking here is that we
+    # don't leak fds during this individual test.
+    #
+    # To make this a more accurate test, do a warm-up intersection field count,
+    # then garbage collect, then do the loop, then garbage collect again.
+    a.intersect(b).field_count()
+    gc.collect()
+    start_fds = p.num_fds()
     for i in range(100):
         c = a.intersect(b)
         c.field_count()
+    gc.collect()
+
     stop_fds = p.num_fds()
-    assert start_fds == stop_fds
+
+    # Could have had GC run
+    assert p.num_fds() <= start_fds
 
 
 def test_issue_131():

@@ -128,6 +128,38 @@ def test_tuple_creation():
     assert x[0]["ID"] == "gene1"
 
 
+def test_tabix_csi():
+    for idx_type in ("tbi", "csi"):
+        try:
+            a = pybedtools.example_bedtool("a.bed")
+            t = a.tabix(force=True, use_csi=True if idx_type == "csi" else False)
+            assert t._tabixed()
+            results = t.tabix_intervals("chr1:99-200")
+            results = str(results)
+            print(results)
+            assert results == fix(
+                """
+            chr1	1	100	feature1	0	+
+            chr1	100	200	feature2	0	+
+            chr1	150	500	feature3	0	-"""
+            )
+
+            assert str(t.tabix_intervals(a[2])) == fix(
+                """
+            chr1	100	200	feature2	0	+
+            chr1	150	500	feature3	0	-"""
+            )
+
+        finally:
+            # clean up
+            fns = [
+                pybedtools.example_filename("a.bed.gz"),
+                pybedtools.example_filename("a.bed.gz." + idx_type),
+            ]
+            for fn in fns:
+                if os.path.exists(fn):
+                    os.unlink(fn)
+
 def test_tabix(tmp_path: Path) -> None:
     shutil.copy(os.path.join(filenames.data_dir(), "a.bed"), tmp_path)
     a = pybedtools.BedTool(tmp_path / "a.bed")
@@ -158,6 +190,12 @@ def test_tabix_intervals():
 
     # permit fetching of a contig without a specified region
     assert len(a.tabix_intervals("chr1")) == 1
+
+
+def test_tabix_contigs_csi():
+    a = pybedtools.example_bedtool("a.bed")
+    a = a.tabix(force=True, use_csi=True)
+    assert a.tabix_contigs() == ["chr1"]
 
 
 # ----------------------------------------------------------------------------

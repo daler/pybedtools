@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
   pull_request:
     types:
       - opened
@@ -13,10 +15,14 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+        include:   # Used to choose which version of Python to use for docs and for sdist
+          - python-version: "3.12"
+            canonical: true
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
 
     - name: git setup
@@ -42,12 +48,18 @@ jobs:
       # with pip to make sure it works.
       run: |
         source "${HOME}/conda/etc/profile.d/conda.sh"
-        conda create -p ./cython-env -y "cython>3.0" python=${{ matrix.python-version }} gxx zlib setuptools --channel conda-forge
+        conda create -p ./cython-env -y "cython>3.0" python=${{ matrix.python-version }} gxx zlib setuptools xz --channel conda-forge
         conda activate ./cython-env
         python setup.py clean cythonize sdist
         (cd dist && pip install pybedtools-*.tar.gz && cd $TMPDIR && python -c 'import pybedtools; print(pybedtools.__file__)')
         conda deactivate
 
+    - name: upload sdist
+      if: matrix.canonical
+      uses: actions/upload-artifact@v7
+      with:
+        name: sdist
+        path: dist/pybedtools-*.tar.gz
 
     - name: conda env and install locally
       # Set up conda and install pybedtools into that env
@@ -106,7 +118,7 @@ jobs:
 
 
     - name: build-docs
-      if: ${{ (matrix.python-version == 3.10) }}
+      if: matrix.canonical
       # Build docs and commit to gh-pages branch. Note that no push happens
       # unless we're on the master branch
       run: |
@@ -117,17 +129,29 @@ jobs:
         cd /tmp/pybedtools-uncompressed/pybedtools-*
         (cd docs && make html)
 
-        git clone \
-          --single-branch \
-          --branch gh-pages "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" \
-          /tmp/docs
+        REPO_URL="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
+
+        # The gh-pages branch may not exist upstream (e.g. in a fork that has
+        # never published docs); if so, create a new orphan branch to work in.
+        if git ls-remote --exit-code --heads "$REPO_URL" gh-pages > /dev/null 2>&1; then
+          git clone \
+            --single-branch \
+            --branch gh-pages "$REPO_URL" \
+            /tmp/docs
+        else
+          echo "gh-pages branch not found upstream; creating an orphan branch locally"
+          git clone "$REPO_URL" /tmp/docs
+          git -C /tmp/docs checkout --orphan gh-pages
+          git -C /tmp/docs rm -rf --quiet . || true
+        fi
 
         rm -rf /tmp/docs/*
         cp -r docs/build/html/* /tmp/docs
         touch /tmp/docs/.nojekyll
         cd /tmp/docs
         git add .
-        if git diff --cached --quiet; then
+        # with --verify HEAD, if there's no HEAD then we should commit 
+        if git rev-parse --verify HEAD > /dev/null 2>&1 && git diff --cached --quiet; then
           echo "no changes, nothing to commit"
         else
           git commit -m 'update docs'
@@ -137,7 +161,8 @@ jobs:
 
     - name: docs artifact
       # Upload built docs as an artifact for inspection, even on PRs
-      uses: actions/upload-artifact@v4
+      if: matrix.canonical
+      uses: actions/upload-artifact@v7
       with:
         name: docs
         path: /tmp/docs
@@ -145,8 +170,38 @@ jobs:
 
     - name: push docs to gh-pages branch
       # Push docs to gh-pages if this test is running on master branch
-      if: ${{ (github.ref == 'refs/heads/master') && (matrix.python-version == 3.10) }}
+      if: (github.ref == 'refs/heads/master') && matrix.canonical
       run: |
         cd /tmp/docs
         git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY" gh-pages
         cd $WORKDIR
+
+
+  build-wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cibw_archs: "x86_64"
+          - os: ubuntu-24.04-arm
+            cibw_archs: "aarch64"
+          - os: macos-latest
+            cibw_archs: "arm64 x86_64"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v4.2.0
+        env:
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_SKIP: "*-win*"
+          CIBW_BEFORE_BUILD: "pip install 'cython>3.0' setuptools && python setup.py cythonize"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl

@@ -71,8 +71,8 @@ setuptools.logging.configure()
 
 MAJ = 0
 MIN = 12
-REV = 0
-VERSION = '%d.%d.%d' % (MAJ, MIN, REV)
+REV = 1
+VERSION = f'{MAJ}.{MIN}.{REV}'
 
 
 class CleanCommand(Command):
