@@ -1,6 +1,7 @@
 import pybedtools
 import gzip
 import os
+import shutil
 import subprocess
 import sys
 from textwrap import dedent
@@ -8,21 +9,13 @@ from pathlib import Path
 import pytest
 import psutil
 
+from pybedtools import filenames
 
 testdir = os.path.dirname(__file__)
-tempdir = os.path.join(os.path.abspath(testdir), "tmp")
 unwriteable = "unwriteable"
 
 
-def setup_module():
-    if not os.path.exists(tempdir):
-        os.system("mkdir -p %s" % tempdir)
-    pybedtools.set_tempdir(tempdir)
-
-
 def teardown_module():
-    if os.path.exists(tempdir):
-        os.system("rm -r %s" % tempdir)
     pybedtools.cleanup()
 
 
@@ -415,17 +408,19 @@ def test_issue_164():
     assert str(y) == expected
 
 
-def test_issue_168():
+def test_issue_168(tmp_path: Path) -> None:
     # Regression test:
     # this would previously segfault in at least pysam 0.8.4
     #
-    x = pybedtools.example_bedtool("1000genomes-example.vcf")
+    shutil.copy(os.path.join(filenames.data_dir(), "1000genomes-example.vcf"), tmp_path)
+    x = pybedtools.BedTool(tmp_path / "1000genomes-example.vcf")
     fn = x.bgzip(is_sorted=True, force=True)
     y = pybedtools.BedTool(fn)
 
 
-def test_issue_169():
-    x = pybedtools.example_bedtool("1000genomes-example.vcf")
+def test_issue_169(tmp_path: Path) -> None:
+    shutil.copy(os.path.join(filenames.data_dir(), "1000genomes-example.vcf"), tmp_path)
+    x = pybedtools.BedTool(tmp_path / "1000genomes-example.vcf")
     fn = x.bgzip(is_sorted=False, force=True)
     line = gzip.open(fn, "rt").readline()
     assert str(line).startswith("#"), line
@@ -486,14 +481,16 @@ def test_issue_178():
         pass
 
 
-def test_issue_180():
-    a = pybedtools.example_bedtool("a.bed")
+def test_issue_180(tmp_path: Path) -> None:
+    shutil.copy(os.path.join(filenames.data_dir(), "a.bed"), tmp_path)
+    a = pybedtools.BedTool(tmp_path / "a.bed")
     a = a.tabix(force=True)
     assert a.tabix_contigs() == ["chr1"]
 
 
-def test_issue_181():
-    a = pybedtools.example_bedtool("a.bed")
+def test_issue_181(tmp_path: Path) -> None:
+    shutil.copy(os.path.join(filenames.data_dir(), "a.bed"), tmp_path)
+    a = pybedtools.BedTool(tmp_path / "a.bed")
     a = a.tabix(force=True)
     a.tabix_intervals("none:1-5")
     with pytest.raises(ValueError):
@@ -812,10 +809,10 @@ def test_issue_291():
     assert a == b == c == d == e
 
 
-def test_issue_319():
+def test_issue_319(tmp_path: Path) -> None:
     vrn_file = os.path.join(testdir, "data", "issue319.vcf.gz")
     spliceslop = os.path.join(testdir, "data", "issue319.bed")
-    output_bed = os.path.join(testdir, "data", "issue319.out.bed")
+    output_bed = tmp_path / "issue319.out.bed"
     bt = pybedtools.BedTool(vrn_file).intersect(spliceslop, wa=True, header=True, v=True).saveas(output_bed)
 
 

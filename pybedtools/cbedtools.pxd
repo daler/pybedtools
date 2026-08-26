@@ -1,3 +1,4 @@
+# cython: language_level=3str
 from cpython cimport bool
 from libcpp.vector cimport vector
 from libcpp.string cimport string

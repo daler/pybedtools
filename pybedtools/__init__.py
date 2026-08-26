@@ -12,6 +12,7 @@ from .cbedtools import (
     Attributes,
     MalformedBedLineError,
     IntervalIterator,
+    create_interval_from_list,
 )
 from . import contrib
 from .helpers import (

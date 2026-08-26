@@ -1,5 +1,5 @@
-pybedtools.featurefuncs.normalized_to_length
-============================================
+﻿pybedtools.featurefuncs.normalized\_to\_length
+==============================================
 
 .. currentmodule:: pybedtools.featurefuncs
 

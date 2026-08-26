@@ -4,17 +4,9 @@ import pybedtools.test.tfuncs as tfuncs
 
 import pybedtools
 import gzip
-from .tfuncs import test_tempdir
 
-
-def setup_module():
-    if not os.path.exists(test_tempdir):
-        os.system("mkdir -p %s" % test_tempdir)
-    pybedtools.set_tempdir(test_tempdir)
 
 def teardown_module():
-    if os.path.exists(test_tempdir):
-        os.system("rm -r %s" % test_tempdir)
     pybedtools.cleanup()
 
 def _make_temporary_gzip(bed_filename):

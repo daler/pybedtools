@@ -1,7 +1,8 @@
 import pybedtools
 import sys
 import os
-from .tfuncs import testdir, test_tempdir
+import tempfile
+from .tfuncs import testdir
 import pytest
 from pathlib import Path
 
@@ -41,6 +42,7 @@ def test_cleanup():
 
     # make a fake tempfile, not created during this pybedtools session
     pybedtools.cleanup()
+    test_tempdir = os.path.abspath(tempfile.gettempdir())
     testfn = Path(test_tempdir) / "pybedtools.TESTING.tmp"
     testfn.parent.mkdir(parents=True, exist_ok=True)
     testfn.touch()

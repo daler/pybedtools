@@ -1,5 +1,5 @@
-pybedtools.featurefuncs.add_color
-=================================
+﻿pybedtools.featurefuncs.add\_color
+==================================
 
 .. currentmodule:: pybedtools.featurefuncs
 

@@ -1,5 +1,5 @@
-pybedtools.featurefuncs.extend_fields
-=====================================
+﻿pybedtools.featurefuncs.extend\_fields
+======================================
 
 .. currentmodule:: pybedtools.featurefuncs
 
