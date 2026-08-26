@@ -7,27 +7,25 @@ sdist.
 
 First, merge to master and wait for CI to finish.
 
-Get the run ID from the merge's GitHub Actions run. Use that, plus the `gh`
-command-line tool, to download the artifacts.
+Tag the release. This will trigger another round of tests.
+
+```bash
+TAG="<version tag matching setup.py, with leading 'v'>"
+git tag -s $TAG && git push origin $TAG
+```
+
+Get the run ID from the GitHub Actions run for the tag push. Use that, plus the
+`gh` command-line tool, to download the artifacts.
 
 ```bash
 RUN_ID="<id from GitHub Actions>"
-rm -r staging && mkdir -p staging
-rm -r dist && mkdir -p dist
 
 # Download all wheels and the sdist, store 'em in staging/.
 # We'll have subdirectories for each arch/os
-gh run download $RUN_ID -p 'wheels-*' -p sdist -D staging
+rm -r staging && mkdir -p staging && gh run download $RUN_ID -p 'wheels-*' -p sdist -D staging
 
 # Flatten nested wheels & sdist into the dist/ dir
-mkdir dist && find staging -type f \( -name '*.whl' -o -name '*.tar.gz' \) -exec mv {} dist/ \;
-```
-
-Tag the release.
-
-```bash
-TAG="<version tag matching setup.py>"
-git tag -s $TAG && git push origin $TAG
+rm -r dist && mkdir dist && find staging -type f \( -name '*.whl' -o -name '*.tar.gz' \) -exec mv {} dist/ \;
 ```
 
 Check the dist, run a local test install, then upload to PyPI.
