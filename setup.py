@@ -71,7 +71,7 @@ setuptools.logging.configure()
 
 MAJ = 0
 MIN = 12
-REV = '1a'
+REV = 1
 VERSION = f'{MAJ}.{MIN}.{REV}'
 
 
