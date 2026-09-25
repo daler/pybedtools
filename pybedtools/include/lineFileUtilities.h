@@ -18,9 +18,10 @@ std::string ToString(const T & value) {
     return ss.str();
 }
 
+#ifndef _MSVC_LANG
 // tokenize into a list of strings.
 inline
-void Tokenize(const string &str, vector<string> &elems, const string &delimiter = "\t") 
+void Tokenize(const string &str, vector<string> &elems, const string &delimiter = "\t")
 {
     char* tok;
     char cchars [str.size()+1];
@@ -46,6 +47,42 @@ void Tokenize(const string &str, vector<int> &elems, const string &delimiter = "
         tok = strtok(NULL, delimiter.c_str());
     }
 }
+#else
+inline void Tokenize(const string &str, vector<string> &tokens, const string &delimiter = "\t")
+{
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiter, 0);
+    // Find first "non-delimiter".
+    string::size_type pos = str.find_first_of(delimiter, lastPos);
+
+    while (string::npos != pos || string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiter, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiter, lastPos);
+    }
+}
+inline void Tokenize(const string &str, vector<int> &tokens, const string &delimiter = "\t")
+{
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiter, 0);
+    // Find first "non-delimiter".
+    string::size_type pos = str.find_first_of(delimiter, lastPos);
+
+    while (string::npos != pos || string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(atoi(str.substr(lastPos, pos - lastPos).c_str()));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiter, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiter, lastPos);
+    }
+}
+#endif
 
 #endif /* LINEFILEUTILITIES_H */
 

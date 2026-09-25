@@ -234,24 +234,48 @@ class SDist(sdist):
 
 EXT = '.pyx' if USE_CYTHON else '.cpp'
 
-extensions = [
-    Extension(
-        'pybedtools.cbedtools',
-        depends=glob.glob('pybedtools/include/*h'),
-        libraries=['stdc++', 'z'],
-        include_dirs=['pybedtools/include/'],
-        sources=['pybedtools/cbedtools' + EXT] + sorted(glob.glob('pybedtools/include/*.cpp')),
-        language='c++'),
+if sys.platform == "win32":
+    extensions = [
+        Extension(
+            'pybedtools.cbedtools',
+            depends=glob.glob('pybedtools/include/*h'),
+            library_dirs=[ os.environ.get("ZLIB_ROOT") + '/lib'],
+            libraries=['zlib'],
+            #extra_compile_args=["/std:c++17"],
+            include_dirs=['pybedtools/include/', os.environ.get("ZLIB_ROOT") + '/include', 'win32'],
+            sources=['pybedtools/cbedtools' + EXT] + sorted(glob.glob('pybedtools/include/*.cpp')),
+            language='c++'),
 
-    Extension(
-        'pybedtools.featurefuncs',
-        depends=glob.glob('pybedtools/include/*h'),
-        libraries=['stdc++', 'z'],
-        include_dirs=['pybedtools/include/'],
-        sources=['pybedtools/featurefuncs' + EXT] + sorted(glob.glob('pybedtools/include/*.cpp')),
-        language='c++'),
-]
-
+        Extension(
+            'pybedtools.featurefuncs',
+            depends=glob.glob('pybedtools/include/*h'),
+            library_dirs=[ os.environ.get("ZLIB_ROOT") + '/lib'],
+            libraries=['zlib'],
+            include_dirs=['pybedtools/include/', os.environ.get("ZLIB_ROOT") + '/include', 'win32'],
+            sources=['pybedtools/featurefuncs' + EXT] + sorted(glob.glob('pybedtools/include/*.cpp')),
+            language='c++'),
+    ]
+else:
+    extensions = [
+        Extension(
+            "pybedtools.cbedtools",
+            depends=glob.glob("pybedtools/include/*h"),
+            libraries=["stdc++", "z"],
+            include_dirs=["pybedtools/include/"],
+            sources=["pybedtools/cbedtools" + EXT]
+            + sorted(glob.glob("pybedtools/include/*.cpp")),
+            language="c++",
+        ),
+        Extension(
+            "pybedtools.featurefuncs",
+            depends=glob.glob("pybedtools/include/*h"),
+            libraries=["stdc++", "z"],
+            include_dirs=["pybedtools/include/"],
+            sources=["pybedtools/featurefuncs" + EXT]
+            + sorted(glob.glob("pybedtools/include/*.cpp")),
+            language="c++",
+        ),
+    ]
 
 cmdclass = {
     'clean': CleanCommand,
