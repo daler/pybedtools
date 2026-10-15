@@ -41,7 +41,7 @@ Required
 :A C/C++ compiler:
     * **OSX:** Install Xcode from http://developer.apple.com/xcode/
     * **Linux:** `gcc`, usually already installed; on Ubuntu, install with `sudo apt-get install
-      build-essentials`
+      build-essential`
     * **Windows:** may work with conda compliers or Cygwin but this is
       untested. Windows is not supported.
 
@@ -120,7 +120,7 @@ Paste the following into a new file called `mytest.py`::
     import pybedtools
     a = pybedtools.example_bedtool('a.bed')
     b = pybedtools.example_bedtool('b.bed')
-    print a.intersect(b)
+    print(a.intersect(b))
 
 Run the script with `python mytest.py`. You should get the results::
 
@@ -160,20 +160,6 @@ Then run unit tests along with module doctests::
 Finally, run sphinx doctests::
 
     (cd docs && make doctest)
-
-Test within isolated conda environments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Run the `condatest.sh` script in the top-level dir of the repo. This script
-creates a new isolated conda environment and runs both unit tests and doctests.
-
-To run tests under Python 2::
-
-    ./condatest.sh 2
-
-To run tests under Python 3::
-
-    ./condatest.sh 3
 
 Compile docs
 ~~~~~~~~~~~~
