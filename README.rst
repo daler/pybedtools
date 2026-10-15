@@ -36,7 +36,7 @@ intergenic SNPs:
 
     for gene in nearby:             # [4]
         if int(gene[-1]) < 5000:    # [4]
-            print gene.name         # [4]
+            print(gene.name)        # [4]
 
 Useful features shown here include:
 

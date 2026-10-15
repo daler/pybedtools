@@ -31,10 +31,10 @@ in a strand-specific way (`s=True`):
 Now `merged_a` is a :class:`BedTool` instance that contains the results of the
 merge.
 
-:class:`BedTool` objects must always point to a file on disk.  So in the
-example above, `merged_a` is a :class:`BedTool`, but what file does it
-point to?  You can always check the :attr:`BedTool.fn` attribute to find
-out::
+By default, wrapped BEDTools commands write their results to a file on disk;
+with ``stream=True``, the result is an iterator instead (see
+:ref:`BedTools as iterators`). In the example above, `merged_a` is file-based.
+You can check its :attr:`BedTool.fn` attribute to find the file::
 
     >>> # what file does `merged_a` point to?
     >>> merged_a.fn
@@ -42,8 +42,8 @@ out::
 
 Note that the specific filename will be different for you since it is a
 randomly chosen name (handled by Python's :mod:`tempfile` module).  This
-shows one important aspect of :mod:`pybedtools`: every operation results in
-a new temporary file. Temporary files are stored in :file:`/tmp` by
+shows that this merge operation created a new temporary file.
+Temporary files are stored in :file:`/tmp` by
 default, and have the form :file:`/tmp/pybedtools.*.tmp`. 
 
 By default, at exit all temp files created during the session will be deleted.
@@ -107,7 +107,7 @@ Principle 3: Indifference to BEDTools version
 Since :class:`BedTool` methods just wrap BEDTools_ programs, they are as up-to-date as
 the version of BEDTools_ you have installed on disk.  If you are using a
 cutting-edge version of BEDTools_ that has some hypothetical argument
-`-z` for `intersectBed`, then you can use `a.intersectBed(z=True)`.
+`-z` for `intersectBed`, then you can use `a.intersect(b, z=True)`.
 
 :mod:`pybedtools` will also raise an exception if you try to use a method
 that relies on a more recent version of BEDTools than you have installed.
@@ -240,7 +240,7 @@ by the :class:`BedTool` `b`):
 
 This is equivalent to the following BEDTools_ commands::
 
-    intersectBed -a a.bed -b b.bed | merge -i stdin > shared_merged.bed
+    intersectBed -a a.bed -b b.bed | mergeBed -i stdin > shared_merged.bed
 
 Methods that return a new :class:`BedTool` instance are indicated with the following text in their docstring::
 
