@@ -331,6 +331,41 @@ class IntervalFileGFFTest(IntervalTest):
         self.assertTrue(orig_string == second_string == str(iv))
 
 
+@pytest.mark.parametrize("start", [10, 2**24 + 1, 50000000])
+@pytest.mark.parametrize("same_strand", [False, True])
+@pytest.mark.parametrize(
+    "query_length, target_start, target_end, overlap, expected",
+    [
+        pytest.param(1, 1, 2, 1.0, 0, id="adjacent"),
+        pytest.param(1, 0, 1, 1.0, 1, id="identical"),
+        pytest.param(3, 1, 3, 0.6, 1, id="partial-above-threshold"),
+        pytest.param(3, 1, 3, 0.75, 0, id="partial-below-threshold"),
+        pytest.param(2, 1, 2, 0.5, 1, id="partial-at-threshold"),
+        pytest.param(0, 0, 1, 1.0, 1, id="zero-length-query"),
+        pytest.param(0, 1, 2, 1.0, 0, id="disjoint-zero-length-query"),
+    ],
+)
+def test_overlap_precision(
+    start, same_strand, query_length, target_start, target_end, overlap, expected
+):
+    # Regression for #420: translating intervals must not change their hits.
+    bed = pybedtools.BedTool(
+        "chr1 {} {} . 0 +".format(start + target_start, start + target_end),
+        from_string=True,
+    )
+    query = Interval("chr1", start, start + query_length, strand="+")
+    kwargs = dict(same_strand=same_strand, overlap=overlap)
+    assert len(bed.all_hits(query, **kwargs)) == expected
+    assert bed.any_hits(query, **kwargs) == expected
+    assert bed.count_hits(query, **kwargs) == expected
+
+    if same_strand:
+        query.strand = "-"
+        assert bed.all_hits(query, **kwargs) == []
+        assert bed.any_hits(query, **kwargs) == 0
+        assert bed.count_hits(query, **kwargs) == 0
+
+
 def test_zero_length_regression():
     i = Interval(chrom="chrA", start=1, end=10, name=".", score="0", strand="+")
     iminus = Interval(chrom="chrA", start=1, end=10, name=".", score="0", strand="-")
