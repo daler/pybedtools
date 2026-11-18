@@ -10,6 +10,7 @@ import random
 import string
 import pprint
 from itertools import islice
+from contextlib import nullcontext
 from multiprocessing import Pool
 import gzip
 from typing import Any, Callable, Iterable, Iterator, Literal, Optional, TYPE_CHECKING, cast
@@ -2978,27 +2979,15 @@ class BedTool(object):
         if processes == 1:
             for _ in range(iterations):
                 yield func(*func_args, **func_kwargs)
-            raise StopIteration
+            return
 
-        if _orig_pool:
-            p = _orig_pool
-        else:
-            p = Pool(processes)
-        iterations_each = [iterations / processes] * processes
-        iterations_each[-1] += iterations % processes
-
-        # FYI some useful info on apply_async:
-        # http://stackoverflow.com/questions/8533318/
-        #      python-multiprocessing-pool-when-to-use-apply-apply-async-or-map
-        #
-        # Here, we don't care about the order, and don't want the subprocesses
-        # to block.
-        results = [
-            p.apply_async(func, func_args, func_kwargs) for _ in range(iterations)
-        ]
-        for r in results:
-            yield r.get()
-        raise StopIteration
+        pool = Pool(processes) if _orig_pool is None else nullcontext(_orig_pool)
+        with pool as p:
+            results = [
+                p.apply_async(func, func_args, func_kwargs) for _ in range(iterations)
+            ]
+            for r in results:
+                yield r.get()
 
     def random_jaccard(
         self,
@@ -3165,27 +3154,26 @@ class BedTool(object):
 
         """
         if processes is not None:
-            p = Pool(processes)
             iterations_each = [iterations // processes] * processes
             iterations_each[-1] += iterations % processes
-            results = [
-                p.apply_async(
-                    _call_randomintersect,
-                    (self, other, it),
-                    dict(
-                        intersect_kwargs=intersect_kwargs,
-                        shuffle_kwargs=shuffle_kwargs,
-                        debug=debug,
-                        report_iterations=report_iterations,
-                        _orig_processes=processes,
-                    ),
-                )
-                for it in iterations_each
-            ]
-            for r in results:
-                for value in r.get():
-                    yield value
-            raise StopIteration
+            with Pool(processes) as p:
+                results = [
+                    p.apply_async(
+                        _call_randomintersect,
+                        (self, other, it),
+                        dict(
+                            intersect_kwargs=intersect_kwargs,
+                            shuffle_kwargs=shuffle_kwargs,
+                            debug=debug,
+                            report_iterations=report_iterations,
+                            _orig_processes=processes,
+                        ),
+                    )
+                    for it in iterations_each
+                ]
+                for r in results:
+                    yield from r.get()
+            return
 
         if shuffle_kwargs is None:
             shuffle_kwargs = {}

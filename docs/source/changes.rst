@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Fix generator completion in ``randomstats()`` (fixes #377). (#PRNUM)
+
 Changes in v0.12.0
 ------------------
 
