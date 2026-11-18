@@ -881,32 +881,25 @@ class BedTool(object):
             if isBGZIP(self.fn):
                 return self.fn
 
-        # If not in_place, then make a tempfile for the BGZIPed version
-        if not in_place:
-            # Get tempfile name, sorted or not
-            if not is_sorted:
-                fn = self.sort(header=True).fn
-            else:
+        if not is_sorted:
+            fn = self.sort(header=True).fn
+        elif isinstance(self.fn, str):
+            fn = self.fn
+            if isGZIP(fn):
                 fn = self._tmp()
+                with gzip.open(self.fn, "rb") as source, open(fn, "wb") as dest:
+                    shutil.copyfileobj(source, dest)
+        else:
+            fn = self.saveas().fn
 
-            # Register for later deletion
-            outfn = fn + ".gz"
+        if in_place:
+            outfn = self.fn + ".gz"
+        else:
+            outfn = (self._tmp() if is_sorted else fn) + ".gz"
             BedTool.TEMPFILES.append(outfn)
 
-            # Creates tempfile.gz
-            pysam.tabix_compress(fn, outfn, force=force)
-            return outfn
-
-        # Otherwise, make sure the BGZIPed version has a similar name to the
-        # current BedTool's file
-        if in_place:
-            if not is_sorted:
-                fn = self.sort(header=True).saveas().fn
-            else:
-                fn = self.fn
-            outfn = self.fn + ".gz"
-            pysam.tabix_compress(fn, outfn, force=force)
-            return outfn
+        pysam.tabix_compress(fn, outfn, force=force)
+        return outfn
 
     def delete_temporary_history(self, ask: bool = True, raw_input_func=None):
         """

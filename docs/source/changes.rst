@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Preserve interval rows when BGZIP-compressing presorted files for tabix. (#PRNUM)
+
 Changes in v0.12.0
 ------------------
 
