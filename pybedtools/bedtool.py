@@ -1528,6 +1528,12 @@ class BedTool(object):
             if isinstance(instream2, BedTool):
                 instream2 = instream2.fn
 
+            if isinstance(instream2, (list, tuple)):
+                instream2 = [
+                    str(item) if isinstance(item, pathlib.PurePath) else item
+                    for item in instream2
+                ]
+
             # Filename
             if isinstance(instream2, str):
                 kwargs[inarg2] = instream2

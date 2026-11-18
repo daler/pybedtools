@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Accept pathlib paths in lists of intersection databases. (#PRNUM)
+
 Changes in v0.12.0
 ------------------
 
