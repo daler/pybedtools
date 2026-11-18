@@ -933,3 +933,31 @@ def test_issue_405():
     a = pybedtools.BedTool(a)
     a.cat(b)
 
+
+
+@pytest.mark.parametrize("new,processes", [(False, None), (False, 2), (True, 1), (True, 2)])
+def test_randomstats_completes(tmp_path, new, processes):
+    genome = tmp_path / "genome.txt"
+    genome.write_text("chr1\t1000\n")
+    a = pybedtools.example_bedtool("a.bed").set_chromsizes({"chr1": (0, 1000)})
+    b = pybedtools.example_bedtool("b.bed")
+
+    shuffled = subprocess.check_output(
+        ["bedtools", "shuffle", "-i", a.fn, "-g", str(genome), "-seed", "2"]
+    )
+    overlap = subprocess.check_output(
+        ["bedtools", "intersect", "-a", "stdin", "-b", b.fn, "-u"], input=shuffled
+    )
+
+    result = a.randomstats(
+        b,
+        iterations=3,
+        new=new,
+        genome_fn=str(genome),
+        processes=processes,
+        shuffle_kwargs={"seed": 2},
+        include_distribution=True,
+    )
+
+    assert result["actual"] == 3
+    assert result["distribution"].tolist() == [len(overlap.splitlines())] * 3
