@@ -6,7 +6,7 @@ Changelog
 Unreleased
 ----------
 
-* Count BAM and CRAM alignments without constructing Interval objects. (#PRNUM)
+* Count BAM and CRAM alignments without constructing Interval objects. (#438)
 
 Changes in v0.12.0
 ------------------
