@@ -6,7 +6,7 @@ Changelog
 Unreleased
 ----------
 
-* Fix generator completion in ``randomstats()`` (fixes #377). (#PRNUM)
+* Fix generator completion in ``randomstats()`` (fixes #377). (#435)
 
 Changes in v0.12.0
 ------------------
