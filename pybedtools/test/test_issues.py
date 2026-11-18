@@ -933,3 +933,27 @@ def test_issue_405():
     a = pybedtools.BedTool(a)
     a.cat(b)
 
+
+
+@pytest.mark.parametrize("in_place", [False, True])
+@pytest.mark.parametrize("compression", [None, "gzip-lf", "gzip-crlf"])
+def test_tabix_presorted_input(tmp_path, in_place, compression):
+    import pysam
+
+    rows = Path(pybedtools.example_filename("a.bed")).read_bytes()
+    if compression == "gzip-crlf":
+        rows = rows.replace(b"\n", b"\r\n")
+    if compression:
+        source = tmp_path / "a.bed.gz"
+        source.write_bytes(gzip.compress(rows))
+    else:
+        source = tmp_path / "a.bed"
+        source.write_bytes(rows)
+    original = source.read_bytes()
+
+    indexed = pybedtools.BedTool(source).tabix(in_place=in_place, is_sorted=True)
+
+    assert source.read_bytes() == original
+    assert gzip.decompress(Path(indexed.fn).read_bytes()) == rows
+    with pysam.TabixFile(indexed.fn) as index:
+        assert list(index.fetch("chr1", 110, 111)) == [rows.splitlines()[1].decode()]
