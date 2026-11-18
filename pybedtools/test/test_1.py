@@ -2056,3 +2056,27 @@ def test_new_head():
     # however, printing should still complain:
     with pytest.raises(pybedtools.cbedtools.MalformedBedLineError):
         print(a)
+
+
+def test_bam_iteration_preserves_mate_positions(tmp_path):
+    import pysam
+
+    sam = tmp_path / "reads.sam"
+    sam.write_text(
+        "@HD\tVN:1.6\tSO:coordinate\n"
+        "@SQ\tSN:chr1\tLN:1000\n"
+        "pair\t99\tchr1\t1\t60\t4M\t=\t20\t23\tACGT\tIIII\n"
+        "pair\t147\tchr1\t20\t60\t4M\t=\t1\t-23\tACGT\tIIII\n"
+        "single\t0\tchr1\t50\t60\t4M\t*\t0\t0\tACGT\tIIII\n"
+    )
+    bam = tmp_path / "reads.bam"
+    with pysam.AlignmentFile(sam, "r") as text:
+        with pysam.AlignmentFile(bam, "wb", template=text) as binary:
+            for read in text:
+                binary.write(read)
+
+    with pysam.AlignmentFile(bam, "rb") as binary:
+        assert [read.next_reference_start for read in binary] == [19, 0, -1]
+    assert [feature[7] for feature in pybedtools.BedTool(bam)] == [
+        row.split("\t")[7] for row in sam.read_text().splitlines()[2:]
+    ]
