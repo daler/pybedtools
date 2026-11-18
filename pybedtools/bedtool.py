@@ -2713,7 +2713,11 @@ class BedTool(object):
         """
         if hasattr(self, "next") or hasattr(self, "__next__"):
             return sum(1 for _ in self)
-        return sum(1 for _ in iter(self))
+        records = iter(self)
+        if type(records) is BAM:
+            with records.pysam_bamfile as reads:
+                return reads.count(until_eof=True, read_callback="nofilter")
+        return sum(1 for _ in records)
 
     def print_sequence(self) -> str:
         """
