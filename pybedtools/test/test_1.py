@@ -2056,3 +2056,28 @@ def test_new_head():
     # however, printing should still complain:
     with pytest.raises(pybedtools.cbedtools.MalformedBedLineError):
         print(a)
+
+
+@pytest.mark.parametrize("mode", ["wb", "wc"])
+def test_alignment_count_includes_every_record(tmp_path, mode):
+    import pysam
+
+    sam = tmp_path / "reads.sam"
+    sam.write_text(
+        "@HD\tVN:1.6\tSO:unsorted\n"
+        "@SQ\tSN:chr1\tLN:1000\n"
+        "primary\t0\tchr1\t1\t60\t4M\t*\t0\t0\tACGT\tIIII\n"
+        "secondary\t256\tchr1\t20\t60\t4M\t*\t0\t0\tACGT\tIIII\n"
+        "duplicate\t1024\tchr1\t50\t60\t4M\t*\t0\t0\tACGT\tIIII\n"
+        "unmapped\t4\t*\t0\t0\t*\t*\t0\t0\tACGT\tIIII\n"
+    )
+    filename = tmp_path / ("reads.bam" if mode == "wb" else "reads.cram")
+    kwargs = {"format_options": [b"no_ref=1"]} if mode == "wc" else {}
+    with pysam.AlignmentFile(sam, "r") as text:
+        with pysam.AlignmentFile(filename, mode, template=text, **kwargs) as alignments:
+            for read in text:
+                alignments.write(read)
+
+    bed = pybedtools.BedTool(filename)
+    assert [read[0] for read in iter(bed)] == ["primary", "secondary", "duplicate", "unmapped"]
+    assert bed.count() == len(bed) == 4

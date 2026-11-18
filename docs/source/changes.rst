@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Count BAM and CRAM alignments without constructing Interval objects. (#PRNUM)
+
 Changes in v0.12.0
 ------------------
 
