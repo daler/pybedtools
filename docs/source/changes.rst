@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Preserve SAM mate position 1 when iterating over BAM alignments. (#437)
+
 Changes in v0.12.0
 ------------------
 
