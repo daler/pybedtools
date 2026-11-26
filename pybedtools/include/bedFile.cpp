@@ -136,7 +136,7 @@ vector<BED> BedFile::FindOverlapsPerBin(const BED &bed, float overlapFraction) {
 
             for (; bedItr != bedEnd; ++bedItr) {
                 // do we have sufficient overlap?
-                float size   = (float) bed.end-bed.start;
+                float size   = (float) (bed.end - bed.start);
                 int maxStart = max(bed.start, bedItr->start);
                 int minEnd   = min(bed.end, bedItr->end);
                 int overlap  = minEnd - maxStart;
@@ -189,7 +189,7 @@ vector<BED> BedFile::FindOverlapsPerBin(const BED &bed, bool forceStrand, float 
 
             for (; bedItr != bedEnd; ++bedItr) {
                 // do we have sufficient overlap?
-                float size   = (float) bed.end-bed.start;
+                float size   = (float) (bed.end - bed.start);
                 int maxStart = max(bed.start, bedItr->start);
                 int minEnd   = min(bed.end, bedItr->end);
                 int overlap  = minEnd - maxStart;
@@ -235,7 +235,7 @@ int BedFile::FindAnyOverlapsPerBin(const BED &bed, float overlapFraction) {
 
             for (; bedItr != bedEnd; ++bedItr) {
                 // do we have sufficient overlap?
-                float size   = (float) bed.end-bed.start;
+                float size   = (float) (bed.end - bed.start);
                 int maxStart = max(bed.start, bedItr->start);
                 int minEnd   = min(bed.end, bedItr->end);
                 int overlap  = minEnd - maxStart;
@@ -273,7 +273,7 @@ int BedFile::FindAnyOverlapsPerBin(const BED &bed, bool forceStrand, float overl
 
             for (; bedItr != bedEnd; ++bedItr) {
                 // do we have sufficient overlap?
-                float size   = (float) bed.end-bed.start;
+                float size   = (float) (bed.end - bed.start);
                 int maxStart = max(bed.start, bedItr->start);
                 int minEnd   = min(bed.end, bedItr->end);
                 int overlap  = minEnd - maxStart;
@@ -317,7 +317,7 @@ int BedFile::CountOverlapsPerBin(const BED &bed, float overlapFraction) {
 
             for (; bedItr != bedEnd; ++bedItr) {
                 // do we have sufficient overlap?
-                float size   = (float) bed.end-bed.start;
+                float size   = (float) (bed.end - bed.start);
                 int maxStart = max(bed.start, bedItr->start);
                 int minEnd   = min(bed.end, bedItr->end);
                 int overlap  = minEnd - maxStart;
@@ -355,7 +355,7 @@ int BedFile::CountOverlapsPerBin(const BED &bed, bool forceStrand, float overlap
 
             for (; bedItr != bedEnd; ++bedItr) {
                 // do we have sufficient overlap?
-                float size   = (float) bed.end-bed.start;
+                float size   = (float) (bed.end - bed.start);
                 int maxStart = max(bed.start, bedItr->start);
                 int minEnd   = min(bed.end, bedItr->end);
                 int overlap  = minEnd - maxStart;
