@@ -1181,15 +1181,16 @@ class BedTool(object):
             return BedTool(fh.name)
 
     @classmethod
-    def _tmp(cls) -> str:
+    def _tmp(cls, suffix: str = "") -> str:
         """
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
-        deletion if you forget to call pybedtools.cleanup().
+        deletion if you forget to call pybedtools.cleanup(). `suffix` is
+        appended after the ".tmp" extension.
         """
         tmpfn = tempfile.NamedTemporaryFile(
             prefix=settings.tempfile_prefix,
-            suffix=settings.tempfile_suffix,
+            suffix=settings.tempfile_suffix + suffix,
             delete=False,
         )
         tmpfn = tmpfn.name
