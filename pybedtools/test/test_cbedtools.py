@@ -330,10 +330,12 @@ class IntervalFileGFFTest(IntervalTest):
         self.assertTrue(orig_start == second_start == iv.start)
         self.assertTrue(orig_string == second_string == str(iv))
 
-
+# Parameterized start positions are well-within-exact-float range (10), just
+# above it (2^24+1), and well above it..
 @pytest.mark.parametrize("start", [10, 2**24 + 1, 50000000])
 @pytest.mark.parametrize("same_strand", [False, True])
 @pytest.mark.parametrize(
+    # Target start and target end are added to the parameterized start above.
     "query_length, target_start, target_end, overlap, expected",
     [
         pytest.param(1, 1, 2, 1.0, 0, id="adjacent"),
@@ -348,7 +350,9 @@ class IntervalFileGFFTest(IntervalTest):
 def test_overlap_precision(
     start, same_strand, query_length, target_start, target_end, overlap, expected
 ):
-    # Regression for #420: translating intervals must not change their hits.
+    # Previously, small overlaps at large coordinates (above 2^24) would give
+    # imprecise results because the end position was converted to float
+    # before subtracting start position. See #420.
     bed = pybedtools.BedTool(
         "chr1 {} {} . 0 +".format(start + target_start, start + target_end),
         from_string=True,
