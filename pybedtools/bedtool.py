@@ -843,10 +843,13 @@ class BedTool(object):
 
         # Make sure it's BGZIPed
         fn = self.bgzip(in_place=in_place, force=force, is_sorted=is_sorted)
-        if self.file_type is not None and self.file_type not in ["bam", "empty"]:
-            pysam.tabix_index(fn, force=force, preset=self.file_type, csi=use_csi)  # type: ignore
 
-        return BedTool(fn)
+        # Handle cases where self is a consumed stream/iterator
+        bt = BedTool(fn)
+        if bt.file_type is not None and bt.file_type != "empty":
+            pysam.tabix_index(fn, force=force, preset=bt.file_type, csi=use_csi)  # type: ignore
+
+        return bt
 
     def _tabixed(self):
         """
