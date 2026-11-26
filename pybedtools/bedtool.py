@@ -878,7 +878,17 @@ class BedTool(object):
         bedtools sort with the `-header` option.
 
         `force` will overwrite without asking.
+
+        Raises ValueError for BAM files, which are already BGZF-compressed and
+        should be indexed with `pysam.index` (or `samtools index`) rather than
+        tabix.
         """
+        if self._isbam:
+            raise ValueError(
+                "BAM files are already BGZF-compressed and cannot be tabix-indexed; "
+                "use pysam.index() or `samtools index` instead."
+            )
+
         # It may already be BGZIPed...
         if isinstance(self.fn, str) and not force:
             if isBGZIP(self.fn):
