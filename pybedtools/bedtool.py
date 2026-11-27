@@ -3013,6 +3013,7 @@ class BedTool(object):
                 yield func(*func_args, **func_kwargs)
             return
 
+        # nullcontext avoids closing a provided _orig_pool after the `with`
         pool = Pool(processes) if _orig_pool is None else nullcontext(_orig_pool)
         with pool as p:
             results = [
