@@ -843,10 +843,13 @@ class BedTool(object):
 
         # Make sure it's BGZIPed
         fn = self.bgzip(in_place=in_place, force=force, is_sorted=is_sorted)
-        if self.file_type is not None and self.file_type not in ["bam", "empty"]:
-            pysam.tabix_index(fn, force=force, preset=self.file_type, csi=use_csi)  # type: ignore
 
-        return BedTool(fn)
+        # Handle cases where self is a consumed stream/iterator
+        bt = BedTool(fn)
+        if bt.file_type is not None and bt.file_type != "empty":
+            pysam.tabix_index(fn, force=force, preset=bt.file_type, csi=use_csi)  # type: ignore
+
+        return bt
 
     def _tabixed(self):
         """
@@ -869,44 +872,72 @@ class BedTool(object):
         BedTool out of an already sorted and BGZIPed file to avoid this step.
 
         `in_place` will put the BGZIPed file in the same dir (possibly after
-        sorting to tempfile).
+        sorting to tempfile). If the BedTool has no file on disk (e.g., it
+        wraps an iterator), a tempfile is used instead. Raises ValueError if
+        `in_place` would create a ".gz.gz" file.
 
         If `is_sorted`, then assume the file is already sorted. Otherwise call
         bedtools sort with the `-header` option.
 
         `force` will overwrite without asking.
+
+        If a file is gzipped (but not bgzipped), the gzip will be decompressed
+        first.
+
+        Raises ValueError for BAM files, which are already BGZF-compressed and
+        should be indexed with `pysam.index` (or `samtools index`) rather than
+        tabix.
         """
+        if self._isbam:
+            raise ValueError(
+                "BAM files are already BGZF-compressed and cannot be tabix-indexed; "
+                "use pysam.index() or `samtools index` instead."
+            )
+
         # It may already be BGZIPed...
         if isinstance(self.fn, str) and not force:
             if isBGZIP(self.fn):
                 return self.fn
 
-        # If not in_place, then make a tempfile for the BGZIPed version
-        if not in_place:
-            # Get tempfile name, sorted or not
-            if not is_sorted:
-                fn = self.sort(header=True).fn
-            else:
-                fn = self._tmp()
-
-            # Register for later deletion
-            outfn = fn + ".gz"
-            BedTool.TEMPFILES.append(outfn)
-
-            # Creates tempfile.gz
-            pysam.tabix_compress(fn, outfn, force=force)
-            return outfn
-
-        # Otherwise, make sure the BGZIPed version has a similar name to the
-        # current BedTool's file
-        if in_place:
-            if not is_sorted:
-                fn = self.sort(header=True).saveas().fn
-            else:
-                fn = self.fn
+        if in_place and isinstance(self.fn, str):
             outfn = self.fn + ".gz"
-            pysam.tabix_compress(fn, outfn, force=force)
-            return outfn
+            if outfn.endswith(".gz.gz"):
+                raise ValueError(
+                    f"in_place=True would create '{outfn}'. Use in_place=False "
+                    "to write the BGZIPed file to a tempfile instead."
+                )
+        else:
+            # Not in_place, or no file on disk to put the output next to
+            outfn = None
+
+        if not is_sorted:
+            fn = self.sort(header=True).fn
+        elif isinstance(self.fn, str):
+            # Uncompress gzip so we don't double-compress to bgzip
+            fn = self.fn
+            if isGZIP(fn):
+                fn = self._tmp()
+                with gzip.open(self.fn, "rb") as source, open(fn, "wb") as dest:
+                    shutil.copyfileobj(source, dest)
+        else:
+            fn = self.saveas().fn
+
+        compress_force = force
+        if outfn is None:
+            if fn == self.fn:
+                # Don't put output next to the existing file; use a fresh
+                # tempfile. compress_force because _tmp creates the (empty)
+                # file and otherwise tabix won't overwrite.
+                outfn = self._tmp(suffix=".gz")
+                compress_force = True
+            else:
+                # fn is already a registered tmp file; register the .gz suffix
+                # version of it for later cleanup.
+                outfn = fn + ".gz"
+                BedTool.TEMPFILES.append(outfn)
+
+        pysam.tabix_compress(fn, outfn, force=compress_force)
+        return outfn
 
     def delete_temporary_history(self, ask: bool = True, raw_input_func=None):
         """
@@ -1175,15 +1206,16 @@ class BedTool(object):
             return BedTool(fh.name)
 
     @classmethod
-    def _tmp(cls) -> str:
+    def _tmp(cls, suffix: str = "") -> str:
         """
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
-        deletion if you forget to call pybedtools.cleanup().
+        deletion if you forget to call pybedtools.cleanup(). `suffix` is
+        appended after the ".tmp" extension.
         """
         tmpfn = tempfile.NamedTemporaryFile(
             prefix=settings.tempfile_prefix,
-            suffix=settings.tempfile_suffix,
+            suffix=settings.tempfile_suffix + suffix,
             delete=False,
         )
         tmpfn = tmpfn.name
