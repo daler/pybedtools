@@ -38,3 +38,22 @@ def test_pathlib_on_methods():
     bt = pybedtools.BedTool(fn_a)
     res = bt.intersect(p_b)
 
+
+
+@pytest.mark.parametrize("make_paths", [list, tuple])
+def test_intersect_multiple_pathlib_databases(tmp_path, make_paths):
+    import subprocess
+
+    a = pybedtools.example_bedtool("a.bed")
+    b = pathlib.Path(pybedtools.example_filename("b.bed"))
+    c = tmp_path / "other peaks.bed"
+    c.write_text("chr1\t20\t30\tpeak\t0\t+\n")
+    expected = subprocess.check_output(
+        ["bedtools", "intersect", "-a", a.fn, "-b", str(b), str(c), "-wa", "-wb", "-filenames"]
+    )
+
+    result = a.intersect(make_paths((b, c)), wa=True, wb=True, filenames=True)
+
+    assert str(b).encode() in expected
+    assert str(c).encode() in expected
+    assert pathlib.Path(result.fn).read_bytes() == expected

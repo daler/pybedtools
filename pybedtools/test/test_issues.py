@@ -933,3 +933,164 @@ def test_issue_405():
     a = pybedtools.BedTool(a)
     a.cat(b)
 
+
+@pytest.mark.parametrize("new,processes", [(False, None), (False, 2), (True, 1), (True, 2)])
+def test_issue_377(tmp_path, new, processes):
+    # Previously, the randomstats generators ended with `raise StopIteration`.
+    # Since PEP 479 (Python 3.7), raising StopIteration inside a generator is
+    # turned into a RuntimeError, so randomstats crashed as soon as it used up
+    # the distribution.
+    genome = tmp_path / "genome.txt"
+    genome.write_text("chr1\t1000\n")
+    a = pybedtools.example_bedtool("a.bed").set_chromsizes({"chr1": (0, 1000)})
+    b = pybedtools.example_bedtool("b.bed")
+
+    shuffled = subprocess.check_output(
+        ["bedtools", "shuffle", "-i", a.fn, "-g", str(genome), "-seed", "2"]
+    )
+    overlap = subprocess.check_output(
+        ["bedtools", "intersect", "-a", "stdin", "-b", b.fn, "-u"], input=shuffled
+    )
+
+    result = a.randomstats(
+        b,
+        iterations=3,
+        new=new,
+        genome_fn=str(genome),
+        processes=processes,
+        shuffle_kwargs={"seed": 2},
+        include_distribution=True,
+    )
+
+    assert result["actual"] == 3
+    assert result["distribution"].tolist() == [len(overlap.splitlines())] * 3
+
+
+@pytest.mark.parametrize("new", [False, True])
+def test_randomstats_pool_cleanup(tmp_path, monkeypatch, new):
+    # Previously, pool workers kept running until pool.terminate() (or close()
+    # + join()) were called. Otherwise, the would stay around as idle child
+    # processes until the Pool object was garbage collected or the interpreter
+    # exited.
+    #
+    # Now, using the pool as a context manager calls terminate() at the end. So
+    # here we confirm the pool is cleaned up.
+    from multiprocessing import Pool
+
+    pools = []
+
+    # Monkeypatch pybedtools.bedtool.Pool so we can track the pools started
+    def tracked_pool(*args, **kwargs):
+        pool = Pool(*args, **kwargs)
+        # Keeping a reference to the pools in the list also prevents garbage
+        # collection which could otherwise shut down the pool -- we want to
+        # detect pools *intentionally* shut down.
+        pools.append(pool)
+        return pool
+
+    monkeypatch.setattr(pybedtools.bedtool, "Pool", tracked_pool)
+
+    genome = tmp_path / "genome.txt"
+    genome.write_text("chr1\t1000\n")
+    a = pybedtools.example_bedtool("a.bed").set_chromsizes({"chr1": (0, 1000)})
+    b = pybedtools.example_bedtool("b.bed")
+
+    try:
+        a.randomstats(
+            b,
+            iterations=3,
+            new=new,
+            genome_fn=str(genome),
+            processes=2,
+            shuffle_kwargs={"seed": 2},
+        )
+
+        assert pools, "Expected randomstats to create a pool"
+        assert all(not worker.is_alive() for pool in pools for worker in pool._pool)
+    finally:
+        # Still need to shut down pools if they failed in this test (terminate
+        # and join are safe to call again even after the pool is shut down)
+        for pool in pools:
+            pool.terminate()
+            pool.join()
+
+
+@pytest.mark.parametrize("in_place", [False, True])
+@pytest.mark.parametrize("compression", [None, "gzip-lf", "gzip-crlf"])
+def test_tabix_presorted_input(tmp_path, in_place, compression):
+    import pysam
+
+    rows = Path(pybedtools.example_filename("a.bed")).read_bytes()
+    if compression == "gzip-crlf":
+        rows = rows.replace(b"\n", b"\r\n")
+    if compression:
+        source = tmp_path / "a.bed.gz"
+        source.write_bytes(gzip.compress(rows))
+    else:
+        source = tmp_path / "a.bed"
+        source.write_bytes(rows)
+    original = source.read_bytes()
+
+    if in_place and compression:
+        # in_place would create a.bed.gz.gz
+        with pytest.raises(ValueError):
+            pybedtools.BedTool(source).tabix(in_place=in_place, is_sorted=True)
+        assert not (tmp_path / "a.bed.gz.gz").exists()
+        assert source.read_bytes() == original
+        return
+
+    indexed = pybedtools.BedTool(source).tabix(in_place=in_place, is_sorted=True)
+
+    assert source.read_bytes() == original
+    assert gzip.decompress(Path(indexed.fn).read_bytes()) == rows
+    with pysam.TabixFile(indexed.fn) as index:
+        assert list(index.fetch("chr1", 110, 111)) == [rows.splitlines()[1].decode()]
+
+
+@pytest.mark.parametrize("in_place", [False, True])
+@pytest.mark.parametrize("is_sorted", [False, True])
+def test_tabix_in_memory_input(in_place, is_sorted):
+    # BedTool wrapping an iterator has no file on disk, so tabix in_place
+    # should fall back to tempfile
+    a = pybedtools.example_bedtool("a.bed")
+    expected = str(a)
+    x = pybedtools.BedTool(iter(a))
+    assert not isinstance(x.fn, str)
+
+    indexed = x.tabix(in_place=in_place, is_sorted=is_sorted)
+
+    assert indexed._tabixed()
+    assert indexed.fn in pybedtools.BedTool.TEMPFILES
+    assert gzip.open(indexed.fn, "rt").read() == expected
+    assert len(indexed.tabix_intervals("chr1:110-111")) == 1
+
+
+def test_bgzip_presorted_no_extra_tempfile(tmp_path):
+    # Ensure we fully clean up tempfiles using .gz suffixes
+    source = tmp_path / "a.bed"
+    shutil.copy(pybedtools.example_filename("a.bed"), source)
+    before = list(pybedtools.BedTool.TEMPFILES)
+
+    fn = pybedtools.BedTool(source).bgzip(in_place=False, is_sorted=True)
+
+    new = pybedtools.BedTool.TEMPFILES[len(before):]
+    assert new == [fn]
+    assert fn.endswith(".gz")
+    assert gzip.open(fn, "rb").read() == source.read_bytes()
+    assert not (tmp_path / "a.bed.gz").exists()
+
+
+@pytest.mark.parametrize("force", [False, True])
+@pytest.mark.parametrize("method", ["bgzip", "tabix"])
+def test_bgzip_tabix_bam_raises(tmp_path, method, force):
+    # BAM is already BGZF; it should be indexed with pysam.index, not tabix, so
+    # ValueError
+    source = tmp_path / "x.bam"
+    shutil.copy(pybedtools.example_filename("x.bam"), source)
+    original = source.read_bytes()
+
+    with pytest.raises(ValueError, match="BAM"):
+        getattr(pybedtools.BedTool(source), method)(force=force)
+
+    assert source.read_bytes() == original
+    assert list(tmp_path.iterdir()) == [source]

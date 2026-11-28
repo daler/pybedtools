@@ -2,6 +2,7 @@ from __future__ import annotations
 import tempfile
 from textwrap import dedent
 import shutil
+import shlex
 import subprocess
 import operator
 import os
@@ -10,6 +11,7 @@ import random
 import string
 import pprint
 from itertools import islice
+from contextlib import nullcontext
 from multiprocessing import Pool
 import gzip
 from typing import Any, Callable, Iterable, Iterator, Literal, Optional, TYPE_CHECKING, cast
@@ -843,10 +845,13 @@ class BedTool(object):
 
         # Make sure it's BGZIPed
         fn = self.bgzip(in_place=in_place, force=force, is_sorted=is_sorted)
-        if self.file_type is not None and self.file_type not in ["bam", "empty"]:
-            pysam.tabix_index(fn, force=force, preset=self.file_type, csi=use_csi)  # type: ignore
 
-        return BedTool(fn)
+        # Handle cases where self is a consumed stream/iterator
+        bt = BedTool(fn)
+        if bt.file_type is not None and bt.file_type != "empty":
+            pysam.tabix_index(fn, force=force, preset=bt.file_type, csi=use_csi)  # type: ignore
+
+        return bt
 
     def _tabixed(self):
         """
@@ -869,44 +874,72 @@ class BedTool(object):
         BedTool out of an already sorted and BGZIPed file to avoid this step.
 
         `in_place` will put the BGZIPed file in the same dir (possibly after
-        sorting to tempfile).
+        sorting to tempfile). If the BedTool has no file on disk (e.g., it
+        wraps an iterator), a tempfile is used instead. Raises ValueError if
+        `in_place` would create a ".gz.gz" file.
 
         If `is_sorted`, then assume the file is already sorted. Otherwise call
         bedtools sort with the `-header` option.
 
         `force` will overwrite without asking.
+
+        If a file is gzipped (but not bgzipped), the gzip will be decompressed
+        first.
+
+        Raises ValueError for BAM files, which are already BGZF-compressed and
+        should be indexed with `pysam.index` (or `samtools index`) rather than
+        tabix.
         """
+        if self._isbam:
+            raise ValueError(
+                "BAM files are already BGZF-compressed and cannot be tabix-indexed; "
+                "use pysam.index() or `samtools index` instead."
+            )
+
         # It may already be BGZIPed...
         if isinstance(self.fn, str) and not force:
             if isBGZIP(self.fn):
                 return self.fn
 
-        # If not in_place, then make a tempfile for the BGZIPed version
-        if not in_place:
-            # Get tempfile name, sorted or not
-            if not is_sorted:
-                fn = self.sort(header=True).fn
-            else:
-                fn = self._tmp()
-
-            # Register for later deletion
-            outfn = fn + ".gz"
-            BedTool.TEMPFILES.append(outfn)
-
-            # Creates tempfile.gz
-            pysam.tabix_compress(fn, outfn, force=force)
-            return outfn
-
-        # Otherwise, make sure the BGZIPed version has a similar name to the
-        # current BedTool's file
-        if in_place:
-            if not is_sorted:
-                fn = self.sort(header=True).saveas().fn
-            else:
-                fn = self.fn
+        if in_place and isinstance(self.fn, str):
             outfn = self.fn + ".gz"
-            pysam.tabix_compress(fn, outfn, force=force)
-            return outfn
+            if outfn.endswith(".gz.gz"):
+                raise ValueError(
+                    f"in_place=True would create '{outfn}'. Use in_place=False "
+                    "to write the BGZIPed file to a tempfile instead."
+                )
+        else:
+            # Not in_place, or no file on disk to put the output next to
+            outfn = None
+
+        if not is_sorted:
+            fn = self.sort(header=True).fn
+        elif isinstance(self.fn, str):
+            # Uncompress gzip so we don't double-compress to bgzip
+            fn = self.fn
+            if isGZIP(fn):
+                fn = self._tmp()
+                with gzip.open(self.fn, "rb") as source, open(fn, "wb") as dest:
+                    shutil.copyfileobj(source, dest)
+        else:
+            fn = self.saveas().fn
+
+        compress_force = force
+        if outfn is None:
+            if fn == self.fn:
+                # Don't put output next to the existing file; use a fresh
+                # tempfile. compress_force because _tmp creates the (empty)
+                # file and otherwise tabix won't overwrite.
+                outfn = self._tmp(suffix=".gz")
+                compress_force = True
+            else:
+                # fn is already a registered tmp file; register the .gz suffix
+                # version of it for later cleanup.
+                outfn = fn + ".gz"
+                BedTool.TEMPFILES.append(outfn)
+
+        pysam.tabix_compress(fn, outfn, force=compress_force)
+        return outfn
 
     def delete_temporary_history(self, ask: bool = True, raw_input_func=None):
         """
@@ -1175,15 +1208,16 @@ class BedTool(object):
             return BedTool(fh.name)
 
     @classmethod
-    def _tmp(cls) -> str:
+    def _tmp(cls, suffix: str = "") -> str:
         """
         Makes a tempfile and registers it in the BedTool.TEMPFILES class
         variable.  Adds a "pybedtools." prefix and ".tmp" extension for easy
-        deletion if you forget to call pybedtools.cleanup().
+        deletion if you forget to call pybedtools.cleanup(). `suffix` is
+        appended after the ".tmp" extension.
         """
         tmpfn = tempfile.NamedTemporaryFile(
             prefix=settings.tempfile_prefix,
-            suffix=settings.tempfile_suffix,
+            suffix=settings.tempfile_suffix + suffix,
             delete=False,
         )
         tmpfn = tmpfn.name
@@ -1527,6 +1561,14 @@ class BedTool(object):
             # Get stream if BedTool
             if isinstance(instream2, BedTool):
                 instream2 = instream2.fn
+
+            # A list of pathlib.Path objects is a list of filenames, just like a
+            # list of strings, so convert them here before checking which it is.
+            if isinstance(instream2, (list, tuple)):
+                instream2 = [
+                    str(item) if isinstance(item, pathlib.PurePath) else item
+                    for item in instream2
+                ]
 
             # Filename
             if isinstance(instream2, str):
@@ -2713,7 +2755,14 @@ class BedTool(object):
         """
         if hasattr(self, "next") or hasattr(self, "__next__"):
             return sum(1 for _ in self)
-        return sum(1 for _ in iter(self))
+        records = iter(self)
+        if type(records) is BAM:
+            # For BAM and CRAM, let pysam count the reads instead of building
+            # an Interval for each one. until_eof and "nofilter" make it count
+            # every record, including unmapped, secondary and duplicate reads.
+            with records.pysam_bamfile as reads:
+                return reads.count(until_eof=True, read_callback="nofilter")
+        return sum(1 for _ in records)
 
     def print_sequence(self) -> str:
         """
@@ -2978,27 +3027,16 @@ class BedTool(object):
         if processes == 1:
             for _ in range(iterations):
                 yield func(*func_args, **func_kwargs)
-            raise StopIteration
+            return
 
-        if _orig_pool:
-            p = _orig_pool
-        else:
-            p = Pool(processes)
-        iterations_each = [iterations / processes] * processes
-        iterations_each[-1] += iterations % processes
-
-        # FYI some useful info on apply_async:
-        # http://stackoverflow.com/questions/8533318/
-        #      python-multiprocessing-pool-when-to-use-apply-apply-async-or-map
-        #
-        # Here, we don't care about the order, and don't want the subprocesses
-        # to block.
-        results = [
-            p.apply_async(func, func_args, func_kwargs) for _ in range(iterations)
-        ]
-        for r in results:
-            yield r.get()
-        raise StopIteration
+        # nullcontext avoids closing a provided _orig_pool after the `with`
+        pool = Pool(processes) if _orig_pool is None else nullcontext(_orig_pool)
+        with pool as p:
+            results = [
+                p.apply_async(func, func_args, func_kwargs) for _ in range(iterations)
+            ]
+            for r in results:
+                yield r.get()
 
     def random_jaccard(
         self,
@@ -3165,27 +3203,26 @@ class BedTool(object):
 
         """
         if processes is not None:
-            p = Pool(processes)
             iterations_each = [iterations // processes] * processes
             iterations_each[-1] += iterations % processes
-            results = [
-                p.apply_async(
-                    _call_randomintersect,
-                    (self, other, it),
-                    dict(
-                        intersect_kwargs=intersect_kwargs,
-                        shuffle_kwargs=shuffle_kwargs,
-                        debug=debug,
-                        report_iterations=report_iterations,
-                        _orig_processes=processes,
-                    ),
-                )
-                for it in iterations_each
-            ]
-            for r in results:
-                for value in r.get():
-                    yield value
-            raise StopIteration
+            with Pool(processes) as p:
+                results = [
+                    p.apply_async(
+                        _call_randomintersect,
+                        (self, other, it),
+                        dict(
+                            intersect_kwargs=intersect_kwargs,
+                            shuffle_kwargs=shuffle_kwargs,
+                            debug=debug,
+                            report_iterations=report_iterations,
+                            _orig_processes=processes,
+                        ),
+                    )
+                    for it in iterations_each
+                ]
+                for r in results:
+                    yield from r.get()
+            return
 
         if shuffle_kwargs is None:
             shuffle_kwargs = {}
@@ -3576,23 +3613,54 @@ class BedTool(object):
             fn = self.fn
         return IntervalFile(fn)
 
-    def liftover(self, chainfile: str, unmapped: Optional[str] = None, liftover_args: str = "") -> BedTool:
+    def liftover(
+        self,
+        chainfile: str | Path,
+        unmapped: Optional[str | Path] = None,
+        liftover_args: str | list[str] = "",
+    ) -> BedTool:
         """
         Returns a new BedTool of the liftedOver features, saving the unmapped
-        ones as `unmapped`.  If `unmapped` is None, then discards the unmapped
-        features.
+        ones as `unmapped` (overwritten if it exists).  If `unmapped` is None,
+        then discards the unmapped features.
 
-        `liftover_args` is a string of additional args that is passed,
-        verbatim, to liftOver.
+        `liftover_args` is passed to liftOver as additional arguments, either
+        as a list of strings or as a string that is split with shlex.split. For
+        GFF input, pass "-gff".
 
         Needs `liftOver` from UCSC to be on the path and a `chainfile`
-        downloaded from UCSC.
+        downloaded from UCSC. BAM input is not supported.
+
+        Raises FileNotFoundError if `liftOver` is not on the PATH, and
+        subprocess.CalledProcessError (with liftOver's stderr attached) if it
+        exits non-zero.
         """
+        if self._isbam:
+            raise ValueError("liftOver does not accept BAM input; convert to BED first")
+
+        exe = shutil.which("liftOver")
+        if exe is None:
+            raise FileNotFoundError("UCSC `liftOver` not found on PATH")
+
+        # liftOver works on files on disk, so save as file if a stream
+        src = self if isinstance(self.fn, str) else self.saveas()
+
         result = BedTool._tmp()
         if unmapped is None:
             unmapped = BedTool._tmp()
-        cmds = ["liftOver", liftover_args, self.fn, chainfile, result, unmapped]
-        os.system(" ".join(cmds))
+
+        if isinstance(liftover_args, str):
+            liftover_args = shlex.split(liftover_args)
+
+        cmds = [exe, *liftover_args, str(src.fn), str(chainfile), result, str(unmapped)]
+        p = subprocess.run(cmds, capture_output=True, text=True)
+        if p.returncode != 0:
+            err = subprocess.CalledProcessError(p.returncode, cmds, p.stdout, p.stderr)
+            # CalledProcessError's message omits stderr, which is where
+            # liftOver (or the dynamic loader) says what went wrong.
+            if hasattr(err, "add_note"):
+                err.add_note("liftOver stderr:\n" + (p.stderr.strip() or "<empty>"))
+            raise err
         return BedTool(result)
 
     def absolute_distance(self, other: BedTool, closest_kwargs: Optional[dict[str, Any]]=None, use_midpoints: bool=False) -> Iterator[int]:
@@ -3852,8 +3920,9 @@ class BAM(object):
             rnext = "*"
 
         # SAM spec says if unavailable should be set to 0. Pysam sets to -1.
-
-        if r.pnext <= 0:
+        # pysam's 0 is a real position (the first base, SAM position 1), so
+        # only negative values mean the mate position is unavailable.
+        if r.pnext < 0:
             pnext = "0"
         else:
             # +1 here because cbedtools.pyx expects SAM -- which is 1-based --
