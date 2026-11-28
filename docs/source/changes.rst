@@ -3,6 +3,68 @@
 Changelog
 =========
 
+Changes in v0.13.0
+------------------
+
+2026-11-28
+
+**Bug fixes:**
+
+- Intervals with coordinates larger than 2^24 could report incorrect overlaps
+  in some cases. The intervals most affected by this would be at large
+  coordinate values > 16.7 Mb, especially very short ones (a couple of bp) or
+  where ``overlap=1.0`` was used. See `#433
+  <https://github.com/daler/pybedtools/issues/433>`__ for details.
+
+  **Any code using these methods should be re-run with an updated version of
+  pybedtools and double-checked:**
+
+  - ``BedTool.all_hits()``
+  - ``BedTool.any_hits()``
+  - ``BedTool.count_hits()``
+  - ``IntervalFile.all_hits()``
+  - ``IntervalFile.any_hits()``
+  - ``IntervalFile.count_hits()``
+
+- ``BedTool.tabix()`` and ``BedTool.bgzip()`` behaved incorrectly on some input
+  types and input arg combinations, including empty indexes or
+  double-compression. Fixed in `#434
+  <https://github.com/daler/pybedtools/issues/434>`__.
+
+- ``BedTool.randomstats`` would raise a RuntimeError when using multiple
+  processes and would not properly shut down the multiprocessing pools it
+  created. These are both fixed by `#435
+  <https://github.com/daler/pybedtools/issues/435>`__
+
+- When using methods like ``BedTool.intersect()`` that optionally take a list
+  of inputs, if those inputs were ``Path`` objects they would not be treated as
+  strings, causing an error and requiring them to be wrapped in ``str()``
+  first. Now they can be provided as-is. Fixed in `#436
+  <https://github.com/daler/pybedtools/issues/436>`__
+
+- When iterating through a BAM, and a mate started at the first bp of
+  a chromosome, it would be instead detected as having no mate. Fixed in `#437
+  <https://github.com/daler/pybedtools/issues/437>`__
+
+**Improvements**
+
+- ``BedTool.liftover`` no longer uses ``os.system``, supports ``Path`` objects,
+  and has tests
+- Counting reads in BAM/CRAM files no longer converts each record to an
+  ``Interval``, which is not needed when just counting. See `#438
+  <https://github.com/daler/pybedtools/issues/438>`__
+
+
+**Maintenance**
+
+- Remove support for Python 3.9 and 3.10 which are now end-of-life
+
+Changes in v0.12.1
+------------------
+
+- Add support for wheels to be uploaded to PyPI (thanks @govinda-kamath, via build: add wheels to pypi #428)
+- Add support for CSI with tabix (thanks @liyao001, via Add support for csi index #407)
+
 Changes in v0.12.0
 ------------------
 
@@ -40,14 +102,14 @@ Changes in v0.9.1
 * Dropping support for Python 3.6 and 3.7
 * Respect sorting of chromsize files (thanks @mgperry)
 * Updated setup.py to correctly reflect the MIT license change elsewhere (`#374
-  <https://github.com/daler/pybedtools/issues/374>`, thanks @hyandell)
+  <https://github.com/daler/pybedtools/issues/374>`_, thanks @hyandell)
 *  Support plotting lengths of intervals and custom DPI (`#367
-   <https://github.com/daler/pybedtools/issues/367>`, `#366
-   <https://github.com/daler/pybedtools/issues/366>`), thanks @yunfeiguo)
+   <https://github.com/daler/pybedtools/issues/367>`_, `#366
+   <https://github.com/daler/pybedtools/issues/366>`_), thanks @yunfeiguo)
 * Remove outdated hard-coded check for 510 files in ``intersect`` and instead
   defer to local machine's ``ulimit``
 * Enabling building/installing on Python 3.11 (thanks @daz10000)
-* Allow np.int64 start/stop positions to be used when creating Interval objects (`#390 <https://github.com/daler/pybedtools/issues/390>`)
+* Allow np.int64 start/stop positions to be used when creating Interval objects (`#390 <https://github.com/daler/pybedtools/issues/390>`_)
 * properly close filehandles in .save_seq (thanks @PeterRobots)
 * include minimal pyproject.toml file (thanks @afg1)
 
