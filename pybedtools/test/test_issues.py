@@ -934,6 +934,86 @@ def test_issue_405():
     a.cat(b)
 
 
+@pytest.mark.parametrize("new,processes", [(False, None), (False, 2), (True, 1), (True, 2)])
+def test_issue_377(tmp_path, new, processes):
+    # Previously, the randomstats generators ended with `raise StopIteration`.
+    # Since PEP 479 (Python 3.7), raising StopIteration inside a generator is
+    # turned into a RuntimeError, so randomstats crashed as soon as it used up
+    # the distribution.
+    genome = tmp_path / "genome.txt"
+    genome.write_text("chr1\t1000\n")
+    a = pybedtools.example_bedtool("a.bed").set_chromsizes({"chr1": (0, 1000)})
+    b = pybedtools.example_bedtool("b.bed")
+
+    shuffled = subprocess.check_output(
+        ["bedtools", "shuffle", "-i", a.fn, "-g", str(genome), "-seed", "2"]
+    )
+    overlap = subprocess.check_output(
+        ["bedtools", "intersect", "-a", "stdin", "-b", b.fn, "-u"], input=shuffled
+    )
+
+    result = a.randomstats(
+        b,
+        iterations=3,
+        new=new,
+        genome_fn=str(genome),
+        processes=processes,
+        shuffle_kwargs={"seed": 2},
+        include_distribution=True,
+    )
+
+    assert result["actual"] == 3
+    assert result["distribution"].tolist() == [len(overlap.splitlines())] * 3
+
+
+@pytest.mark.parametrize("new", [False, True])
+def test_randomstats_pool_cleanup(tmp_path, monkeypatch, new):
+    # Previously, pool workers kept running until pool.terminate() (or close()
+    # + join()) were called. Otherwise, the would stay around as idle child
+    # processes until the Pool object was garbage collected or the interpreter
+    # exited.
+    #
+    # Now, using the pool as a context manager calls terminate() at the end. So
+    # here we confirm the pool is cleaned up.
+    from multiprocessing import Pool
+
+    pools = []
+
+    # Monkeypatch pybedtools.bedtool.Pool so we can track the pools started
+    def tracked_pool(*args, **kwargs):
+        pool = Pool(*args, **kwargs)
+        # Keeping a reference to the pools in the list also prevents garbage
+        # collection which could otherwise shut down the pool -- we want to
+        # detect pools *intentionally* shut down.
+        pools.append(pool)
+        return pool
+
+    monkeypatch.setattr(pybedtools.bedtool, "Pool", tracked_pool)
+
+    genome = tmp_path / "genome.txt"
+    genome.write_text("chr1\t1000\n")
+    a = pybedtools.example_bedtool("a.bed").set_chromsizes({"chr1": (0, 1000)})
+    b = pybedtools.example_bedtool("b.bed")
+
+    try:
+        a.randomstats(
+            b,
+            iterations=3,
+            new=new,
+            genome_fn=str(genome),
+            processes=2,
+            shuffle_kwargs={"seed": 2},
+        )
+
+        assert pools, "Expected randomstats to create a pool"
+        assert all(not worker.is_alive() for pool in pools for worker in pool._pool)
+    finally:
+        # Still need to shut down pools if they failed in this test (terminate
+        # and join are safe to call again even after the pool is shut down)
+        for pool in pools:
+            pool.terminate()
+            pool.join()
+
 
 @pytest.mark.parametrize("in_place", [False, True])
 @pytest.mark.parametrize("compression", [None, "gzip-lf", "gzip-crlf"])
