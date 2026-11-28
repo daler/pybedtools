@@ -15,7 +15,7 @@ jobs:
   build-and-test:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
         include:   # Used to choose which version of Python to use for docs and for sdist
           - python-version: "3.12"
