@@ -2,6 +2,7 @@ from __future__ import annotations
 import tempfile
 from textwrap import dedent
 import shutil
+import shlex
 import subprocess
 import operator
 import os
@@ -3612,23 +3613,54 @@ class BedTool(object):
             fn = self.fn
         return IntervalFile(fn)
 
-    def liftover(self, chainfile: str, unmapped: Optional[str] = None, liftover_args: str = "") -> BedTool:
+    def liftover(
+        self,
+        chainfile: str | Path,
+        unmapped: Optional[str | Path] = None,
+        liftover_args: str | list[str] = "",
+    ) -> BedTool:
         """
         Returns a new BedTool of the liftedOver features, saving the unmapped
-        ones as `unmapped`.  If `unmapped` is None, then discards the unmapped
-        features.
+        ones as `unmapped` (overwritten if it exists).  If `unmapped` is None,
+        then discards the unmapped features.
 
-        `liftover_args` is a string of additional args that is passed,
-        verbatim, to liftOver.
+        `liftover_args` is passed to liftOver as additional arguments, either
+        as a list of strings or as a string that is split with shlex.split. For
+        GFF input, pass "-gff".
 
         Needs `liftOver` from UCSC to be on the path and a `chainfile`
-        downloaded from UCSC.
+        downloaded from UCSC. BAM input is not supported.
+
+        Raises FileNotFoundError if `liftOver` is not on the PATH, and
+        subprocess.CalledProcessError (with liftOver's stderr attached) if it
+        exits non-zero.
         """
+        if self._isbam:
+            raise ValueError("liftOver does not accept BAM input; convert to BED first")
+
+        exe = shutil.which("liftOver")
+        if exe is None:
+            raise FileNotFoundError("UCSC `liftOver` not found on PATH")
+
+        # liftOver works on files on disk, so save as file if a stream
+        src = self if isinstance(self.fn, str) else self.saveas()
+
         result = BedTool._tmp()
         if unmapped is None:
             unmapped = BedTool._tmp()
-        cmds = ["liftOver", liftover_args, self.fn, chainfile, result, unmapped]
-        os.system(" ".join(cmds))
+
+        if isinstance(liftover_args, str):
+            liftover_args = shlex.split(liftover_args)
+
+        cmds = [exe, *liftover_args, str(src.fn), str(chainfile), result, str(unmapped)]
+        p = subprocess.run(cmds, capture_output=True, text=True)
+        if p.returncode != 0:
+            err = subprocess.CalledProcessError(p.returncode, cmds, p.stdout, p.stderr)
+            # CalledProcessError's message omits stderr, which is where
+            # liftOver (or the dynamic loader) says what went wrong.
+            if hasattr(err, "add_note"):
+                err.add_note("liftOver stderr:\n" + (p.stderr.strip() or "<empty>"))
+            raise err
         return BedTool(result)
 
     def absolute_distance(self, other: BedTool, closest_kwargs: Optional[dict[str, Any]]=None, use_midpoints: bool=False) -> Iterator[int]:

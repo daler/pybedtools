@@ -4,3 +4,4 @@ matplotlib
 ucsc-bigwigtobedgraph
 ucsc-bedgraphtobigwig
 ucsc-wigtobigwig
+ucsc-liftover
