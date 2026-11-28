@@ -3881,8 +3881,9 @@ class BAM(object):
             rnext = "*"
 
         # SAM spec says if unavailable should be set to 0. Pysam sets to -1.
-
-        if r.pnext <= 0:
+        # pysam's 0 is a real position (the first base, SAM position 1), so
+        # only negative values mean the mate position is unavailable.
+        if r.pnext < 0:
             pnext = "0"
         else:
             # +1 here because cbedtools.pyx expects SAM -- which is 1-based --
